@@ -1,0 +1,112 @@
+
+/**
+ * @fileoverview SearchDialog - Komponen dialog untuk search dan replace functionality
+ * @author Senior Developer
+ * @version 2.0.0
+ * @refactored Memisahkan concerns dan menggunakan composition pattern
+ */
+
+import React, { useCallback } from 'react';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Search } from "lucide-react";
+
+// Custom hooks dan components
+import { useSearchEngine } from './SearchDialog/hooks/useSearchEngine';
+import { SearchControls } from './SearchDialog/components/SearchControls';
+import { SearchActions } from './SearchDialog/components/SearchActions';
+import { SearchResults } from './SearchDialog/components/SearchResults';
+
+// Types
+import { SearchDialogProps } from './SearchDialog/types/search.types';
+
+/**
+ * Komponen dialog untuk search dan replace dengan architecture yang bersih
+ * Menggunakan composition pattern dan separation of concerns
+ */
+export const SearchDialog: React.FC<SearchDialogProps> = ({
+  markdown,
+  onReplace,
+  onClose
+}) => {
+  // Setup search engine dengan custom hook
+  const {
+    searchTerm,
+    replaceTerm,
+    caseSensitive,
+    currentMatch,
+    matches,
+    totalMatches,
+    setSearchTerm,
+    setReplaceTerm,
+    setCaseSensitive,
+    navigateMatch,
+    replaceOne,
+    replaceAll,
+    clearSearch
+  } = useSearchEngine(markdown);
+
+  /**
+   * Handle replace one dengan cleanup
+   */
+  const handleReplaceOne = useCallback(() => {
+    const result = replaceOne();
+    if (result.success) {
+      onReplace(result.newMarkdown);
+    }
+  }, [replaceOne, onReplace]);
+
+  /**
+   * Handle replace all dengan cleanup
+   */
+  const handleReplaceAll = useCallback(() => {
+    const result = replaceAll();
+    if (result.success) {
+      onReplace(result.newMarkdown);
+      clearSearch();
+    }
+  }, [replaceAll, onReplace, clearSearch]);
+
+  return (
+    <Dialog open={true} onOpenChange={onClose}>
+      <DialogContent className="sm:max-w-md">
+        <DialogHeader>
+          <DialogTitle className="flex items-center gap-2">
+            <Search className="h-4 w-4" />
+            Search & Replace
+          </DialogTitle>
+        </DialogHeader>
+
+        <div className="space-y-4">
+          {/* Search Controls */}
+          <SearchControls
+            searchTerm={searchTerm}
+            replaceTerm={replaceTerm}
+            caseSensitive={caseSensitive}
+            onSearchTermChange={setSearchTerm}
+            onReplaceTermChange={setReplaceTerm}
+            onCaseSensitiveChange={setCaseSensitive}
+            matchCount={totalMatches}
+            currentMatch={currentMatch}
+          />
+
+          {/* Search Results Info */}
+          {searchTerm && (
+            <SearchResults
+              matches={matches}
+              currentMatch={currentMatch}
+            />
+          )}
+
+          {/* Search Actions */}
+          <SearchActions
+            matches={matches}
+            currentMatch={currentMatch}
+            onNavigateMatch={navigateMatch}
+            onReplaceOne={handleReplaceOne}
+            onReplaceAll={handleReplaceAll}
+          />
+        </div>
+      </DialogContent>
+    </Dialog>
+  );
+};

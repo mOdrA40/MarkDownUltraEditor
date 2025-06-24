@@ -1,0 +1,16 @@
+{
+  "name": "MarkDown Ultra Editor",
+  "short_name": "MD Ultra",
+  "description": "Editor markdown modern dengan fitur live preview, syntax highlighting, dan berbagai tema yang dapat disesuaikan",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#3b82f6",
+  "icons": [
+    {
+      "src": "/markdownlogo.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    }
+  ]
+}

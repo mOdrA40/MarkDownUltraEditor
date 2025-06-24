@@ -1,0 +1,249 @@
+/**
+ * Navigation styles untuk TOC dan Outline
+ * Mendukung smooth scrolling, responsive design, dan accessibility
+ */
+
+/* Smooth scrolling untuk seluruh dokumen */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Scroll margin untuk headings agar tidak tertutup header */
+h1, h2, h3, h4, h5, h6 {
+  scroll-margin-top: 5rem;
+}
+
+/* TOC dan Outline container styles */
+[data-toc-container],
+[data-outline-container] {
+  position: relative;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Navigation item styles */
+[data-toc-container] [data-heading-id],
+[data-outline-container] [data-heading-id] {
+  position: relative;
+  transition: all 0.2s ease-in-out;
+  border-radius: 0.375rem;
+  cursor: pointer;
+}
+
+/* Hover effects */
+[data-toc-container] [data-heading-id]:hover,
+[data-outline-container] [data-heading-id]:hover {
+  transform: translateX(2px);
+  background-color: rgba(59, 130, 246, 0.05);
+}
+
+/* Focus styles untuk accessibility */
+[data-toc-container] [data-heading-id]:focus,
+[data-outline-container] [data-heading-id]:focus {
+  outline: 2px solid rgba(59, 130, 246, 0.5);
+  outline-offset: 2px;
+  background-color: rgba(59, 130, 246, 0.1);
+}
+
+/* Active state styles */
+[data-toc-container] [data-heading-id][aria-current="location"],
+[data-outline-container] [data-heading-id][aria-current="location"] {
+  background-color: rgba(59, 130, 246, 0.1);
+  border-left: 3px solid rgb(59, 130, 246);
+  font-weight: 600;
+  color: rgb(59, 130, 246);
+}
+
+/* Active state animation */
+[data-toc-container] [data-heading-id][aria-current="location"]::before,
+[data-outline-container] [data-heading-id][aria-current="location"]::before {
+  content: '';
+  position: absolute;
+  left: -2px;
+  top: 0;
+  bottom: 0;
+  width: 3px;
+  background: linear-gradient(to bottom, rgb(59, 130, 246), rgb(147, 197, 253));
+  border-radius: 0 2px 2px 0;
+  animation: slideIn 0.3s ease-out;
+}
+
+@keyframes slideIn {
+  from {
+    transform: scaleY(0);
+    opacity: 0;
+  }
+  to {
+    transform: scaleY(1);
+    opacity: 1;
+  }
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  /* Mobile optimizations */
+  [data-toc-container],
+  [data-outline-container] {
+    font-size: 0.875rem;
+  }
+  
+  [data-toc-container] [data-heading-id],
+  [data-outline-container] [data-heading-id] {
+    padding: 0.5rem;
+    margin-bottom: 0.25rem;
+  }
+  
+  /* Larger touch targets untuk mobile */
+  [data-toc-container] [data-heading-id],
+  [data-outline-container] [data-heading-id] {
+    min-height: 44px;
+    display: flex;
+    align-items: center;
+  }
+}
+
+@media (min-width: 769px) and (max-width: 1024px) {
+  /* Tablet optimizations */
+  [data-toc-container],
+  [data-outline-container] {
+    font-size: 0.9rem;
+  }
+}
+
+@media (min-width: 1025px) {
+  /* Desktop optimizations */
+  [data-toc-container] [data-heading-id]:hover,
+  [data-outline-container] [data-heading-id]:hover {
+    transform: translateX(4px);
+  }
+}
+
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
+  [data-toc-container] [data-heading-id]:hover,
+  [data-outline-container] [data-heading-id]:hover {
+    background-color: rgba(59, 130, 246, 0.15);
+  }
+  
+  [data-toc-container] [data-heading-id]:focus,
+  [data-outline-container] [data-heading-id]:focus {
+    background-color: rgba(59, 130, 246, 0.2);
+  }
+  
+  [data-toc-container] [data-heading-id][aria-current="location"],
+  [data-outline-container] [data-heading-id][aria-current="location"] {
+    background-color: rgba(59, 130, 246, 0.2);
+  }
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  [data-toc-container] [data-heading-id],
+  [data-outline-container] [data-heading-id] {
+    border: 1px solid transparent;
+  }
+  
+  [data-toc-container] [data-heading-id]:focus,
+  [data-outline-container] [data-heading-id]:focus {
+    border-color: currentColor;
+    outline: 3px solid currentColor;
+  }
+  
+  [data-toc-container] [data-heading-id][aria-current="location"],
+  [data-outline-container] [data-heading-id][aria-current="location"] {
+    border-left: 4px solid currentColor;
+    background-color: rgba(0, 0, 0, 0.1);
+  }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  
+  [data-toc-container] [data-heading-id],
+  [data-outline-container] [data-heading-id] {
+    transition: none;
+  }
+  
+  [data-toc-container] [data-heading-id]:hover,
+  [data-outline-container] [data-heading-id]:hover {
+    transform: none;
+  }
+  
+  @keyframes slideIn {
+    from, to {
+      transform: scaleY(1);
+      opacity: 1;
+    }
+  }
+}
+
+/* Print styles */
+@media print {
+  [data-toc-container],
+  [data-outline-container] {
+    display: none;
+  }
+}
+
+/* Loading states */
+.navigation-loading {
+  opacity: 0.6;
+  pointer-events: none;
+}
+
+.navigation-loading [data-heading-id] {
+  animation: pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 0.6;
+  }
+  50% {
+    opacity: 0.3;
+  }
+}
+
+/* Error states */
+.navigation-error {
+  color: rgb(239, 68, 68);
+  background-color: rgba(239, 68, 68, 0.1);
+  border: 1px solid rgba(239, 68, 68, 0.2);
+  border-radius: 0.375rem;
+  padding: 0.75rem;
+  margin: 0.5rem;
+  text-align: center;
+  font-size: 0.875rem;
+}
+
+/* Custom scrollbar untuk navigation areas */
+[data-toc-container] .scroll-area,
+[data-outline-container] .scroll-area {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(156, 163, 175, 0.5) transparent;
+}
+
+[data-toc-container] .scroll-area::-webkit-scrollbar,
+[data-outline-container] .scroll-area::-webkit-scrollbar {
+  width: 6px;
+}
+
+[data-toc-container] .scroll-area::-webkit-scrollbar-track,
+[data-outline-container] .scroll-area::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+[data-toc-container] .scroll-area::-webkit-scrollbar-thumb,
+[data-outline-container] .scroll-area::-webkit-scrollbar-thumb {
+  background-color: rgba(156, 163, 175, 0.5);
+  border-radius: 3px;
+}
+
+[data-toc-container] .scroll-area::-webkit-scrollbar-thumb:hover,
+[data-outline-container] .scroll-area::-webkit-scrollbar-thumb:hover {
+  background-color: rgba(156, 163, 175, 0.7);
+}

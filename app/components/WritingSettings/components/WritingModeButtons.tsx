@@ -1,0 +1,198 @@
+/**
+ * WritingModeButtons Component - Tombol-tombol Writing Mode
+ * Komponen untuk toggle berbagai writing modes
+ * 
+ * @author Senior Developer
+ * @version 2.0.0
+ */
+
+import React, { memo } from 'react';
+import { Button } from "@/components/ui/button";
+import { 
+  Focus, 
+  Type, 
+  Keyboard, 
+  Eye 
+} from "lucide-react";
+import { WRITING_MODES, A11Y } from '../constants/settings.constants';
+import type { WritingModeButtonsProps } from '../types/settings.types';
+
+/**
+ * Komponen WritingModeButtons untuk toggle writing modes
+ */
+export const WritingModeButtons: React.FC<WritingModeButtonsProps> = memo(({
+  focusMode,
+  onFocusModeToggle,
+  typewriterMode,
+  onTypewriterModeToggle,
+  wordWrap,
+  onWordWrapToggle,
+  vimMode,
+  onVimModeToggle,
+  zenMode,
+  onZenModeToggle,
+  size = 'md',
+  orientation = 'horizontal',
+  className = ''
+}) => {
+  // Konfigurasi button berdasarkan size
+  const getButtonClasses = () => {
+    const baseClasses = 'text-xs transition-all duration-200';
+    
+    switch (size) {
+      case 'sm':
+        return `${baseClasses} h-6 px-2`;
+      case 'lg':
+        return `${baseClasses} h-9 px-3`;
+      default:
+        return `${baseClasses} h-7 px-2`;
+    }
+  };
+
+  const getIconSize = () => {
+    switch (size) {
+      case 'sm':
+        return 'h-2 w-2';
+      case 'lg':
+        return 'h-4 w-4';
+      default:
+        return 'h-3 w-3';
+    }
+  };
+
+  // Konfigurasi container berdasarkan orientation
+  const getContainerClasses = () => {
+    const baseClasses = 'flex items-center';
+    
+    switch (orientation) {
+      case 'vertical':
+        return `${baseClasses} flex-col space-y-2`;
+      case 'grid':
+        return 'grid grid-cols-2 gap-2';
+      default:
+        return `${baseClasses} space-x-1`;
+    }
+  };
+
+  const buttonClasses = getButtonClasses();
+  const iconSize = getIconSize();
+  const containerClasses = getContainerClasses();
+
+  return (
+    <div className={`${containerClasses} ${className}`}>
+      {/* Focus Mode Button */}
+      <Button
+        variant={focusMode ? "default" : "ghost"}
+        size="sm"
+        onClick={onFocusModeToggle}
+        className={`${buttonClasses} flex-shrink-0`}
+        aria-label={A11Y.labels.toggleFocus}
+        aria-pressed={focusMode}
+        title={WRITING_MODES.focus.description}
+      >
+        <Focus className={`${iconSize} ${orientation !== 'vertical' ? 'mr-1' : ''}`} />
+        {orientation === 'grid' ? (
+          WRITING_MODES.focus.label
+        ) : (
+          <span className="hidden sm:inline">
+            {WRITING_MODES.focus.label}
+          </span>
+        )}
+      </Button>
+
+      {/* Typewriter Mode Button */}
+      <Button
+        variant={typewriterMode ? "default" : "ghost"}
+        size="sm"
+        onClick={onTypewriterModeToggle}
+        className={`${buttonClasses} flex-shrink-0`}
+        aria-label={A11Y.labels.toggleTypewriter}
+        aria-pressed={typewriterMode}
+        title={WRITING_MODES.typewriter.description}
+      >
+        <Type className={`${iconSize} ${orientation !== 'vertical' ? 'mr-1' : ''}`} />
+        {orientation === 'grid' ? (
+          WRITING_MODES.typewriter.label
+        ) : (
+          <span className="hidden sm:inline">
+            {WRITING_MODES.typewriter.label}
+          </span>
+        )}
+      </Button>
+
+      {/* Word Wrap Button */}
+      <Button
+        variant={wordWrap ? "default" : "ghost"}
+        size="sm"
+        onClick={onWordWrapToggle}
+        className={`${buttonClasses} flex-shrink-0`}
+        aria-label={A11Y.labels.toggleWordWrap}
+        aria-pressed={wordWrap}
+        title={WRITING_MODES.wordWrap.description}
+      >
+        {orientation === 'grid' ? (
+          WRITING_MODES.wordWrap.label
+        ) : (
+          <span className="text-xs font-medium">W</span>
+        )}
+      </Button>
+
+      {/* Vim Mode Button */}
+      <Button
+        variant={vimMode ? "default" : "ghost"}
+        size="sm"
+        onClick={onVimModeToggle}
+        className={`${buttonClasses} flex-shrink-0`}
+        aria-label={A11Y.labels.toggleVim}
+        aria-pressed={vimMode}
+        title={WRITING_MODES.vim.description}
+      >
+        <Keyboard className={`${iconSize} ${orientation !== 'vertical' ? 'mr-1' : ''}`} />
+        {orientation === 'grid' ? (
+          WRITING_MODES.vim.label
+        ) : (
+          <span className="hidden sm:inline">
+            {WRITING_MODES.vim.label}
+          </span>
+        )}
+      </Button>
+
+      {/* Zen Mode Button - Special handling untuk full width di mobile */}
+      {orientation === 'grid' ? (
+        <div className="col-span-2">
+          <Button
+            variant={zenMode ? "default" : "ghost"}
+            size="sm"
+            onClick={onZenModeToggle}
+            className={`${buttonClasses} w-full`}
+            aria-label={A11Y.labels.toggleZen}
+            aria-pressed={zenMode}
+            title={WRITING_MODES.zen.description}
+          >
+            <Eye className={`${iconSize} mr-2`} />
+            {WRITING_MODES.zen.label} Mode
+          </Button>
+        </div>
+      ) : (
+        <Button
+          variant={zenMode ? "default" : "ghost"}
+          size="sm"
+          onClick={onZenModeToggle}
+          className={`${buttonClasses} flex-shrink-0`}
+          aria-label={A11Y.labels.toggleZen}
+          aria-pressed={zenMode}
+          title={WRITING_MODES.zen.description}
+        >
+          <Eye className={`${iconSize} ${orientation !== 'vertical' ? 'mr-1' : ''}`} />
+          <span className="hidden sm:inline">
+            {WRITING_MODES.zen.label}
+          </span>
+        </Button>
+      )}
+    </div>
+  );
+});
+
+WritingModeButtons.displayName = 'WritingModeButtons';
+
+export default WritingModeButtons;

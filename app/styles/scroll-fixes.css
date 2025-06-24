@@ -1,0 +1,228 @@
+/**
+ * Scroll Fixes CSS
+ * Memperbaiki masalah scroll yang tidak diinginkan pada UI components
+ * 
+ * @author Senior Developer
+ * @version 1.0.0
+ */
+
+/* ===== GLOBAL SCROLL BEHAVIOR FIXES ===== */
+
+/* Mencegah scroll behavior yang tidak diinginkan dari transform scale */
+.no-scroll-scale {
+  transform-origin: center center;
+  will-change: auto;
+}
+
+/* Override untuk button hover effects yang menyebabkan scroll */
+.button-hover-fix {
+  transition: background-color 0.2s ease, color 0.2s ease, box-shadow 0.2s ease, opacity 0.2s ease;
+  transform: none !important;
+}
+
+.button-hover-fix:hover {
+  transform: none !important;
+  background-color: hsl(var(--accent) / 0.8);
+  color: hsl(var(--accent-foreground));
+}
+
+.button-hover-fix:active {
+  transform: none !important;
+  background-color: hsl(var(--accent) / 0.6);
+}
+
+/* ===== THEME SELECTOR FIXES ===== */
+
+/* Theme button hover effects tanpa scale dan border circle */
+.theme-button-fix {
+  transition: filter 0.2s ease, opacity 0.2s ease;
+  transform: none !important;
+  border: none !important;
+  will-change: filter, opacity;
+}
+
+.theme-button-fix:hover {
+  transform: none !important;
+  border: none !important;
+  filter: brightness(1.1);
+}
+
+.theme-button-fix:active {
+  transform: none !important;
+  border: none !important;
+  filter: brightness(0.9);
+  opacity: 0.9;
+}
+
+.theme-button-fix:focus {
+  transform: none !important;
+  border: none !important;
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+/* ===== TOOLBAR FIXES ===== */
+
+/* Toolbar button hover effects seperti vim/zen mode - clean tanpa border overlap */
+.toolbar-button-fix {
+  transition: background-color 0.2s ease, color 0.2s ease, opacity 0.2s ease;
+  transform: none !important;
+  border: none !important;
+  will-change: background-color, color, opacity;
+}
+
+.toolbar-button-fix:hover {
+  transform: none !important;
+  border: none !important;
+  background-color: hsl(var(--accent) / 0.8) !important;
+  color: hsl(var(--accent-foreground)) !important;
+}
+
+.toolbar-button-fix:active {
+  transform: none !important;
+  border: none !important;
+  background-color: hsl(var(--accent) / 0.6) !important;
+  opacity: 0.9;
+}
+
+.toolbar-button-fix:focus {
+  transform: none !important;
+  border: none !important;
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+/* ===== CONTAINER SCROLL PREVENTION ===== */
+
+/* Mencegah container scroll saat hover pada child elements */
+.scroll-container-stable {
+  overflow: hidden;
+  contain: layout style;
+}
+
+.scroll-container-stable:hover {
+  overflow: hidden;
+}
+
+/* ===== RESPONSIVE FIXES ===== */
+
+/* Mobile fixes */
+@media (max-width: 767px) {
+  .button-hover-fix,
+  .theme-button-fix,
+  .toolbar-button-fix {
+    transition-duration: 0.15s;
+  }
+}
+
+/* Tablet fixes */
+@media (min-width: 768px) and (max-width: 1023px) {
+  .button-hover-fix,
+  .theme-button-fix,
+  .toolbar-button-fix {
+    transition-duration: 0.2s;
+  }
+}
+
+/* Desktop fixes */
+@media (min-width: 1024px) {
+  .button-hover-fix,
+  .theme-button-fix,
+  .toolbar-button-fix {
+    transition-duration: 0.2s;
+  }
+}
+
+/* ===== ACCESSIBILITY FIXES ===== */
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  .button-hover-fix,
+  .theme-button-fix,
+  .toolbar-button-fix {
+    transition: none !important;
+    transform: none !important;
+  }
+  
+  .button-hover-fix:hover,
+  .theme-button-fix:hover,
+  .toolbar-button-fix:hover {
+    transform: none !important;
+  }
+  
+  .button-hover-fix:active,
+  .theme-button-fix:active,
+  .toolbar-button-fix:active {
+    transform: none !important;
+  }
+}
+
+/* Focus states tanpa scroll issues - clean seperti vim/zen mode */
+.focus-fix:focus {
+  outline: none !important;
+  box-shadow: none !important;
+  border: none !important;
+  transform: none !important;
+}
+
+/* ===== UTILITY CLASSES ===== */
+
+/* Utility untuk mencegah layout shift */
+.prevent-layout-shift {
+  contain: layout;
+  transform: none !important;
+}
+
+/* Utility untuk smooth transitions tanpa scale */
+.smooth-transition {
+  transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+  transform: none !important;
+}
+
+/* ===== CLEAN BUTTON STYLES (VIM/ZEN MODE STYLE) ===== */
+
+/* Clean button styling untuk toolbar - mengikuti gaya vim/zen mode */
+.clean-button {
+  border: none !important;
+  outline: none !important;
+  box-shadow: none !important;
+  transition: background-color 0.2s ease, color 0.2s ease, opacity 0.2s ease;
+  transform: none !important;
+}
+
+.clean-button:hover {
+  border: none !important;
+  outline: none !important;
+  box-shadow: none !important;
+  background-color: hsl(var(--accent) / 0.8) !important;
+  color: hsl(var(--accent-foreground)) !important;
+  transform: none !important;
+}
+
+.clean-button:active {
+  border: none !important;
+  outline: none !important;
+  box-shadow: none !important;
+  background-color: hsl(var(--accent) / 0.6) !important;
+  opacity: 0.9;
+  transform: none !important;
+}
+
+.clean-button:focus {
+  border: none !important;
+  outline: none !important;
+  box-shadow: none !important;
+  transform: none !important;
+}
+
+/* Utility untuk hover effects yang aman */
+.safe-hover:hover {
+  background-color: hsl(var(--accent) / 0.8);
+  color: hsl(var(--accent-foreground));
+  transform: none !important;
+}
+
+.safe-active:active {
+  background-color: hsl(var(--accent) / 0.6);
+  transform: none !important;
+}
