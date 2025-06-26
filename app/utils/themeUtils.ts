@@ -54,7 +54,7 @@ export const generateHeaderStyles = (theme?: Theme) => {
   }
 
   // Map specific theme colors for better consistency
-  const themeStylesMap: Record<string, any> = {
+  const themeStylesMap: Record<string, { backgroundColor: string; borderColor: string; color: string }> = {
     'ocean': {
       backgroundColor: 'rgba(224, 242, 254, 0.8)', // ocean surface with opacity
       borderColor: 'rgba(2, 132, 199, 1)', // ocean accent

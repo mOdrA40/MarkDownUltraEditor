@@ -187,6 +187,32 @@
     padding: 0.125rem 0.5rem;
     font-size: 0.75rem;
     height: 1.25rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* Fix untuk alignment ikon Clock dengan teks */
+  .badge-container [data-badge] {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.25rem;
+  }
+
+  .badge-container [data-badge] svg {
+    vertical-align: middle;
+    flex-shrink: 0;
+  }
+
+  /* Base styles untuk writing stats tablet */
+  .writing-stats-tablet {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.5rem 0.75rem;
+    min-height: 40px;
+    font-size: 0.75rem;
   }
 
   /* Fix untuk toolbar wrap dan button visibility di mobile */
@@ -209,6 +235,45 @@
 
 /* Small Tablet Optimizations - 500px to 767px */
 @media (min-width: 500px) and (max-width: 767px) {
+  /* Writing Stats Layout untuk Small Tablet */
+  .writing-stats-tablet {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.5rem 0.75rem;
+    min-height: 40px;
+  }
+
+  .stats-left {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+
+  .stats-left::-webkit-scrollbar {
+    display: none;
+  }
+
+  .stats-right {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    flex-shrink: 0;
+    margin-left: 0.75rem;
+  }
+
+  .separator-vertical {
+    width: 1px;
+    height: 0.75rem;
+    background-color: currentColor;
+    opacity: 0.3;
+    flex-shrink: 0;
+  }
+
   /* Compact toolbar untuk tablet kecil */
   .toolbar-small-tablet {
     padding: 0.25rem 0.5rem;
@@ -268,6 +333,38 @@
 
 /* Medium Tablet Optimizations - 768px to 1023px */
 @media (min-width: 768px) and (max-width: 1023px) {
+  /* Writing Stats Layout untuk Medium Tablet */
+  .writing-stats-tablet {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.5rem 1rem;
+    min-height: 40px;
+  }
+
+  .stats-left {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    flex-wrap: nowrap;
+  }
+
+  .stats-right {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex-shrink: 0;
+    margin-left: 1rem;
+  }
+
+  .separator-vertical {
+    width: 1px;
+    height: 0.75rem;
+    background-color: currentColor;
+    opacity: 0.3;
+    flex-shrink: 0;
+  }
+
   /* Standard tablet layout */
   .toolbar-medium-tablet {
     padding: 0.5rem 0.75rem;

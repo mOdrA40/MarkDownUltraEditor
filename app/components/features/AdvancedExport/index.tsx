@@ -6,6 +6,7 @@ import { useToast } from "@/hooks/core";
 import { useResponsiveBreakpoint } from "@/hooks/ui";
 import { Download } from "lucide-react";
 import './styles.css';
+import { generateHeaderStyles, getThemeTextColor } from '@/utils/themeUtils';
 
 // Import types
 import {
@@ -135,19 +136,36 @@ export const AdvancedExport: React.FC<AdvancedExportProps> = ({
 
   const currentExportState = getCurrentExportState();
 
+  // Get theme-based styling
+  const textColor = getThemeTextColor(currentTheme);
+
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className={`flex flex-col p-0 mx-auto ${isMobile
-        ? 'w-[92vw] h-[94vh] max-w-none'
-        : isTablet
-          ? 'w-[95vw] h-[92vh] max-w-5xl'
-          : 'w-[95vw] max-w-7xl h-[90vh]'
-        }`}>
+      <DialogContent
+        className={`flex flex-col p-0 mx-auto ${isMobile
+          ? 'w-[92vw] h-[94vh] max-w-none'
+          : isTablet
+            ? 'w-[95vw] h-[92vh] max-w-5xl'
+            : 'w-[95vw] max-w-7xl h-[90vh]'
+          }`}
+        style={{
+          backgroundColor: currentTheme?.background || undefined,
+          borderColor: currentTheme?.accent || undefined,
+          color: textColor
+        }}
+      >
         {/* Dialog Header */}
-        <DialogHeader className={`flex-shrink-0 ${isMobile ? 'p-4 pb-2' : 'p-3 sm:p-4 pb-2'
-          }`}>
-          <DialogTitle className={`flex items-center ${isMobile ? 'text-sm' : 'text-sm sm:text-base'
-            }`}>
+        <DialogHeader
+          className={`flex-shrink-0 ${isMobile ? 'p-4 pb-2' : 'p-3 sm:p-4 pb-2'}`}
+          style={{
+            backgroundColor: currentTheme?.surface ? `${currentTheme.surface}80` : undefined,
+            borderColor: currentTheme?.accent || undefined
+          }}
+        >
+          <DialogTitle
+            className={`flex items-center ${isMobile ? 'text-sm' : 'text-sm sm:text-base'}`}
+            style={{ color: textColor }}
+          >
             <Download className={`mr-2 ${isMobile ? 'h-4 w-4' : 'h-4 w-4 sm:h-5 sm:w-5'
               }`} />
             Advanced Export

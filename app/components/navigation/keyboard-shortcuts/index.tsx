@@ -24,11 +24,14 @@ import { ShortcutCategory } from './components/ShortcutCategory';
 // Import types and constants
 import { KeyboardShortcutsProps } from './types/shortcutTypes';
 import { getShortcutsForPlatform } from './constants/shortcuts';
+import type { Theme } from '@/components/features/ThemeSelector';
+import { generateHeaderStyles, getThemeTextColor } from '@/utils/themeUtils';
 
 export const KeyboardShortcuts: React.FC<KeyboardShortcutsProps> = ({
   onClose,
   showMacKeys,
-  visibleCategories
+  visibleCategories,
+  currentTheme
 }) => {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedPlatform, setSelectedPlatform] = useState<'windows' | 'mac' | 'auto'>('auto');
@@ -105,12 +108,32 @@ export const KeyboardShortcuts: React.FC<KeyboardShortcutsProps> = ({
     setSelectedPlatform(platform);
   };
 
+  // Get theme-based styling
+  const headerStyles = generateHeaderStyles(currentTheme);
+  const textColor = getThemeTextColor(currentTheme);
+
   return (
     <Dialog open={true} onOpenChange={onClose}>
-      <DialogContent className="max-w-4xl max-h-[90vh] flex flex-col p-0">
+      <DialogContent
+        className="max-w-4xl max-h-[90vh] flex flex-col p-0"
+        style={{
+          backgroundColor: currentTheme?.background || undefined,
+          borderColor: currentTheme?.accent || undefined,
+          color: textColor
+        }}
+      >
         {/* Header */}
-        <DialogHeader className="flex-shrink-0 p-6 pb-4">
-          <DialogTitle className="flex items-center justify-between pr-8">
+        <DialogHeader
+          className="flex-shrink-0 p-6 pb-4"
+          style={{
+            backgroundColor: currentTheme?.surface ? `${currentTheme.surface}80` : undefined,
+            borderColor: currentTheme?.accent || undefined
+          }}
+        >
+          <DialogTitle
+            className="flex items-center justify-between pr-8"
+            style={{ color: textColor }}
+          >
             <div className="flex items-center">
               <Keyboard className="h-5 w-5 mr-2" />
               Keyboard Shortcuts

@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
 import { Badge } from "@/components/ui/badge";
-import { FileText, Eye, EyeOff, Search, Maximize2, Keyboard } from "lucide-react";
+import { FileText, Eye, EyeOff, Search, Maximize2, Minimize2, Keyboard } from "lucide-react";
 import { Theme , ThemeSelector } from "../../../../features/ThemeSelector";
 import { FileOperations } from "../../../../features/FileOperations";
 import { Toolbar } from "../../../Toolbar";
@@ -91,8 +91,21 @@ export const EditorHeader: React.FC<EditorHeaderProps> = ({
   zenMode
 }) => {
   const { isMobile, isTablet, isSmallTablet } = responsive;
+  const [isFullscreen, setIsFullscreen] = React.useState(false);
+
   // Don't render header in zen mode
   if (zenMode) return null;
+
+  // Listen for fullscreen changes
+  React.useEffect(() => {
+    const handleFullscreenChange = () => {
+      setIsFullscreen(!!document.fullscreenElement);
+    };
+
+    document.addEventListener('fullscreenchange', handleFullscreenChange);
+    return () => document.removeEventListener('fullscreenchange', handleFullscreenChange);
+  }, []);
+
   /**
    * Toggle fullscreen mode
    */
@@ -157,6 +170,7 @@ export const EditorHeader: React.FC<EditorHeaderProps> = ({
                   markdown={markdown}
                   fileName={fileName}
                   onLoad={onLoad}
+                  currentTheme={currentTheme}
                 />
                 <Button
                   variant="ghost"
@@ -220,9 +234,13 @@ export const EditorHeader: React.FC<EditorHeaderProps> = ({
               size="sm"
               onClick={toggleFullscreen}
               className="h-6 w-6 sm:h-8 sm:w-8 p-0 sm:p-2 hidden lg:flex"
-              title="Fullscreen"
+              title={isFullscreen ? "Exit Fullscreen" : "Enter Fullscreen"}
             >
-              <Maximize2 className="h-3 w-3 sm:h-4 sm:w-4" />
+              {isFullscreen ? (
+                <Minimize2 className="h-3 w-3 sm:h-4 sm:w-4" />
+              ) : (
+                <Maximize2 className="h-3 w-3 sm:h-4 sm:w-4" />
+              )}
             </Button>
             <Button
               variant="ghost"

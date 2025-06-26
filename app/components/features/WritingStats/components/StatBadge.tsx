@@ -22,7 +22,7 @@ export const StatBadge: React.FC<StatBadgeProps> = memo(({
 }) => {
   // CSS classes
   const badgeClasses = `
-    h-5 text-xs flex items-center gap-1 whitespace-nowrap py-0 px-2
+    h-5 text-xs flex items-center justify-center gap-1 whitespace-nowrap py-0 px-2
     ${clickable ? 'cursor-pointer hover:opacity-80 transition-opacity' : ''}
     ${className}
   `.trim();
@@ -49,13 +49,13 @@ export const StatBadge: React.FC<StatBadgeProps> = memo(({
     >
       {/* Icon */}
       {icon && (
-        <span className="flex-shrink-0" aria-hidden="true">
+        <span className="flex-shrink-0 inline-flex items-center" aria-hidden="true">
           {icon}
         </span>
       )}
-      
+
       {/* Content */}
-      <span className="whitespace-nowrap">
+      <span className="whitespace-nowrap inline-flex items-center">
         {children}
       </span>
     </Badge>

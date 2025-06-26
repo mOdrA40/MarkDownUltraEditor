@@ -77,8 +77,9 @@ export const DialogContainer: React.FC<DialogContainerProps> = ({
 
       {/* Keyboard Shortcuts Dialog */}
       {dialogState.showShortcuts && (
-        <KeyboardShortcuts 
-          onClose={() => onCloseDialog('showShortcuts')} 
+        <KeyboardShortcuts
+          onClose={() => onCloseDialog('showShortcuts')}
+          currentTheme={currentTheme}
         />
       )}
 

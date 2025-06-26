@@ -13,6 +13,8 @@ import {
   DropdownMenuSeparator 
 } from "@/components/ui/dropdown-menu";
 import { FileText, Download, Upload, Save, FileUp } from "lucide-react";
+import type { Theme } from '@/components/features/ThemeSelector';
+import { getThemeTextColor } from '@/utils/themeUtils';
 
 interface FileDropdownMenuProps {
   /** Mobile navigation styling flag */
@@ -22,6 +24,8 @@ interface FileDropdownMenuProps {
   onSaveMarkdown: () => void;
   onExportHtml: () => void;
   onExportJson: () => void;
+  /** Current theme for styling */
+  currentTheme?: Theme;
 }
 
 /**
@@ -32,8 +36,11 @@ export const FileDropdownMenu: React.FC<FileDropdownMenuProps> = ({
   onLoadFile,
   onSaveMarkdown,
   onExportHtml,
-  onExportJson
+  onExportJson,
+  currentTheme
 }) => {
+  // Get theme-based styling
+  const textColor = getThemeTextColor(currentTheme);
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -51,7 +58,15 @@ export const FileDropdownMenu: React.FC<FileDropdownMenuProps> = ({
         </Button>
       </DropdownMenuTrigger>
       
-      <DropdownMenuContent align="start" className="w-48">
+      <DropdownMenuContent
+        align="start"
+        className="w-48"
+        style={{
+          backgroundColor: currentTheme?.surface || undefined,
+          borderColor: currentTheme?.accent || undefined,
+          color: textColor
+        }}
+      >
         <DropdownMenuItem onClick={onLoadFile}>
           <Upload className="h-4 w-4 mr-2" />
           Open File

@@ -3,6 +3,8 @@
  * Mendefinisikan struktur data untuk shortcuts dan kategori
  */
 
+import type { Theme } from '@/components/features/ThemeSelector';
+
 export interface ShortcutItem {
   /** Array key combinations (e.g., ["Ctrl", "B"]) */
   keys: string[];
@@ -34,6 +36,8 @@ export interface KeyboardShortcutsProps {
   showMacKeys?: boolean;
   /** Filter kategori yang ditampilkan */
   visibleCategories?: string[];
+  /** Current theme for styling */
+  currentTheme?: Theme;
 }
 
 export interface ShortcutCategoryProps {

@@ -45,8 +45,8 @@ export const ResponsiveStatsLayout: React.FC<ResponsiveStatsLayoutProps> = memo(
             {/* Reading time and status - always visible */}
             <div className={breakpointConfig.classes.statsRight}>
               <StatBadge variant="secondary">
-                <Clock className="h-3 w-3 mr-1" />
-                {stats.readingTime} min
+                <Clock className="h-3 w-3 flex-shrink-0" />
+                <span className="ml-1">{stats.readingTime} min</span>
               </StatBadge>
               <StatBadge variant="outline">
                 {documentStatus}
@@ -73,32 +73,33 @@ export const ResponsiveStatsLayout: React.FC<ResponsiveStatsLayoutProps> = memo(
     );
   }
 
-  // Small Tablet & Tablet Layout - Horizontal dengan semua stats
+  // Small Tablet & Tablet Layout - Horizontal dengan semua stats dalam satu baris
   if (screenSize === 'small-tablet' || screenSize === 'tablet') {
     return (
       <div className={`${breakpointConfig.classes.container} ${customStyles} ${className}`}>
         <div className={breakpointConfig.classes.statsLeft}>
-          <StatItem type="words" value={stats.words} />
+          <StatItem type="words" value={stats.words} iconSize="sm" />
           <div className={breakpointConfig.classes.separator}></div>
-          <StatItem type="characters" value={stats.characters} />
+          <StatItem type="characters" value={stats.characters} iconSize="sm" />
           <div className={breakpointConfig.classes.separator}></div>
-          <StatItem type="paragraphs" value={stats.paragraphs} />
+          <StatItem type="paragraphs" value={stats.paragraphs} iconSize="sm" />
           <div className={breakpointConfig.classes.separator}></div>
-          <StatItem type="sentences" value={stats.sentences} />
+          <StatItem type="sentences" value={stats.sentences} iconSize="sm" />
           <div className={breakpointConfig.classes.separator}></div>
-          <StatItem type="lines" value={stats.lines} />
+          <StatItem type="lines" value={stats.lines} iconSize="sm" />
           <div className={breakpointConfig.classes.separator}></div>
-          <StatItem 
-            type="charactersNoSpaces" 
-            value={stats.charactersNoSpaces} 
+          <StatItem
+            type="charactersNoSpaces"
+            value={stats.charactersNoSpaces}
+            iconSize="sm"
             className="text-muted-foreground"
           />
         </div>
 
         <div className={breakpointConfig.classes.statsRight}>
           <StatBadge variant="secondary">
-            <Clock className="h-3 w-3 mr-1" />
-            {stats.readingTime} min
+            <Clock className="h-3 w-3 flex-shrink-0" />
+            <span className="ml-1">{stats.readingTime} min</span>
           </StatBadge>
           <StatBadge variant="outline">
             {documentStatus}
@@ -176,8 +177,8 @@ export const ResponsiveStatsLayout: React.FC<ResponsiveStatsLayoutProps> = memo(
 
       <div style={statsRightStyle}>
         <StatBadge variant="secondary">
-          <Clock className="h-3 w-3 mr-1" />
-          {stats.readingTime} min
+          <Clock className="h-3 w-3 flex-shrink-0" />
+          <span className="ml-1">{stats.readingTime} min</span>
         </StatBadge>
         <StatBadge variant="outline">
           {documentStatus}

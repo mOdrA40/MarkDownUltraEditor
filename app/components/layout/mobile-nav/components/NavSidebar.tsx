@@ -102,6 +102,7 @@ export const NavSidebar: React.FC<NavSidebarProps> = ({
                 markdown={markdown}
                 fileName={fileName}
                 isMobileNav={true}
+                currentTheme={currentTheme}
                 onLoad={(content, name) => {
                   onLoad(content, name);
                   onClose();

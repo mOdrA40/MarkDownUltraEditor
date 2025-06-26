@@ -3,6 +3,8 @@
  * @author Axel Modra
  */
 
+import type { Theme } from '@/components/features/ThemeSelector';
+
 /**
  * Main props interface for FileOperations component
  */
@@ -15,6 +17,8 @@ export interface FileOperationsProps {
   onLoad: (content: string, fileName: string) => void;
   /** Mobile navigation styling flag */
   isMobileNav?: boolean;
+  /** Current theme for styling */
+  currentTheme?: Theme;
 }
 
 /**

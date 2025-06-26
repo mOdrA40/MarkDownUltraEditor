@@ -17,7 +17,8 @@ export const FileOperations: React.FC<FileOperationsProps> = ({
   markdown,
   fileName,
   onLoad,
-  isMobileNav = false
+  isMobileNav = false,
+  currentTheme
 }) => {
   // Use custom hook for file operations
   const {
@@ -42,6 +43,7 @@ export const FileOperations: React.FC<FileOperationsProps> = ({
         onSaveMarkdown={handleSaveMarkdown}
         onExportHtml={handleExportHtml}
         onExportJson={handleExportJson}
+        currentTheme={currentTheme}
       />
 
       {/* Hidden File Input */}

@@ -74,10 +74,10 @@ export const BREAKPOINTS_STATS: Record<string, BreakpointConfig> = {
     type: 'small-tablet',
     classes: {
       container: 'writing-stats-container writing-stats-tablet bg-muted/20 border-t text-xs',
-      statsLeft: 'stats-left',
-      statsRight: 'stats-right',
-      statItem: 'stat-item',
-      separator: 'separator-vertical'
+      statsLeft: 'stats-left flex items-center gap-3 flex-nowrap overflow-x-auto',
+      statsRight: 'stats-right flex items-center gap-2 flex-shrink-0 ml-3',
+      statItem: 'stat-item flex items-center gap-1 whitespace-nowrap',
+      separator: 'separator-vertical w-px h-3 bg-current opacity-30 flex-shrink-0'
     }
   },
   tablet: {
@@ -86,10 +86,10 @@ export const BREAKPOINTS_STATS: Record<string, BreakpointConfig> = {
     type: 'tablet',
     classes: {
       container: 'writing-stats-container writing-stats-tablet bg-muted/20 border-t text-xs',
-      statsLeft: 'stats-left',
-      statsRight: 'stats-right',
-      statItem: 'stat-item',
-      separator: 'separator-vertical'
+      statsLeft: 'stats-left flex items-center gap-4 flex-nowrap',
+      statsRight: 'stats-right flex items-center gap-3 flex-shrink-0 ml-4',
+      statItem: 'stat-item flex items-center gap-1 whitespace-nowrap',
+      separator: 'separator-vertical w-px h-3 bg-current opacity-30 flex-shrink-0'
     }
   },
   desktop: {
