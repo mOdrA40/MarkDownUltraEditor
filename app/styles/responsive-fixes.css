@@ -585,8 +585,7 @@ body:has([data-radix-dialog-content]) {
 
 /* Mobile (320px - 499px) */
 @media (max-width: 499px) {
-  /* Image Manager & Document Templates Dialog */
-  [data-radix-dialog-content]:has([data-image-manager]),
+  /* Document Templates Dialog */
   [data-radix-dialog-content]:has([data-document-templates]) {
     width: 95vw !important;
     max-width: 95vw !important;
@@ -596,17 +595,10 @@ body:has([data-radix-dialog-content]) {
   }
 
   /* Toolbar responsive */
-  .image-manager-toolbar,
   .templates-toolbar {
     flex-direction: column !important;
     gap: 0.5rem !important;
     padding: 0.5rem !important;
-  }
-
-  /* Grid responsive */
-  .image-grid-mobile {
-    grid-template-columns: repeat(2, 1fr) !important;
-    gap: 0.5rem !important;
   }
 
   .templates-grid-mobile {
@@ -614,55 +606,7 @@ body:has([data-radix-dialog-content]) {
     gap: 0.5rem !important;
   }
 
-  /* Image Manager mobile layout fixes */
-  [data-image-manager] .flex-col.sm\\:flex-row {
-    flex-direction: column !important;
-  }
 
-  /* Tab styling fixes */
-  [data-image-manager] [data-radix-tabs-list] {
-    margin: 0 !important;
-    padding: 0.25rem !important;
-    background: hsl(var(--muted) / 0.3) !important;
-    border-radius: 0.375rem !important;
-  }
-
-  [data-image-manager] [data-radix-tabs-trigger] {
-    padding: 0.375rem 0.75rem !important;
-    font-size: 0.75rem !important;
-    height: 2.25rem !important;
-    border-radius: 0.25rem !important;
-    transition: all 0.2s ease !important;
-    position: relative !important;
-    z-index: 1 !important;
-  }
-
-  [data-image-manager] [data-radix-tabs-trigger][data-state="active"] {
-    background: hsl(var(--background)) !important;
-    box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1) !important;
-    border: 1px solid hsl(var(--border)) !important;
-  }
-
-  /* Full height content */
-  [data-image-manager] [data-radix-tabs-content] {
-    height: 100% !important;
-    display: flex !important;
-    flex-direction: column !important;
-    margin-top: 0 !important;
-  }
-
-  /* Upload area full height */
-  [data-image-manager] [data-radix-tabs-content][data-state="active"] {
-    flex: 1 !important;
-    min-height: 0 !important;
-  }
-
-  /* Ensure upload container uses full height */
-  [data-image-manager] [data-radix-tabs-content] > div {
-    height: 100% !important;
-    display: flex !important;
-    flex-direction: column !important;
-  }
 
   /* WritingStats badge alignment fix */
   .writing-stats [data-badge] {
@@ -683,8 +627,7 @@ body:has([data-radix-dialog-content]) {
 
 /* Small Tablet (500px - 767px) */
 @media (min-width: 500px) and (max-width: 767px) {
-  /* Image Manager & Document Templates Dialog */
-  [data-radix-dialog-content]:has([data-image-manager]),
+  /* Document Templates Dialog */
   [data-radix-dialog-content]:has([data-document-templates]) {
     width: 92vw !important;
     max-width: 92vw !important;
@@ -694,17 +637,10 @@ body:has([data-radix-dialog-content]) {
   }
 
   /* Toolbar responsive */
-  .image-manager-toolbar,
   .templates-toolbar {
     flex-direction: column !important;
     gap: 0.75rem !important;
     padding: 0.75rem !important;
-  }
-
-  /* Grid responsive */
-  .image-grid-small-tablet {
-    grid-template-columns: repeat(3, 1fr) !important;
-    gap: 0.75rem !important;
   }
 
   .templates-grid-small-tablet {
@@ -715,20 +651,13 @@ body:has([data-radix-dialog-content]) {
 
 /* Medium Tablet (768px - 1023px) */
 @media (min-width: 768px) and (max-width: 1023px) {
-  /* Image Manager & Document Templates Dialog */
-  [data-radix-dialog-content]:has([data-image-manager]),
+  /* Document Templates Dialog */
   [data-radix-dialog-content]:has([data-document-templates]) {
     width: 90vw !important;
     max-width: 90vw !important;
     height: 85vh !important;
     max-height: 85vh !important;
     margin: 5vw auto !important;
-  }
-
-  /* Grid responsive */
-  .image-grid-medium-tablet {
-    grid-template-columns: repeat(4, 1fr) !important;
-    gap: 1rem !important;
   }
 
   .templates-grid-medium-tablet {
@@ -739,20 +668,13 @@ body:has([data-radix-dialog-content]) {
 
 /* Desktop (1024px+) */
 @media (min-width: 1024px) {
-  /* Image Manager & Document Templates Dialog */
-  [data-radix-dialog-content]:has([data-image-manager]),
+  /* Document Templates Dialog */
   [data-radix-dialog-content]:has([data-document-templates]) {
     width: 85vw !important;
     max-width: 1400px !important;
     height: 80vh !important;
     max-height: 80vh !important;
     margin: 10vh auto !important;
-  }
-
-  /* Grid responsive */
-  .image-grid-desktop {
-    grid-template-columns: repeat(5, 1fr) !important;
-    gap: 1rem !important;
   }
 
   .templates-grid-desktop {

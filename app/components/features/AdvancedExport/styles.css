@@ -1,0 +1,214 @@
+/* Desktop TabsList improvements */
+@media (min-width: 1024px) {
+  .advanced-export-tabs-list {
+    max-width: 280px;
+    margin: 12px 16px;
+    border: 1px solid hsl(var(--border));
+    border-radius: 6px;
+    background: hsl(var(--background));
+    box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1);
+  }
+  
+  .advanced-export-tabs-trigger {
+    flex: 1;
+    padding: 8px 12px;
+    font-size: 0.875rem;
+    font-weight: 500;
+    transition: all 0.2s ease;
+  }
+  
+  .advanced-export-tabs-trigger[data-state="active"] {
+    background: hsl(var(--primary));
+    color: hsl(var(--primary-foreground));
+    box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+  }
+  
+  .advanced-export-options-panel {
+    width: 320px;
+    min-width: 320px;
+    max-width: 380px;
+  }
+  
+  .advanced-export-tabs-content {
+    padding: 16px 20px;
+    max-height: calc(90vh - 120px);
+    overflow-y: auto;
+  }
+}
+
+/* Tablet specific adjustments */
+@media (min-width: 768px) and (max-width: 1023px) {
+  .advanced-export-options-panel {
+    max-height: 50vh;
+  }
+  
+  .advanced-export-tabs-content {
+    padding: 12px 16px;
+  }
+}
+
+/* Mobile specific adjustments */
+@media (max-width: 767px) {
+  .advanced-export-tabs-container {
+    max-height: 45vh;
+  }
+  
+  .advanced-export-tabs-content {
+    padding: 12px 16px;
+    max-height: calc(45vh - 80px);
+    overflow-y: auto;
+  }
+  
+  .advanced-export-mobile-tabs {
+    margin: 12px 16px;
+    gap: 8px;
+    height: auto;
+    padding: 12px;
+    background: hsl(var(--muted) / 0.9);
+    backdrop-filter: blur(8px);
+    border-radius: 8px;
+    border: 1px solid hsl(var(--border));
+    box-shadow: 0 2px 4px 0 rgb(0 0 0 / 0.05);
+  }
+  
+  .advanced-export-mobile-tab-trigger {
+    height: auto;
+    background: hsl(var(--background));
+    border: 1px solid hsl(var(--border));
+    border-radius: 6px;
+    padding: 8px 12px;
+    font-size: 0.75rem;
+    transition: all 0.2s ease;
+  }
+  
+  .advanced-export-mobile-tab-trigger[data-state="active"] {
+    background: hsl(var(--primary));
+    color: hsl(var(--primary-foreground));
+    border-color: hsl(var(--primary));
+    box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.1);
+  }
+}
+
+/* Preview panel improvements */
+.advanced-export-preview-panel {
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.advanced-export-preview-header {
+  border-bottom: 1px solid hsl(var(--border));
+  background: hsl(var(--muted) / 0.2);
+  flex-shrink: 0;
+}
+
+.advanced-export-preview-content {
+  flex: 1;
+  overflow: auto;
+  background: hsl(var(--muted) / 0.1);
+}
+
+.advanced-export-preview-document {
+  margin: 0 auto;
+  background: hsl(var(--background));
+  box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+  border-radius: 8px;
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+/* Responsive preview modes */
+.advanced-export-preview-desktop {
+  max-width: 1024px;
+}
+
+.advanced-export-preview-tablet {
+  max-width: 768px;
+}
+
+.advanced-export-preview-mobile {
+  max-width: 375px;
+}
+
+/* Export button improvements */
+.advanced-export-button {
+  background: linear-gradient(135deg, #10b981 0%, #3b82f6 100%);
+  transition: all 0.2s ease;
+}
+
+.advanced-export-button:hover {
+  background: linear-gradient(135deg, #059669 0%, #2563eb 100%);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px 0 rgb(0 0 0 / 0.15);
+}
+
+.advanced-export-button:disabled {
+  background: hsl(var(--muted));
+  color: hsl(var(--muted-foreground));
+  transform: none;
+  box-shadow: none;
+}
+
+/* Progress bar */
+.advanced-export-progress {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: hsl(var(--muted));
+  overflow: hidden;
+}
+
+.advanced-export-progress-bar {
+  height: 100%;
+  background: linear-gradient(90deg, #10b981 0%, #3b82f6 100%);
+  transition: width 0.3s ease;
+  transform-origin: left;
+}
+
+/* Scrollbar styling */
+.advanced-export-tabs-content::-webkit-scrollbar {
+  width: 6px;
+}
+
+.advanced-export-tabs-content::-webkit-scrollbar-track {
+  background: hsl(var(--muted) / 0.3);
+  border-radius: 3px;
+}
+
+.advanced-export-tabs-content::-webkit-scrollbar-thumb {
+  background: hsl(var(--muted-foreground) / 0.3);
+  border-radius: 3px;
+}
+
+.advanced-export-tabs-content::-webkit-scrollbar-thumb:hover {
+  background: hsl(var(--muted-foreground) / 0.5);
+}
+
+/* Focus states for accessibility */
+.advanced-export-tabs-trigger:focus-visible {
+  outline: 2px solid hsl(var(--ring));
+  outline-offset: 2px;
+}
+
+.advanced-export-button:focus-visible {
+  outline: 2px solid hsl(var(--ring));
+  outline-offset: 2px;
+}
+
+/* Animation for smooth transitions */
+.advanced-export-fade-in {
+  animation: fadeIn 0.2s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

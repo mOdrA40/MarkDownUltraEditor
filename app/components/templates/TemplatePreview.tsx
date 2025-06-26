@@ -31,8 +31,9 @@ export const TemplatePreview: React.FC<TemplatePreviewProps> = ({
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="w-[95vw] max-w-4xl h-[85vh] flex flex-col p-0 mx-auto">
-        <DialogHeader className="p-3 sm:p-4 pb-2 flex-shrink-0">
-          <DialogTitle className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2">
+        <DialogHeader className="p-3 sm:p-4 pb-2 flex-shrink-0 pr-12">
+          <DialogTitle className="flex flex-col gap-3">
+            {/* Template Info Row */}
             <div className="flex items-center">
               <span className="text-lg sm:text-2xl mr-2">{template.icon}</span>
               <span className="text-sm sm:text-base">{template.name}</span>
@@ -40,10 +41,12 @@ export const TemplatePreview: React.FC<TemplatePreviewProps> = ({
                 {formatDifficultyName(template.difficulty)}
               </Badge>
             </div>
-            <div className="flex space-x-2 w-full sm:w-auto">
+
+            {/* Action Button Row */}
+            <div className="flex justify-start">
               <Button
                 onClick={handleSelect}
-                className="bg-gradient-to-r from-green-500 to-blue-500 hover:from-green-600 hover:to-blue-600 text-xs sm:text-sm w-full sm:w-auto"
+                className="bg-gradient-to-r from-green-500 to-blue-500 hover:from-green-600 hover:to-blue-600 text-xs sm:text-sm"
                 size="sm"
               >
                 <Download className="h-3 w-3 sm:h-4 sm:w-4 mr-1 sm:mr-2" />
@@ -94,11 +97,13 @@ export const TemplatePreview: React.FC<TemplatePreviewProps> = ({
           </div>
 
           {/* Template Content Preview */}
-          <div className="flex-1 overflow-auto p-2 sm:p-3 md:p-4">
-            <div className="prose prose-sm max-w-none dark:prose-invert">
-              <pre className="whitespace-pre-wrap text-xs sm:text-sm bg-muted/50 p-2 sm:p-3 md:p-4 rounded-lg border">
-                {template.content}
-              </pre>
+          <div className="flex-1 overflow-auto p-2 sm:p-3 md:p-4 min-h-0">
+            <div className="prose prose-sm max-w-none dark:prose-invert h-full">
+              <div className="h-full overflow-y-auto">
+                <pre className="whitespace-pre-wrap text-xs sm:text-sm bg-muted/50 p-2 sm:p-3 md:p-4 rounded-lg border min-h-full">
+                  {template.content}
+                </pre>
+              </div>
             </div>
           </div>
         </div>
