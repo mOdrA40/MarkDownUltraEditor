@@ -1,6 +1,5 @@
-/* Import responsive fixes */
-@import './styles/responsive-fixes.css';
-@import './styles/scroll-fixes.css';
+/* Import organized styles */
+@import './styles/index.css';
 
 @tailwind base;
 @tailwind components;

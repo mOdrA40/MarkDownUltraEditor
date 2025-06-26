@@ -1,7 +1,12 @@
 /**
- * Navigation styles untuk TOC dan Outline
- * Mendukung smooth scrolling, responsive design, dan accessibility
+ * Navigation Base Styles
+ * Base styles untuk semua komponen navigasi (TOC, Outline, dll)
+ * 
+ * @author Senior Developer
+ * @version 1.0.0
  */
+
+/* ===== SMOOTH SCROLLING ===== */
 
 /* Smooth scrolling untuk seluruh dokumen */
 html {
@@ -13,6 +18,8 @@ h1, h2, h3, h4, h5, h6 {
   scroll-margin-top: 5rem;
 }
 
+/* ===== BASE CONTAINER STYLES ===== */
+
 /* TOC dan Outline container styles */
 [data-toc-container],
 [data-outline-container] {
@@ -21,6 +28,8 @@ h1, h2, h3, h4, h5, h6 {
   display: flex;
   flex-direction: column;
 }
+
+/* ===== BASE NAVIGATION ITEM STYLES ===== */
 
 /* Navigation item styles */
 [data-toc-container] [data-heading-id],
@@ -31,12 +40,16 @@ h1, h2, h3, h4, h5, h6 {
   cursor: pointer;
 }
 
+/* ===== HOVER EFFECTS ===== */
+
 /* Hover effects */
 [data-toc-container] [data-heading-id]:hover,
 [data-outline-container] [data-heading-id]:hover {
   transform: translateX(2px);
   background-color: rgba(59, 130, 246, 0.05);
 }
+
+/* ===== FOCUS STYLES ===== */
 
 /* Focus styles untuk accessibility */
 [data-toc-container] [data-heading-id]:focus,
@@ -45,6 +58,8 @@ h1, h2, h3, h4, h5, h6 {
   outline-offset: 2px;
   background-color: rgba(59, 130, 246, 0.1);
 }
+
+/* ===== ACTIVE STATE STYLES ===== */
 
 /* Active state styles */
 [data-toc-container] [data-heading-id][aria-current="location"],
@@ -69,6 +84,8 @@ h1, h2, h3, h4, h5, h6 {
   animation: slideIn 0.3s ease-out;
 }
 
+/* ===== ANIMATIONS ===== */
+
 @keyframes slideIn {
   from {
     transform: scaleY(0);
@@ -80,116 +97,8 @@ h1, h2, h3, h4, h5, h6 {
   }
 }
 
-/* Responsive design */
-@media (max-width: 768px) {
-  /* Mobile optimizations */
-  [data-toc-container],
-  [data-outline-container] {
-    font-size: 0.875rem;
-  }
-  
-  [data-toc-container] [data-heading-id],
-  [data-outline-container] [data-heading-id] {
-    padding: 0.5rem;
-    margin-bottom: 0.25rem;
-  }
-  
-  /* Larger touch targets untuk mobile */
-  [data-toc-container] [data-heading-id],
-  [data-outline-container] [data-heading-id] {
-    min-height: 44px;
-    display: flex;
-    align-items: center;
-  }
-}
+/* ===== LOADING STATES ===== */
 
-@media (min-width: 769px) and (max-width: 1024px) {
-  /* Tablet optimizations */
-  [data-toc-container],
-  [data-outline-container] {
-    font-size: 0.9rem;
-  }
-}
-
-@media (min-width: 1025px) {
-  /* Desktop optimizations */
-  [data-toc-container] [data-heading-id]:hover,
-  [data-outline-container] [data-heading-id]:hover {
-    transform: translateX(4px);
-  }
-}
-
-/* Dark mode support */
-@media (prefers-color-scheme: dark) {
-  [data-toc-container] [data-heading-id]:hover,
-  [data-outline-container] [data-heading-id]:hover {
-    background-color: rgba(59, 130, 246, 0.15);
-  }
-  
-  [data-toc-container] [data-heading-id]:focus,
-  [data-outline-container] [data-heading-id]:focus {
-    background-color: rgba(59, 130, 246, 0.2);
-  }
-  
-  [data-toc-container] [data-heading-id][aria-current="location"],
-  [data-outline-container] [data-heading-id][aria-current="location"] {
-    background-color: rgba(59, 130, 246, 0.2);
-  }
-}
-
-/* High contrast mode support */
-@media (prefers-contrast: high) {
-  [data-toc-container] [data-heading-id],
-  [data-outline-container] [data-heading-id] {
-    border: 1px solid transparent;
-  }
-  
-  [data-toc-container] [data-heading-id]:focus,
-  [data-outline-container] [data-heading-id]:focus {
-    border-color: currentColor;
-    outline: 3px solid currentColor;
-  }
-  
-  [data-toc-container] [data-heading-id][aria-current="location"],
-  [data-outline-container] [data-heading-id][aria-current="location"] {
-    border-left: 4px solid currentColor;
-    background-color: rgba(0, 0, 0, 0.1);
-  }
-}
-
-/* Reduced motion support */
-@media (prefers-reduced-motion: reduce) {
-  html {
-    scroll-behavior: auto;
-  }
-  
-  [data-toc-container] [data-heading-id],
-  [data-outline-container] [data-heading-id] {
-    transition: none;
-  }
-  
-  [data-toc-container] [data-heading-id]:hover,
-  [data-outline-container] [data-heading-id]:hover {
-    transform: none;
-  }
-  
-  @keyframes slideIn {
-    from, to {
-      transform: scaleY(1);
-      opacity: 1;
-    }
-  }
-}
-
-/* Print styles */
-@media print {
-  [data-toc-container],
-  [data-outline-container] {
-    display: none;
-  }
-}
-
-/* Loading states */
 .navigation-loading {
   opacity: 0.6;
   pointer-events: none;
@@ -208,7 +117,8 @@ h1, h2, h3, h4, h5, h6 {
   }
 }
 
-/* Error states */
+/* ===== ERROR STATES ===== */
+
 .navigation-error {
   color: rgb(239, 68, 68);
   background-color: rgba(239, 68, 68, 0.1);
@@ -219,6 +129,8 @@ h1, h2, h3, h4, h5, h6 {
   text-align: center;
   font-size: 0.875rem;
 }
+
+/* ===== CUSTOM SCROLLBAR ===== */
 
 /* Custom scrollbar untuk navigation areas */
 [data-toc-container] .scroll-area,

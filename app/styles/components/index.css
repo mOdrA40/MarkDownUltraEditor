@@ -1,0 +1,12 @@
+/**
+ * Components Index
+ * Import semua component styles
+ * 
+ * @author Senior Developer
+ * @version 1.0.0
+ */
+
+/* Import component styles */
+@import './navigation/index.css';
+@import './buttons/base.css';
+@import './dialogs/base.css';

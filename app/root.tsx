@@ -8,7 +8,6 @@ import {
 import type { LinksFunction } from "react-router";
 
 import "./tailwind.css";
-import "./styles/navigation.css";
 
 export const links: LinksFunction = () => [
   // 🎨 Custom favicon - dengan cache busting

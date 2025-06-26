@@ -10,6 +10,7 @@ import { KeyboardShortcuts } from "../../../../navigation/KeyboardShortcuts";
 import { DocumentTemplates } from "../../../../templates/DocumentTemplates";
 import { AdvancedExport } from "../../../../features/AdvancedExport";
 import { DialogState } from '../../types';
+import type { Theme } from '../../../../features/ThemeSelector';
 
 /**
  * Props for DialogContainer component
@@ -17,16 +18,19 @@ import { DialogState } from '../../types';
 export interface DialogContainerProps {
   // Dialog state
   dialogState: DialogState;
-  
+
   // Dialog actions
   onCloseDialog: (dialog: keyof DialogState) => void;
   onCloseAllDialogs: () => void;
-  
+
   // Content and operations
   markdown: string;
   fileName: string;
   onMarkdownChange: (markdown: string) => void;
   onLoadTemplate: (content: string, fileName: string) => void;
+
+  // Theme
+  currentTheme?: Theme;
 }
 
 /**
@@ -38,7 +42,8 @@ export const DialogContainer: React.FC<DialogContainerProps> = ({
   markdown,
   fileName,
   onMarkdownChange,
-  onLoadTemplate
+  onLoadTemplate,
+  currentTheme
 }) => {
   // Handle escape key to close dialogs
   React.useEffect(() => {
@@ -96,6 +101,7 @@ export const DialogContainer: React.FC<DialogContainerProps> = ({
           fileName={fileName}
           isOpen={dialogState.showAdvancedExport}
           onClose={() => onCloseDialog('showAdvancedExport')}
+          currentTheme={currentTheme}
         />
       )}
     </>

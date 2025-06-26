@@ -1,0 +1,47 @@
+/**
+ * Navigation Theme Styles
+ * Theme support untuk komponen navigasi
+ * 
+ * @author Senior Developer
+ * @version 1.0.0
+ */
+
+/* ===== DARK MODE SUPPORT ===== */
+
+@media (prefers-color-scheme: dark) {
+  [data-toc-container] [data-heading-id]:hover,
+  [data-outline-container] [data-heading-id]:hover {
+    background-color: rgba(59, 130, 246, 0.15);
+  }
+  
+  [data-toc-container] [data-heading-id]:focus,
+  [data-outline-container] [data-heading-id]:focus {
+    background-color: rgba(59, 130, 246, 0.2);
+  }
+  
+  [data-toc-container] [data-heading-id][aria-current="location"],
+  [data-outline-container] [data-heading-id][aria-current="location"] {
+    background-color: rgba(59, 130, 246, 0.2);
+  }
+}
+
+/* ===== HIGH CONTRAST MODE SUPPORT ===== */
+
+@media (prefers-contrast: high) {
+  [data-toc-container] [data-heading-id],
+  [data-outline-container] [data-heading-id] {
+    border: 1px solid transparent;
+  }
+  
+  [data-toc-container] [data-heading-id]:focus,
+  [data-outline-container] [data-heading-id]:focus {
+    border-color: currentColor;
+    outline: 3px solid currentColor;
+  }
+  
+  [data-toc-container] [data-heading-id][aria-current="location"],
+  [data-outline-container] [data-heading-id][aria-current="location"] {
+    border-left: 4px solid currentColor;
+    background-color: rgba(0, 0, 0, 0.1);
+  }
+}

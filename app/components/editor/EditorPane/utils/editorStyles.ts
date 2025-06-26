@@ -85,12 +85,32 @@ export const generateLineNumberStyles = (
 };
 
 /**
+ * Convert hex color to rgba with opacity
+ */
+const hexToRgba = (hex: string, opacity: number): string => {
+  // Remove # if present
+  const cleanHex = hex.replace('#', '');
+
+  // Parse hex to RGB
+  const r = parseInt(cleanHex.substring(0, 2), 16);
+  const g = parseInt(cleanHex.substring(2, 4), 16);
+  const b = parseInt(cleanHex.substring(4, 6), 16);
+
+  return `rgba(${r}, ${g}, ${b}, ${opacity})`;
+};
+
+/**
  * Generate header styles based on theme
  */
 export const generateHeaderStyles = (theme?: Theme) => {
+  // Use theme surface color with proper opacity, fallback to light gray
+  const backgroundColor = theme?.surface
+    ? hexToRgba(theme.surface, 0.8)
+    : 'rgba(248, 250, 252, 0.8)'; // bg-slate-50 with opacity
+
   return {
-    backgroundColor: theme?.surface ? `${theme.surface}80` : 'rgba(0,0,0,0.05)',
-    borderColor: theme?.accent,
+    backgroundColor,
+    borderColor: theme?.accent || 'rgba(226, 232, 240, 1)', // border-slate-200
     color: theme?.text || 'inherit'
   };
 };

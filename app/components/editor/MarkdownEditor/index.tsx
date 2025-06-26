@@ -262,6 +262,7 @@ export const MarkdownEditor: React.FC<MarkdownEditorProps> = ({
             fileName={editor.fileName}
             onMarkdownChange={handleMarkdownChange}
             onLoadTemplate={loadTemplate}
+            currentTheme={theme.currentTheme}
           />
         </EditorContainer>
       </PerformanceMonitor>

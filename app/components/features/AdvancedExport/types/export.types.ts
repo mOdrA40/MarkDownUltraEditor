@@ -1,4 +1,5 @@
 import { LucideIcon } from 'lucide-react';
+import type { Theme } from '@/components/features/ThemeSelector';
 
 /**
  * Props untuk komponen AdvancedExport utama
@@ -12,6 +13,8 @@ export interface AdvancedExportProps {
   isOpen: boolean;
   /** Callback ketika dialog ditutup */
   onClose: () => void;
+  /** Theme aplikasi saat ini */
+  currentTheme?: Theme;
 }
 
 /**
@@ -205,6 +208,8 @@ export interface PreviewPanelProps {
   isMobile?: boolean;
   /** Apakah dalam mode tablet */
   isTablet?: boolean;
+  /** Theme aplikasi saat ini */
+  currentTheme?: Theme;
 }
 
 /**

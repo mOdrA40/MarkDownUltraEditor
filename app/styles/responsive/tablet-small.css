@@ -1,0 +1,180 @@
+/**
+ * Small Tablet Responsive Styles (500px - 767px)
+ * Styles khusus untuk tablet kecil
+ * 
+ * @author Senior Developer
+ * @version 1.0.0
+ */
+
+/* ===== SMALL TABLET FIXES (500px - 767px) ===== */
+@media (min-width: 500px) and (max-width: 767px) {
+  /* ===== TOOLBAR STYLES ===== */
+  
+  /* Toolbar - compact layout dengan scroll horizontal */
+  .toolbar-small-tablet-row {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 0.25rem;
+    overflow-x: auto;
+    padding: 0.25rem 0.5rem;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(0, 0, 0, 0.1) transparent;
+  }
+
+  .toolbar-small-tablet-row::-webkit-scrollbar {
+    height: 3px;
+  }
+
+  .toolbar-small-tablet-row::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  .toolbar-small-tablet-row::-webkit-scrollbar-thumb {
+    background: rgba(0, 0, 0, 0.1);
+    border-radius: 2px;
+  }
+
+  .toolbar-small-tablet-button {
+    height: 1.5rem;
+    padding: 0 0.5rem;
+    font-size: 0.75rem;
+    flex-shrink: 0;
+    white-space: nowrap;
+  }
+
+  /* ===== WRITING SETTINGS ===== */
+  
+  /* Writing Settings - compact horizontal layout */
+  .writing-settings-small-tablet {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    padding: 0.5rem;
+    overflow-x: auto;
+    scrollbar-width: thin;
+  }
+
+  .writing-settings-small-tablet button {
+    height: 1.5rem;
+    padding: 0 0.5rem;
+    font-size: 0.75rem;
+    flex-shrink: 0;
+  }
+
+  /* ===== UNDO/REDO BUTTONS ===== */
+  
+  /* Undo/Redo - visible dan accessible */
+  .undo-redo-small-tablet {
+    gap: 0.25rem;
+  }
+
+  .undo-redo-small-tablet button {
+    min-width: 28px;
+    min-height: 28px;
+    padding: 0;
+    flex-shrink: 0;
+  }
+
+  /* ===== VIM & ZEN MODE BUTTONS ===== */
+  
+  /* Vim dan Zen mode buttons - pastikan terlihat */
+  .vim-zen-buttons-small-tablet {
+    display: flex;
+    gap: 0.25rem;
+    flex-shrink: 0;
+  }
+
+  .vim-zen-buttons-small-tablet button {
+    height: 1.5rem;
+    padding: 0 0.5rem;
+    font-size: 0.75rem;
+    min-width: auto;
+  }
+
+  /* ===== DIALOG STYLES ===== */
+  
+  /* Advanced Export Dialog - proper viewport sizing untuk small tablet */
+  [data-radix-dialog-content] {
+    width: 92vw !important;
+    max-width: 92vw !important;
+    height: 88vh !important;
+    max-height: 88vh !important;
+    margin: 4vw auto !important;
+    left: 50% !important;
+    top: 50% !important;
+    transform: translate(-50%, -50%) !important;
+    position: fixed !important;
+  }
+
+  /* ===== TABS STYLES ===== */
+  
+  /* Export tabs untuk small tablet */
+  [data-radix-tabs-list] {
+    padding: 0.5rem !important;
+    gap: 0.25rem !important;
+    margin: 0.5rem !important;
+  }
+
+  [data-radix-tabs-trigger] {
+    padding: 0.375rem 0.75rem !important;
+    font-size: 0.75rem !important;
+    flex: 1 !important;
+  }
+
+  /* Content padding untuk small tablet */
+  [data-radix-tabs-content] {
+    padding: 0.5rem !important;
+    margin: 0 0.5rem !important;
+  }
+
+  /* ===== GRID LAYOUTS ===== */
+  
+  /* Format grid untuk small tablet */
+  .export-grid-small-tablet {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 0.5rem !important;
+  }
+
+  /* Small tablet layout - vertical stacking */
+  .export-layout-small-tablet {
+    flex-direction: column !important;
+  }
+
+  /* ===== PANEL HEIGHTS ===== */
+  
+  /* Options panel height limit on small tablet */
+  .export-options-small-tablet {
+    max-height: 50vh !important;
+    overflow-y: auto !important;
+  }
+
+  /* Preview panel minimum height on small tablet */
+  .export-preview-small-tablet {
+    min-height: 400px !important;
+    flex: 1 !important;
+  }
+
+  /* ===== DOCUMENT TEMPLATES ===== */
+  
+  /* Document Templates Dialog */
+  [data-radix-dialog-content]:has([data-document-templates]) {
+    width: 92vw !important;
+    max-width: 92vw !important;
+    height: 88vh !important;
+    max-height: 88vh !important;
+    margin: 4vw auto !important;
+  }
+
+  /* Toolbar responsive */
+  .templates-toolbar {
+    flex-direction: column !important;
+    gap: 0.75rem !important;
+    padding: 0.75rem !important;
+  }
+
+  .templates-grid-small-tablet {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 0.75rem !important;
+  }
+}

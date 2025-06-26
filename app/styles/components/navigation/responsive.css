@@ -1,0 +1,51 @@
+/**
+ * Navigation Responsive Styles
+ * Responsive design untuk komponen navigasi
+ * 
+ * @author Senior Developer
+ * @version 1.0.0
+ */
+
+/* ===== MOBILE RESPONSIVE (max-width: 768px) ===== */
+
+@media (max-width: 768px) {
+  /* Mobile optimizations */
+  [data-toc-container],
+  [data-outline-container] {
+    font-size: 0.875rem;
+  }
+  
+  [data-toc-container] [data-heading-id],
+  [data-outline-container] [data-heading-id] {
+    padding: 0.5rem;
+    margin-bottom: 0.25rem;
+  }
+  
+  /* Larger touch targets untuk mobile */
+  [data-toc-container] [data-heading-id],
+  [data-outline-container] [data-heading-id] {
+    min-height: 44px;
+    display: flex;
+    align-items: center;
+  }
+}
+
+/* ===== TABLET RESPONSIVE (769px - 1024px) ===== */
+
+@media (min-width: 769px) and (max-width: 1024px) {
+  /* Tablet optimizations */
+  [data-toc-container],
+  [data-outline-container] {
+    font-size: 0.9rem;
+  }
+}
+
+/* ===== DESKTOP RESPONSIVE (1025px+) ===== */
+
+@media (min-width: 1025px) {
+  /* Desktop optimizations */
+  [data-toc-container] [data-heading-id]:hover,
+  [data-outline-container] [data-heading-id]:hover {
+    transform: translateX(4px);
+  }
+}

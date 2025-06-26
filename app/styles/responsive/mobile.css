@@ -1,0 +1,193 @@
+/**
+ * Mobile Responsive Styles (320px - 499px)
+ * Styles khusus untuk perangkat mobile
+ * 
+ * @author Senior Developer
+ * @version 1.0.0
+ */
+
+/* ===== MOBILE FIXES (320px - 499px) ===== */
+@media (max-width: 499px) {
+  /* ===== TOOLBAR MOBILE ===== */
+  
+  /* Toolbar mobile - pastikan semua button terlihat */
+  .toolbar-mobile-container {
+    overflow-x: auto;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(0, 0, 0, 0.2) transparent;
+  }
+
+  .toolbar-mobile-container::-webkit-scrollbar {
+    height: 4px;
+  }
+
+  .toolbar-mobile-container::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  .toolbar-mobile-container::-webkit-scrollbar-thumb {
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 2px;
+  }
+
+  /* ===== UNDO/REDO BUTTONS ===== */
+  
+  /* Undo/Redo buttons - compact tapi visible */
+  .undo-redo-mobile {
+    gap: 0.25rem;
+  }
+
+  .undo-redo-mobile button {
+    min-width: 32px;
+    min-height: 32px;
+    padding: 0;
+    flex-shrink: 0;
+  }
+
+  /* ===== FILE NAME INPUT ===== */
+  
+  /* File name input di mobile - pastikan touch-friendly */
+  .mobile-filename-input {
+    min-height: 32px;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .mobile-filename-input:focus {
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.5);
+    border-radius: 4px;
+  }
+
+  /* ===== DIALOG STYLES ===== */
+  
+  /* Advanced Export Dialog - proper viewport sizing */
+  [data-radix-dialog-content] {
+    width: 92vw !important;
+    max-width: 92vw !important;
+    height: 94vh !important;
+    max-height: 94vh !important;
+    margin: 3vh 4vw !important;
+    left: 50% !important;
+    top: 50% !important;
+    transform: translate(-50%, -50%) !important;
+    position: fixed !important;
+    border-radius: 0.75rem !important;
+  }
+
+  /* ===== TABS STYLES ===== */
+  
+  /* Export tabs compact */
+  [data-radix-tabs-list] {
+    padding: 0.5rem !important;
+    gap: 0.25rem !important;
+    margin: 0.75rem 1rem !important;
+  }
+
+  [data-radix-tabs-trigger] {
+    padding: 0.5rem 0.75rem !important;
+    font-size: 0.75rem !important;
+    flex: 1 !important;
+  }
+
+  /* Content padding untuk mobile */
+  [data-radix-tabs-content] {
+    padding: 1rem !important;
+    margin: 0 1rem !important;
+  }
+
+  /* ===== SELECT DROPDOWN ===== */
+  
+  /* Select dropdown positioning fix untuk mobile */
+  [data-radix-select-content] {
+    max-height: 200px !important;
+    z-index: 9999 !important;
+    position: fixed !important;
+    transform: none !important;
+    left: 4vw !important;
+    right: 4vw !important;
+    width: auto !important;
+    max-width: 92vw !important;
+  }
+
+  /* Document Templates dialog specific fixes */
+  .document-templates-dialog [data-radix-select-content] {
+    left: 1rem !important;
+    right: 1rem !important;
+    max-width: calc(100vw - 2rem) !important;
+  }
+
+  /* ===== ADVANCED EXPORT TABS ===== */
+
+  /* Advanced Export mobile/tablet tabs layout fixes */
+  [data-radix-tabs-list].grid-cols-1 {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 0.5rem !important;
+    height: auto !important;
+    padding: 0.75rem !important;
+    background: rgba(248, 250, 252, 0.95) !important;
+    backdrop-filter: blur(12px) !important;
+    border: 1px solid #e2e8f0 !important;
+    border-radius: 0.5rem !important;
+    margin: 0.75rem 1rem !important;
+    width: calc(100% - 2rem) !important;
+    max-width: calc(100vw - 2rem) !important;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
+    position: relative !important;
+    z-index: 20 !important;
+    flex-shrink: 0 !important;
+  }
+
+  /* Advanced Export tabs container - prevent scroll issues */
+  .advanced-export-tabs-container {
+    display: flex !important;
+    flex-direction: column !important;
+    height: 100% !important;
+  }
+
+  /* Advanced Export tabs content - scrollable area */
+  .advanced-export-tabs-content {
+    flex: 1 !important;
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+    min-height: 0 !important;
+    scroll-behavior: smooth !important;
+    -webkit-overflow-scrolling: touch !important;
+  }
+
+  /* Smooth scrolling untuk mobile */
+  .advanced-export-tabs-content::-webkit-scrollbar {
+    width: 4px !important;
+  }
+
+  .advanced-export-tabs-content::-webkit-scrollbar-track {
+    background: transparent !important;
+  }
+
+  .advanced-export-tabs-content::-webkit-scrollbar-thumb {
+    background: rgba(0, 0, 0, 0.2) !important;
+    border-radius: 2px !important;
+  }
+
+  .advanced-export-tabs-content::-webkit-scrollbar-thumb:hover {
+    background: rgba(0, 0, 0, 0.3) !important;
+  }
+
+  [data-radix-tabs-list].grid-cols-1 [data-radix-tabs-trigger] {
+    width: 100% !important;
+    justify-content: center !important;
+    padding: 0.5rem 1rem !important;
+    font-size: 0.75rem !important;
+    height: auto !important;
+    border-radius: 0.375rem !important;
+    transition: all 0.2s ease !important;
+  }
+
+  [data-radix-tabs-list].grid-cols-1 [data-radix-tabs-trigger][data-state="active"] {
+    background: white !important;
+    border: 1px solid #3b82f6 !important;
+    color: #1e40af !important;
+    box-shadow: 0 1px 3px rgba(59, 130, 246, 0.2) !important;
+  }
+}

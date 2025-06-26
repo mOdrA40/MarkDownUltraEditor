@@ -1,0 +1,94 @@
+/**
+ * Responsive Utilities
+ * Utility classes untuk responsive design
+ * 
+ * @author Senior Developer
+ * @version 1.0.0
+ */
+
+/* ===== UTILITY CLASSES ===== */
+
+/* Prevent text overflow in small spaces */
+.text-truncate-responsive {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Ensure minimum touch targets */
+.touch-target-minimum {
+  min-height: 44px;
+  min-width: 44px;
+}
+
+/* Flexible button sizing */
+.button-responsive {
+  padding: 0.25rem 0.5rem;
+  font-size: 0.75rem;
+  line-height: 1;
+  flex-shrink: 0;
+}
+
+@media (min-width: 768px) {
+  .button-responsive {
+    padding: 0.5rem 0.75rem;
+    font-size: 0.875rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .button-responsive {
+    padding: 0.5rem 1rem;
+    font-size: 0.875rem;
+  }
+}
+
+/* ===== MARGIN UTILITIES ===== */
+
+/* Margin utilities for different screen sizes */
+.margin-responsive {
+  margin: 0.5rem;
+}
+
+@media (min-width: 500px) {
+  .margin-responsive {
+    margin: 0.75rem;
+  }
+}
+
+@media (min-width: 768px) {
+  .margin-responsive {
+    margin: 1rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .margin-responsive {
+    margin: 1.5rem;
+  }
+}
+
+/* ===== GAP UTILITIES ===== */
+
+/* Gap utilities for different screen sizes */
+.gap-responsive {
+  gap: 0.25rem;
+}
+
+@media (min-width: 500px) {
+  .gap-responsive {
+    gap: 0.5rem;
+  }
+}
+
+@media (min-width: 768px) {
+  .gap-responsive {
+    gap: 0.75rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .gap-responsive {
+    gap: 1rem;
+  }
+}

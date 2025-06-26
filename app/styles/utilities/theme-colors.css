@@ -1,0 +1,140 @@
+/**
+ * Theme Color Utilities
+ * Utility classes untuk theme color management
+ * 
+ * @author Senior Developer
+ * @version 1.0.0
+ */
+
+/* ===== THEME COLOR UTILITIES ===== */
+
+/* Header background utilities untuk setiap theme dengan specificity tinggi */
+div.header-ocean,
+.header-ocean {
+  background-color: rgba(224, 242, 254, 0.8) !important; /* ocean surface with opacity */
+  border-color: rgba(2, 132, 199, 1) !important; /* ocean accent */
+  color: rgba(12, 74, 110, 1) !important; /* ocean text */
+}
+
+div.header-forest,
+.header-forest {
+  background-color: rgba(220, 252, 231, 0.8) !important; /* forest surface with opacity */
+  border-color: rgba(16, 185, 129, 1) !important; /* forest accent */
+  color: rgba(20, 83, 45, 1) !important; /* forest text */
+}
+
+div.header-sunset,
+.header-sunset {
+  background-color: rgba(254, 215, 170, 0.8) !important; /* sunset surface with opacity */
+  border-color: rgba(249, 115, 22, 1) !important; /* sunset accent */
+  color: rgba(154, 52, 18, 1) !important; /* sunset text */
+}
+
+div.header-purple,
+.header-purple {
+  background-color: rgba(233, 213, 255, 0.8) !important; /* purple surface with opacity */
+  border-color: rgba(168, 85, 247, 1) !important; /* purple accent */
+  color: rgba(88, 28, 135, 1) !important; /* purple text */
+}
+
+div.header-rose,
+.header-rose {
+  background-color: rgba(254, 205, 211, 0.8) !important; /* rose surface with opacity */
+  border-color: rgba(244, 63, 94, 1) !important; /* rose accent */
+  color: rgba(136, 19, 55, 1) !important; /* rose text */
+}
+
+div.header-dark,
+.header-dark {
+  background-color: rgba(30, 41, 59, 0.8) !important; /* dark surface with opacity */
+  border-color: rgba(139, 92, 246, 1) !important; /* dark accent */
+  color: rgba(241, 245, 249, 1) !important; /* dark text */
+}
+
+/* ===== FALLBACK HEADER STYLES ===== */
+
+div.header-default,
+.header-default {
+  background-color: rgba(248, 250, 252, 0.8) !important; /* bg-slate-50 with opacity */
+  border-color: rgba(226, 232, 240, 1) !important; /* border-slate-200 */
+  color: inherit !important;
+}
+
+/* ===== ADVANCED EXPORT HEADER STYLES ===== */
+
+/* Advanced Export Preview Header - Ocean Theme */
+.advanced-export-preview-header.header-ocean {
+  background-color: rgba(224, 242, 254, 0.9) !important;
+  border-bottom: 1px solid rgba(2, 132, 199, 0.3) !important;
+  color: rgba(12, 74, 110, 1) !important;
+}
+
+/* Advanced Export Preview Header - Forest Theme */
+.advanced-export-preview-header.header-forest {
+  background-color: rgba(220, 252, 231, 0.9) !important;
+  border-bottom: 1px solid rgba(16, 185, 129, 0.3) !important;
+  color: rgba(20, 83, 45, 1) !important;
+}
+
+/* Advanced Export Preview Header - Sunset Theme */
+.advanced-export-preview-header.header-sunset {
+  background-color: rgba(254, 215, 170, 0.9) !important;
+  border-bottom: 1px solid rgba(249, 115, 22, 0.3) !important;
+  color: rgba(154, 52, 18, 1) !important;
+}
+
+/* Advanced Export Preview Header - Purple Theme */
+.advanced-export-preview-header.header-purple {
+  background-color: rgba(233, 213, 255, 0.9) !important;
+  border-bottom: 1px solid rgba(168, 85, 247, 0.3) !important;
+  color: rgba(88, 28, 135, 1) !important;
+}
+
+/* Advanced Export Preview Header - Rose Theme */
+.advanced-export-preview-header.header-rose {
+  background-color: rgba(254, 205, 211, 0.9) !important;
+  border-bottom: 1px solid rgba(244, 63, 94, 0.3) !important;
+  color: rgba(136, 19, 55, 1) !important;
+}
+
+/* Advanced Export Preview Header - Dark Theme */
+.advanced-export-preview-header.header-dark {
+  background-color: rgba(30, 41, 59, 0.9) !important;
+  border-bottom: 1px solid rgba(139, 92, 246, 0.3) !important;
+  color: rgba(241, 245, 249, 1) !important;
+}
+
+/* Advanced Export Preview Header - Default */
+.advanced-export-preview-header.header-default {
+  background-color: rgba(248, 250, 252, 0.9) !important;
+  border-bottom: 1px solid rgba(226, 232, 240, 0.3) !important;
+  color: inherit !important;
+}
+
+/* ===== RESPONSIVE HEADER STYLES ===== */
+
+@media (max-width: 768px) {
+  div.header-ocean, .header-ocean,
+  div.header-forest, .header-forest,
+  div.header-sunset, .header-sunset,
+  div.header-purple, .header-purple,
+  div.header-rose, .header-rose,
+  div.header-dark, .header-dark,
+  div.header-default, .header-default {
+    backdrop-filter: blur(8px) !important;
+    -webkit-backdrop-filter: blur(8px) !important;
+  }
+}
+
+@media (min-width: 769px) {
+  div.header-ocean, .header-ocean,
+  div.header-forest, .header-forest,
+  div.header-sunset, .header-sunset,
+  div.header-purple, .header-purple,
+  div.header-rose, .header-rose,
+  div.header-dark, .header-dark,
+  div.header-default, .header-default {
+    backdrop-filter: blur(12px) !important;
+    -webkit-backdrop-filter: blur(12px) !important;
+  }
+}

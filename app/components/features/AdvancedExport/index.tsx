@@ -39,7 +39,8 @@ export const AdvancedExport: React.FC<AdvancedExportProps> = ({
   markdown,
   fileName,
   isOpen,
-  onClose
+  onClose,
+  currentTheme
 }) => {
   // Responsive breakpoints
   const { isMobile, isTablet } = useResponsiveBreakpoint();
@@ -262,6 +263,7 @@ export const AdvancedExport: React.FC<AdvancedExportProps> = ({
               exportState={currentExportState}
               isMobile={isMobile}
               isTablet={isTablet}
+              currentTheme={currentTheme}
             />
           </div>
         </div>

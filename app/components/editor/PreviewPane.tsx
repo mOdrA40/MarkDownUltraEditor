@@ -15,6 +15,7 @@ import { useHighlightJs } from './PreviewPane/hooks/useHighlightJs';
 import { useHeadingCache } from './PreviewPane/hooks/useHeadingCache';
 import { createMarkdownComponents } from './PreviewPane/components/MarkdownComponents';
 import { getResponsiveOptions } from './PreviewPane/utils/languageUtils';
+import { generateHeaderStyles } from '@/utils/themeUtils';
 
 // Types
 import { PreviewPaneProps } from './PreviewPane/types/preview.types';
@@ -47,6 +48,9 @@ export const PreviewPane: React.FC<PreviewPaneProps> = ({
   // Get responsive options
   const responsiveOptions = getResponsiveOptions(isMobile, isTablet);
 
+  // Get header styles for consistent theming
+  const headerStyles = generateHeaderStyles(theme);
+
   const previewStyles = {
     backgroundColor: theme?.background || 'white',
     color: theme?.text || 'inherit',
@@ -56,17 +60,15 @@ export const PreviewPane: React.FC<PreviewPaneProps> = ({
 
   return (
     <div className="h-full flex flex-col">
-      <div 
+      <div
         className="px-4 py-2 border-b backdrop-blur-md"
-        style={{ 
-          backgroundColor: theme?.surface ? `${theme.surface}80` : 'rgba(0,0,0,0.05)',
-          borderColor: theme?.accent
+        style={{
+          ...headerStyles,
+          backdropFilter: 'blur(12px)',
+          WebkitBackdropFilter: 'blur(12px)'
         }}
       >
-        <h3 
-          className="text-sm font-medium"
-          style={{ color: theme?.text || 'inherit' }}
-        >
+        <h3 className="text-sm font-medium">
           Preview
         </h3>
       </div>

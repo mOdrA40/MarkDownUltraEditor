@@ -1,0 +1,96 @@
+/**
+ * Scroll Utilities
+ * Utility classes untuk scroll behavior dan fixes
+ * 
+ * @author Senior Developer
+ * @version 1.0.0
+ */
+
+/* ===== GLOBAL SCROLL BEHAVIOR FIXES ===== */
+
+/* Mencegah scroll behavior yang tidak diinginkan dari transform scale */
+.no-scroll-scale {
+  transform-origin: center center;
+  will-change: auto;
+}
+
+/* Override untuk button hover effects yang menyebabkan scroll */
+.button-hover-fix {
+  transition: background-color 0.2s ease, color 0.2s ease, box-shadow 0.2s ease, opacity 0.2s ease;
+  transform: none !important;
+}
+
+.button-hover-fix:hover {
+  transform: none !important;
+  background-color: hsl(var(--accent) / 0.8);
+  color: hsl(var(--accent-foreground));
+}
+
+.button-hover-fix:active {
+  transform: none !important;
+  background-color: hsl(var(--accent) / 0.6);
+}
+
+/* ===== CONTAINER SCROLL PREVENTION ===== */
+
+/* Mencegah container scroll saat hover pada child elements */
+.scroll-container-stable {
+  overflow: hidden;
+  contain: layout style;
+}
+
+.scroll-container-stable:hover {
+  overflow: hidden;
+}
+
+/* ===== UTILITY CLASSES ===== */
+
+/* Utility untuk mencegah layout shift */
+.prevent-layout-shift {
+  contain: layout;
+  transform: none !important;
+}
+
+/* Utility untuk smooth transitions tanpa scale */
+.smooth-transition {
+  transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+  transform: none !important;
+}
+
+/* Utility untuk hover effects yang aman */
+.safe-hover:hover {
+  background-color: hsl(var(--accent) / 0.8);
+  color: hsl(var(--accent-foreground));
+  transform: none !important;
+}
+
+.safe-active:active {
+  background-color: hsl(var(--accent) / 0.6);
+  transform: none !important;
+}
+
+/* ===== SCROLLABLE CONTAINER UTILITIES ===== */
+
+/* Scrollable container with proper styling */
+.scroll-container-responsive {
+  overflow-x: auto;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(0, 0, 0, 0.1) transparent;
+}
+
+.scroll-container-responsive::-webkit-scrollbar {
+  height: 4px;
+}
+
+.scroll-container-responsive::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.scroll-container-responsive::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.1);
+  border-radius: 2px;
+}
+
+.scroll-container-responsive::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 0, 0, 0.2);
+}

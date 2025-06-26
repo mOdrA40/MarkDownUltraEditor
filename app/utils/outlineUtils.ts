@@ -42,11 +42,18 @@ export const getOutlineItemStyles = (
 /**
  * Generate styles untuk header berdasarkan theme
  */
-export const getHeaderStyles = (theme?: ThemeConfig) => ({
-  backgroundColor: theme?.surface ? `${theme.surface}80` : 'rgba(0,0,0,0.05)',
-  borderColor: theme?.accent,
-  color: theme?.text || 'inherit'
-});
+export const getHeaderStyles = (theme?: ThemeConfig) => {
+  // Use theme surface color with proper opacity, fallback to light gray
+  const backgroundColor = theme?.surface
+    ? `rgba(${parseInt(theme.surface.slice(1, 3), 16)}, ${parseInt(theme.surface.slice(3, 5), 16)}, ${parseInt(theme.surface.slice(5, 7), 16)}, 0.8)`
+    : 'rgba(248, 250, 252, 0.8)'; // bg-slate-50 with opacity
+
+  return {
+    backgroundColor,
+    borderColor: theme?.accent || 'rgba(226, 232, 240, 1)', // border-slate-200
+    color: theme?.text || 'inherit'
+  };
+};
 
 /**
  * Generate styles untuk badge berdasarkan theme

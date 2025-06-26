@@ -1,6 +1,6 @@
 import React from 'react';
 import { EditorHeaderConfig } from "../types/editorPane.types";
-import { generateHeaderStyles } from "../utils/editorStyles";
+import { generateHeaderStyles } from "@/utils/themeUtils";
 
 /**
  * Editor header component that displays current editor modes
@@ -21,12 +21,13 @@ export const EditorHeader: React.FC<EditorHeaderConfig> = ({
   return (
     <div
       className="px-4 py-2 border-b backdrop-blur-md"
-      style={headerStyles}
+      style={{
+        ...headerStyles,
+        backdropFilter: 'blur(12px)',
+        WebkitBackdropFilter: 'blur(12px)'
+      }}
     >
-      <h3
-        className="text-sm font-medium"
-        style={{ color: theme?.text || 'inherit' }}
-      >
+      <h3 className="text-sm font-medium">
         Editor
         {focusMode && (
           <span className="ml-2 text-xs opacity-60">(Focus Mode)</span>

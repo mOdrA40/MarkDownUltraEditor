@@ -1,0 +1,45 @@
+/**
+ * Dialog Base Styles
+ * Base styles untuk semua dialog components
+ * 
+ * @author Senior Developer
+ * @version 1.0.0
+ */
+
+/* ===== GLOBAL DIALOG FIXES ===== */
+
+/* Ensure dialog never overflows viewport */
+[data-radix-dialog-overlay] {
+  position: fixed !important;
+  inset: 0 !important;
+  z-index: 50 !important;
+  background-color: rgba(0, 0, 0, 0.8) !important;
+  backdrop-filter: blur(4px) !important;
+}
+
+[data-radix-dialog-content] {
+  position: fixed !important;
+  left: 50% !important;
+  top: 50% !important;
+  transform: translate(-50%, -50%) !important;
+  z-index: 51 !important;
+  background: white !important;
+  border-radius: 0.5rem !important;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25) !important;
+  overflow: hidden !important;
+  display: flex !important;
+  flex-direction: column !important;
+}
+
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
+  [data-radix-dialog-content] {
+    background: rgb(17, 24, 39) !important;
+    border: 1px solid rgb(55, 65, 81) !important;
+  }
+}
+
+/* Prevent body scroll when dialog is open */
+body:has([data-radix-dialog-content]) {
+  overflow: hidden !important;
+}

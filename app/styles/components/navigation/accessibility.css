@@ -1,0 +1,41 @@
+/**
+ * Navigation Accessibility Styles
+ * Accessibility support untuk komponen navigasi
+ * 
+ * @author Senior Developer
+ * @version 1.0.0
+ */
+
+/* ===== REDUCED MOTION SUPPORT ===== */
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  
+  [data-toc-container] [data-heading-id],
+  [data-outline-container] [data-heading-id] {
+    transition: none;
+  }
+  
+  [data-toc-container] [data-heading-id]:hover,
+  [data-outline-container] [data-heading-id]:hover {
+    transform: none;
+  }
+  
+  @keyframes slideIn {
+    from, to {
+      transform: scaleY(1);
+      opacity: 1;
+    }
+  }
+}
+
+/* ===== PRINT STYLES ===== */
+
+@media print {
+  [data-toc-container],
+  [data-outline-container] {
+    display: none;
+  }
+}

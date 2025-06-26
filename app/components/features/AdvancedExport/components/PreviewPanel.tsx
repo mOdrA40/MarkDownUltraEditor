@@ -13,6 +13,7 @@ import { PreviewPanelProps } from '../types/export.types';
 import { convertMarkdownToHTML } from '../utils/markdownConverter';
 import { generateStyledHTML } from '../utils/htmlGenerator';
 import { THEMES } from '../utils/constants';
+import { generateHeaderStyles } from '@/utils/themeUtils';
 
 /**
  * Komponen untuk preview panel dengan kontrol responsif dan export
@@ -25,7 +26,8 @@ export const PreviewPanel: React.FC<PreviewPanelProps> = ({
   onExport,
   exportState,
   isMobile = false,
-  isTablet = false
+  isTablet = false,
+  currentTheme
 }) => {
   const previewRef = useRef<HTMLDivElement>(null);
 
@@ -48,12 +50,22 @@ export const PreviewPanel: React.FC<PreviewPanelProps> = ({
     return bodyMatch?.[1] || '';
   };
 
+  // Get header styles for consistent theming
+  const headerStyles = generateHeaderStyles(currentTheme);
+
   return (
     <div className="flex flex-col min-h-0 overflow-hidden flex-1">
       {/* Preview Header */}
-      <div className={`advanced-export-preview-header ${
-        isMobile ? 'p-2' : 'p-2 sm:p-3'
-      }`}>
+      <div
+        className={`advanced-export-preview-header ${
+          isMobile ? 'p-2' : 'p-2 sm:p-3'
+        }`}
+        style={{
+          ...headerStyles,
+          backdropFilter: 'blur(12px)',
+          WebkitBackdropFilter: 'blur(12px)'
+        }}
+      >
         <div className={`flex items-center gap-2 ${
           isMobile ? 'flex-col space-y-2' : 'flex-row justify-between'
         }`}>
