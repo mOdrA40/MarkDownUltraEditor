@@ -1,7 +1,6 @@
 /**
  * @fileoverview Custom hook untuk highlight.js management
- * @author Senior Developer
- * @version 1.0.0
+ * @author Axel Modra
  */
 
 import { useEffect } from 'react';

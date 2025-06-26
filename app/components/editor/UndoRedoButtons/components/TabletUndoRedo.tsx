@@ -2,8 +2,7 @@
  * TabletUndoRedo Component
  * Layout undo/redo khusus untuk tablet devices (500px-1023px)
  * 
- * @author Senior Developer
- * @version 2.0.0
+ * @author Axel Modra
  */
 
 import React from 'react';

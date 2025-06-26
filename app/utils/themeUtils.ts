@@ -2,8 +2,7 @@
  * Theme Utilities
  * Utility functions untuk theme management dan styling
  * 
- * @author Senior Developer
- * @version 1.0.0
+ * @author Axel Modra
  */
 
 import type { Theme } from '@/components/features/ThemeSelector';

@@ -2,8 +2,7 @@
  * UndoRedoButtons Component
  * Komponen utama untuk undo/redo dengan responsive layout
  * 
- * @author Senior Developer
- * @version 2.0.0
+ * @author Axel Modra
  */
 
 import React, { useState, useEffect } from 'react';

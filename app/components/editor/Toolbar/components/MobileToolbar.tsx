@@ -2,8 +2,7 @@
  * MobileToolbar Component
  * Layout toolbar khusus untuk mobile devices (320px - 499px)
  * 
- * @author Senior Developer
- * @version 2.0.0
+ * @author Axel Modra
  */
 
 import React from 'react';

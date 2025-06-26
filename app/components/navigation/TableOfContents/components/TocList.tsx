@@ -1,7 +1,6 @@
 /**
  * @fileoverview TocList - List component untuk Table of Contents items
- * @author Senior Developer
- * @version 1.0.0
+ * @author Axel Modra
  */
 
 import React from 'react';

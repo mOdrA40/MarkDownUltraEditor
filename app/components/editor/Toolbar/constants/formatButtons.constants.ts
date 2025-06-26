@@ -2,8 +2,7 @@
  * Format Buttons Constants
  * Konstanta untuk semua format buttons yang tersedia di toolbar
  * 
- * @author Senior Developer
- * @version 2.0.0
+ * @author Axel Modra
  */
 
 import type { FormatButton, MarkdownTemplate } from '../types/toolbar.types';

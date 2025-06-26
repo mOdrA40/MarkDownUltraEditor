@@ -1,7 +1,6 @@
 /**
  * @fileoverview Editor sidebar component with navigation and outline
- * @author Senior Developer
- * @version 1.0.0
+ * @author Axel Modra
  */
 
 import React from 'react';
@@ -11,6 +10,7 @@ import { TableOfContents } from "../../../../navigation/TableOfContents";
 import { DocumentOutline } from "../../../../navigation/DocumentOutline";
 import { Theme } from "../../../../features/ThemeSelector";
 import { ResponsiveState, UIState } from '../../types';
+import { getHeaderClassName, generateHeaderStyles } from '@/utils/themeUtils';
 
 /**
  * Props for EditorSidebar component
@@ -57,17 +57,29 @@ export const EditorSidebar: React.FC<EditorSidebarProps> = ({
   // Don't render if neither TOC nor outline is shown
   if (!showToc && !showOutline) return null;
 
+  // Get theme-based styling
+  const headerClassName = getHeaderClassName(theme);
+  const headerStyles = generateHeaderStyles(theme);
+
   return (
     <>
       {/* Sidebar */}
-      <div className={`
-        ${isTablet ? 'w-56' : 'w-72'}
-        border-r backdrop-blur-md bg-white/50 dark:bg-gray-900/50
-        ${sidebarCollapsed ? 'hidden' : ''}
-        flex flex-col
-        transition-all duration-300 ease-in-out
-        shadow-lg shadow-black/5
-      `}>
+      <div
+        className={`
+          ${isTablet ? 'w-56' : 'w-72'}
+          border-r backdrop-blur-md ${headerClassName}
+          ${sidebarCollapsed ? 'hidden' : ''}
+          flex flex-col
+          transition-all duration-300 ease-in-out
+          shadow-lg shadow-black/5
+        `}
+        style={{
+          ...headerStyles,
+          backdropFilter: 'blur(12px)',
+          WebkitBackdropFilter: 'blur(12px)',
+          opacity: 0.9
+        }}
+      >
         {/* Table of Contents - Top Half */}
         {showToc && (
           <div className={`

@@ -2,8 +2,7 @@
  * WritingStats Component - Komponen Utama Writing Statistics
  * Komponen orchestrator yang menggabungkan semua sub-komponen
  * 
- * @author Senior Developer
- * @version 2.0.0
+ * @author Axel Modra
  */
 
 import React, { memo, useMemo } from 'react';

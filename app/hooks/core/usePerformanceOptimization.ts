@@ -3,8 +3,7 @@
  *
  * Hook sederhana untuk performance optimization dengan implementasi dasar.
  *
- * @author Senior Developer
- * @version 2.0.0
+ * @author Axel Modra
  */
 
 import { useCallback, useRef } from 'react';

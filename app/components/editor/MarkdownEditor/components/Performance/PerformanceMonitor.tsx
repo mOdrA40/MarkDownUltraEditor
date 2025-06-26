@@ -1,7 +1,6 @@
 /**
  * @fileoverview Performance monitoring component
- * @author Senior Developer
- * @version 1.0.0
+ * @author Axel Modra
  */
 
 import React, { useEffect, useRef, useState, useCallback } from 'react';

@@ -2,8 +2,7 @@
  * UndoRedo Utilities
  * Fungsi-fungsi utility untuk operasi undo/redo
  * 
- * @author Senior Developer
- * @version 2.0.0
+ * @author Axel Modra
  */
 
 import { RotateCcw, RotateCw } from "lucide-react";

@@ -2,8 +2,7 @@
  * LineHeightControl Component - Kontrol untuk Line Height
  * Komponen untuk mengatur line height dengan increment/decrement buttons
  * 
- * @author Senior Developer
- * @version 2.0.0
+ * @author Axel Modra
  */
 
 import React, { memo, useCallback } from 'react';

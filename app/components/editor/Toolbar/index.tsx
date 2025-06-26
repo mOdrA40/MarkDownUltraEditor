@@ -2,8 +2,7 @@
  * Toolbar Module - Main Export
  * Entry point untuk semua exports dari Toolbar module
  * 
- * @author Senior Developer
- * @version 2.0.0
+ * @author Axel Modra
  */
 
 // Export komponen utama

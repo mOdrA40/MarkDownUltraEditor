@@ -1,7 +1,6 @@
 /**
  * @fileoverview Layout components export file
- * @author Senior Developer
- * @version 1.0.0
+ * @author Axel Modra
  */
 
 // Export all layout components

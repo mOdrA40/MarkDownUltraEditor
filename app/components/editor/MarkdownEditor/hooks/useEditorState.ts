@@ -1,7 +1,6 @@
 /**
  * @fileoverview Main editor state management hook
- * @author Senior Developer
- * @version 1.0.0
+ * @author Axel Modra
  */
 
 import { useState, useCallback, useRef, useEffect } from 'react';
@@ -68,22 +67,32 @@ export const useEditorState = (
    * Create a new file
    */
   const handleNewFile = useCallback(() => {
+    console.log('handleNewFile called - isModified:', isModified);
+
     if (isModified) {
       const confirmed = window.confirm(
         'You have unsaved changes. Are you sure you want to create a new file?'
       );
-      if (!confirmed) return;
+      if (!confirmed) {
+        console.log('User cancelled new file creation');
+        return;
+      }
     }
+
+    console.log('Creating new file with content:', DEFAULT_FILE.CONTENT);
+    console.log('Setting filename to:', DEFAULT_FILE.NAME);
 
     setMarkdown(DEFAULT_FILE.CONTENT);
     setFileName(DEFAULT_FILE.NAME);
     setIsModified(false);
     clearHistory();
-    
+
     toast({
       title: "New file created",
       description: "Ready to start writing!",
     });
+
+    console.log('New file created successfully');
   }, [isModified, setMarkdown, clearHistory, toast]);
 
   /**

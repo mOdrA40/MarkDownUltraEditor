@@ -1,7 +1,6 @@
 /**
  * @fileoverview Editor styling utilities and calculations
- * @author Senior Developer
- * @version 1.0.0
+ * @author Axel Modra
  */
 
 import { Theme } from "../../../features/ThemeSelector";

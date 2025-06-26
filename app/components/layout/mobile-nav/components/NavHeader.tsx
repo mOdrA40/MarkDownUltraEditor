@@ -9,6 +9,7 @@ import { Input } from "@/components/ui/input";
 import { Menu } from "lucide-react";
 import { NavHeaderProps } from '../types/navTypes';
 import { QuickActions } from './QuickActions';
+import { getHeaderClassName, generateHeaderStyles } from '@/utils/themeUtils';
 
 export const NavHeader: React.FC<NavHeaderProps> = ({
   currentTheme,
@@ -23,8 +24,19 @@ export const NavHeader: React.FC<NavHeaderProps> = ({
   canUndo,
   canRedo
 }) => {
+  // Get theme-based header styling
+  const headerClassName = getHeaderClassName(currentTheme);
+  const headerStyles = generateHeaderStyles(currentTheme);
+
   return (
-    <div className="flex items-center justify-between p-3 border-b backdrop-blur-md bg-white/80 dark:bg-gray-900/80">
+    <div
+      className={`flex items-center justify-between p-3 border-b backdrop-blur-md ${headerClassName}`}
+      style={{
+        ...headerStyles,
+        backdropFilter: 'blur(12px)',
+        WebkitBackdropFilter: 'blur(12px)'
+      }}
+    >
       {/* Left: Menu Button */}
       <Button 
         variant="ghost" 

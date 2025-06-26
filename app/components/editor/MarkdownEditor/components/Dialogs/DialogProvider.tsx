@@ -1,7 +1,6 @@
 /**
  * @fileoverview Dialog context provider for managing dialog state
- * @author Senior Developer
- * @version 1.0.0
+ * @author Axel Modra
  */
 
 import React, { createContext, useContext, useReducer, useCallback } from 'react';

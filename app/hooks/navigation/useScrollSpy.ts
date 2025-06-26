@@ -4,8 +4,7 @@
  * @deprecated Use hooks from @/components/useScrollSpy instead
  * This file is kept for backward compatibility only.
  *
- * @author Senior Developer
- * @version 2.0.0
+ * @author Axel Modra
  */
 
 // Legacy implementation untuk backward compatibility

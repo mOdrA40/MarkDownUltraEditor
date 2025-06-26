@@ -2,8 +2,7 @@
  * DesktopUndoRedo Component
  * Layout undo/redo khusus untuk desktop devices (≥1024px)
  * 
- * @author Senior Developer
- * @version 2.0.0
+ * @author Axel Modra
  */
 
 import React from 'react';

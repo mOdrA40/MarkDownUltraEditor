@@ -1,7 +1,6 @@
 /**
  * @fileoverview File import service for handling file uploads
- * @author Senior Developer
- * @version 1.0.0
+ * @author Axel Modra
  */
 
 import { FileImportResult, FileOperationCallbacks } from '../types/fileOperations.types';

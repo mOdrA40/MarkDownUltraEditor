@@ -1,9 +1,7 @@
 /**
  * @fileoverview Editor header component with file controls and toolbar
- * @author Senior Developer
- * @version 1.0.0
+ * @author Axel Modra
  */
-
 import React from 'react';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -16,7 +14,7 @@ import { Toolbar } from "../../../Toolbar";
 import { WritingSettings } from "../../../../features/WritingSettings";
 import { UndoRedoButtons } from "../../../UndoRedoButtons";
 import { EditorSettings, ResponsiveState } from '../../types';
-
+import { getHeaderClassName, generateHeaderStyles } from '@/utils/themeUtils';
 /**
  * Props for EditorHeader component
  */
@@ -64,7 +62,6 @@ export interface EditorHeaderProps {
   // Zen mode
   zenMode: boolean;
 }
-
 /**
  * Editor header component with file controls, theme selector, and toolbar
  */
@@ -94,10 +91,8 @@ export const EditorHeader: React.FC<EditorHeaderProps> = ({
   zenMode
 }) => {
   const { isMobile, isTablet, isSmallTablet } = responsive;
-
   // Don't render header in zen mode
   if (zenMode) return null;
-
   /**
    * Toggle fullscreen mode
    */
@@ -108,9 +103,18 @@ export const EditorHeader: React.FC<EditorHeaderProps> = ({
       document.exitFullscreen();
     }
   };
-
+  // Get theme-based header styling
+  const headerClassName = getHeaderClassName(currentTheme);
+  const headerStyles = generateHeaderStyles(currentTheme);
   return (
-    <div className="border-b backdrop-blur-md bg-white/80 dark:bg-gray-900/80">
+    <div
+      className={`border-b backdrop-blur-md ${headerClassName}`}
+      style={{
+        ...headerStyles,
+        backdropFilter: 'blur(12px)',
+        WebkitBackdropFilter: 'blur(12px)'
+      }}
+    >
       <div className="flex flex-col lg:flex-row lg:items-center justify-between px-2 sm:px-4 py-2 gap-2">
         {/* File Info Row */}
         <div className="flex items-center space-x-2 sm:space-x-4 min-w-0 flex-1">
@@ -122,8 +126,11 @@ export const EditorHeader: React.FC<EditorHeaderProps> = ({
             <Input
               value={fileName}
               onChange={(e) => onFileNameChange(e.target.value)}
-              className="w-24 sm:w-32 md:w-48 h-6 sm:h-8 text-xs sm:text-sm font-medium border-0 bg-transparent focus:bg-white/50 dark:focus:bg-gray-800/50"
-              style={{ borderColor: currentTheme.accent }}
+              className="w-24 sm:w-32 md:w-48 h-6 sm:h-8 text-xs sm:text-sm font-medium border-0 bg-transparent"
+              style={{
+                borderColor: currentTheme.accent,
+                color: currentTheme.text
+              }}
             />
             {isModified && (
               <Badge variant="secondary" className="text-xs hidden sm:inline-flex">
@@ -132,7 +139,6 @@ export const EditorHeader: React.FC<EditorHeaderProps> = ({
             )}
           </div>
         </div>
-
         {/* Controls Row - Responsive Layout */}
         <div className={`
           ${isTablet ? 'flex flex-col gap-2' : 'flex items-center justify-between gap-1 sm:gap-2'}
@@ -145,16 +151,13 @@ export const EditorHeader: React.FC<EditorHeaderProps> = ({
                 currentTheme={currentTheme}
                 onThemeChange={onThemeChange}
               />
-
               {!isTablet && <Separator orientation="vertical" className="h-4 sm:h-6" />}
-
               <div className="flex items-center space-x-1">
                 <FileOperations
                   markdown={markdown}
                   fileName={fileName}
                   onLoad={onLoad}
                 />
-
                 <Button
                   variant="ghost"
                   size="sm"
@@ -166,7 +169,6 @@ export const EditorHeader: React.FC<EditorHeaderProps> = ({
                 </Button>
               </div>
             </div>
-
             {/* Undo/Redo - Always visible */}
             <div className={`flex items-center ${isSmallTablet ? 'space-x-0.5' : 'space-x-1'}`}>
               <UndoRedoButtons
@@ -180,7 +182,6 @@ export const EditorHeader: React.FC<EditorHeaderProps> = ({
               />
             </div>
           </div>
-
           {/* Second Row - Action Buttons */}
           <div className={`
             flex items-center ${isTablet ? 'justify-center' : 'justify-end'}
@@ -196,8 +197,6 @@ export const EditorHeader: React.FC<EditorHeaderProps> = ({
               <Search className="h-3 w-3 sm:h-4 sm:w-4" />
             </Button>
 
-
-
             <Button
               variant="ghost"
               size="sm"
@@ -207,7 +206,6 @@ export const EditorHeader: React.FC<EditorHeaderProps> = ({
             >
               {showPreview ? <EyeOff className="h-3 w-3 sm:h-4 sm:w-4" /> : <Eye className="h-3 w-3 sm:h-4 sm:w-4" />}
             </Button>
-
             <Button
               variant="ghost"
               size="sm"
@@ -217,7 +215,6 @@ export const EditorHeader: React.FC<EditorHeaderProps> = ({
             >
               <Keyboard className="h-3 w-3 sm:h-4 sm:w-4" />
             </Button>
-
             <Button
               variant="ghost"
               size="sm"
@@ -227,7 +224,6 @@ export const EditorHeader: React.FC<EditorHeaderProps> = ({
             >
               <Maximize2 className="h-3 w-3 sm:h-4 sm:w-4" />
             </Button>
-
             <Button
               variant="ghost"
               size="sm"
@@ -237,11 +233,13 @@ export const EditorHeader: React.FC<EditorHeaderProps> = ({
             >
               Templates
             </Button>
-
             <Button
               variant="ghost"
               size="sm"
-              onClick={onNewFile}
+              onClick={() => {
+                console.log('New button clicked - calling onNewFile');
+                onNewFile();
+              }}
               className="h-6 sm:h-8 px-2 sm:px-3 text-xs sm:text-sm whitespace-nowrap"
               title="New Document"
             >
@@ -250,7 +248,6 @@ export const EditorHeader: React.FC<EditorHeaderProps> = ({
           </div>
         </div>
       </div>
-
       {/* Toolbar - Only on desktop/tablet */}
       <div className={`${isSmallTablet ? 'overflow-x-auto toolbar-small-tablet' : 'overflow-x-hidden'}`}>
         <Toolbar onInsertText={onInsertText} />

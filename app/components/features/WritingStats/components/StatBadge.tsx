@@ -2,8 +2,7 @@
  * StatBadge Component - Komponen Badge untuk Status/Info
  * Komponen untuk menampilkan badge dengan informasi status
  * 
- * @author Senior Developer
- * @version 2.0.0
+ * @author Axel Modra
  */
 
 import React, { memo } from 'react';

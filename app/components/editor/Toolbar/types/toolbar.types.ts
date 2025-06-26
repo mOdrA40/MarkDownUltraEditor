@@ -2,8 +2,7 @@
  * Toolbar Types & Interfaces
  * Definisi TypeScript untuk sistem toolbar markdown
  * 
- * @author Senior Developer
- * @version 2.0.0
+ * @author Axel Modra
  */
 
 /**

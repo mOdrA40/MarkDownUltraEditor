@@ -1,7 +1,6 @@
 /**
  * @fileoverview Main EditorPane component - refactored with modular architecture
- * @author Senior Developer
- * @version 2.0.0
+ * @author Axel Modra
  */
 
 import React from 'react';

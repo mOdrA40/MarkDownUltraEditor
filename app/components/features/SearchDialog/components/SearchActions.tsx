@@ -1,7 +1,6 @@
 /**
  * @fileoverview SearchActions - Action buttons untuk search dan replace operations
- * @author Senior Developer
- * @version 1.0.0
+ * @author Axel Modra
  */
 
 import React from 'react';

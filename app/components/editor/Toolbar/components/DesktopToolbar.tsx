@@ -2,8 +2,7 @@
  * DesktopToolbar Component
  * Layout toolbar khusus untuk desktop devices (1280px+)
  * 
- * @author Senior Developer
- * @version 2.0.0
+ * @author Axel Modra
  */
 
 import React from 'react';

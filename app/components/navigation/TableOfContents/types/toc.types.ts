@@ -1,7 +1,6 @@
 /**
  * @fileoverview Type definitions untuk TableOfContents components
- * @author Senior Developer
- * @version 1.0.0
+ * @author Axel Modra
  */
 
 import { HeadingItem } from '@/utils/headingUtils';

@@ -2,8 +2,7 @@
  * Theme Constants
  * Konstanta data tema yang tersedia dalam aplikasi
  * 
- * @author Senior Developer
- * @version 2.0.0
+ * @author Axel Modra
  */
 
 import type { Theme, ThemeId } from '../types/theme.types';

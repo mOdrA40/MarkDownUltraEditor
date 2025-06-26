@@ -2,8 +2,7 @@
  * StatItem Component - Komponen untuk Menampilkan Item Statistik
  * Komponen reusable untuk menampilkan satu item statistik
  * 
- * @author Senior Developer
- * @version 2.0.0
+ * @author Axel Modra
  */
 
 import React, { memo } from 'react';

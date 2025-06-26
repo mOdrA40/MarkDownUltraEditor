@@ -1,7 +1,6 @@
 /**
  * @fileoverview Application constants and configuration
- * @author Senior Developer
- * @version 1.0.0
+ * @author Axel Modra
  */
 
 import { EditorConfig } from '../types';
@@ -13,7 +12,7 @@ import { Breakpoints, MediaQueries } from '../types/responsive.types';
 export const APP_INFO = {
   NAME: 'Advanced Markdown Editor',
   VERSION: '1.0.0',
-  AUTHOR: 'Senior Developer',
+  AUTHOR: 'Axel Modra',
   DESCRIPTION: 'A beautiful markdown editor with live preview and amazing features'
 } as const;
 
@@ -87,46 +86,7 @@ export const STORAGE_KEYS = {
  */
 export const DEFAULT_FILE = {
   NAME: 'untitled.md',
-  CONTENT: `# Welcome to Advanced Markdown Editor
-
-This is a **beautiful** markdown editor with live preview and amazing features!
-
-## 🎨 New Colorful Themes
-
-Choose from multiple beautiful themes:
-- 🌊 Ocean - Cool blues and cyans
-- 🌲 Forest - Natural greens
-- 🌅 Sunset - Warm oranges and reds
-- 💜 Purple - Rich purples and violets
-- 🌹 Rose - Elegant pinks and roses
-- 🌙 Dark - Classic dark mode
-
-## ✨ Enhanced Features
-
-- 📝 Advanced typography controls
-- 🎯 Focus mode for distraction-free writing
-- ⌨️ Typewriter mode (centers current line)
-- 📊 Detailed writing statistics
-- 🗺️ Document outline and minimap
-- 🧘 Zen mode for minimal interface
-- ⚙️ Vim key bindings support
-- 📏 Adjustable font size and line height
-- 📱 Fully responsive design
-- ⌨️ Keyboard shortcuts support
-- ⏪ **Undo/Redo**: Full undo/redo support with keyboard shortcuts
-
-## Keyboard Shortcuts
-
-- \`Ctrl/Cmd + B\` - Bold text
-- \`Ctrl/Cmd + I\` - Italic text
-- \`Ctrl/Cmd + K\` - Insert link
-- \`Ctrl/Cmd + Z\` - Undo
-- \`Ctrl/Cmd + Y\` - Redo (or Ctrl/Cmd + Shift + Z)
-- \`Ctrl/Cmd + /\` - Toggle preview
-- \`Ctrl/Cmd + .\` - Toggle zen mode
-- \`F11\` - Fullscreen
-
-Happy writing with style! 🚀✨`
+  CONTENT: ''
 } as const;
 
 /**

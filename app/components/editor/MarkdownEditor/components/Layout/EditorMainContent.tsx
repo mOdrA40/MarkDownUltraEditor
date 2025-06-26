@@ -1,7 +1,6 @@
 /**
  * @fileoverview Editor main content area with editor and preview panes
- * @author Senior Developer
- * @version 1.0.0
+ * @author Axel Modra
  */
 
 import React from 'react';

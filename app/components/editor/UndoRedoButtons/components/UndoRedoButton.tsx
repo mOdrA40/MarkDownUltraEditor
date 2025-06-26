@@ -2,8 +2,7 @@
  * UndoRedoButton Component
  * Komponen button individual untuk undo atau redo action
  * 
- * @author Senior Developer
- * @version 2.0.0
+ * @author Axel Modra
  */
 
 import React from 'react';

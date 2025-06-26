@@ -2,8 +2,7 @@
  * WritingSettings Hooks - Custom React Hooks
  * Custom hooks untuk WritingSettings functionality
  *
- * @author Senior Developer
- * @version 2.0.0
+ * @author Axel Modra
  */
 
 import { useMemo, useCallback } from 'react';

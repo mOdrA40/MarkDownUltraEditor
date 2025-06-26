@@ -1,7 +1,6 @@
 /**
  * @fileoverview TocHeader - Header component untuk Table of Contents
- * @author Senior Developer
- * @version 1.0.0
+ * @author Axel Modra
  */
 
 import React from 'react';

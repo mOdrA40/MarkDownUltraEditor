@@ -1,7 +1,6 @@
 /**
  * @fileoverview Keyboard shortcuts management hook
- * @author Senior Developer
- * @version 1.0.0
+ * @author Axel Modra
  */
 
 import { useEffect, useCallback, useRef } from 'react';

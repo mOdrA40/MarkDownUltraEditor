@@ -2,8 +2,7 @@
  * ResponsiveStatsLayout Component - Layout Responsif untuk Stats
  * Komponen wrapper yang menangani layout berbeda untuk setiap screen size
  * 
- * @author Senior Developer
- * @version 2.0.0
+ * @author Axel Modra
  */
 
 import React, { memo } from 'react';

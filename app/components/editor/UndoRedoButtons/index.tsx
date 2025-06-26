@@ -2,8 +2,7 @@
  * UndoRedoButtons Module - Main Export
  * Entry point untuk semua exports dari UndoRedoButtons module
  * 
- * @author Senior Developer
- * @version 2.0.0
+ * @author Axel Modra
  */
 
 // Export komponen utama

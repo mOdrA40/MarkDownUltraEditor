@@ -1,7 +1,6 @@
 /**
  * @fileoverview Main components exports - Centralized component management
- * @author Senior Developer
- * @version 2.0.0
+ * @author Axel Modra
  */
 
 // Layout components

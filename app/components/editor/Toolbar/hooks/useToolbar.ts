@@ -2,8 +2,7 @@
  * Toolbar Hooks
  * Custom hooks untuk mengelola state dan logic toolbar
  * 
- * @author Senior Developer
- * @version 2.0.0
+ * @author Axel Modra
  */
 
 import { useState, useEffect, useCallback, useMemo } from 'react';

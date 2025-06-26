@@ -1,7 +1,6 @@
 /**
  * @fileoverview Main type definitions export file
- * @author Senior Developer
- * @version 1.0.0
+ * @author Axel Modra
  */
 
 // Re-export all types from sub-modules

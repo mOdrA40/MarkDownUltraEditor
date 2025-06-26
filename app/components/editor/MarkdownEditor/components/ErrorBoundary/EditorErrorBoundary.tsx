@@ -1,7 +1,6 @@
 /**
  * @fileoverview Error boundary component for the markdown editor
- * @author Senior Developer
- * @version 1.0.0
+ * @author Axel Modra
  */
 
 import React, { Component, ErrorInfo, ReactNode } from 'react';

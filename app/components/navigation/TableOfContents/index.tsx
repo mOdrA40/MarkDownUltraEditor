@@ -1,7 +1,6 @@
 /**
  * @fileoverview TableOfContents main export
- * @author Senior Developer
- * @version 1.0.0
+ * @author Axel Modra
  */
 
 // Re-export the main component

@@ -4,8 +4,7 @@
  * Hook untuk backward compatibility yang mempertahankan interface
  * yang sama dengan versi sebelumnya.
  *
- * @author Senior Developer
- * @version 2.0.0
+ * @author Axel Modra
  */
 
 import { useState, useCallback } from 'react';

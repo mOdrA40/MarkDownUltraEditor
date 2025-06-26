@@ -1,7 +1,6 @@
 /**
  * @fileoverview Editor footer component with writing statistics
- * @author Senior Developer
- * @version 1.0.0
+ * @author Axel Modra
  */
 
 import React from 'react';

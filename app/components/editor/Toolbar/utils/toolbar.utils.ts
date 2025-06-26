@@ -2,8 +2,7 @@
  * Toolbar Utilities
  * Fungsi-fungsi utility untuk operasi toolbar
  * 
- * @author Senior Developer
- * @version 2.0.0
+ * @author Axel Modra
  */
 
 import type { FormatButton, ButtonCategory } from '../types/toolbar.types';

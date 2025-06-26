@@ -1,7 +1,6 @@
 /**
  * @fileoverview Core hooks exports
- * @author Senior Developer
- * @version 1.0.0
+ * @author Axel Modra
  */
 
 // Core functionality hooks

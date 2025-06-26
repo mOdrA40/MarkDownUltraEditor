@@ -1,7 +1,6 @@
 /**
  * @fileoverview Main hooks export file
- * @author Senior Developer
- * @version 1.0.0
+ * @author Axel Modra
  */
 
 // Export all custom hooks

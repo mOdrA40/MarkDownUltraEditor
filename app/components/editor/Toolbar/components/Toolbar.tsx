@@ -2,8 +2,7 @@
  * Toolbar Component
  * Komponen utama toolbar markdown dengan responsive layout
  * 
- * @author Senior Developer
- * @version 2.0.0
+ * @author Axel Modra
  */
 
 import React from 'react';

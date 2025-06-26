@@ -1,8 +1,7 @@
 
 /**
  * @fileoverview SearchDialog - Komponen dialog untuk search dan replace functionality
- * @author Senior Developer
- * @version 2.0.0
+ * @author Axel Modra
  * @refactored Memisahkan concerns dan menggunakan composition pattern
  */
 

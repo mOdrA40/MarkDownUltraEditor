@@ -2,8 +2,7 @@
  * ToolbarButton Component
  * Komponen button individual untuk toolbar markdown
  * 
- * @author Senior Developer
- * @version 2.0.0
+ * @author Axel Modra
  */
 
 import React from 'react';

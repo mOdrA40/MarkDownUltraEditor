@@ -2,8 +2,7 @@
  * Theme Utilities
  * Fungsi-fungsi utility untuk operasi tema
  * 
- * @author Senior Developer
- * @version 2.0.0
+ * @author Axel Modra
  */
 
 import type { Theme, ThemeId, ThemeColorCategory } from '../types/theme.types';

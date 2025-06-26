@@ -2,8 +2,7 @@
  * ThemeSelector Module - Main Export
  * Entry point untuk semua exports dari ThemeSelector module
  * 
- * @author Senior Developer
- * @version 2.0.0
+ * @author Axel Modra
  */
 
 // Export komponen utama

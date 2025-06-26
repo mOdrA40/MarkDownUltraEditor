@@ -1,7 +1,6 @@
 /**
  * @fileoverview Responsive utility functions
- * @author Senior Developer
- * @version 1.0.0
+ * @author Axel Modra
  */
 
 import { DeviceType, LayoutConfig, ComponentSizing } from '../types';

@@ -1,7 +1,6 @@
 /**
  * @fileoverview Main editor container component
- * @author Senior Developer
- * @version 1.0.0
+ * @author Axel Modra
  */
 
 import React from 'react';

@@ -1,7 +1,6 @@
 /**
  * @fileoverview HTML template generation service
- * @author Senior Developer
- * @version 1.0.0
+ * @author Axel Modra
  */
 
 import { HtmlTemplateConfig } from '../types/fileOperations.types';

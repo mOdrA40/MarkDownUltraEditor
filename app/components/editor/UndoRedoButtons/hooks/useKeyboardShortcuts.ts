@@ -2,8 +2,7 @@
  * Keyboard Shortcuts Hook
  * Custom hook untuk mengelola keyboard shortcuts undo/redo
  * 
- * @author Senior Developer
- * @version 2.0.0
+ * @author Axel Modra
  */
 
 import { useEffect, useCallback } from 'react';

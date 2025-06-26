@@ -2,8 +2,7 @@
  * Responsive Utilities - Helper Functions untuk Responsive Design
  * Utility functions untuk menangani responsive behavior
  * 
- * @author Senior Developer
- * @version 2.0.0
+ * @author Axel Modra
  */
 
 import { BREAKPOINTS } from '../constants/settings.constants';

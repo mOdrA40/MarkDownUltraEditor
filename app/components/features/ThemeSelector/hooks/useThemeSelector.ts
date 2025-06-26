@@ -2,10 +2,8 @@
  * Theme Selector Hooks
  * Custom hooks untuk mengelola state dan logic theme selector
  * 
- * @author Senior Developer
- * @version 2.0.0
+ * @author Axel Modra
  */
-
 import { useCallback, useMemo } from 'react';
 import type { Theme } from '../types/theme.types';
 import {
@@ -15,7 +13,6 @@ import {
   getContrastTextColor
 } from '../utils/theme.utils';
 import { themes } from '../constants/themes.constants';
-
 /**
  * Props untuk useThemeSelector hook
  */
@@ -25,7 +22,6 @@ interface UseThemeSelectorProps {
   /** Callback ketika tema berubah */
   onThemeChange: (theme: Theme) => void;
 }
-
 /**
  * Return type untuk useThemeSelector hook
  */
@@ -47,7 +43,6 @@ interface UseThemeSelectorReturn {
   /** Fungsi untuk mendapatkan warna teks kontras */
   getTextColor: (theme: Theme) => string;
 }
-
 /**
  * Custom hook untuk mengelola theme selector
  * Menyediakan semua functionality yang dibutuhkan untuk theme selection
@@ -65,7 +60,6 @@ export const useThemeSelector = ({
    * Mencegah re-render yang tidak perlu
    */
   const availableThemes = useMemo(() => themes, []);
-
   /**
    * Fungsi untuk mengubah tema
    * Menggunakan useCallback untuk optimasi performa
@@ -75,7 +69,6 @@ export const useThemeSelector = ({
       onThemeChange(theme);
     }
   }, [currentTheme.id, onThemeChange]);
-
   /**
    * Fungsi untuk beralih ke tema berikutnya
    */
@@ -83,7 +76,6 @@ export const useThemeSelector = ({
     const next = getNextTheme(currentTheme);
     changeTheme(next);
   }, [currentTheme, changeTheme]);
-
   /**
    * Fungsi untuk beralih ke tema sebelumnya
    */
@@ -91,28 +83,24 @@ export const useThemeSelector = ({
     const previous = getPreviousTheme(currentTheme);
     changeTheme(previous);
   }, [currentTheme, changeTheme]);
-
   /**
    * Fungsi untuk mengecek apakah tema sedang aktif
    */
   const isThemeActive = useCallback((theme: Theme) => {
     return theme.id === currentTheme.id;
   }, [currentTheme.id]);
-
   /**
    * Fungsi untuk mendapatkan gradient CSS tema
    */
   const getThemeGradient = useCallback((theme: Theme) => {
     return createThemeGradient(theme);
   }, []);
-
   /**
    * Fungsi untuk mendapatkan warna teks kontras
    */
   const getTextColor = useCallback((theme: Theme) => {
     return getContrastTextColor(theme);
   }, []);
-
   return {
     availableThemes,
     currentTheme,
@@ -124,7 +112,6 @@ export const useThemeSelector = ({
     getTextColor
   };
 };
-
 /**
  * Props untuk useThemeButton hook
  */
@@ -138,7 +125,6 @@ interface UseThemeButtonProps {
   /** Mode kompak (opsional) */
   compact?: boolean;
 }
-
 /**
  * Return type untuk useThemeButton hook
  */
@@ -154,7 +140,6 @@ interface UseThemeButtonReturn {
   /** Aria label untuk accessibility */
   ariaLabel: string;
 }
-
 /**
  * Custom hook untuk individual theme button
  * Mengelola state dan behavior untuk satu theme button
@@ -175,14 +160,12 @@ export const useThemeButton = ({
   const isActive = useMemo(() => {
     return theme.id === currentTheme.id;
   }, [theme.id, currentTheme.id]);
-
   /**
    * Style CSS untuk button background
    */
   const buttonStyle = useMemo((): React.CSSProperties => ({
     background: createThemeGradient(theme)
   }), [theme]);
-
   /**
    * Class CSS untuk button
    * Clean styling tanpa border circle, hanya checkmark sebagai indikator
@@ -198,31 +181,26 @@ export const useThemeButton = ({
       'focus:ring-0', // Hilangkan ring
       'focus-fix' // Tambahan fix untuk focus state
     ];
-
     // Tambahkan ukuran berdasarkan mode compact
     if (compact) {
       baseClasses.push('h-6', 'w-6');
     } else {
       baseClasses.push('h-8', 'w-8');
     }
-
     return baseClasses.join(' ');
   }, [compact]);
-
   /**
    * Handler untuk click event
    */
   const handleClick = useCallback(() => {
     onClick(theme);
   }, [theme, onClick]);
-
   /**
    * Aria label untuk accessibility
    */
   const ariaLabel = useMemo(() => {
     return `Select ${theme.name} theme${isActive ? ' (currently active)' : ''}`;
   }, [theme.name, isActive]);
-
   return {
     isActive,
     buttonStyle,

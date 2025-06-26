@@ -1,7 +1,6 @@
 /**
  * @fileoverview PreviewPane folder index - Re-export dari parent
- * @author Senior Developer
- * @version 1.0.0
+ * @author Axel Modra
  */
 
 // Re-export PreviewPane dari parent directory

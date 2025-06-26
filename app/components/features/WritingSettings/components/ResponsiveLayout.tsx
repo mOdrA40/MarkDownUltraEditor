@@ -2,8 +2,7 @@
  * ResponsiveLayout Component - Layout Wrapper untuk Responsive Design
  * Komponen wrapper yang menangani layout berbeda untuk setiap breakpoint
  * 
- * @author Senior Developer
- * @version 2.0.0
+ * @author Axel Modra
  */
 
 import React, { memo } from 'react';

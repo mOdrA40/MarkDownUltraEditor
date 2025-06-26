@@ -1,7 +1,6 @@
 /**
  * @fileoverview Custom hook for file operations
- * @author Senior Developer
- * @version 1.0.0
+ * @author Axel Modra
  */
 
 import { useRef } from 'react';

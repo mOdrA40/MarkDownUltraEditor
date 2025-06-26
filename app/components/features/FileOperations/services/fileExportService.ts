@@ -1,7 +1,6 @@
 /**
  * @fileoverview File export service for handling various export formats
- * @author Senior Developer
- * @version 1.0.0
+ * @author Axel Modra
  */
 
 import * as fileSaver from 'file-saver';

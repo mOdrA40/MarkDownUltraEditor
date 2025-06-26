@@ -1,7 +1,6 @@
 /**
  * @fileoverview Feature components exports
- * @author Senior Developer
- * @version 1.0.0
+ * @author Axel Modra
  */
 
 // Re-export feature components

@@ -2,17 +2,14 @@
  * ThemeSelector Component
  * Komponen utama untuk memilih tema aplikasi
  * 
- * @author Senior Developer
- * @version 2.0.0
+ * @author Axel Modra
  */
-
 import React from 'react';
 import { Palette } from "lucide-react";
 import { cn } from "@/lib/utils";
 import type { ThemeSelectorProps } from '../types/theme.types';
 import { useThemeSelector } from '../hooks/useThemeSelector';
 import { ThemeButton } from './ThemeButton';
-
 /**
  * Komponen ThemeSelector
  * Menampilkan daftar tema yang tersedia dengan icon palette dan theme buttons
@@ -35,7 +32,6 @@ export const ThemeSelector: React.FC<ThemeSelectorProps> = React.memo(({
     currentTheme,
     onThemeChange
   });
-
   return (
     <div 
       className={cn(
@@ -77,6 +73,5 @@ export const ThemeSelector: React.FC<ThemeSelectorProps> = React.memo(({
     </div>
   );
 });
-
 // Set display name untuk debugging
 ThemeSelector.displayName = 'ThemeSelector';

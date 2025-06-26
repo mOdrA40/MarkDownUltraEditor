@@ -1,7 +1,6 @@
 /**
  * @fileoverview Utilities untuk language management dan icon mapping
- * @author Senior Developer
- * @version 1.0.0
+ * @author Axel Modra
  */
 
 import { LanguageIconMap, HighlightThemeConfig } from '../types/preview.types';

@@ -2,8 +2,7 @@
  * WritingSettings Types - TypeScript Type Definitions
  * Definisi types untuk semua komponen WritingSettings
  * 
- * @author Senior Developer
- * @version 2.0.0
+ * @author Axel Modra
  */
 
 import { ReactNode } from 'react';

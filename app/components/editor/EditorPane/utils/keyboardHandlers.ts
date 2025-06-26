@@ -1,7 +1,6 @@
 /**
  * @fileoverview Keyboard event handlers for editor functionality
- * @author Senior Developer
- * @version 1.0.0
+ * @author Axel Modra
  */
 
 import { KeyboardHandlerConfig } from "../types/editorPane.types";

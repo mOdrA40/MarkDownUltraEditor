@@ -2,8 +2,7 @@
  * ThemeButton Component
  * Komponen button individual untuk memilih tema
  * 
- * @author Senior Developer
- * @version 2.0.0
+ * @author Axel Modra
  */
 
 import React from 'react';

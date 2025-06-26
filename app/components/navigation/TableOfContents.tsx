@@ -1,8 +1,7 @@
 
 /**
  * @fileoverview TableOfContents - Komponen untuk navigasi heading dalam dokumen
- * @author Senior Developer
- * @version 2.0.0
+ * @author Axel Modra
  * @refactored Memisahkan concerns dan menggunakan composition pattern
  */
 

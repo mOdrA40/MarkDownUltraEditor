@@ -2,8 +2,7 @@
  * WritingSettings Utilities - Helper Functions
  * Utility functions untuk WritingSettings module
  * 
- * @author Senior Developer
- * @version 2.0.0
+ * @author Axel Modra
  */
 
 import { 

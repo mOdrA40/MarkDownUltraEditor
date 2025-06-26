@@ -1,7 +1,6 @@
 /**
  * @fileoverview Hook untuk export ke EPUB (HTML format)
- * @author Senior Developer
- * @version 1.0.0
+ * @author Axel Modra
  */
 
 import { useState, useCallback } from 'react';

@@ -1,7 +1,6 @@
 /**
  * @fileoverview Custom hook untuk TOC navigation functionality
- * @author Senior Developer
- * @version 1.0.0
+ * @author Axel Modra
  */
 
 import { useCallback } from 'react';

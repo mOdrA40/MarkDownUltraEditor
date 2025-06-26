@@ -2,8 +2,7 @@
  * WritingSettings Component - Komponen Utama Writing Settings
  * Komponen orchestrator yang menggabungkan semua sub-komponen
  * 
- * @author Senior Developer
- * @version 2.0.0
+ * @author Axel Modra
  */
 
 import React, { memo } from 'react';

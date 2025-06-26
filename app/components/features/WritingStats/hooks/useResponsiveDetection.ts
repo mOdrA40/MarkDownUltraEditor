@@ -2,8 +2,7 @@
  * Responsive Detection Hook - Custom Hook untuk Screen Size Detection
  * Hook untuk mendeteksi ukuran layar dan responsive behavior
  * 
- * @author Senior Developer
- * @version 2.0.0
+ * @author Axel Modra
  */
 
 import { useState, useEffect, useCallback, useMemo } from 'react';

@@ -1,7 +1,6 @@
 /**
  * @fileoverview Custom hook for responsive editor configuration
- * @author Senior Developer
- * @version 1.0.0
+ * @author Axel Modra
  */
 
 import { useMemo } from 'react';

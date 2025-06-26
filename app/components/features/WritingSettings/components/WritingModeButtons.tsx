@@ -2,8 +2,7 @@
  * WritingModeButtons Component - Tombol-tombol Writing Mode
  * Komponen untuk toggle berbagai writing modes
  * 
- * @author Senior Developer
- * @version 2.0.0
+ * @author Axel Modra
  */
 
 import React, { memo } from 'react';

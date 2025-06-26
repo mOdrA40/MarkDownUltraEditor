@@ -1,7 +1,6 @@
 /**
  * @fileoverview Hidden file input component for file uploads
- * @author Senior Developer
- * @version 1.0.0
+ * @author Axel Modra
  */
 
 import React from 'react';

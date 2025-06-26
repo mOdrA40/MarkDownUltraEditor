@@ -1,7 +1,6 @@
 /**
  * @fileoverview PreviewPane - Komponen utama untuk preview markdown dengan syntax highlighting
- * @author Senior Developer
- * @version 2.0.0
+ * @author Axel Modra
  * @refactored Memisahkan concerns dan menggunakan composition pattern
  */
 

@@ -2,8 +2,7 @@
  * Responsive Layout Hook - Custom Hook untuk Responsive Detection
  * Hook untuk mendeteksi dan mengelola responsive breakpoints
  * 
- * @author Senior Developer
- * @version 2.0.0
+ * @author Axel Modra
  */
 
 import { useState, useEffect, useCallback, useMemo } from 'react';

@@ -1,7 +1,6 @@
 /**
  * @fileoverview UI-related hooks exports
- * @author Senior Developer
- * @version 1.0.0
+ * @author Axel Modra
  */
 
 // Re-export responsive hooks dengan nama yang konsisten
