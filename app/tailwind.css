@@ -95,6 +95,249 @@
     --sidebar-border: 240 3.7% 15.9%;
     --sidebar-ring: 217.2 91.2% 59.8%;
   }
+
+  /* Ocean Theme */
+  .theme-ocean {
+    --background: 240 100% 98%; /* #f0f9ff */
+    --foreground: 207 100% 22%; /* #0c4a6e */
+
+    --card: 199 100% 94%; /* #e0f2fe */
+    --card-foreground: 207 100% 22%; /* #0c4a6e */
+
+    --popover: 199 100% 94%; /* #e0f2fe */
+    --popover-foreground: 207 100% 22%; /* #0c4a6e */
+
+    --primary: 199 100% 39%; /* #0284c7 */
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 199 100% 94%; /* #e0f2fe */
+    --secondary-foreground: 207 100% 22%; /* #0c4a6e */
+
+    --muted: 199 100% 94%; /* #e0f2fe */
+    --muted-foreground: 207 50% 45%;
+
+    --accent: 199 100% 39%; /* #0284c7 */
+    --accent-foreground: 0 0% 100%;
+
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 210 40% 98%;
+
+    --border: 199 100% 89%; /* lighter ocean */
+    --input: 199 100% 89%;
+    --ring: 199 100% 39%; /* #0284c7 */
+  }
+
+  /* Forest Theme */
+  .theme-forest {
+    --background: 120 100% 97%; /* #f0fdf4 */
+    --foreground: 140 100% 20%; /* #14532d */
+
+    --card: 138 76% 92%; /* #dcfce7 */
+    --card-foreground: 140 100% 20%; /* #14532d */
+
+    --popover: 138 76% 92%; /* #dcfce7 */
+    --popover-foreground: 140 100% 20%; /* #14532d */
+
+    --primary: 160 84% 39%; /* #10b981 */
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 138 76% 92%; /* #dcfce7 */
+    --secondary-foreground: 140 100% 20%; /* #14532d */
+
+    --muted: 138 76% 92%; /* #dcfce7 */
+    --muted-foreground: 140 50% 45%;
+
+    --accent: 160 84% 39%; /* #10b981 */
+    --accent-foreground: 0 0% 100%;
+
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 210 40% 98%;
+
+    --border: 138 76% 87%; /* lighter forest */
+    --input: 138 76% 87%;
+    --ring: 160 84% 39%; /* #10b981 */
+  }
+
+  /* Sunset Theme */
+  .theme-sunset {
+    --background: 33 100% 96%; /* #fff7ed */
+    --foreground: 17 88% 34%; /* #9a3412 */
+
+    --card: 24 100% 88%; /* #fed7aa */
+    --card-foreground: 17 88% 34%; /* #9a3412 */
+
+    --popover: 24 100% 88%; /* #fed7aa */
+    --popover-foreground: 17 88% 34%; /* #9a3412 */
+
+    --primary: 20 91% 48%; /* #f97316 */
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 24 100% 88%; /* #fed7aa */
+    --secondary-foreground: 17 88% 34%; /* #9a3412 */
+
+    --muted: 24 100% 88%; /* #fed7aa */
+    --muted-foreground: 17 50% 55%;
+
+    --accent: 20 91% 48%; /* #f97316 */
+    --accent-foreground: 0 0% 100%;
+
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 210 40% 98%;
+
+    --border: 24 100% 83%; /* lighter sunset */
+    --input: 24 100% 83%;
+    --ring: 20 91% 48%; /* #f97316 */
+  }
+
+  /* Purple Theme */
+  .theme-purple {
+    --background: 270 100% 98%; /* #faf5ff */
+    --foreground: 270 91% 32%; /* #581c87 */
+
+    --card: 266 100% 92%; /* #e9d5ff */
+    --card-foreground: 270 91% 32%; /* #581c87 */
+
+    --popover: 266 100% 92%; /* #e9d5ff */
+    --popover-foreground: 270 91% 32%; /* #581c87 */
+
+    --primary: 262 83% 58%; /* #a855f7 */
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 266 100% 92%; /* #e9d5ff */
+    --secondary-foreground: 270 91% 32%; /* #581c87 */
+
+    --muted: 266 100% 92%; /* #e9d5ff */
+    --muted-foreground: 270 50% 55%;
+
+    --accent: 262 83% 58%; /* #a855f7 */
+    --accent-foreground: 0 0% 100%;
+
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 210 40% 98%;
+
+    --border: 266 100% 87%; /* lighter purple */
+    --input: 266 100% 87%;
+    --ring: 262 83% 58%; /* #a855f7 */
+  }
+
+  /* Rose Theme */
+  .theme-rose {
+    --background: 0 100% 98%; /* #fff1f2 */
+    --foreground: 347 77% 30%; /* #881337 */
+
+    --card: 351 100% 86%; /* #fecdd3 */
+    --card-foreground: 347 77% 30%; /* #881337 */
+
+    --popover: 351 100% 86%; /* #fecdd3 */
+    --popover-foreground: 347 77% 30%; /* #881337 */
+
+    --primary: 346 77% 49%; /* #f43f5e */
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 351 100% 86%; /* #fecdd3 */
+    --secondary-foreground: 347 77% 30%; /* #881337 */
+
+    --muted: 351 100% 86%; /* #fecdd3 */
+    --muted-foreground: 347 50% 55%;
+
+    --accent: 346 77% 49%; /* #f43f5e */
+    --accent-foreground: 0 0% 100%;
+
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 210 40% 98%;
+
+    --border: 351 100% 81%; /* lighter rose */
+    --input: 351 100% 81%;
+    --ring: 346 77% 49%; /* #f43f5e */
+  }
+
+  /* Force theme application for template dialogs */
+  .theme-ocean .document-templates-dialog {
+    background-color: hsl(240 100% 98%) !important; /* Ocean background */
+    color: hsl(207 100% 22%) !important; /* Ocean foreground */
+    border-color: hsl(199 100% 89%) !important; /* Ocean border */
+  }
+
+  .theme-forest .document-templates-dialog {
+    background-color: hsl(120 100% 97%) !important; /* Forest background */
+    color: hsl(140 100% 20%) !important; /* Forest foreground */
+    border-color: hsl(138 76% 87%) !important; /* Forest border */
+  }
+
+  .theme-sunset .document-templates-dialog {
+    background-color: hsl(33 100% 96%) !important; /* Sunset background */
+    color: hsl(17 88% 34%) !important; /* Sunset foreground */
+    border-color: hsl(24 100% 83%) !important; /* Sunset border */
+  }
+
+  .theme-purple .document-templates-dialog {
+    background-color: hsl(270 100% 98%) !important; /* Purple background */
+    color: hsl(270 91% 32%) !important; /* Purple foreground */
+    border-color: hsl(266 100% 87%) !important; /* Purple border */
+  }
+
+  .theme-rose .document-templates-dialog {
+    background-color: hsl(0 100% 98%) !important; /* Rose background */
+    color: hsl(347 77% 30%) !important; /* Rose foreground */
+    border-color: hsl(351 100% 81%) !important; /* Rose border */
+  }
+
+  /* Template cards theme application */
+  .theme-ocean .template-card {
+    background-color: hsl(199 100% 94%) !important; /* Ocean card */
+    color: hsl(207 100% 22%) !important;
+    border-color: hsl(199 100% 89%) !important;
+  }
+
+  .theme-forest .template-card {
+    background-color: hsl(138 76% 92%) !important; /* Forest card */
+    color: hsl(140 100% 20%) !important;
+    border-color: hsl(138 76% 87%) !important;
+  }
+
+  .theme-sunset .template-card {
+    background-color: hsl(24 100% 88%) !important; /* Sunset card */
+    color: hsl(17 88% 34%) !important;
+    border-color: hsl(24 100% 83%) !important;
+  }
+
+  .theme-purple .template-card {
+    background-color: hsl(266 100% 92%) !important; /* Purple card */
+    color: hsl(270 91% 32%) !important;
+    border-color: hsl(266 100% 87%) !important;
+  }
+
+  .theme-rose .template-card {
+    background-color: hsl(351 100% 86%) !important; /* Rose card */
+    color: hsl(347 77% 30%) !important;
+    border-color: hsl(351 100% 81%) !important;
+  }
+
+  /* Template preview content area */
+  .theme-ocean .template-preview-content {
+    background-color: hsl(240 100% 98%) !important;
+    color: hsl(207 100% 22%) !important;
+  }
+
+  .theme-forest .template-preview-content {
+    background-color: hsl(120 100% 97%) !important;
+    color: hsl(140 100% 20%) !important;
+  }
+
+  .theme-sunset .template-preview-content {
+    background-color: hsl(33 100% 96%) !important;
+    color: hsl(17 88% 34%) !important;
+  }
+
+  .theme-purple .template-preview-content {
+    background-color: hsl(270 100% 98%) !important;
+    color: hsl(270 91% 32%) !important;
+  }
+
+  .theme-rose .template-preview-content {
+    background-color: hsl(0 100% 98%) !important;
+    color: hsl(347 77% 30%) !important;
+  }
 }
 
 @layer base {
@@ -401,4 +644,46 @@ body {
   @media (prefers-color-scheme: dark) {
     color-scheme: dark;
   }
+}
+
+/* ===== DROPDOWN MENU FIXES ===== */
+
+/* Fix untuk dropdown layout shift dan overflow */
+[data-radix-dropdown-menu-content] {
+  position: fixed !important;
+  transform: none !important;
+  will-change: auto !important;
+  contain: layout style !important;
+  z-index: 9999 !important;
+}
+
+/* Prevent body scroll dan layout shift saat dropdown open */
+body:has([data-radix-dropdown-menu-content][data-state="open"]) {
+  overflow-x: hidden !important;
+  position: relative !important;
+  width: 100% !important;
+}
+
+/* Fix untuk animasi dropdown yang smooth */
+[data-radix-dropdown-menu-content][data-state="open"] {
+  animation-duration: 150ms !important;
+  animation-timing-function: ease-out !important;
+}
+
+[data-radix-dropdown-menu-content][data-state="closed"] {
+  animation-duration: 100ms !important;
+  animation-timing-function: ease-in !important;
+}
+
+/* Prevent layout shift pada trigger button */
+[data-radix-dropdown-menu-trigger] {
+  transform: none !important;
+  will-change: auto !important;
+}
+
+/* Fix untuk overlay yang tidak menyebabkan scroll */
+[data-radix-dropdown-menu-overlay] {
+  position: fixed !important;
+  inset: 0 !important;
+  z-index: 9998 !important;
 }

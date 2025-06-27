@@ -1,8 +1,13 @@
+import React from 'react';
+import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
+import rehypeHighlight from 'rehype-highlight';
+import { renderToStaticMarkup } from 'react-dom/server';
 import { MarkdownConverterResult } from '../types/export.types';
 
 /**
- * Konversi Markdown ke HTML dengan fitur lengkap
- * 
+ * Konversi Markdown ke HTML dengan fitur lengkap menggunakan ReactMarkdown
+ *
  * @param markdown - String markdown yang akan dikonversi
  * @param options - Opsi konversi (opsional)
  * @returns Object dengan HTML dan metadata
@@ -14,25 +19,92 @@ export const convertMarkdownToHTML = (
     sanitize?: boolean;
   } = {}
 ): MarkdownConverterResult => {
-  const { includeMetadata = false, sanitize = true } = options;
+  const { includeMetadata = false } = options;
 
   if (!markdown || typeof markdown !== 'string') {
     return { html: '', metadata: includeMetadata ? { headings: [], wordCount: 0, estimatedReadTime: 0 } : undefined };
   }
 
-  let html = markdown;
-  const headings: string[] = [];
+  try {
+    // Render ReactMarkdown to HTML string using server-side rendering
+    const markdownElement = React.createElement(ReactMarkdown, {
+      remarkPlugins: [remarkGfm],
+      rehypePlugins: [rehypeHighlight],
+      children: markdown
+    });
 
-  // Convert headings dan extract untuk metadata
-  html = html.replace(/^(#{1,6})\s+(.*)$/gim, (_, hashes, text) => {
-    const level = hashes.length;
-    const cleanText = text.trim();
+    const html = renderToStaticMarkup(markdownElement);
 
+    // Generate metadata jika diminta
+    let metadata;
     if (includeMetadata) {
-      headings.push(cleanText);
+      const headings = extractHeadings(markdown);
+      const wordCount = countWords(markdown);
+      const estimatedReadTime = Math.ceil(wordCount / 200); // 200 words per minute
+
+      metadata = {
+        headings: headings.map(h => h.text), // Convert to string array for compatibility
+        wordCount,
+        estimatedReadTime
+      };
     }
 
-    return `<h${level}>${cleanText}</h${level}>`;
+    return { html, metadata };
+  } catch (error) {
+    console.error('Error converting markdown to HTML with ReactMarkdown:', error);
+
+    // Fallback to enhanced simple conversion
+    const html = convertMarkdownToHTMLSimple(markdown);
+
+    // Generate metadata jika diminta
+    let metadata;
+    if (includeMetadata) {
+      const headings = extractHeadings(markdown);
+      const wordCount = countWords(markdown);
+      const estimatedReadTime = Math.ceil(wordCount / 200);
+
+      metadata = {
+        headings: headings.map(h => h.text),
+        wordCount,
+        estimatedReadTime
+      };
+    }
+
+    return { html, metadata };
+  }
+};
+
+/**
+ * Extract headings dari markdown untuk metadata
+ */
+const extractHeadings = (markdown: string): Array<{ level: number; text: string; id: string }> => {
+  const headings: Array<{ level: number; text: string; id: string }> = [];
+  const lines = markdown.split('\n');
+
+  lines.forEach(line => {
+    const match = line.match(/^(#{1,6})\s+(.*)$/);
+    if (match) {
+      const level = match[1].length;
+      const text = match[2].trim();
+      const id = text.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+
+      headings.push({ level, text, id });
+    }
+  });
+
+  return headings;
+};
+
+/**
+ * Simple markdown to HTML conversion as fallback
+ */
+const convertMarkdownToHTMLSimple = (markdown: string): string => {
+  let html = markdown;
+
+  // Convert headings
+  html = html.replace(/^(#{1,6})\s+(.*)$/gim, (_, hashes, text) => {
+    const level = hashes.length;
+    return `<h${level}>${text.trim()}</h${level}>`;
   });
 
   // Convert bold text
@@ -50,7 +122,7 @@ export const convertMarkdownToHTML = (
   // Convert links
   html = html.replace(
     /\[([^\]]*)\]\(([^)]*)\)/gim,
-    '<a href="$2">$1</a>'
+    '<a href="$2" target="_blank" rel="noopener noreferrer">$1</a>'
   );
 
   // Convert inline code
@@ -64,89 +136,13 @@ export const convertMarkdownToHTML = (
 
   // Convert unordered lists
   html = html.replace(/^\*\s+(.*)$/gim, '<li>$1</li>');
+  html = html.replace(/(<li>.*?<\/li>)(?:\s*\n\s*<li>.*?<\/li>)*/gims, '<ul>$&</ul>');
 
   // Convert ordered lists
   html = html.replace(/^\d+\.\s+(.*)$/gim, '<li>$1</li>');
 
-  // Wrap consecutive list items in ul/ol tags
-  html = wrapListItems(html);
-
   // Convert line breaks
   html = html.replace(/\n/gim, '<br>');
-
-  // Convert paragraphs (group non-tag content)
-  html = wrapParagraphs(html);
-
-  // Sanitize jika diperlukan
-  if (sanitize) {
-    html = sanitizeHTML(html);
-  }
-
-  // Generate metadata jika diminta
-  let metadata;
-  if (includeMetadata) {
-    const wordCount = countWords(markdown);
-    const estimatedReadTime = Math.ceil(wordCount / 200); // 200 words per minute
-
-    metadata = {
-      headings,
-      wordCount,
-      estimatedReadTime
-    };
-  }
-
-  return { html, metadata };
-};
-
-/**
- * Wrap list items dalam ul/ol tags
- */
-const wrapListItems = (html: string): string => {
-  // Wrap unordered list items
-  html = html.replace(/(<li>.*?<\/li>)(?:\s*<br>\s*<li>.*?<\/li>)*/gims, (match) => {
-    return `<ul>${match.replace(/<br>\s*/g, '')}</ul>`;
-  });
-
-  return html;
-};
-
-/**
- * Wrap content dalam paragraph tags
- */
-const wrapParagraphs = (html: string): string => {
-  // Split by block elements
-  const blockElements = ['h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'ul', 'ol', 'blockquote', 'pre', 'div'];
-  const blockRegex = new RegExp(`<(${blockElements.join('|')})[^>]*>.*?</\\1>`, 'gims');
-
-  const parts = html.split(blockRegex);
-
-  return parts.map(part => {
-    // Skip jika sudah merupakan block element atau kosong
-    if (!part.trim() || blockRegex.test(part)) {
-      return part;
-    }
-
-    // Wrap dalam paragraph jika bukan block element
-    const trimmed = part.trim();
-    if (trimmed && !trimmed.startsWith('<')) {
-      return `<p>${trimmed}</p>`;
-    }
-
-    return part;
-  }).join('');
-};
-
-/**
- * Basic HTML sanitization
- */
-const sanitizeHTML = (html: string): string => {
-  // Remove script tags dan event handlers
-  html = html.replace(/<script[^>]*>.*?<\/script>/gims, '');
-  html = html.replace(/on\w+="[^"]*"/gim, '');
-  html = html.replace(/javascript:/gim, '');
-
-  // Filter hanya tag yang diizinkan (basic implementation)
-  // Untuk production, gunakan library seperti DOMPurify
 
   return html;
 };
@@ -162,24 +158,7 @@ const countWords = (text: string): number => {
     .length;
 };
 
-/**
- * Extract headings dari markdown
- */
-export const extractHeadings = (markdown: string): Array<{ level: number; text: string; id: string }> => {
-  const headings: Array<{ level: number; text: string; id: string }> = [];
-  const headingRegex = /^(#{1,6})\s+(.*)$/gim;
 
-  let match;
-  while ((match = headingRegex.exec(markdown)) !== null) {
-    const level = match[1].length;
-    const text = match[2].trim();
-    const id = text.toLowerCase().replace(/[^\w\s]/g, '').replace(/\s+/g, '-');
-
-    headings.push({ level, text, id });
-  }
-
-  return headings;
-};
 
 /**
  * Generate table of contents dari headings

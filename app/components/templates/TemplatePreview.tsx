@@ -8,7 +8,7 @@ import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Download } from "lucide-react";
 import { TemplatePreviewProps } from '@/types/templates';
-import { difficultyColors, formatCategoryName, formatDifficultyName } from '@/utils/templateUtils';
+import { getThemeAwareDifficultyClasses, formatCategoryName, formatDifficultyName } from '@/utils/templateUtils';
 
 /**
  * Preview dialog untuk menampilkan detail template
@@ -30,14 +30,14 @@ export const TemplatePreview: React.FC<TemplatePreviewProps> = ({
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="w-[95vw] max-w-4xl h-[85vh] flex flex-col p-0 mx-auto">
+      <DialogContent className="document-templates-dialog w-[95vw] max-w-4xl h-[85vh] flex flex-col p-0 mx-auto">
         <DialogHeader className="p-3 sm:p-4 pb-2 flex-shrink-0 pr-12">
           <DialogTitle className="flex flex-col gap-3">
             {/* Template Info Row */}
             <div className="flex items-center">
               <span className="text-lg sm:text-2xl mr-2">{template.icon}</span>
               <span className="text-sm sm:text-base">{template.name}</span>
-              <Badge className={`ml-2 text-xs ${difficultyColors[template.difficulty as keyof typeof difficultyColors]}`}>
+              <Badge className={`ml-2 text-xs ${getThemeAwareDifficultyClasses(template.difficulty)}`}>
                 {formatDifficultyName(template.difficulty)}
               </Badge>
             </div>
@@ -97,10 +97,10 @@ export const TemplatePreview: React.FC<TemplatePreviewProps> = ({
           </div>
 
           {/* Template Content Preview */}
-          <div className="flex-1 overflow-auto p-2 sm:p-3 md:p-4 min-h-0">
+          <div className="template-preview-content flex-1 overflow-auto p-2 sm:p-3 md:p-4 min-h-0">
             <div className="prose prose-sm max-w-none dark:prose-invert h-full">
               <div className="h-full overflow-y-auto">
-                <pre className="whitespace-pre-wrap text-xs sm:text-sm bg-muted/50 p-2 sm:p-3 md:p-4 rounded-lg border min-h-full">
+                <pre className="template-preview-content whitespace-pre-wrap text-xs sm:text-sm bg-muted/50 p-2 sm:p-3 md:p-4 rounded-lg border min-h-full">
                   {template.content}
                 </pre>
               </div>

@@ -5,7 +5,7 @@ import {
   Scripts,
   ScrollRestoration,
 } from "react-router";
-import type { LinksFunction } from "react-router";
+import type { LinksFunction, HeadersFunction } from "react-router";
 
 import "./tailwind.css";
 
@@ -28,7 +28,21 @@ export const links: LinksFunction = () => [
   },
 ];
 
-
+// Security headers untuk HSTS dan lainnya
+export const headers: HeadersFunction = () => ({
+  // HSTS - HTTP Strict Transport Security
+  "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
+  // Prevent MIME type sniffing
+  "X-Content-Type-Options": "nosniff",
+  // Prevent clickjacking
+  "X-Frame-Options": "DENY",
+  // XSS Protection
+  "X-XSS-Protection": "1; mode=block",
+  // Referrer Policy
+  "Referrer-Policy": "strict-origin-when-cross-origin",
+  // Content Security Policy
+  "Content-Security-Policy": "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self' data: https://fonts.googleapis.com https://fonts.gstatic.com; connect-src 'self'; media-src 'self'; object-src 'none'; child-src 'none'; worker-src 'self'; frame-ancestors 'none'; form-action 'self'; base-uri 'self';"
+});
 
 export function Layout({ children }: { children: React.ReactNode }) {
   return (
@@ -36,13 +50,27 @@ export function Layout({ children }: { children: React.ReactNode }) {
       <head>
         <meta charSet="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+        {/* Security Meta Tags */}
+        <meta httpEquiv="X-Content-Type-Options" content="nosniff" />
+        <meta httpEquiv="X-Frame-Options" content="DENY" />
+        <meta httpEquiv="X-XSS-Protection" content="1; mode=block" />
+        <meta httpEquiv="Referrer-Policy" content="strict-origin-when-cross-origin" />
+
         {/* 🎨 Force favicon override - dengan cache busting */}
         <link rel="icon" href="/markdownlogo.svg?v=2024" type="image/svg+xml" />
         <link rel="shortcut icon" href="/markdownlogo.svg?v=2024" type="image/svg+xml" />
         <Meta />
         <Links />
       </head>
-      <body style={{ margin: 0, padding: 0, overflowX: 'hidden' }}>
+      <body style={{
+        margin: 0,
+        padding: 0,
+        overflowX: 'hidden',
+        position: 'relative',
+        width: '100%',
+        minHeight: '100vh'
+      }}>
         {children}
         <ScrollRestoration />
         <Scripts />

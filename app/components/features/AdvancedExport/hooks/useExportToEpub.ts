@@ -293,11 +293,20 @@ const generateEpubStyles = (options: ExportOptions): string => {
  * Generate EPUB header
  */
 const generateEpubHeader = (options: ExportOptions): string => {
+  // Detect dark theme context
+  const isDark = typeof window !== 'undefined' &&
+    (document.body.classList.contains('dark') ||
+     document.body.classList.contains('theme-dark') ||
+     document.body.getAttribute('data-theme') === 'dark' ||
+     window.matchMedia('(prefers-color-scheme: dark)').matches);
+
+  const textColor = isDark ? '#ffffff' : '#333333';
+
   return `
     <header class="book-header">
         <h1 class="book-title">${escapeHtml(options.title)}</h1>
-        <p class="book-author">by ${escapeHtml(options.author)}</p>
-        ${options.description ? `<p class="book-description">${escapeHtml(options.description)}</p>` : ''}
+        <p class="book-author" style="color: ${textColor};">by ${escapeHtml(options.author)}</p>
+        ${options.description ? `<p class="book-description" style="color: ${textColor};">${escapeHtml(options.description)}</p>` : ''}
     </header>
   `;
 };

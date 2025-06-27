@@ -89,31 +89,118 @@ export const exportJson = async (
   callbacks: FileOperationCallbacks
 ): Promise<ExportResult> => {
   try {
+    // Debug logging (can be removed in production)
+    if (process.env.NODE_ENV === 'development') {
+      console.log('JSON Export - Config received:');
+      console.log('  fileName:', config.fileName);
+      console.log('  contentLength:', config.content?.length || 0);
+      console.log('  contentPreview:', config.content?.substring(0, 100) || 'No content');
+    }
+
+    // Validate content
+    const content = config.content || '';
+    const trimmedContent = content.trim();
+
+    // Calculate more accurate word count
+    const wordCount = trimmedContent === '' ? 0 : trimmedContent.split(/\s+/).filter(word => word.length > 0).length;
+
+    // Calculate character count
+    const characterCount = content.length;
+    const characterCountNoSpaces = content.replace(/\s/g, '').length;
+
+    // Calculate line count
+    const lineCount = content.split('\n').length;
+
+    // Debug word count calculation (development only)
+    if (process.env.NODE_ENV === 'development') {
+      console.log('Word count calculation:', { wordCount, characterCount, lineCount });
+    }
+
+    // Extract basic metadata from markdown content
+    const lines = content.split('\n');
+    const title = lines.find(line => line.startsWith('# '))?.replace('# ', '').trim() ||
+                  config.fileName.replace('.md', '');
+
+    // Extract headings for structure overview
+    const headings = lines
+      .filter(line => line.match(/^#{1,6}\s/))
+      .map(line => {
+        const level = line.match(/^(#{1,6})/)?.[1].length || 1;
+        const text = line.replace(/^#{1,6}\s/, '').trim();
+        return { level, text };
+      })
+      .slice(0, 20); // Limit to first 20 headings
+
+    // Extract code blocks count
+    const codeBlockCount = (content.match(/```/g) || []).length / 2;
+
+    // Extract links count
+    const linkCount = (content.match(/\[.*?\]\(.*?\)/g) || []).length;
+
+    // Extract images count
+    const imageCount = (content.match(/!\[.*?\]\(.*?\)/g) || []).length;
+
+    // Extract tables count
+    const tableCount = (content.match(/\|.*\|/g) || []).length > 0 ?
+      (content.split('\n').filter(line => line.includes('|')).length > 0 ? 1 : 0) : 0;
+
+    // Extract list items count
+    const listItemCount = (content.match(/^[\s]*[-*+]\s/gm) || []).length +
+                         (content.match(/^[\s]*\d+\.\s/gm) || []).length;
+
+    // Extract blockquotes count
+    const blockquoteCount = (content.match(/^>/gm) || []).length;
+
+    // Calculate reading time (average 200 words per minute)
+    const readingTimeMinutes = Math.ceil(wordCount / 200);
+
     const jsonData: JsonExportData = {
       fileName: config.fileName,
+      title,
       content: config.content,
-      wordCount: config.content.trim().split(/\s+/).length,
-      createdAt: new Date().toISOString(),
-      version: "1.0"
+      metadata: {
+        wordCount,
+        characterCount,
+        characterCountNoSpaces,
+        lineCount,
+        codeBlockCount,
+        linkCount,
+        imageCount,
+        headingCount: headings.length,
+        tableCount,
+        listItemCount,
+        blockquoteCount,
+        readingTimeMinutes
+      },
+      structure: {
+        headings: headings
+      },
+      exportInfo: {
+        createdAt: new Date().toISOString(),
+        version: "2.0",
+        exportedBy: "MarkDown Ultra Remix",
+        format: "Enhanced JSON Export"
+      }
     };
-    
+
     const blob = new Blob([JSON.stringify(jsonData, null, 2)], {
       type: 'application/json;charset=utf-8'
     });
-    
+
     const jsonFileName = config.fileName.replace('.md', '.json');
     fileSaver.saveAs(blob, jsonFileName);
-    
-    callbacks.onSuccess('Your document has been exported as JSON.');
-    
+
+    callbacks.onSuccess(`JSON exported with ${wordCount} words and ${lineCount} lines.`);
+
     return {
       success: true,
       fileName: jsonFileName
     };
-  } catch {
+  } catch (error) {
+    console.error('JSON export error:', error);
     const errorMessage = 'Failed to export JSON file';
     callbacks.onError(errorMessage);
-    
+
     return {
       success: false,
       error: errorMessage

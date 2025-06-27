@@ -361,11 +361,20 @@ const generatePresentationStyles = (options: ExportOptions): string => {
  * Generate title slide
  */
 const generateTitleSlide = (options: ExportOptions): string => {
+    // Detect dark theme context
+    const isDark = typeof window !== 'undefined' &&
+      (document.body.classList.contains('dark') ||
+       document.body.classList.contains('theme-dark') ||
+       document.body.getAttribute('data-theme') === 'dark' ||
+       window.matchMedia('(prefers-color-scheme: dark)').matches);
+
+    const textColor = isDark ? '#ffffff' : '#333333';
+
     return `
     <div class="slide title-slide active">
         <h1>${escapeHtml(options.title)}</h1>
         ${options.description ? `<div class="subtitle">${escapeHtml(options.description)}</div>` : ''}
-        <div class="author">by ${escapeHtml(options.author)}</div>
+        <div class="author" style="color: ${textColor};">by ${escapeHtml(options.author)}</div>
     </div>
   `;
 };

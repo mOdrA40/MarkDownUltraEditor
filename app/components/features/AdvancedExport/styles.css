@@ -37,9 +37,22 @@
     box-shadow:
       0 2px 4px 0 rgb(0 0 0 / 0.1),
       0 1px 2px 0 rgb(0 0 0 / 0.06);
-    border: 1px solid hsl(var(--border));
+    border: 2px solid hsl(var(--primary));
     transform: none;
     z-index: 10;
+  }
+
+  /* Theme-aware active states */
+  [data-theme="forest"] .advanced-export-tabs-trigger[data-state="active"] {
+    border-color: #10b981;
+  }
+
+  [data-theme="ocean"] .advanced-export-tabs-trigger[data-state="active"] {
+    border-color: #0ea5e9;
+  }
+
+  [data-theme="dark"] .advanced-export-tabs-trigger[data-state="active"] {
+    border-color: #60a5fa;
   }
 
   .advanced-export-tabs-trigger:hover:not([data-state="active"]) {
@@ -112,9 +125,22 @@
   .advanced-export-mobile-tab-trigger[data-state="active"] {
     background: hsl(var(--background));
     color: hsl(var(--foreground));
-    border-color: hsl(var(--border));
+    border: 2px solid hsl(var(--primary));
     box-shadow: 0 2px 4px 0 rgb(0 0 0 / 0.1), 0 1px 2px 0 rgb(0 0 0 / 0.06);
     transform: none;
+  }
+
+  /* Theme-aware mobile active states */
+  [data-theme="forest"] .advanced-export-mobile-tab-trigger[data-state="active"] {
+    border-color: #10b981;
+  }
+
+  [data-theme="ocean"] .advanced-export-mobile-tab-trigger[data-state="active"] {
+    border-color: #0ea5e9;
+  }
+
+  [data-theme="dark"] .advanced-export-mobile-tab-trigger[data-state="active"] {
+    border-color: #60a5fa;
   }
 
   .advanced-export-mobile-tab-trigger:hover:not([data-state="active"]) {
@@ -225,6 +251,102 @@
   background: linear-gradient(90deg, #10b981 0%, #3b82f6 100%);
   transition: width 0.3s ease;
   transform-origin: left;
+}
+
+/* Icon styling in tabs */
+.advanced-export-tabs-trigger svg,
+.advanced-export-mobile-tab-trigger svg {
+  transition: color 0.2s ease;
+}
+
+.advanced-export-tabs-trigger[data-state="active"] svg,
+.advanced-export-mobile-tab-trigger[data-state="active"] svg {
+  color: hsl(var(--primary));
+}
+
+/* Theme-aware icon colors */
+[data-theme="forest"] .advanced-export-tabs-trigger[data-state="active"] svg,
+[data-theme="forest"] .advanced-export-mobile-tab-trigger[data-state="active"] svg {
+  color: #10b981;
+}
+
+[data-theme="ocean"] .advanced-export-tabs-trigger[data-state="active"] svg,
+[data-theme="ocean"] .advanced-export-mobile-tab-trigger[data-state="active"] svg {
+  color: #0ea5e9;
+}
+
+[data-theme="dark"] .advanced-export-tabs-trigger[data-state="active"] svg,
+[data-theme="dark"] .advanced-export-mobile-tab-trigger[data-state="active"] svg {
+  color: #60a5fa;
+}
+
+/* Separator styling with theme awareness */
+.advanced-export-separator {
+  border-color: hsl(var(--border));
+}
+
+[data-theme="forest"] .advanced-export-separator {
+  border-color: rgba(16, 185, 129, 0.2);
+}
+
+[data-theme="ocean"] .advanced-export-separator {
+  border-color: rgba(14, 165, 233, 0.2);
+}
+
+[data-theme="dark"] .advanced-export-separator {
+  border-color: rgba(96, 165, 250, 0.2);
+}
+
+/* Preview content styling with theme awareness */
+.advanced-export-preview-document .author {
+  color: hsl(var(--foreground)) !important;
+  opacity: 0.8 !important;
+}
+
+[data-theme="forest"] .advanced-export-preview-document .author {
+  color: #1f2937 !important;
+}
+
+[data-theme="ocean"] .advanced-export-preview-document .author {
+  color: #1e293b !important;
+}
+
+[data-theme="dark"] .advanced-export-preview-document .author {
+  color: #e5e7eb !important;
+}
+
+/* Title styling with theme awareness */
+.advanced-export-preview-document .title {
+  color: hsl(var(--primary)) !important;
+}
+
+[data-theme="forest"] .advanced-export-preview-document .title {
+  color: #10b981 !important;
+}
+
+[data-theme="ocean"] .advanced-export-preview-document .title {
+  color: #0ea5e9 !important;
+}
+
+[data-theme="dark"] .advanced-export-preview-document .title {
+  color: #60a5fa !important;
+}
+
+/* Header border styling */
+.advanced-export-preview-document .header {
+  border-bottom-color: hsl(var(--primary)) !important;
+}
+
+[data-theme="forest"] .advanced-export-preview-document .header {
+  border-bottom-color: #10b981 !important;
+}
+
+[data-theme="ocean"] .advanced-export-preview-document .header {
+  border-bottom-color: #0ea5e9 !important;
+}
+
+[data-theme="dark"] .advanced-export-preview-document .header {
+  border-bottom-color: #60a5fa !important;
 }
 
 /* Scrollbar styling */

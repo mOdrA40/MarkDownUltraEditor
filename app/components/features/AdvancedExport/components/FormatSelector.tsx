@@ -7,6 +7,8 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Separator } from "@/components/ui/separator";
 import { FormatSelectorProps, ExportOptions } from '../types/export.types';
 import { EXPORT_FORMATS } from '../utils/constants';
+import type { Theme } from '@/components/features/ThemeSelector';
+import { getThemeTextColor } from '@/utils/themeUtils';
 
 /**
  * Komponen untuk memilih format export dan konfigurasi dasar
@@ -14,6 +16,7 @@ import { EXPORT_FORMATS } from '../utils/constants';
 interface FormatSelectorComponentProps extends FormatSelectorProps {
   options: ExportOptions;
   onOptionsChange: <K extends keyof ExportOptions>(key: K, value: ExportOptions[K]) => void;
+  currentTheme?: Theme;
 }
 
 export const FormatSelector: React.FC<FormatSelectorComponentProps> = ({
@@ -22,8 +25,11 @@ export const FormatSelector: React.FC<FormatSelectorComponentProps> = ({
   options,
   onOptionsChange,
   isMobile = false,
-  isTablet = false
+  isTablet = false,
+  currentTheme
 }) => {
+  const textColor = getThemeTextColor(currentTheme);
+
   return (
     <div className="space-y-3 sm:space-y-4">
       {/* Format Selection */}
@@ -106,6 +112,11 @@ export const FormatSelector: React.FC<FormatSelectorComponentProps> = ({
             className={`${
               isMobile ? 'text-xs h-9' : 'text-xs sm:text-sm h-8 sm:h-9'
             }`}
+            style={{
+              color: textColor,
+              backgroundColor: currentTheme?.background || undefined,
+              borderColor: currentTheme?.accent || undefined
+            }}
           />
         </div>
 

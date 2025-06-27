@@ -2,7 +2,7 @@ import { useState, useCallback } from 'react';
 import { ExportOptions } from '../types/export.types';
 import { DEFAULT_EXPORT_OPTIONS } from '../utils/constants';
 
-export const useExportOptions = (fileName: string) => {
+export const useExportOptions = (fileName: string, currentTheme?: any) => {
   const [options, setOptions] = useState<ExportOptions>({
     ...DEFAULT_EXPORT_OPTIONS,
     title: fileName.replace('.md', ''),

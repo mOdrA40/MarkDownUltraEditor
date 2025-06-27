@@ -35,7 +35,7 @@ export type PageOrientation = 'portrait' | 'landscape';
 /**
  * Theme yang tersedia
  */
-export type ThemeType = 'default' | 'professional' | 'modern' | 'academic';
+export type ThemeType = 'default' | 'professional' | 'modern' | 'academic' | 'dark';
 
 /**
  * Mode preview responsif

@@ -14,7 +14,7 @@ import { DocumentTemplate } from '@/types/templates';
  * Template selection options interface
  */
 interface TemplateSelectionOptions {
-  onSelectTemplate?: (template: DocumentTemplate) => void;
+  onSelectTemplate?: (content: string, fileName: string) => void;
   onClose?: () => void;
 }
 
@@ -40,9 +40,15 @@ export const useTemplateActions = (
   const [showPreview, setShowPreview] = useState(false);
 
   const handleSelectTemplate = useCallback((template: DocumentTemplate) => {
+    // Debug logging (development only)
+    if (process.env.NODE_ENV === 'development') {
+      console.log('useTemplateActions: handleSelectTemplate called with template:', template.name);
+      console.log('useTemplateActions: template content length:', template.content.length);
+    }
+
     setSelectedTemplate(template);
     if (onSelectTemplate) {
-      onSelectTemplate(template);
+      onSelectTemplate(template.content, template.name);
     }
   }, [onSelectTemplate]);
 

@@ -92,8 +92,36 @@ export const useFileOperations = ({
    * Handle JSON export
    */
   const handleExportJson = async (): Promise<void> => {
+    // Debug logging (development only)
+    if (process.env.NODE_ENV === 'development') {
+      console.log('useFileOperations: handleExportJson called');
+      console.log('  markdown length:', markdown.length);
+      console.log('  fileName:', fileName);
+    }
+
+    // Small delay to ensure state is updated
+    await new Promise(resolve => setTimeout(resolve, 100));
+
+    // Fallback: if markdown is empty, try to get from localStorage
+    let contentToExport = markdown;
+    if (!contentToExport || contentToExport.trim().length === 0) {
+      console.log('  markdown is empty, trying localStorage fallback');
+      try {
+        const savedContent = localStorage.getItem('markdownEditor_content');
+        if (savedContent) {
+          contentToExport = savedContent;
+          console.log('  fallback content length:', contentToExport.length);
+          console.log('  fallback content preview:', contentToExport.substring(0, 100));
+        } else {
+          console.log('  no content found in localStorage');
+        }
+      } catch (error) {
+        console.warn('  failed to get fallback content:', error);
+      }
+    }
+
     const config: ExportConfig = {
-      content: markdown,
+      content: contentToExport,
       fileName,
       format: 'json'
     };

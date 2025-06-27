@@ -2,6 +2,29 @@ import { HTMLGeneratorOptions, ThemeConfig } from '../types/export.types';
 import { THEMES } from './constants';
 
 /**
+ * Get appropriate text color based on current theme context
+ */
+const getTextColorForTheme = (isDarkTheme: boolean): string => {
+    return isDarkTheme ? '#ffffff' : '#000000';
+};
+
+/**
+ * Detect if current context is dark theme
+ */
+const isDarkThemeContext = (): boolean => {
+    // Check if body has dark theme classes or if user prefers dark mode
+    if (typeof window !== 'undefined') {
+        const body = document.body;
+        const isDarkClass = body.classList.contains('dark') ||
+                           body.classList.contains('theme-dark') ||
+                           body.getAttribute('data-theme') === 'dark';
+        const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        return isDarkClass || prefersDark;
+    }
+    return false;
+};
+
+/**
  * Generate styled HTML document untuk export
  * 
  * @param options - Konfigurasi untuk generate HTML
@@ -9,6 +32,8 @@ import { THEMES } from './constants';
  */
 export const generateStyledHTML = (options: HTMLGeneratorOptions): string => {
     const theme = THEMES[options.theme] || THEMES.default;
+    const isDark = isDarkThemeContext();
+    const textColor = getTextColorForTheme(isDark);
 
     return `<!DOCTYPE html>
 <html lang="en">
@@ -27,7 +52,7 @@ export const generateStyledHTML = (options: HTMLGeneratorOptions): string => {
 </head>
 <body>
     ${generateWatermark(options)}
-    ${generateHeader(options)}
+    ${generateHeader(options, textColor)}
     <div class="content">
         ${options.htmlContent}
     </div>
@@ -139,25 +164,30 @@ const generateComponentStyles = (theme: ThemeConfig): string => {
         }
 
         code {
-            background-color: ${isDark ? '#3a3a3a' : '#f1f3f4'};
+            background-color: ${isDark ? '#1f2937' : '#f8f9fa'};
+            color: ${isDark ? '#e5e7eb' : theme.primaryColor};
             padding: 0.2em 0.4em;
             border-radius: 3px;
             font-family: 'Courier New', monospace;
             font-size: 0.9em;
+            border: 1px solid ${isDark ? '#374151' : '#e9ecef'};
         }
 
         pre {
-            background-color: ${isDark ? '#2a2a2a' : '#f8f9fa'};
+            background-color: ${isDark ? '#1f2937' : '#f8f9fa'};
+            color: ${isDark ? '#e5e7eb' : theme.primaryColor};
             padding: 1.5em;
             border-radius: 8px;
             overflow-x: auto;
             margin: 1.5em 0;
-            border-left: 4px solid ${theme.accentColor};
+            border: 1px solid ${isDark ? '#374151' : '#e9ecef'};
         }
 
         pre code {
             background: none;
             padding: 0;
+            border: none;
+            color: inherit;
         }
 
         img {
@@ -252,34 +282,64 @@ const generateWatermark = (options: HTMLGeneratorOptions): string => {
 };
 
 /**
- * Generate header section
+ * Generate header section with theme-aware colors
  */
-const generateHeader = (options: HTMLGeneratorOptions): string => {
+const generateHeader = (options: HTMLGeneratorOptions, textColor?: string): string => {
     if (!options.headerFooter) return '';
+
+    // Detect current theme context for better color selection
+    const isDark = typeof window !== 'undefined' &&
+      (document.body.classList.contains('dark') ||
+       document.body.classList.contains('theme-dark') ||
+       document.body.getAttribute('data-theme') === 'dark' ||
+       window.matchMedia('(prefers-color-scheme: dark)').matches);
+
+    // Smart color selection based on theme and context
+    let authorColor = textColor;
+    if (!authorColor) {
+        // For dark themes or dark context, use light colors
+        const themeConfig = THEMES[options.theme];
+        const isDarkTheme = options.theme === 'dark' ||
+                           (themeConfig && themeConfig.backgroundColor !== '#ffffff' && themeConfig.backgroundColor !== '#fafafa');
+
+        if (isDark || isDarkTheme) {
+            authorColor = '#e5e7eb'; // Light gray for dark backgrounds
+        } else {
+            // For light themes, use dark colors
+            authorColor = themeConfig?.primaryColor || '#374151';
+        }
+    }
+
+    // Ensure good contrast for title
+    const titleColor = THEMES[options.theme].accentColor || (isDark ? '#60a5fa' : '#2563eb');
+
+    // Border color with theme awareness
+    const borderColor = THEMES[options.theme].accentColor || (isDark ? '#4b5563' : '#d1d5db');
 
     return `
     <div class="header" style="
         text-align: center;
         margin-bottom: 3em;
         padding-bottom: 2em;
-        border-bottom: 2px solid ${THEMES[options.theme].accentColor};
+        border-bottom: 2px solid ${borderColor};
     ">
         <div class="title" style="
             font-size: 3em;
-            color: ${THEMES[options.theme].accentColor};
+            color: ${titleColor};
             margin-bottom: 0.5em;
             font-weight: 700;
         ">${escapeHtml(options.title)}</div>
         <div class="author" style="
             font-size: 1.2em;
-            color: ${THEMES[options.theme].primaryColor};
-            opacity: 0.8;
+            color: ${authorColor};
+            opacity: 0.9;
+            font-weight: 500;
         ">by ${escapeHtml(options.author)}</div>
         ${options.description ? `
         <div class="description" style="
             font-size: 1em;
-            color: ${THEMES[options.theme].primaryColor};
-            opacity: 0.7;
+            color: ${authorColor};
+            opacity: 0.8;
             margin-top: 0.5em;
         ">${escapeHtml(options.description)}</div>
         ` : ''}

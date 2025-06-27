@@ -7,6 +7,7 @@ import { useState, useCallback, useRef, useEffect } from 'react';
 import { useUndoRedo , useToast } from '@/hooks/core';
 import { EditorState, UseEditorStateReturn } from '../types';
 import { DEFAULT_FILE, STORAGE_KEYS, SUCCESS_MESSAGES } from '../utils/constants';
+import { getStorageInfo, cleanupStorage, formatBytes } from '@/utils/storageUtils';
 
 /**
  * Custom hook for managing editor state
@@ -82,10 +83,21 @@ export const useEditorState = (
     console.log('Creating new file with content:', DEFAULT_FILE.CONTENT);
     console.log('Setting filename to:', DEFAULT_FILE.NAME);
 
+    // Update state
     setMarkdown(DEFAULT_FILE.CONTENT);
     setFileName(DEFAULT_FILE.NAME);
     setIsModified(false);
     clearHistory();
+
+    // Immediately update localStorage to prevent race conditions
+    if (typeof localStorage !== 'undefined') {
+      try {
+        localStorage.setItem(STORAGE_KEYS.CONTENT, DEFAULT_FILE.CONTENT);
+        localStorage.setItem(STORAGE_KEYS.FILE_NAME, DEFAULT_FILE.NAME);
+      } catch (error) {
+        console.warn('Failed to save to localStorage:', error);
+      }
+    }
 
     toast({
       title: "New file created",
@@ -106,34 +118,84 @@ export const useEditorState = (
       if (!confirmed) return;
     }
 
+    // Debug logging (development only)
+    if (process.env.NODE_ENV === 'development') {
+      console.log('Loading file:', name, 'with content length:', content.length);
+    }
+
+    // Clear history first to prevent conflicts
+    clearHistory();
+
+    // Update state - setMarkdown will handle the content update
     setMarkdown(content);
     setFileName(name);
     setIsModified(false);
-    clearHistory();
-    
+
+    // Immediately update localStorage to prevent race conditions
+    if (typeof localStorage !== 'undefined') {
+      try {
+        localStorage.setItem(STORAGE_KEYS.CONTENT, content);
+        localStorage.setItem(STORAGE_KEYS.FILE_NAME, name);
+        console.log('Saved to localStorage:', name);
+      } catch (error) {
+        console.warn('Failed to save to localStorage:', error);
+      }
+    }
+
     toast({
       title: SUCCESS_MESSAGES.FILE_LOADED,
       description: `${name} has been loaded successfully.`,
     });
+
+    console.log('File loaded successfully:', name);
   }, [isModified, setMarkdown, clearHistory, toast]);
 
   /**
-   * Auto-save functionality
+   * Auto-save functionality with memory leak prevention
    */
   useEffect(() => {
     if (typeof localStorage === 'undefined') return;
 
     if (autoSave && isModified && isInitialLoadRef.current) {
       const timer = setTimeout(() => {
-        localStorage.setItem(STORAGE_KEYS.CONTENT, markdown);
-        localStorage.setItem(STORAGE_KEYS.FILE_NAME, fileName);
-        setIsModified(false);
+        try {
+          // Check storage capacity before saving
+          const contentSize = new Blob([markdown]).size;
+          const fileNameSize = new Blob([fileName]).size;
+          const totalSize = contentSize + fileNameSize;
 
-        toast({
-          title: SUCCESS_MESSAGES.AUTO_SAVED,
-          description: "Your changes have been saved locally.",
-          duration: 2000,
-        });
+          // Check if we have enough space (leave 1MB buffer)
+          const storageInfo = getStorageInfo();
+          if (storageInfo.available < totalSize + (1024 * 1024)) {
+            // Clean up old data if needed
+            cleanupStorage([
+              STORAGE_KEYS.CONTENT,
+              STORAGE_KEYS.FILE_NAME,
+              STORAGE_KEYS.THEME,
+              STORAGE_KEYS.SETTINGS,
+              STORAGE_KEYS.UI_STATE
+            ]);
+          }
+
+          // Save with error handling
+          localStorage.setItem(STORAGE_KEYS.CONTENT, markdown);
+          localStorage.setItem(STORAGE_KEYS.FILE_NAME, fileName);
+          setIsModified(false);
+
+          toast({
+            title: SUCCESS_MESSAGES.AUTO_SAVED,
+            description: `Saved locally (${formatBytes(totalSize)})`,
+            duration: 2000,
+          });
+        } catch (error) {
+          console.warn('Auto-save failed:', error);
+          toast({
+            title: "Auto-save Warning",
+            description: "Storage limit reached. Consider exporting your work.",
+            variant: "destructive",
+            duration: 5000,
+          });
+        }
       }, 2000);
 
       return () => clearTimeout(timer);

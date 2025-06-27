@@ -57,6 +57,12 @@ export const THEMES: Record<string, ThemeConfig> = {
     primaryColor: '#2d3748',
     backgroundColor: '#ffffff',
     accentColor: '#805ad5'
+  },
+  dark: {
+    name: 'Dark',
+    primaryColor: '#e5e7eb',
+    backgroundColor: '#1f2937',
+    accentColor: '#60a5fa'
   }
 };
 

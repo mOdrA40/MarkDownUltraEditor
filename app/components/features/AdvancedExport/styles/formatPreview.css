@@ -1,0 +1,346 @@
+/**
+ * Format-specific preview styles untuk Advanced Export
+ * @author Axel Modra
+ */
+
+/* Base preview styles */
+.preview-content {
+  transition: all 0.3s ease;
+  overflow-y: auto;
+  scrollbar-width: thin;
+}
+
+.preview-content::-webkit-scrollbar {
+  width: 6px;
+}
+
+.preview-content::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.preview-content::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 3px;
+}
+
+.preview-content::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 0, 0, 0.3);
+}
+
+/* PDF Preview Styles */
+.pdf-preview {
+  background: linear-gradient(to bottom, #f8f9fa 0%, #ffffff 100%);
+  border: 1px solid #e9ecef;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.pdf-preview .content {
+  font-family: 'Times New Roman', serif;
+  color: #212529;
+  line-height: 1.6;
+}
+
+.pdf-preview h1,
+.pdf-preview h2,
+.pdf-preview h3,
+.pdf-preview h4,
+.pdf-preview h5,
+.pdf-preview h6 {
+  color: #495057;
+  font-weight: 600;
+}
+
+.pdf-preview p {
+  text-align: justify;
+  margin: 1em 0;
+}
+
+/* RTF/DOCX Preview Styles */
+.docx-preview {
+  background: #ffffff;
+  border: 2px solid #dee2e6;
+  border-radius: 6px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.docx-preview .content {
+  font-family: 'Times New Roman', serif;
+  color: #000000;
+  line-height: 1.8;
+  padding: 60px 40px;
+}
+
+.docx-preview h1,
+.docx-preview h2,
+.docx-preview h3,
+.docx-preview h4,
+.docx-preview h5,
+.docx-preview h6 {
+  color: #000000;
+  font-weight: bold;
+  margin: 2em 0 1em 0;
+}
+
+.docx-preview p {
+  text-align: justify;
+  text-indent: 1.5em;
+  margin: 1.2em 0;
+}
+
+.docx-preview ul,
+.docx-preview ol {
+  margin: 1.5em 0;
+  padding-left: 2.5em;
+}
+
+.docx-preview li {
+  margin: 0.8em 0;
+  line-height: 1.6;
+}
+
+/* HTML/EPUB Preview Styles */
+.epub-preview {
+  background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+}
+
+.epub-preview .content {
+  font-family: 'Georgia', serif;
+  color: #374151;
+  line-height: 1.7;
+  padding: 50px;
+}
+
+.epub-preview h1,
+.epub-preview h2,
+.epub-preview h3,
+.epub-preview h4,
+.epub-preview h5,
+.epub-preview h6 {
+  color: #1f2937;
+  font-weight: 600;
+  line-height: 1.3;
+}
+
+.epub-preview h1 {
+  border-bottom: 3px solid currentColor;
+  padding-bottom: 0.3em;
+}
+
+.epub-preview h2 {
+  border-bottom: 2px solid currentColor;
+  padding-bottom: 0.2em;
+}
+
+.epub-preview p {
+  text-align: justify;
+  margin: 1.2em 0;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.epub-preview blockquote {
+  border-left: 4px solid currentColor;
+  border-radius: 0 8px 8px 0;
+  background: rgba(0, 0, 0, 0.03);
+}
+
+.epub-preview img {
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+/* Presentation/Slides Preview Styles */
+.presentation-preview {
+  background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%);
+  border: 2px solid #cbd5e1;
+  border-radius: 16px;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.15);
+}
+
+.presentation-preview .slides-content {
+  padding: 20px;
+  background: linear-gradient(135deg, transparent, rgba(255, 255, 255, 0.1));
+  border-radius: 16px;
+}
+
+.presentation-preview .slide {
+  background: #ffffff;
+  border: 2px solid #e2e8f0;
+  border-radius: 12px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+  margin: 30px 0;
+  min-height: 400px;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.presentation-preview .slide:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.2);
+}
+
+.presentation-preview .slide-number {
+  position: absolute;
+  top: 15px;
+  right: 20px;
+  background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+  color: white;
+  padding: 5px 10px;
+  border-radius: 20px;
+  font-size: 0.8em;
+  font-weight: bold;
+  box-shadow: 0 2px 8px rgba(59, 130, 246, 0.3);
+}
+
+.presentation-preview h1,
+.presentation-preview h2,
+.presentation-preview h3,
+.presentation-preview h4,
+.presentation-preview h5,
+.presentation-preview h6 {
+  text-align: center;
+  font-weight: 700;
+  margin: 0 0 1em 0;
+}
+
+.presentation-preview h1 {
+  font-size: 3em;
+  border-bottom: 4px solid currentColor;
+  padding-bottom: 0.3em;
+}
+
+.presentation-preview h2 {
+  font-size: 2.5em;
+  border-bottom: 3px solid currentColor;
+  padding-bottom: 0.2em;
+}
+
+.presentation-preview p {
+  text-align: center;
+  font-size: 1.2em;
+  margin: 1em 0;
+}
+
+.presentation-preview ul,
+.presentation-preview ol {
+  list-style: none;
+  text-align: center;
+  padding-left: 0;
+}
+
+.presentation-preview li {
+  margin: 1em 0;
+  padding: 0.8em 1.5em;
+  background: rgba(0, 0, 0, 0.03);
+  border-radius: 8px;
+  border-left: 4px solid currentColor;
+  font-size: 1.1em;
+  position: relative;
+}
+
+.presentation-preview li::before {
+  content: "▶";
+  color: currentColor;
+  font-weight: bold;
+  margin-right: 0.5em;
+}
+
+.presentation-preview blockquote {
+  border: none;
+  background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(59, 130, 246, 0.05));
+  border-radius: 12px;
+  font-size: 1.3em;
+  text-align: center;
+  position: relative;
+  margin: 2em 0;
+  padding: 2em;
+}
+
+.presentation-preview blockquote::before {
+  content: "\201C";
+  font-size: 4em;
+  color: currentColor;
+  position: absolute;
+  top: -10px;
+  left: 20px;
+  opacity: 0.3;
+}
+
+/* Dark theme adjustments */
+.dark .pdf-preview {
+  background: linear-gradient(to bottom, #1f2937 0%, #111827 100%);
+  border-color: #374151;
+}
+
+.dark .docx-preview {
+  background: #1f2937;
+  border-color: #4b5563;
+}
+
+.dark .docx-preview .content {
+  color: #f9fafb;
+}
+
+.dark .epub-preview {
+  background: linear-gradient(135deg, #1f2937 0%, #111827 100%);
+  border-color: #4b5563;
+}
+
+.dark .epub-preview .content {
+  color: #e5e7eb;
+}
+
+.dark .presentation-preview {
+  background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+  border-color: #475569;
+}
+
+.dark .presentation-preview .slide {
+  background: #1f2937;
+  border-color: #4b5563;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .pdf-preview .content,
+  .docx-preview .content,
+  .epub-preview .content {
+    padding: 20px;
+  }
+
+  .presentation-preview .slide {
+    min-height: 300px;
+    margin: 20px 0;
+  }
+
+  .presentation-preview h1 {
+    font-size: 2em;
+  }
+
+  .presentation-preview h2 {
+    font-size: 1.8em;
+  }
+
+  .presentation-preview p {
+    font-size: 1em;
+  }
+}
+
+/* Animation for format switching */
+.preview-content.format-switching {
+  opacity: 0.7;
+  transform: scale(0.98);
+}
+
+.preview-content.format-loaded {
+  opacity: 1;
+  transform: scale(1);
+}

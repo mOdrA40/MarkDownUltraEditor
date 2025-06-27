@@ -118,6 +118,128 @@ export const getResponsiveIconSize = (isMobile: boolean, size: 'sm' | 'base'): s
 };
 
 /**
+ * Get responsive template card classes
+ */
+export const getResponsiveTemplateCard = (isMobile: boolean, isTablet: boolean): string => {
+  if (isMobile) {
+    return 'p-3 space-y-2';
+  }
+  if (isTablet) {
+    return 'p-4 space-y-3';
+  }
+  return 'p-5 space-y-4';
+};
+
+/**
+ * Get responsive template content classes
+ */
+export const getResponsiveTemplateContent = (isMobile: boolean): string => {
+  return isMobile
+    ? 'text-sm leading-relaxed max-h-32 overflow-hidden'
+    : 'text-base leading-relaxed max-h-40 overflow-hidden';
+};
+
+/**
+ * Get responsive template header classes
+ */
+export const getResponsiveTemplateHeader = (isMobile: boolean): string => {
+  return isMobile
+    ? 'text-lg font-semibold line-clamp-2'
+    : 'text-xl font-semibold line-clamp-2';
+};
+
+/**
+ * Get responsive template meta classes
+ */
+export const getResponsiveTemplateMeta = (isMobile: boolean): string => {
+  return isMobile
+    ? 'text-xs text-muted-foreground'
+    : 'text-sm text-muted-foreground';
+};
+
+/**
+ * Ensure template content is responsive
+ */
+export const makeTemplateResponsive = (content: string): string => {
+  // Add responsive classes to tables
+  let responsiveContent = content.replace(
+    /<table/g,
+    '<div class="overflow-x-auto"><table class="min-w-full"'
+  );
+  responsiveContent = responsiveContent.replace(
+    /<\/table>/g,
+    '</table></div>'
+  );
+
+  // Add responsive classes to code blocks
+  responsiveContent = responsiveContent.replace(
+    /```(\w+)?\n/g,
+    '```$1\n<!-- responsive-code-block -->\n'
+  );
+
+  // Add responsive image classes
+  responsiveContent = responsiveContent.replace(
+    /!\[([^\]]*)\]\(([^)]+)\)/g,
+    '![${1}](${2}){.responsive-image .max-w-full .h-auto}'
+  );
+
+  return responsiveContent;
+};
+
+/**
+ * Get theme-aware dialog classes
+ */
+export const getThemeAwareDialogClasses = (isMobile: boolean, isTablet: boolean): string => {
+  const baseClasses = getDialogClasses(isMobile, isTablet);
+
+  // Add theme-aware classes that will work with all themes
+  const themeClasses = [
+    'bg-background',
+    'text-foreground',
+    'border-border',
+    'shadow-lg'
+  ].join(' ');
+
+  return `${baseClasses} ${themeClasses}`;
+};
+
+/**
+ * Get theme-aware card classes
+ */
+export const getThemeAwareCardClasses = (viewMode: 'grid' | 'list'): string => {
+  const baseClasses = viewMode === 'grid'
+    ? 'group cursor-pointer transition-all duration-200 hover:shadow-md'
+    : 'group cursor-pointer transition-all duration-200 hover:shadow-sm';
+
+  const themeClasses = [
+    'bg-card',
+    'text-card-foreground',
+    'border-border',
+    'hover:bg-accent/5'
+  ].join(' ');
+
+  return `${baseClasses} ${themeClasses}`;
+};
+
+/**
+ * Get theme-aware badge classes for difficulty
+ */
+export const getThemeAwareDifficultyClasses = (difficulty: string): string => {
+  const baseClasses = 'text-xs font-medium px-2 py-1 rounded-full';
+
+  switch (difficulty) {
+    case 'beginner':
+      return `${baseClasses} bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300`;
+    case 'intermediate':
+      return `${baseClasses} bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300`;
+    case 'advanced':
+      return `${baseClasses} bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300`;
+    default:
+      return `${baseClasses} bg-muted text-muted-foreground`;
+  }
+};
+
+/**
  * Get responsive button size
  */
 export const getResponsiveButtonSize = (isMobile: boolean): string => {

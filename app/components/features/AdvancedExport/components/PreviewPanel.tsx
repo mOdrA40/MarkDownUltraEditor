@@ -14,6 +14,12 @@ import { convertMarkdownToHTML } from '../utils/markdownConverter';
 import { generateStyledHTML } from '../utils/htmlGenerator';
 import { THEMES } from '../utils/constants';
 import { generateHeaderStyles } from '@/utils/themeUtils';
+import {
+  generateRTFPreviewHTML,
+  generateEpubPreviewHTML,
+  generateSlidesPreviewHTML
+} from '../utils/formatPreviewGenerators';
+import '../styles/formatPreview.css';
 
 /**
  * Komponen untuk preview panel dengan kontrol responsif dan export
@@ -31,16 +37,48 @@ export const PreviewPanel: React.FC<PreviewPanelProps> = ({
 }) => {
   const previewRef = useRef<HTMLDivElement>(null);
 
-  // Generate preview HTML
+  // Generate preview HTML berdasarkan format yang dipilih
   const generatePreviewHTML = (): string => {
     const { html: htmlContent } = convertMarkdownToHTML(markdown);
     const themeConfig = THEMES[options.theme] || THEMES.default;
-    
-    return generateStyledHTML({
-      ...options,
-      htmlContent,
-      themeConfig
-    });
+
+    // Generate HTML berdasarkan format export yang dipilih
+    switch (options.format) {
+      case 'pdf':
+        return generateStyledHTML({
+          ...options,
+          htmlContent,
+          themeConfig
+        });
+
+      case 'docx': // RTF format
+        return generateRTFPreviewHTML({
+          ...options,
+          htmlContent,
+          themeConfig
+        });
+
+      case 'epub': // HTML format
+        return generateEpubPreviewHTML({
+          ...options,
+          htmlContent,
+          themeConfig
+        });
+
+      case 'presentation': // Slides format
+        return generateSlidesPreviewHTML({
+          ...options,
+          htmlContent,
+          themeConfig
+        });
+
+      default:
+        return generateStyledHTML({
+          ...options,
+          htmlContent,
+          themeConfig
+        });
+    }
   };
 
   // Extract body content untuk preview
@@ -52,6 +90,52 @@ export const PreviewPanel: React.FC<PreviewPanelProps> = ({
 
   // Get header styles for consistent theming
   const headerStyles = generateHeaderStyles(currentTheme);
+
+  // Format-specific styling helpers
+  const getFormatSpecificFontSize = (format: string): string => {
+    switch (format) {
+      case 'pdf':
+        return '14px';
+      case 'docx':
+        return '13px';
+      case 'epub':
+        return '15px';
+      case 'presentation':
+        return '16px';
+      default:
+        return '14px';
+    }
+  };
+
+  const getFormatSpecificLineHeight = (format: string): string => {
+    switch (format) {
+      case 'pdf':
+        return '1.6';
+      case 'docx':
+        return '1.8';
+      case 'epub':
+        return '1.7';
+      case 'presentation':
+        return '1.5';
+      default:
+        return '1.6';
+    }
+  };
+
+  const getFormatSpecificMinHeight = (format: string): string => {
+    switch (format) {
+      case 'pdf':
+        return '600px';
+      case 'docx':
+        return '550px';
+      case 'epub':
+        return '650px';
+      case 'presentation':
+        return '700px';
+      default:
+        return '600px';
+    }
+  };
 
   return (
     <div className="flex flex-col min-h-0 overflow-hidden flex-1">
@@ -66,6 +150,25 @@ export const PreviewPanel: React.FC<PreviewPanelProps> = ({
           WebkitBackdropFilter: 'blur(12px)'
         }}
       >
+        {/* Format Indicator */}
+        <div className="flex items-center justify-between mb-2">
+          <Badge
+            variant="secondary"
+            className="text-xs font-medium"
+            style={{
+              backgroundColor: currentTheme?.primary || '#3b82f6',
+              color: 'white'
+            }}
+          >
+            {options.format.toUpperCase()} Preview
+          </Badge>
+          <div className="text-xs opacity-70">
+            {options.format === 'pdf' && 'Print-ready document'}
+            {options.format === 'docx' && 'Rich Text Format'}
+            {options.format === 'epub' && 'Web Document'}
+            {options.format === 'presentation' && 'HTML Presentation'}
+          </div>
+        </div>
         <div className={`flex items-center gap-2 ${
           isMobile ? 'flex-col space-y-2' : 'flex-row justify-between'
         }`}>
@@ -212,11 +315,12 @@ export const PreviewPanel: React.FC<PreviewPanelProps> = ({
                   ? 'p-4 text-base leading-relaxed'
                   : 'p-4 text-sm leading-relaxed'
                 : 'p-3 sm:p-4 text-xs sm:text-sm'
-            }`}
+            } ${options.format}-preview`}
             style={{
-              fontSize: isMobile ? '15px' : undefined,
-              lineHeight: isMobile ? '1.7' : undefined,
-              minHeight: isMobile ? '480px' : undefined
+              fontSize: isMobile ? '15px' : getFormatSpecificFontSize(options.format),
+              lineHeight: isMobile ? '1.7' : getFormatSpecificLineHeight(options.format),
+              minHeight: isMobile ? '480px' : getFormatSpecificMinHeight(options.format),
+              position: 'relative'
             }}
             dangerouslySetInnerHTML={{
               __html: getPreviewContent()

@@ -5,8 +5,8 @@ import { FileText } from "lucide-react";
 import { useResponsiveBreakpoint } from "@/hooks/ui";
 import { useTemplateFilters, useTemplateActions } from "@/hooks/templates";
 import { documentTemplates } from "@/utils/documentTemplates";
-import { getDialogClasses } from "@/utils/templateUtils";
-import { DocumentTemplatesProps, ViewMode, DocumentTemplate } from '@/types/templates';
+import { getThemeAwareDialogClasses } from "@/utils/templateUtils";
+import { DocumentTemplatesProps, ViewMode } from '@/types/templates';
 
 // Sub-components
 import { TemplateFilters } from './TemplateFilters';
@@ -34,12 +34,14 @@ export const DocumentTemplates: React.FC<DocumentTemplatesProps> = ({
     filteredTemplates
   } = useTemplateFilters({ templates: documentTemplates });
 
-  // Wrapper function untuk convert signature
-  const handleTemplateSelect = (template: DocumentTemplate) => {
-    onSelectTemplate(template.content, template.name);
-  };
+  // Template actions logic dengan callback yang langsung menutup dialog
+  const handleTemplateSelect = React.useCallback((content: string, fileName: string) => {
+    console.log('DocumentTemplates: handleTemplateSelect called with fileName:', fileName, 'content length:', content.length);
+    onSelectTemplate(content, fileName);
+    console.log('DocumentTemplates: closing dialog');
+    onClose(); // Tutup dialog setelah template dipilih
+  }, [onSelectTemplate, onClose]);
 
-  // Template actions logic
   const {
     handleSelectTemplate,
     handlePreviewTemplate,
@@ -48,7 +50,7 @@ export const DocumentTemplates: React.FC<DocumentTemplatesProps> = ({
     setShowPreview
   } = useTemplateActions({ onSelectTemplate: handleTemplateSelect, onClose });
 
-  const dialogClasses = getDialogClasses(isMobile, isTablet);
+  const dialogClasses = getThemeAwareDialogClasses(isMobile, isTablet);
 
   return (
     <>

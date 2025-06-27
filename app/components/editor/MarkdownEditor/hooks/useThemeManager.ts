@@ -26,7 +26,7 @@ export const useThemeManager = (initialTheme?: Theme): UseThemeManagerReturn => 
 
     const root = document.documentElement;
 
-    // Apply CSS custom properties
+    // Apply custom CSS properties for backward compatibility
     root.style.setProperty(`${THEME_CONFIG.CSS_VARIABLE_PREFIX}primary`, theme.primary);
     root.style.setProperty(`${THEME_CONFIG.CSS_VARIABLE_PREFIX}secondary`, theme.secondary);
     root.style.setProperty(`${THEME_CONFIG.CSS_VARIABLE_PREFIX}background`, theme.background);
@@ -34,18 +34,21 @@ export const useThemeManager = (initialTheme?: Theme): UseThemeManagerReturn => 
     root.style.setProperty(`${THEME_CONFIG.CSS_VARIABLE_PREFIX}text`, theme.text);
     root.style.setProperty(`${THEME_CONFIG.CSS_VARIABLE_PREFIX}accent`, theme.accent);
 
+    // Remove all theme classes first
+    document.documentElement.className = document.documentElement.className
+      .replace(/theme-\w+/g, '')
+      .replace(/\bdark\b/g, '')
+      .trim();
+
     // Handle dark mode class
     if (theme.id === 'dark') {
       document.documentElement.classList.add('dark');
     } else {
-      document.documentElement.classList.remove('dark');
+      // Add theme-specific class for non-dark themes
+      document.documentElement.classList.add(`theme-${theme.id}`);
     }
 
-    // Add theme-specific class
-    document.documentElement.className = document.documentElement.className
-      .replace(/theme-\w+/g, '')
-      .trim();
-    document.documentElement.classList.add(`theme-${theme.id}`);
+    console.log(`🎨 Theme applied: ${theme.id}, classes: ${document.documentElement.className}`);
   }, []);
 
   /**

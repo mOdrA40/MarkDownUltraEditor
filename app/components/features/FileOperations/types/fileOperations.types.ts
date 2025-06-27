@@ -39,14 +39,56 @@ export interface ExportConfig {
 export interface JsonExportData {
   /** Original file name */
   fileName: string;
+  /** Document title extracted from content */
+  title: string;
   /** Markdown content */
   content: string;
-  /** Word count */
-  wordCount: number;
-  /** Creation timestamp */
-  createdAt: string;
-  /** Export version */
-  version: string;
+  /** Document metadata */
+  metadata: {
+    /** Word count */
+    wordCount: number;
+    /** Character count including spaces */
+    characterCount: number;
+    /** Character count excluding spaces */
+    characterCountNoSpaces: number;
+    /** Line count */
+    lineCount: number;
+    /** Number of code blocks */
+    codeBlockCount: number;
+    /** Number of links */
+    linkCount: number;
+    /** Number of images */
+    imageCount: number;
+    /** Number of headings */
+    headingCount: number;
+    /** Number of tables */
+    tableCount: number;
+    /** Number of list items */
+    listItemCount: number;
+    /** Number of blockquotes */
+    blockquoteCount: number;
+    /** Estimated reading time in minutes */
+    readingTimeMinutes: number;
+  };
+  /** Document structure */
+  structure: {
+    /** Document headings */
+    headings: Array<{
+      level: number;
+      text: string;
+    }>;
+  };
+  /** Export information */
+  exportInfo: {
+    /** Creation timestamp */
+    createdAt: string;
+    /** Export version */
+    version: string;
+    /** Exported by application */
+    exportedBy: string;
+    /** Export format description */
+    format: string;
+  };
 }
 
 /**

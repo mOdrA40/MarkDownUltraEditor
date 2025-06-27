@@ -54,28 +54,29 @@ export const BUTTON_CONFIGS: Record<UndoRedoAction, ButtonConfig> = {
 
 /**
  * Styling configuration untuk berbagai breakpoints
+ * Updated to prevent scroll effects by removing scale transforms
  */
 export const STYLING_CONFIGS: Record<string, UndoRedoStyling> = {
   mobile: {
-    container: 'flex items-center space-x-1',
-    button: 'h-8 w-8 p-0 rounded-md transition-all duration-200 touch-manipulation active:scale-95',
+    container: 'flex items-center space-x-1 flex-shrink-0',
+    button: 'h-8 w-8 p-0 rounded-md transition-colors duration-200 touch-manipulation transform-none',
     icon: 'h-3 w-3',
     spacing: 'space-x-1',
-    animation: 'transition-all duration-200 active:scale-95'
+    animation: 'transition-colors duration-200'
   },
   tablet: {
-    container: 'flex items-center space-x-1',
-    button: 'h-7 w-7 p-0 rounded-md transition-all duration-200 touch-manipulation active:scale-95',
+    container: 'flex items-center space-x-1 flex-shrink-0',
+    button: 'h-7 w-7 p-0 rounded-md transition-colors duration-200 touch-manipulation transform-none',
     icon: 'h-3 w-3',
     spacing: 'space-x-1',
-    animation: 'transition-all duration-200 active:scale-95'
+    animation: 'transition-colors duration-200'
   },
   desktop: {
-    container: 'flex items-center space-x-1',
-    button: 'h-8 w-8 p-0 rounded-md transition-all duration-200 hover:scale-105',
+    container: 'flex items-center space-x-1 flex-shrink-0',
+    button: 'h-8 w-8 p-0 rounded-md transition-colors duration-200 transform-none',
     icon: 'h-4 w-4',
     spacing: 'space-x-1',
-    animation: 'transition-all duration-200 hover:scale-105'
+    animation: 'transition-colors duration-200'
   }
 };
 
@@ -128,11 +129,25 @@ export const getButtonClasses = (
   compact: boolean = false
 ): string => {
   const config = getStylingConfig(breakpoint);
-  const baseClasses = [config.button];
+  const baseClasses = [
+    config.button,
+    // Prevent scroll effects
+    'transform-none',
+    'will-change-auto',
+    'transition-colors',
+    'duration-200',
+    'ease-in-out'
+  ];
 
   // State-based classes
   if (canPerform) {
-    baseClasses.push('hover:bg-accent hover:text-accent-foreground');
+    baseClasses.push(
+      'hover:bg-accent',
+      'hover:text-accent-foreground',
+      'active:bg-accent/80',
+      'focus-visible:ring-2',
+      'focus-visible:ring-ring'
+    );
   } else {
     baseClasses.push('opacity-50 cursor-not-allowed');
   }
@@ -147,6 +162,9 @@ export const getButtonClasses = (
       baseClasses.push('h-7 w-7');
     }
   }
+
+  // Prevent layout shift and scroll issues
+  baseClasses.push('flex-shrink-0', 'contain-layout');
 
   return baseClasses.join(' ');
 };

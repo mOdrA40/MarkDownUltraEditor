@@ -9,11 +9,12 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Clock, Tag, Eye, ArrowRight } from "lucide-react";
 import { TemplateCardProps, CategoryIcons } from '@/types/templates';
 import {
+  getThemeAwareCardClasses,
+  getThemeAwareDifficultyClasses,
   categoryIcons,
-  difficultyColors,
-  getCardClasses,
   getTruncatedTags
-} from '@/utils/templateUtils';
+} from "@/utils/templateUtils";
+
 
 /**
  * Individual template card dengan grid/list view support
@@ -27,14 +28,14 @@ export const TemplateCard: React.FC<TemplateCardProps> = ({
   onSelect
 }) => {
   const CategoryIcon = categoryIcons[template.category as keyof CategoryIcons];
-  const cardClasses = getCardClasses(viewMode);
+  const cardClasses = getThemeAwareCardClasses(viewMode);
   const { visibleTags, remainingCount, hasMore } = getTruncatedTags(template.tags, 3);
 
   const handlePreview = () => onPreview(template);
   const handleSelect = () => onSelect(template);
 
   return (
-    <Card className={cardClasses}>
+    <Card className={`template-card ${cardClasses}`}>
       {viewMode === 'grid' ? (
         <CardContent className="p-4">
           {/* Header dengan icon dan difficulty */}
@@ -45,7 +46,7 @@ export const TemplateCard: React.FC<TemplateCardProps> = ({
               </div>
               <CategoryIcon className="h-4 w-4 text-muted-foreground" />
             </div>
-            <Badge className={difficultyColors[template.difficulty as keyof typeof difficultyColors]}>
+            <Badge className={getThemeAwareDifficultyClasses(template.difficulty)}>
               {template.difficulty}
             </Badge>
           </div>
@@ -121,7 +122,7 @@ export const TemplateCard: React.FC<TemplateCardProps> = ({
                 <div className="flex-1 min-w-0 overflow-hidden">
                   <div className="mb-2">
                     <h3 className="font-semibold text-base leading-tight mb-1 pr-2">{template.name}</h3>
-                    <Badge className={`inline-block ${difficultyColors[template.difficulty as keyof typeof difficultyColors]}`}>
+                    <Badge className={`inline-block ${getThemeAwareDifficultyClasses(template.difficulty)}`}>
                       {template.difficulty}
                     </Badge>
                   </div>
@@ -172,7 +173,7 @@ export const TemplateCard: React.FC<TemplateCardProps> = ({
                 <div className="flex-1 min-w-0 overflow-hidden">
                   <div className="mb-2">
                     <h3 className="font-semibold text-lg leading-tight mb-1 pr-2">{template.name}</h3>
-                    <Badge className={`inline-block ${difficultyColors[template.difficulty as keyof typeof difficultyColors]}`}>
+                    <Badge className={`inline-block ${getThemeAwareDifficultyClasses(template.difficulty)}`}>
                       {template.difficulty}
                     </Badge>
                   </div>
@@ -228,7 +229,7 @@ export const TemplateCard: React.FC<TemplateCardProps> = ({
                       {template.description}
                     </p>
                   </div>
-                  <Badge className={`flex-shrink-0 ${difficultyColors[template.difficulty as keyof typeof difficultyColors]}`}>
+                  <Badge className={`flex-shrink-0 ${getThemeAwareDifficultyClasses(template.difficulty)}`}>
                     {template.difficulty}
                   </Badge>
                 </div>

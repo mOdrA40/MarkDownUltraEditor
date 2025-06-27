@@ -50,8 +50,12 @@ export const FileDropdownMenu: React.FC<FileDropdownMenuProps> = ({
           className={
             isMobileNav
               ? "w-full justify-start h-10 px-3 text-sm"
-              : "h-6 sm:h-8 px-2 sm:px-3 text-xs sm:text-sm whitespace-nowrap"
+              : "h-6 sm:h-8 px-2 sm:px-3 text-xs sm:text-sm whitespace-nowrap transform-none will-change-auto"
           }
+          style={{
+            transform: 'none',
+            willChange: 'auto'
+          }}
         >
           <FileText className={isMobileNav ? "h-4 w-4 mr-2" : "h-3 w-3 sm:h-4 sm:w-4 mr-1"} />
           File
@@ -64,7 +68,10 @@ export const FileDropdownMenu: React.FC<FileDropdownMenuProps> = ({
         style={{
           backgroundColor: currentTheme?.surface || undefined,
           borderColor: currentTheme?.accent || undefined,
-          color: textColor
+          color: textColor,
+          position: 'fixed',
+          transform: 'none',
+          willChange: 'auto'
         }}
       >
         <DropdownMenuItem onClick={onLoadFile}>

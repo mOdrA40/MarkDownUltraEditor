@@ -246,6 +246,7 @@ export const AdvancedExport: React.FC<AdvancedExportProps> = ({
                     onOptionsChange={updateOption}
                     isMobile={isMobile}
                     isTablet={isTablet}
+                    currentTheme={currentTheme}
                   />
                 </TabsContent>
 

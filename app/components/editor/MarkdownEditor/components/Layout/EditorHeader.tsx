@@ -13,6 +13,7 @@ import { FileOperations } from "../../../../features/FileOperations";
 import { Toolbar } from "../../../Toolbar";
 import { WritingSettings } from "../../../../features/WritingSettings";
 import { UndoRedoButtons } from "../../../UndoRedoButtons";
+import { StorageStatus } from "../../../../features/StorageStatus/StorageStatus";
 import { EditorSettings, ResponsiveState } from '../../types';
 import { getHeaderClassName, generateHeaderStyles } from '@/utils/themeUtils';
 /**
@@ -176,8 +177,12 @@ export const EditorHeader: React.FC<EditorHeaderProps> = ({
                   variant="ghost"
                   size="sm"
                   onClick={onShowAdvancedExport}
-                  className="h-6 sm:h-8 px-2 sm:px-3 text-xs sm:text-sm whitespace-nowrap"
+                  className="h-6 sm:h-8 px-2 sm:px-3 text-xs sm:text-sm whitespace-nowrap transform-none will-change-auto"
                   title="Advanced Export"
+                  style={{
+                    transform: 'none',
+                    willChange: 'auto'
+                  }}
                 >
                   Export+
                 </Button>
@@ -290,6 +295,13 @@ export const EditorHeader: React.FC<EditorHeaderProps> = ({
           onZenModeToggle={() => onSettingsChange({ zenMode: !settings.zenMode })}
         />
       </div>
+
+      {/* Storage Status - Only on desktop/tablet */}
+      {!isMobile && (
+        <div className="px-4 py-2 border-t border-border/50">
+          <StorageStatus compact={isSmallTablet} />
+        </div>
+      )}
     </div>
   );
 };
