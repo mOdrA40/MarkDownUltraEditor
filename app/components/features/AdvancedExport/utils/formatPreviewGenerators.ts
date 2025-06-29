@@ -245,9 +245,9 @@ const generatePageSizeStyles = (pageSize: string, orientation: string): string =
 };
 
 /**
- * Generate DOCX-style preview HTML
+ * Generate RTF-style preview HTML
  */
-export const generateDocxPreviewHTML = (options: HTMLGeneratorOptions): string => {
+export const generateRTFPreviewHTML = (options: HTMLGeneratorOptions): string => {
     const theme = THEMES[options.theme] || THEMES.default;
     const isDark = isDarkThemeContext(options);
     const textColor = getTextColorForTheme(isDark);
@@ -259,17 +259,17 @@ export const generateDocxPreviewHTML = (options: HTMLGeneratorOptions): string =
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>${escapeHtml(options.title)}</title>
     <style>
-        ${generateDocxStyles(theme, options)}
+        ${generateRTFStyles(theme, options)}
         ${options.customCSS || ''}
     </style>
 </head>
 <body>
     ${generateEnhancedWatermark(options)}
-    ${generateDocxHeader(options, textColor)}
+    ${generateRTFHeader(options, textColor)}
     <div class="content">
         ${options.htmlContent}
     </div>
-    ${generateDocxFooter(options)}
+    ${generateRTFFooter(options)}
 </body>
 </html>`;
 };
@@ -335,10 +335,10 @@ export const generateSlidesPreviewHTML = (options: HTMLGeneratorOptions): string
 };
 
 /**
- * Generate DOCX-specific styles
+ * Generate RTF-specific styles
  */
-const generateDocxStyles = (theme: ThemeConfig, options: HTMLGeneratorOptions): string => {
-    // Untuk export DOCX, selalu gunakan warna hitam untuk teks agar mudah dibaca
+const generateRTFStyles = (theme: ThemeConfig, options: HTMLGeneratorOptions): string => {
+    // Untuk export RTF, selalu gunakan warna hitam untuk teks agar mudah dibaca
     const contentTextColor = '#000000';
 
     return `
@@ -409,7 +409,7 @@ const generateDocxStyles = (theme: ThemeConfig, options: HTMLGeneratorOptions): 
             color: ${contentTextColor};
         }
 
-        /* DOCX-specific formatting */
+        /* RTF-specific formatting */
         .content {
             background-color: #ffffff;
             border: 1px solid #e0e0e0;
@@ -485,7 +485,7 @@ const generateDocxStyles = (theme: ThemeConfig, options: HTMLGeneratorOptions): 
             color: ${contentTextColor};
         }
 
-        .docx-preview-badge {
+        .rtf-preview-badge {
             position: absolute;
             top: 10px;
             right: 10px;
@@ -926,9 +926,9 @@ const generateSlidesStyles = (theme: ThemeConfig, options: HTMLGeneratorOptions)
 };
 
 /**
- * Generate DOCX header section
+ * Generate RTF header section
  */
-const generateDocxHeader = (options: HTMLGeneratorOptions, textColor?: string): string => {
+const generateRTFHeader = (options: HTMLGeneratorOptions, textColor?: string): string => {
     if (!options.headerFooter) return '';
 
     const isDark = isDarkThemeContext(options);
@@ -951,7 +951,7 @@ const generateDocxHeader = (options: HTMLGeneratorOptions, textColor?: string): 
     const descriptionColor = getDescriptionTextColor(isDark);
 
     return `
-    <div class="docx-preview-badge">DOCX Preview</div>
+    <div class="rtf-preview-badge">RTF Preview</div>
     <div class="header" style="
         text-align: center;
         margin-bottom: 3em;
@@ -1093,9 +1093,9 @@ const generateSlidesHeader = (options: HTMLGeneratorOptions, textColor?: string)
 };
 
 /**
- * Generate DOCX footer section
+ * Generate RTF footer section
  */
-const generateDocxFooter = (options: HTMLGeneratorOptions): string => {
+const generateRTFFooter = (options: HTMLGeneratorOptions): string => {
     if (!options.headerFooter) return '';
 
     return `
@@ -1108,7 +1108,7 @@ const generateDocxFooter = (options: HTMLGeneratorOptions): string => {
         opacity: 0.7;
         font-family: 'Times New Roman', serif;
     ">
-        Generated on ${new Date().toLocaleDateString()} • ${escapeHtml(options.title)} • DOCX Format
+        Generated on ${new Date().toLocaleDateString()} • ${escapeHtml(options.title)} • Word Document Format
     </div>`;
 };
 
