@@ -7,3 +7,9 @@ node_modules
 .idea
 hasilconsole.txt
 hasil.txt
+.cursor
+# Mengabaikan semua file .md
+*.md
+
+# Kecualikan README.md
+!README.md

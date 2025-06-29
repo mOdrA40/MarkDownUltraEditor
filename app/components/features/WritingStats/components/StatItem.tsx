@@ -1,7 +1,7 @@
 /**
- * StatItem Component - Komponen untuk Menampilkan Item Statistik
- * Komponen reusable untuk menampilkan satu item statistik
- * 
+ * StatItem Component - Component for Displaying Statistical Items
+ * Reusable component for displaying individual statistical items
+ *
  * @author Axel Modra
  */
 
@@ -29,7 +29,7 @@ const ICON_MAP = {
 };
 
 /**
- * Komponen StatItem untuk menampilkan item statistik individual
+ * StatItem component for displaying individual statistical items
  */
 export const StatItem: React.FC<StatItemProps> = memo(({
   type,
@@ -45,13 +45,13 @@ export const StatItem: React.FC<StatItemProps> = memo(({
 }) => {
   const statConfig = STAT_TYPES[type];
 
-  // Tentukan icon yang akan digunakan
+  // Determine which icon to use
   const IconComponent = icon || ICON_MAP[statConfig.iconName as keyof typeof ICON_MAP];
   
-  // Tentukan label yang akan ditampilkan
+  // Determine which label to display
   const displayLabel = label || (format === 'short' ? statConfig.shortLabel : statConfig.longLabel);
   
-  // Format nilai untuk display
+  // Format value for display
   const formattedValue = formatter 
     ? formatter(value) 
     : formatStatValue(type, value, format === 'short' ? 'mobile' : 'desktop');

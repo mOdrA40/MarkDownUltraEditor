@@ -6,8 +6,8 @@
 import { LanguageIconMap, HighlightThemeConfig } from '../types/preview.types';
 
 /**
- * Mapping icon untuk setiap bahasa pemrograman
- * Menggunakan emoji untuk visual yang menarik
+ * Icon mapping for each programming language
+ * Uses emoji for attractive visuals
  */
 export const LANGUAGE_ICONS: LanguageIconMap = {
   // Programming languages

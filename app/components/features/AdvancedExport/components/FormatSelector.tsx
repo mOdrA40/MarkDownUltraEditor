@@ -63,9 +63,14 @@ export const FormatSelector: React.FC<FormatSelectorComponentProps> = ({
                   }`}>
                     {format.label}
                   </div>
-                  <div className={`text-muted-foreground ${
-                    isMobile ? 'text-xs block' : 'text-xs hidden sm:block'
-                  }`}>
+                  <div
+                    className={`${
+                      isMobile ? 'text-xs block' : 'text-xs hidden sm:block'
+                    }`}
+                    style={{
+                      color: currentTheme?.id === 'dark' ? '#e5e7eb' : '#374151'
+                    }}
+                  >
                     {format.desc}
                   </div>
                 </CardContent>

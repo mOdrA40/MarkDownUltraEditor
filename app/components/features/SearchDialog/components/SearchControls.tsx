@@ -1,5 +1,5 @@
 /**
- * @fileoverview SearchControls - Input controls untuk search dan replace
+ * @fileoverview SearchControls - Input controls for search and replace
  * @author Axel Modra
  */
 
@@ -10,7 +10,7 @@ import { Badge } from "@/components/ui/badge";
 import { SearchControlsProps } from '../types/search.types';
 
 /**
- * Komponen untuk input controls search dan replace
+ * Component for search and replace input controls
  */
 export const SearchControls: React.FC<SearchControlsProps & {
   matchCount?: number;

@@ -10,21 +10,152 @@ import { THEMES } from './constants';
  * Get appropriate text color based on current theme context
  */
 const getTextColorForTheme = (isDarkTheme: boolean): string => {
+    return isDarkTheme ? '#ffffff' : '#1f2937';
+};
+
+/**
+ * Get appropriate description text color based on current theme context
+ * For description text, we want black color for all themes except dark theme
+ */
+const getDescriptionTextColor = (isDarkTheme: boolean): string => {
     return isDarkTheme ? '#ffffff' : '#000000';
+};
+
+/**
+ * Get appropriate text color for all content based on current app theme
+ * This ensures all text (including content) is visible in all themes
+ */
+const getContentTextColor = (isDarkTheme: boolean): string => {
+    return isDarkTheme ? '#ffffff' : '#000000';
+};
+
+/**
+ * Force check if current app theme is dark by checking multiple sources
+ */
+const isCurrentAppThemeDark = (): boolean => {
+    if (typeof window === 'undefined') return false;
+
+    // Check multiple possible sources for theme information
+    const body = document.body;
+    const html = document.documentElement;
+
+    // Check data attributes
+    const bodyTheme = body.getAttribute('data-theme');
+    const htmlTheme = html.getAttribute('data-theme');
+
+    // Check classes
+    const hasDarkClass = body.classList.contains('dark') ||
+                        body.classList.contains('theme-dark') ||
+                        html.classList.contains('dark') ||
+                        html.classList.contains('theme-dark');
+
+    // Check if theme is explicitly dark
+    const isExplicitlyDark = bodyTheme === 'dark' || htmlTheme === 'dark';
+
+    // Check CSS custom properties
+    const rootStyles = getComputedStyle(html);
+    const bgColor = rootStyles.getPropertyValue('--background') || '';
+    const textColor = rootStyles.getPropertyValue('--foreground') || '';
+
+    // Dark theme typically has dark background colors
+    const hasDarkBgColor = bgColor.includes('0f172a') ||
+                          bgColor.includes('1e293b') ||
+                          bgColor.includes('1f2937') ||
+                          bgColor.includes('111827') ||
+                          bgColor.includes('1a1a1a');
+
+    // Light text color indicates dark theme
+    const hasLightTextColor = textColor.includes('f1f5f9') ||
+                             textColor.includes('ffffff') ||
+                             textColor.includes('e5e7eb');
+
+    // Additional check for theme selector state
+    const themeSelector = document.querySelector('[data-theme-selector]') as HTMLElement;
+    const selectedTheme = themeSelector?.getAttribute('data-current-theme') || '';
+    const isSelectedDark = selectedTheme === 'dark';
+
+    // Check for dark theme in localStorage
+    let storedTheme = '';
+    try {
+        storedTheme = localStorage.getItem('theme') || localStorage.getItem('selectedTheme') || '';
+    } catch (e) {
+        // Ignore localStorage errors
+    }
+    const isStoredDark = storedTheme === 'dark';
+
+    const result = isExplicitlyDark || hasDarkClass || hasDarkBgColor || hasLightTextColor || isSelectedDark || isStoredDark;
+
+    // Debug logging in development
+    if (process.env.NODE_ENV === 'development') {
+        console.log('Dark theme detection:', {
+            isExplicitlyDark,
+            hasDarkClass,
+            hasDarkBgColor,
+            hasLightTextColor,
+            isSelectedDark,
+            isStoredDark,
+            result,
+            bodyTheme,
+            htmlTheme,
+            bgColor,
+            textColor,
+            selectedTheme,
+            storedTheme
+        });
+    }
+
+    return result;
 };
 
 /**
  * Detect if current context is dark theme
  */
-const isDarkThemeContext = (): boolean => {
-    if (typeof window !== 'undefined') {
-        const body = document.body;
-        const isDarkClass = body.classList.contains('dark') ||
-                           body.classList.contains('theme-dark') ||
-                           body.getAttribute('data-theme') === 'dark';
-        const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-        return isDarkClass || prefersDark;
+const isDarkThemeContext = (options?: HTMLGeneratorOptions): boolean => {
+    // Check if theme is explicitly dark
+    if (options?.theme === 'dark') {
+        return true;
     }
+
+    // Check theme config
+    if (options?.themeConfig) {
+        const theme = options.themeConfig;
+        // Consider dark if background is dark
+        const bgColor = theme.backgroundColor.toLowerCase();
+        if (bgColor.includes('#1') || bgColor.includes('#2') || bgColor.includes('#0') ||
+            bgColor.includes('black') || bgColor.includes('dark')) {
+            return true;
+        }
+    }
+
+    // Use comprehensive dark theme detection
+    if (typeof window !== 'undefined') {
+        const isDark = isCurrentAppThemeDark();
+
+        // Additional fallback: check if body background is dark
+        if (!isDark) {
+            const body = document.body;
+            const computedStyle = getComputedStyle(body);
+            const backgroundColor = computedStyle.backgroundColor;
+            const color = computedStyle.color;
+
+            // If background is dark or text is light, assume dark theme
+            const isDarkBg = backgroundColor.includes('rgb(15, 23, 42)') || // slate-900
+                           backgroundColor.includes('rgb(30, 41, 59)') || // slate-800
+                           backgroundColor.includes('rgb(31, 41, 55)') || // gray-800
+                           backgroundColor.includes('rgb(17, 24, 39)');   // gray-900
+
+            const isLightText = color.includes('rgb(241, 245, 249)') || // slate-100
+                              color.includes('rgb(255, 255, 255)') ||   // white
+                              color.includes('rgb(229, 231, 235)');     // gray-200
+
+            if (isDarkBg || isLightText) {
+                return true;
+            }
+        }
+
+        return isDark;
+    }
+
     return false;
 };
 
@@ -38,11 +169,87 @@ const escapeHtml = (text: string): string => {
 };
 
 /**
- * Generate RTF-style preview HTML
+ * Get font family with appropriate fallbacks
  */
-export const generateRTFPreviewHTML = (options: HTMLGeneratorOptions): string => {
+const getFontFamilyWithFallback = (fontFamily: string): string => {
+    const fontMap: Record<string, string> = {
+        'Arial': '"Arial", "Helvetica Neue", Helvetica, sans-serif',
+        'Times New Roman': '"Times New Roman", Times, serif',
+        'Helvetica': '"Helvetica Neue", Helvetica, Arial, sans-serif',
+        'Georgia': 'Georgia, "Times New Roman", Times, serif',
+        'Verdana': 'Verdana, Geneva, sans-serif',
+        'Roboto': '"Roboto", "Segoe UI", Arial, sans-serif',
+        'Open Sans': '"Open Sans", "Segoe UI", Arial, sans-serif'
+    };
+
+    return fontMap[fontFamily] || `"${fontFamily}", Arial, sans-serif`;
+};
+
+/**
+ * Generate page size specific styles
+ */
+const generatePageSizeStyles = (pageSize: string, orientation: string): string => {
+    const pageSizes = {
+        'a4': { width: '210mm', height: '297mm' },
+        'letter': { width: '8.5in', height: '11in' },
+        'legal': { width: '8.5in', height: '14in' }
+    };
+
+    const size = pageSizes[pageSize as keyof typeof pageSizes] || pageSizes.a4;
+    const isLandscape = orientation === 'landscape';
+
+    const width = isLandscape ? size.height : size.width;
+    const height = isLandscape ? size.width : size.height;
+
+    // Convert to approximate pixel values for preview
+    const widthPx = pageSize === 'a4' ? (isLandscape ? '842px' : '595px') :
+                   pageSize === 'letter' ? (isLandscape ? '792px' : '612px') :
+                   pageSize === 'legal' ? (isLandscape ? '1008px' : '612px') : '595px';
+
+    const heightPx = pageSize === 'a4' ? (isLandscape ? '595px' : '842px') :
+                    pageSize === 'letter' ? (isLandscape ? '612px' : '792px') :
+                    pageSize === 'legal' ? (isLandscape ? '612px' : '1008px') : '842px';
+
+    return `
+        .content {
+            max-width: ${widthPx} !important;
+            min-height: ${heightPx} !important;
+            margin: 0 auto !important;
+            border: 2px dashed #ccc !important;
+            position: relative !important;
+        }
+
+        .content::before {
+            content: "${pageSize.toUpperCase()} ${orientation}";
+            position: absolute;
+            bottom: 10px;
+            left: 15px;
+            background: rgba(0,0,0,0.1);
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 10px;
+            color: #666;
+            text-transform: uppercase;
+            font-weight: bold;
+            z-index: 10;
+            backdrop-filter: blur(4px);
+        }
+
+        @media print {
+            @page {
+                size: ${width} ${height};
+                margin: 1in;
+            }
+        }
+    `;
+};
+
+/**
+ * Generate DOCX-style preview HTML
+ */
+export const generateDocxPreviewHTML = (options: HTMLGeneratorOptions): string => {
     const theme = THEMES[options.theme] || THEMES.default;
-    const isDark = isDarkThemeContext();
+    const isDark = isDarkThemeContext(options);
     const textColor = getTextColorForTheme(isDark);
 
     return `<!DOCTYPE html>
@@ -52,15 +259,17 @@ export const generateRTFPreviewHTML = (options: HTMLGeneratorOptions): string =>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>${escapeHtml(options.title)}</title>
     <style>
-        ${generateRTFStyles(theme, options)}
+        ${generateDocxStyles(theme, options)}
+        ${options.customCSS || ''}
     </style>
 </head>
 <body>
-    ${generateRTFHeader(options, textColor)}
+    ${generateEnhancedWatermark(options)}
+    ${generateDocxHeader(options, textColor)}
     <div class="content">
         ${options.htmlContent}
     </div>
-    ${generateRTFFooter(options)}
+    ${generateDocxFooter(options)}
 </body>
 </html>`;
 };
@@ -70,7 +279,7 @@ export const generateRTFPreviewHTML = (options: HTMLGeneratorOptions): string =>
  */
 export const generateEpubPreviewHTML = (options: HTMLGeneratorOptions): string => {
     const theme = THEMES[options.theme] || THEMES.default;
-    const isDark = isDarkThemeContext();
+    const isDark = isDarkThemeContext(options);
     const textColor = getTextColorForTheme(isDark);
 
     return `<!DOCTYPE html>
@@ -81,9 +290,11 @@ export const generateEpubPreviewHTML = (options: HTMLGeneratorOptions): string =
     <title>${escapeHtml(options.title)}</title>
     <style>
         ${generateEpubStyles(theme, options)}
+        ${options.customCSS || ''}
     </style>
 </head>
 <body>
+    ${generateEnhancedWatermark(options)}
     ${generateEpubHeader(options, textColor)}
     <div class="content">
         ${options.htmlContent}
@@ -98,7 +309,7 @@ export const generateEpubPreviewHTML = (options: HTMLGeneratorOptions): string =
  */
 export const generateSlidesPreviewHTML = (options: HTMLGeneratorOptions): string => {
     const theme = THEMES[options.theme] || THEMES.default;
-    const isDark = isDarkThemeContext();
+    const isDark = isDarkThemeContext(options);
     const textColor = getTextColorForTheme(isDark);
 
     return `<!DOCTYPE html>
@@ -109,9 +320,11 @@ export const generateSlidesPreviewHTML = (options: HTMLGeneratorOptions): string
     <title>${escapeHtml(options.title)}</title>
     <style>
         ${generateSlidesStyles(theme, options)}
+        ${options.customCSS || ''}
     </style>
 </head>
 <body>
+    ${generateEnhancedWatermark(options)}
     ${generateSlidesHeader(options, textColor)}
     <div class="slides-content">
         ${convertContentToSlides(options.htmlContent)}
@@ -122,11 +335,12 @@ export const generateSlidesPreviewHTML = (options: HTMLGeneratorOptions): string
 };
 
 /**
- * Generate RTF-specific styles
+ * Generate DOCX-specific styles
  */
-const generateRTFStyles = (theme: ThemeConfig, options: HTMLGeneratorOptions): string => {
-    const isDark = theme.backgroundColor !== '#ffffff';
-    
+const generateDocxStyles = (theme: ThemeConfig, options: HTMLGeneratorOptions): string => {
+    // Untuk export DOCX, selalu gunakan warna hitam untuk teks agar mudah dibaca
+    const contentTextColor = '#000000';
+
     return `
         * {
             margin: 0;
@@ -135,18 +349,46 @@ const generateRTFStyles = (theme: ThemeConfig, options: HTMLGeneratorOptions): s
         }
 
         body {
-            font-family: 'Times New Roman', serif;
-            font-size: ${options.fontSize}px;
+            font-family: ${getFontFamilyWithFallback(options.fontFamily)} !important;
+            font-size: ${options.fontSize}px !important;
             line-height: 1.8;
-            color: ${theme.primaryColor};
+            color: ${contentTextColor};
             background-color: ${theme.backgroundColor};
             max-width: 700px;
             margin: 0 auto;
             padding: 60px 40px;
         }
 
+        .content {
+            font-family: ${getFontFamilyWithFallback(options.fontFamily)} !important;
+            color: ${contentTextColor} !important;
+        }
+
+        /* Force all text elements to use correct color */
+        .content * {
+            color: ${contentTextColor} !important;
+        }
+
+        /* Override specific elements that should keep their own colors */
+        .content a {
+            color: #3b82f6 !important;
+        }
+
         h1, h2, h3, h4, h5, h6 {
-            color: ${theme.accentColor};
+            font-family: ${getFontFamilyWithFallback(options.fontFamily)} !important;
+            color: ${contentTextColor} !important;
+        }
+
+        p, li, blockquote, td, th {
+            font-family: ${getFontFamilyWithFallback(options.fontFamily)} !important;
+            color: ${contentTextColor} !important;
+        }
+
+        /* Page size specific styling */
+        ${generatePageSizeStyles(options.pageSize, options.orientation)}
+
+        h1, h2, h3, h4, h5, h6 {
+            color: ${contentTextColor} !important;
             margin: 2em 0 1em 0;
             font-weight: bold;
             text-align: left;
@@ -164,12 +406,13 @@ const generateRTFStyles = (theme: ThemeConfig, options: HTMLGeneratorOptions): s
             text-align: justify;
             text-indent: 1.5em;
             hyphens: auto;
+            color: ${contentTextColor};
         }
 
-        /* RTF-specific formatting */
+        /* DOCX-specific formatting */
         .content {
-            background-color: ${isDark ? '#1a1a1a' : '#ffffff'};
-            border: 1px solid ${isDark ? '#4a4a4a' : '#e0e0e0'};
+            background-color: #ffffff;
+            border: 1px solid #e0e0e0;
             border-radius: 8px;
             padding: 40px;
             box-shadow: 0 4px 12px rgba(0,0,0,0.1);
@@ -178,24 +421,27 @@ const generateRTFStyles = (theme: ThemeConfig, options: HTMLGeneratorOptions): s
         ul, ol {
             margin: 1.5em 0;
             padding-left: 2.5em;
+            color: ${contentTextColor};
         }
 
         li {
             margin: 0.8em 0;
             line-height: 1.6;
+            color: ${contentTextColor};
         }
 
         blockquote {
             border-left: 4px solid ${theme.accentColor};
             margin: 2em 0;
             padding: 1.5em 2em;
-            background-color: ${isDark ? '#2a2a2a' : '#f9f9f9'};
+            background-color: #f9f9f9;
             font-style: italic;
+            color: ${contentTextColor};
         }
 
         code {
-            background-color: ${isDark ? '#1f2937' : '#f1f1f1'};
-            color: ${isDark ? '#e5e7eb' : theme.primaryColor};
+            background-color: #f1f1f1;
+            color: ${contentTextColor};
             padding: 0.3em 0.5em;
             border-radius: 3px;
             font-family: 'Courier New', monospace;
@@ -203,13 +449,13 @@ const generateRTFStyles = (theme: ThemeConfig, options: HTMLGeneratorOptions): s
         }
 
         pre {
-            background-color: ${isDark ? '#1f2937' : '#f8f8f8'};
-            color: ${isDark ? '#e5e7eb' : theme.primaryColor};
+            background-color: #f8f8f8;
+            color: ${contentTextColor};
             padding: 1.5em;
             border-radius: 5px;
             overflow-x: auto;
             margin: 2em 0;
-            border: 1px solid ${isDark ? '#374151' : '#e0e0e0'};
+            border: 1px solid #e0e0e0;
         }
 
         table {
@@ -219,22 +465,27 @@ const generateRTFStyles = (theme: ThemeConfig, options: HTMLGeneratorOptions): s
         }
 
         th, td {
-            border: 1px solid ${isDark ? '#4a4a4a' : '#ccc'};
+            border: 1px solid #ccc;
             padding: 0.8em;
             text-align: left;
+            color: ${contentTextColor};
         }
 
         th {
             background-color: ${theme.accentColor};
-            color: white;
+            color: #ffffff;
             font-weight: bold;
         }
 
         tr:nth-child(even) {
-            background-color: ${isDark ? '#2a2a2a' : '#f9f9f9'};
+            background-color: #f9f9f9;
         }
 
-        .rtf-preview-badge {
+        tr:nth-child(even) td {
+            color: ${contentTextColor};
+        }
+
+        .docx-preview-badge {
             position: absolute;
             top: 10px;
             right: 10px;
@@ -252,8 +503,9 @@ const generateRTFStyles = (theme: ThemeConfig, options: HTMLGeneratorOptions): s
  * Generate EPUB/HTML-specific styles
  */
 const generateEpubStyles = (theme: ThemeConfig, options: HTMLGeneratorOptions): string => {
-    const isDark = theme.backgroundColor !== '#ffffff';
-    
+    // Untuk export EPUB/HTML, selalu gunakan warna hitam untuk teks agar mudah dibaca
+    const contentTextColor = '#000000';
+
     return `
         * {
             margin: 0;
@@ -262,30 +514,58 @@ const generateEpubStyles = (theme: ThemeConfig, options: HTMLGeneratorOptions): 
         }
 
         body {
-            font-family: 'Georgia', serif;
-            font-size: ${options.fontSize}px;
+            font-family: ${getFontFamilyWithFallback(options.fontFamily)} !important;
+            font-size: ${options.fontSize}px !important;
             line-height: 1.7;
-            color: ${theme.primaryColor};
+            color: ${contentTextColor};
             background-color: ${theme.backgroundColor};
             max-width: 800px;
             margin: 0 auto;
             padding: 40px 30px;
         }
 
+        .content {
+            font-family: ${getFontFamilyWithFallback(options.fontFamily)} !important;
+            color: ${contentTextColor} !important;
+        }
+
+        /* Force all text elements to use correct color */
+        .content * {
+            color: ${contentTextColor} !important;
+        }
+
+        /* Override specific elements that should keep their own colors */
+        .content a {
+            color: #3b82f6 !important;
+        }
+
         h1, h2, h3, h4, h5, h6 {
-            color: ${theme.accentColor};
+            font-family: ${getFontFamilyWithFallback(options.fontFamily)} !important;
+            color: ${contentTextColor} !important;
+        }
+
+        p, li, blockquote, td, th {
+            font-family: ${getFontFamilyWithFallback(options.fontFamily)} !important;
+            color: ${contentTextColor} !important;
+        }
+
+        /* Page size specific styling */
+        ${generatePageSizeStyles(options.pageSize, options.orientation)}
+
+        h1, h2, h3, h4, h5, h6 {
+            color: ${contentTextColor} !important;
             margin: 1.8em 0 0.8em 0;
             font-weight: 600;
             line-height: 1.3;
         }
 
-        h1 { 
-            font-size: 2.5em; 
+        h1 {
+            font-size: 2.5em;
             border-bottom: 3px solid ${theme.accentColor};
             padding-bottom: 0.3em;
         }
-        h2 { 
-            font-size: 2em; 
+        h2 {
+            font-size: 2em;
             border-bottom: 2px solid ${theme.accentColor};
             padding-bottom: 0.2em;
         }
@@ -297,29 +577,33 @@ const generateEpubStyles = (theme: ThemeConfig, options: HTMLGeneratorOptions): 
         p {
             margin: 1.2em 0;
             text-align: justify;
+            color: ${contentTextColor};
         }
 
         ul, ol {
             margin: 1.5em 0;
             padding-left: 2em;
+            color: ${contentTextColor};
         }
 
         li {
             margin: 0.6em 0;
+            color: ${contentTextColor};
         }
 
         blockquote {
             border-left: 4px solid ${theme.accentColor};
             margin: 2em 0;
             padding: 1.5em 2em;
-            background-color: ${isDark ? '#2a2a2a' : '#f8f9fa'};
+            background-color: #f8f9fa;
             font-style: italic;
             border-radius: 0 8px 8px 0;
+            color: ${contentTextColor};
         }
 
         code {
-            background-color: ${isDark ? '#1f2937' : '#f8f9fa'};
-            color: ${isDark ? '#e5e7eb' : theme.primaryColor};
+            background-color: #f8f9fa;
+            color: ${contentTextColor};
             padding: 0.2em 0.4em;
             border-radius: 4px;
             font-family: 'Monaco', 'Courier New', monospace;
@@ -327,13 +611,13 @@ const generateEpubStyles = (theme: ThemeConfig, options: HTMLGeneratorOptions): 
         }
 
         pre {
-            background-color: ${isDark ? '#1f2937' : '#f8f9fa'};
-            color: ${isDark ? '#e5e7eb' : theme.primaryColor};
+            background-color: #f8f9fa;
+            color: ${contentTextColor};
             padding: 1.5em;
             border-radius: 8px;
             overflow-x: auto;
             margin: 2em 0;
-            border: 1px solid ${isDark ? '#374151' : '#e9ecef'};
+            border: 1px solid #e9ecef;
         }
 
         img {
@@ -354,28 +638,33 @@ const generateEpubStyles = (theme: ThemeConfig, options: HTMLGeneratorOptions): 
         }
 
         th, td {
-            border: 1px solid ${isDark ? '#4a4a4a' : '#e1e5e9'};
+            border: 1px solid #e1e5e9;
             padding: 1em;
             text-align: left;
+            color: ${contentTextColor};
         }
 
         th {
             background-color: ${theme.accentColor};
-            color: white;
+            color: #ffffff;
             font-weight: 600;
         }
 
         tr:nth-child(even) {
-            background-color: ${isDark ? '#2a2a2a' : '#f8f9fa'};
+            background-color: #f8f9fa;
+        }
+
+        tr:nth-child(even) td {
+            color: ${contentTextColor};
         }
 
         /* HTML/EPUB-specific formatting */
         .content {
-            background-color: ${isDark ? '#1a1a1a' : '#ffffff'};
+            background-color: #ffffff;
             border-radius: 12px;
             padding: 50px;
             box-shadow: 0 8px 24px rgba(0,0,0,0.12);
-            border: 1px solid ${isDark ? '#374151' : '#e5e7eb'};
+            border: 1px solid #e5e7eb;
         }
 
         /* Enhanced typography for web reading */
@@ -403,7 +692,8 @@ const generateEpubStyles = (theme: ThemeConfig, options: HTMLGeneratorOptions): 
  * Generate Slides/Presentation-specific styles
  */
 const generateSlidesStyles = (theme: ThemeConfig, options: HTMLGeneratorOptions): string => {
-    const isDark = theme.backgroundColor !== '#ffffff';
+    // Untuk export Slides, selalu gunakan warna hitam untuk teks agar mudah dibaca
+    const contentTextColor = '#000000';
 
     return `
         * {
@@ -413,12 +703,37 @@ const generateSlidesStyles = (theme: ThemeConfig, options: HTMLGeneratorOptions)
         }
 
         body {
-            font-family: 'Helvetica', 'Arial', sans-serif;
-            font-size: ${Math.max(options.fontSize + 2, 14)}px;
+            font-family: ${getFontFamilyWithFallback(options.fontFamily)} !important;
+            font-size: ${Math.max(options.fontSize + 2, 14)}px !important;
             line-height: 1.5;
-            color: ${theme.primaryColor};
+            color: ${contentTextColor};
             background-color: ${theme.backgroundColor};
             padding: 20px;
+        }
+
+        .slides-content {
+            font-family: ${getFontFamilyWithFallback(options.fontFamily)} !important;
+            color: ${contentTextColor} !important;
+        }
+
+        /* Force all text elements to use correct color */
+        .slides-content * {
+            color: ${contentTextColor} !important;
+        }
+
+        /* Override specific elements that should keep their own colors */
+        .slides-content a {
+            color: #3b82f6 !important;
+        }
+
+        .slide h1, .slide h2, .slide h3, .slide h4, .slide h5, .slide h6 {
+            font-family: ${getFontFamilyWithFallback(options.fontFamily)} !important;
+            color: ${contentTextColor} !important;
+        }
+
+        .slide p, .slide li, .slide blockquote, .slide td, .slide th {
+            font-family: ${getFontFamilyWithFallback(options.fontFamily)} !important;
+            color: ${contentTextColor} !important;
         }
 
         .slides-content {
@@ -430,7 +745,7 @@ const generateSlidesStyles = (theme: ThemeConfig, options: HTMLGeneratorOptions)
         }
 
         .slide {
-            background-color: ${isDark ? '#1a1a1a' : '#ffffff'};
+            background-color: #ffffff;
             border: 2px solid ${theme.accentColor};
             border-radius: 12px;
             padding: 40px;
@@ -441,6 +756,7 @@ const generateSlidesStyles = (theme: ThemeConfig, options: HTMLGeneratorOptions)
             display: flex;
             flex-direction: column;
             justify-content: center;
+            color: ${contentTextColor};
         }
 
         .slide-number {
@@ -456,7 +772,7 @@ const generateSlidesStyles = (theme: ThemeConfig, options: HTMLGeneratorOptions)
         }
 
         .slide h1, .slide h2, .slide h3, .slide h4, .slide h5, .slide h6 {
-            color: ${theme.accentColor};
+            color: ${contentTextColor} !important;
             margin: 0 0 1em 0;
             font-weight: 700;
             text-align: center;
@@ -481,6 +797,7 @@ const generateSlidesStyles = (theme: ThemeConfig, options: HTMLGeneratorOptions)
             margin: 1em 0;
             text-align: center;
             font-size: 1.2em;
+            color: ${contentTextColor};
         }
 
         .slide ul, .slide ol {
@@ -488,16 +805,18 @@ const generateSlidesStyles = (theme: ThemeConfig, options: HTMLGeneratorOptions)
             padding-left: 0;
             list-style: none;
             text-align: center;
+            color: ${contentTextColor};
         }
 
         .slide li {
             margin: 1em 0;
             padding: 0.8em 1.5em;
-            background-color: ${isDark ? '#2a2a2a' : '#f8f9fa'};
+            background-color: #f8f9fa;
             border-radius: 8px;
             border-left: 4px solid ${theme.accentColor};
             font-size: 1.1em;
             position: relative;
+            color: ${contentTextColor};
         }
 
         .slide li::before {
@@ -517,6 +836,7 @@ const generateSlidesStyles = (theme: ThemeConfig, options: HTMLGeneratorOptions)
             font-size: 1.3em;
             text-align: center;
             position: relative;
+            color: ${contentTextColor};
         }
 
         .slide blockquote::before {
@@ -529,8 +849,8 @@ const generateSlidesStyles = (theme: ThemeConfig, options: HTMLGeneratorOptions)
         }
 
         .slide code {
-            background-color: ${isDark ? '#1f2937' : '#f1f1f1'};
-            color: ${isDark ? '#e5e7eb' : theme.primaryColor};
+            background-color: #f1f1f1;
+            color: ${contentTextColor};
             padding: 0.3em 0.6em;
             border-radius: 6px;
             font-family: 'Monaco', 'Courier New', monospace;
@@ -539,8 +859,8 @@ const generateSlidesStyles = (theme: ThemeConfig, options: HTMLGeneratorOptions)
         }
 
         .slide pre {
-            background-color: ${isDark ? '#1f2937' : '#f8f8f8'};
-            color: ${isDark ? '#e5e7eb' : theme.primaryColor};
+            background-color: #f8f8f8;
+            color: ${contentTextColor};
             padding: 2em;
             border-radius: 12px;
             overflow-x: auto;
@@ -573,6 +893,7 @@ const generateSlidesStyles = (theme: ThemeConfig, options: HTMLGeneratorOptions)
             padding: 1.2em;
             text-align: center;
             font-size: 1.1em;
+            color: ${contentTextColor};
         }
 
         .slide th {
@@ -583,7 +904,11 @@ const generateSlidesStyles = (theme: ThemeConfig, options: HTMLGeneratorOptions)
         }
 
         .slide tr:nth-child(even) {
-            background-color: ${isDark ? '#2a2a2a' : '#f8f9fa'};
+            background-color: #f8f9fa;
+        }
+
+        .slide tr:nth-child(even) td {
+            color: ${contentTextColor};
         }
 
         .slides-preview-badge {
@@ -601,12 +926,12 @@ const generateSlidesStyles = (theme: ThemeConfig, options: HTMLGeneratorOptions)
 };
 
 /**
- * Generate RTF header section
+ * Generate DOCX header section
  */
-const generateRTFHeader = (options: HTMLGeneratorOptions, textColor?: string): string => {
+const generateDocxHeader = (options: HTMLGeneratorOptions, textColor?: string): string => {
     if (!options.headerFooter) return '';
 
-    const isDark = isDarkThemeContext();
+    const isDark = isDarkThemeContext(options);
     const theme = THEMES[options.theme];
 
     let authorColor = textColor;
@@ -623,9 +948,10 @@ const generateRTFHeader = (options: HTMLGeneratorOptions, textColor?: string): s
 
     const titleColor = theme.accentColor || (isDark ? '#60a5fa' : '#2563eb');
     const borderColor = theme.accentColor || (isDark ? '#4b5563' : '#d1d5db');
+    const descriptionColor = getDescriptionTextColor(isDark);
 
     return `
-    <div class="rtf-preview-badge">RTF Preview</div>
+    <div class="docx-preview-badge">DOCX Preview</div>
     <div class="header" style="
         text-align: center;
         margin-bottom: 3em;
@@ -648,7 +974,7 @@ const generateRTFHeader = (options: HTMLGeneratorOptions, textColor?: string): s
         ${options.description ? `
         <div class="description" style="
             font-size: 1em;
-            color: ${authorColor};
+            color: ${descriptionColor};
             opacity: 0.8;
             margin-top: 0.5em;
             font-style: italic;
@@ -663,7 +989,7 @@ const generateRTFHeader = (options: HTMLGeneratorOptions, textColor?: string): s
 const generateEpubHeader = (options: HTMLGeneratorOptions, textColor?: string): string => {
     if (!options.headerFooter) return '';
 
-    const isDark = isDarkThemeContext();
+    const isDark = isDarkThemeContext(options);
     const theme = THEMES[options.theme];
 
     let authorColor = textColor;
@@ -680,6 +1006,7 @@ const generateEpubHeader = (options: HTMLGeneratorOptions, textColor?: string): 
 
     const titleColor = theme.accentColor || (isDark ? '#60a5fa' : '#2563eb');
     const borderColor = theme.accentColor || (isDark ? '#4b5563' : '#d1d5db');
+    const descriptionColor = getDescriptionTextColor(isDark);
 
     return `
     <div class="html-preview-badge">HTML Preview</div>
@@ -705,7 +1032,7 @@ const generateEpubHeader = (options: HTMLGeneratorOptions, textColor?: string): 
         ${options.description ? `
         <div class="description" style="
             font-size: 1.1em;
-            color: ${authorColor};
+            color: ${descriptionColor};
             opacity: 0.8;
             margin-top: 0.5em;
         ">${escapeHtml(options.description)}</div>
@@ -719,7 +1046,7 @@ const generateEpubHeader = (options: HTMLGeneratorOptions, textColor?: string): 
 const generateSlidesHeader = (options: HTMLGeneratorOptions, textColor?: string): string => {
     if (!options.headerFooter) return '';
 
-    const isDark = isDarkThemeContext();
+    const isDark = isDarkThemeContext(options);
     const theme = THEMES[options.theme];
 
     let authorColor = textColor;
@@ -735,6 +1062,7 @@ const generateSlidesHeader = (options: HTMLGeneratorOptions, textColor?: string)
     }
 
     const titleColor = theme.accentColor || (isDark ? '#60a5fa' : '#2563eb');
+    const descriptionColor = getDescriptionTextColor(isDark);
 
     return `
     <div class="slides-preview-badge">Slides Preview</div>
@@ -756,7 +1084,7 @@ const generateSlidesHeader = (options: HTMLGeneratorOptions, textColor?: string)
         ${options.description ? `
         <div class="description" style="
             font-size: 1.3em;
-            color: ${authorColor};
+            color: ${descriptionColor};
             opacity: 0.8;
             margin-top: 1em;
         ">${escapeHtml(options.description)}</div>
@@ -765,9 +1093,9 @@ const generateSlidesHeader = (options: HTMLGeneratorOptions, textColor?: string)
 };
 
 /**
- * Generate RTF footer section
+ * Generate DOCX footer section
  */
-const generateRTFFooter = (options: HTMLGeneratorOptions): string => {
+const generateDocxFooter = (options: HTMLGeneratorOptions): string => {
     if (!options.headerFooter) return '';
 
     return `
@@ -780,7 +1108,7 @@ const generateRTFFooter = (options: HTMLGeneratorOptions): string => {
         opacity: 0.7;
         font-family: 'Times New Roman', serif;
     ">
-        Generated on ${new Date().toLocaleDateString()} • ${escapeHtml(options.title)} • RTF Format
+        Generated on ${new Date().toLocaleDateString()} • ${escapeHtml(options.title)} • DOCX Format
     </div>`;
 };
 
@@ -881,4 +1209,237 @@ const convertContentToSlides = (htmlContent: string): string => {
     }
 
     return slides.join('\n');
+};
+
+/**
+ * Generate enhanced watermark dengan multiple layers untuk keamanan tinggi
+ */
+const generateEnhancedWatermark = (options: HTMLGeneratorOptions): string => {
+    if (!options.watermark) return '';
+
+    const theme = THEMES[options.theme];
+    const watermarkText = escapeHtml(options.watermark);
+    const timestamp = new Date().toISOString();
+    const uniqueId = Math.random().toString(36).substring(2, 15);
+    const checksum = btoa(watermarkText + timestamp).substring(0, 16);
+
+    // Generate multiple watermark positions untuk coverage yang lebih baik
+    const positions = [
+        { top: '20%', left: '20%', rotation: '-45deg', size: '3em', opacity: '0.06' },
+        { top: '50%', left: '50%', rotation: '-45deg', size: '4em', opacity: '0.08' },
+        { top: '80%', left: '80%', rotation: '-45deg', size: '2.5em', opacity: '0.05' },
+        { top: '30%', left: '70%', rotation: '45deg', size: '2em', opacity: '0.04' },
+        { top: '70%', left: '30%', rotation: '30deg', size: '1.8em', opacity: '0.04' },
+        { top: '10%', left: '60%', rotation: '-30deg', size: '1.5em', opacity: '0.03' },
+        { top: '90%', left: '40%', rotation: '60deg', size: '1.5em', opacity: '0.03' }
+    ];
+
+    const watermarkLayers = positions.map((pos, index) => `
+    <div class="watermark-layer-${index + 1}" style="
+        position: fixed;
+        top: ${pos.top};
+        left: ${pos.left};
+        transform: translate(-50%, -50%) rotate(${pos.rotation});
+        font-size: ${pos.size};
+        color: ${theme.accentColor};
+        opacity: ${pos.opacity};
+        z-index: -${index + 1};
+        pointer-events: none;
+        user-select: none;
+        font-weight: ${index % 2 === 0 ? 'bold' : '300'};
+        text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+        font-family: 'Arial', sans-serif;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+        white-space: nowrap;
+        overflow: hidden;
+    " data-layer="${index + 1}" data-checksum="${checksum}">${watermarkText}</div>`).join('');
+
+    return `
+    <!-- Multi-layer security watermark system -->
+    ${watermarkLayers}
+
+    <!-- Invisible tracking elements -->
+    <div style="position: absolute; top: -9999px; left: -9999px; width: 1px; height: 1px; overflow: hidden;"
+         data-watermark-hash="${btoa(watermarkText)}"
+         data-timestamp="${timestamp}"
+         data-id="${uniqueId}"
+         data-checksum="${checksum}"
+         data-layers="${positions.length}">
+        <!-- Hidden watermark text for forensic analysis -->
+        <span>${watermarkText}</span>
+    </div>
+
+    <!-- Repeated watermark in document metadata -->
+    <meta name="watermark" content="${btoa(watermarkText + timestamp)}">
+    <meta name="document-id" content="${uniqueId}">
+    <meta name="security-level" content="enhanced">
+
+    <!-- Advanced CSS untuk maximum security -->
+    <style>
+        /* Prevent all forms of text selection and manipulation */
+        [class*="watermark-layer"] {
+            -webkit-touch-callout: none !important;
+            -webkit-user-select: none !important;
+            -khtml-user-select: none !important;
+            -moz-user-select: none !important;
+            -ms-user-select: none !important;
+            user-select: none !important;
+            -webkit-print-color-adjust: exact !important;
+            print-color-adjust: exact !important;
+            -webkit-appearance: none !important;
+            -moz-appearance: none !important;
+            appearance: none !important;
+            cursor: default !important;
+            outline: none !important;
+            border: none !important;
+            background: none !important;
+            resize: none !important;
+            -webkit-text-size-adjust: none !important;
+            -moz-text-size-adjust: none !important;
+            -ms-text-size-adjust: none !important;
+            text-size-adjust: none !important;
+        }
+
+        /* Prevent context menu and drag operations */
+        [class*="watermark-layer"]::-moz-selection {
+            background: transparent !important;
+        }
+
+        [class*="watermark-layer"]::selection {
+            background: transparent !important;
+        }
+
+        /* Enhanced print protection */
+        @media print {
+            [class*="watermark-layer"] {
+                opacity: 0.2 !important;
+                display: block !important;
+                visibility: visible !important;
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
+                color-adjust: exact !important;
+            }
+
+            /* Add additional print watermarks */
+            body::before {
+                content: "${watermarkText}";
+                position: fixed;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%) rotate(-45deg);
+                font-size: 5em;
+                color: ${theme.accentColor};
+                opacity: 0.1;
+                z-index: 9999;
+                pointer-events: none;
+                font-weight: bold;
+                text-transform: uppercase;
+                letter-spacing: 3px;
+            }
+        }
+
+        /* Prevent CSS manipulation via developer tools */
+        [class*="watermark-layer"] {
+            animation: watermark-protection 0.1s infinite;
+        }
+
+        @keyframes watermark-protection {
+            0% { opacity: var(--watermark-opacity, 0.08); }
+            100% { opacity: var(--watermark-opacity, 0.08); }
+        }
+
+        /* Additional security measures */
+        body {
+            -webkit-user-modify: read-only !important;
+            -moz-user-modify: read-only !important;
+        }
+
+        /* Prevent screenshot tools from easily removing watermarks */
+        html {
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+        }
+
+        /* Forensic CSS - leaves traces if modified */
+        [class*="watermark-layer"]:hover::after {
+            content: "Protected Content - ${uniqueId}";
+            position: absolute;
+            top: -20px;
+            left: 0;
+            font-size: 8px;
+            color: transparent;
+            pointer-events: none;
+        }
+    </style>
+
+    <!-- JavaScript protection (if enabled) -->
+    <script>
+        (function() {
+            'use strict';
+
+            // Prevent console access to watermark elements
+            const watermarkElements = document.querySelectorAll('[class*="watermark-layer"]');
+
+            // Monitor for tampering attempts
+            const observer = new MutationObserver(function(mutations) {
+                mutations.forEach(function(mutation) {
+                    if (mutation.type === 'attributes' || mutation.type === 'childList') {
+                        // Log tampering attempt
+                        console.warn('Document integrity check failed - ${uniqueId}');
+                    }
+                });
+            });
+
+            // Observe watermark elements
+            watermarkElements.forEach(function(element) {
+                observer.observe(element, {
+                    attributes: true,
+                    childList: true,
+                    subtree: true
+                });
+
+                // Prevent element removal
+                Object.defineProperty(element, 'remove', {
+                    value: function() {
+                        console.warn('Watermark removal attempt detected - ${uniqueId}');
+                        return false;
+                    },
+                    writable: false,
+                    configurable: false
+                });
+            });
+
+            // Prevent right-click context menu
+            document.addEventListener('contextmenu', function(e) {
+                if (e.target.className && e.target.className.includes('watermark-layer')) {
+                    e.preventDefault();
+                    return false;
+                }
+            });
+
+            // Prevent drag and drop
+            document.addEventListener('dragstart', function(e) {
+                if (e.target.className && e.target.className.includes('watermark-layer')) {
+                    e.preventDefault();
+                    return false;
+                }
+            });
+
+            // Add timestamp verification
+            const timestamp = '${timestamp}';
+            const checksum = '${checksum}';
+
+            // Verify document integrity
+            setTimeout(function() {
+                const metaWatermark = document.querySelector('meta[name="watermark"]');
+                if (!metaWatermark || !metaWatermark.content) {
+                    console.warn('Document integrity compromised - ${uniqueId}');
+                }
+            }, 1000);
+
+        })();
+    </script>`;
 };

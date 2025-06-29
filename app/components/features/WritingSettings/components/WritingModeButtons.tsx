@@ -17,7 +17,7 @@ import { WRITING_MODES, A11Y } from '../constants/settings.constants';
 import type { WritingModeButtonsProps } from '../types/settings.types';
 
 /**
- * Komponen WritingModeButtons untuk toggle writing modes
+ * WritingModeButtons component for toggling writing modes
  */
 export const WritingModeButtons: React.FC<WritingModeButtonsProps> = memo(({
   focusMode,
@@ -34,7 +34,7 @@ export const WritingModeButtons: React.FC<WritingModeButtonsProps> = memo(({
   orientation = 'horizontal',
   className = ''
 }) => {
-  // Konfigurasi button berdasarkan size
+  // Button configuration based on size
   const getButtonClasses = () => {
     const baseClasses = 'text-xs transition-all duration-200';
     
@@ -156,7 +156,7 @@ export const WritingModeButtons: React.FC<WritingModeButtonsProps> = memo(({
         )}
       </Button>
 
-      {/* Zen Mode Button - Special handling untuk full width di mobile */}
+      {/* Zen Mode Button - Special handling for full width on mobile */}
       {orientation === 'grid' ? (
         <div className="col-span-2">
           <Button

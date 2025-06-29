@@ -7,7 +7,7 @@ import React from 'react';
 import { EmptyTocProps } from '../types/toc.types';
 
 /**
- * Komponen empty state untuk Table of Contents
+ * Empty state component for Table of Contents
  */
 export const EmptyToc: React.FC<EmptyTocProps> = ({
   message = "No headings found. Add some headings to your document to see the table of contents.",

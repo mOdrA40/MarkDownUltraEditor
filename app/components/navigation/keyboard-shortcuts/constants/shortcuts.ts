@@ -6,7 +6,7 @@
 import { ShortcutCategory } from '../types/shortcutTypes';
 
 /**
- * Default keyboard shortcuts untuk aplikasi
+ * Default keyboard shortcuts for the application
  */
 export const DEFAULT_SHORTCUTS: ShortcutCategory[] = [
   {
@@ -304,21 +304,21 @@ export const SPECIAL_KEYS = {
 };
 
 /**
- * Mendapatkan shortcuts berdasarkan kategori
+ * Get shortcuts by category
  */
 export const getShortcutsByCategory = (category: string): ShortcutCategory | undefined => {
   return DEFAULT_SHORTCUTS.find(cat => cat.category === category);
 };
 
 /**
- * Mendapatkan semua kategori yang tersedia
+ * Get all available categories
  */
 export const getAllCategories = (): string[] => {
   return DEFAULT_SHORTCUTS.map(cat => cat.category);
 };
 
 /**
- * Filter shortcuts berdasarkan platform
+ * Filter shortcuts by platform
  */
 export const getShortcutsForPlatform = (platform: 'windows' | 'mac' | 'linux'): ShortcutCategory[] => {
   return DEFAULT_SHORTCUTS.map(category => ({

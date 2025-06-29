@@ -9,31 +9,136 @@ const getTextColorForTheme = (isDarkTheme: boolean): string => {
 };
 
 /**
+ * Get appropriate content text color based on current app theme
+ * This ensures all text (including content) is visible in all themes
+ */
+const getContentTextColor = (isDarkTheme: boolean): string => {
+    return isDarkTheme ? '#ffffff' : '#000000';
+};
+
+/**
+ * Force check if current app theme is dark by checking multiple sources
+ */
+const isCurrentAppThemeDark = (): boolean => {
+    if (typeof window === 'undefined') return false;
+
+    // Check multiple possible sources for theme information
+    const body = document.body;
+    const html = document.documentElement;
+
+    // Check data attributes
+    const bodyTheme = body.getAttribute('data-theme');
+    const htmlTheme = html.getAttribute('data-theme');
+
+    // Check classes
+    const hasDarkClass = body.classList.contains('dark') ||
+                        body.classList.contains('theme-dark') ||
+                        html.classList.contains('dark') ||
+                        html.classList.contains('theme-dark');
+
+    // Check if theme is explicitly dark
+    const isExplicitlyDark = bodyTheme === 'dark' || htmlTheme === 'dark';
+
+    // Check CSS custom properties
+    const rootStyles = getComputedStyle(html);
+    const bgColor = rootStyles.getPropertyValue('--background') || '';
+    const textColor = rootStyles.getPropertyValue('--foreground') || '';
+
+    // Dark theme typically has dark background colors
+    const hasDarkBgColor = bgColor.includes('0f172a') ||
+                          bgColor.includes('1e293b') ||
+                          bgColor.includes('1f2937') ||
+                          bgColor.includes('111827') ||
+                          bgColor.includes('1a1a1a');
+
+    // Light text color indicates dark theme
+    const hasLightTextColor = textColor.includes('f1f5f9') ||
+                             textColor.includes('ffffff') ||
+                             textColor.includes('e5e7eb');
+
+    // Additional check for theme selector state
+    const themeSelector = document.querySelector('[data-theme-selector]') as HTMLElement;
+    const selectedTheme = themeSelector?.getAttribute('data-current-theme') || '';
+    const isSelectedDark = selectedTheme === 'dark';
+
+    // Check for dark theme in localStorage
+    let storedTheme = '';
+    try {
+        storedTheme = localStorage.getItem('theme') || localStorage.getItem('selectedTheme') || '';
+    } catch (e) {
+        // Ignore localStorage errors
+    }
+    const isStoredDark = storedTheme === 'dark';
+
+    const result = isExplicitlyDark || hasDarkClass || hasDarkBgColor || hasLightTextColor || isSelectedDark || isStoredDark;
+
+    // Debug logging in development
+    if (process.env.NODE_ENV === 'development') {
+        console.log('Dark theme detection (PDF):', {
+            isExplicitlyDark,
+            hasDarkClass,
+            hasDarkBgColor,
+            hasLightTextColor,
+            isSelectedDark,
+            isStoredDark,
+            result,
+            bodyTheme,
+            htmlTheme,
+            bgColor,
+            textColor,
+            selectedTheme,
+            storedTheme
+        });
+    }
+
+    return result;
+};
+
+/**
  * Detect if current context is dark theme
  */
 const isDarkThemeContext = (): boolean => {
-    // Check if body has dark theme classes or if user prefers dark mode
+    // Use comprehensive dark theme detection
     if (typeof window !== 'undefined') {
-        const body = document.body;
-        const isDarkClass = body.classList.contains('dark') ||
-                           body.classList.contains('theme-dark') ||
-                           body.getAttribute('data-theme') === 'dark';
-        const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-        return isDarkClass || prefersDark;
+        const isDark = isCurrentAppThemeDark();
+
+        // Additional fallback: check if body background is dark
+        if (!isDark) {
+            const body = document.body;
+            const computedStyle = getComputedStyle(body);
+            const backgroundColor = computedStyle.backgroundColor;
+            const color = computedStyle.color;
+
+            // If background is dark or text is light, assume dark theme
+            const isDarkBg = backgroundColor.includes('rgb(15, 23, 42)') || // slate-900
+                           backgroundColor.includes('rgb(30, 41, 59)') || // slate-800
+                           backgroundColor.includes('rgb(31, 41, 55)') || // gray-800
+                           backgroundColor.includes('rgb(17, 24, 39)');   // gray-900
+
+            const isLightText = color.includes('rgb(241, 245, 249)') || // slate-100
+                              color.includes('rgb(255, 255, 255)') ||   // white
+                              color.includes('rgb(229, 231, 235)');     // gray-200
+
+            if (isDarkBg || isLightText) {
+                return true;
+            }
+        }
+
+        return isDark;
     }
     return false;
 };
 
 /**
  * Generate styled HTML document untuk export
- * 
+ *
  * @param options - Konfigurasi untuk generate HTML
  * @returns Complete HTML document string
  */
 export const generateStyledHTML = (options: HTMLGeneratorOptions): string => {
     const theme = THEMES[options.theme] || THEMES.default;
-    const isDark = isDarkThemeContext();
-    const textColor = getTextColorForTheme(isDark);
+    // Untuk export, selalu gunakan warna hitam untuk teks agar mudah dibaca di kertas putih
+    const textColor = '#000000';
 
     return `<!DOCTYPE html>
 <html lang="en">
@@ -43,10 +148,11 @@ export const generateStyledHTML = (options: HTMLGeneratorOptions): string => {
     <title>${escapeHtml(options.title)}</title>
     <style>
         ${generateBaseStyles()}
-        ${generateThemeStyles(theme, options)}
+        ${generateThemeStyles(theme, options, true)} /* true = forExport */
         ${generateLayoutStyles()}
-        ${generateComponentStyles(theme)}
+        ${generateComponentStyles(theme, true)} /* true = forExport */
         ${generatePrintStyles()}
+        ${generatePageSizeCSS(options.pageSize, options.orientation)}
         ${options.customCSS}
     </style>
 </head>
@@ -82,34 +188,49 @@ const generateBaseStyles = (): string => {
 /**
  * Generate theme-specific styles
  */
-const generateThemeStyles = (theme: ThemeConfig, options: HTMLGeneratorOptions): string => {
+const generateThemeStyles = (theme: ThemeConfig, options: HTMLGeneratorOptions, forExport: boolean = false): string => {
+    // Untuk export, selalu gunakan warna hitam untuk teks dan background putih
+    const contentTextColor = forExport ? '#000000' : getContentTextColor(isDarkThemeContext());
+    const backgroundColor = forExport ? '#ffffff' : theme.backgroundColor;
+    const isDark = forExport ? false : isDarkThemeContext();
+
     return `
         body {
             font-family: '${options.fontFamily}', sans-serif;
             font-size: ${options.fontSize}px;
             line-height: 1.6;
-            color: ${theme.primaryColor};
-            background-color: ${theme.backgroundColor};
+            color: ${contentTextColor} !important;
+            background-color: ${backgroundColor};
             max-width: 800px;
             margin: 0 auto;
             padding: 40px 20px;
         }
 
+        /* Force all text elements to use correct color */
+        body * {
+            color: ${contentTextColor} !important;
+        }
+
+        /* Override specific elements that should keep their own colors */
+        body a {
+            color: ${forExport ? '#3b82f6' : (isDark ? '#60a5fa' : '#3b82f6')} !important;
+        }
+
         h1, h2, h3, h4, h5, h6 {
-            color: ${theme.accentColor};
+            color: ${contentTextColor} !important;
             margin: 1.5em 0 0.5em 0;
             font-weight: 600;
         }
 
         a {
-            color: ${theme.accentColor};
+            color: ${forExport ? '#3b82f6' : (isDark ? contentTextColor : theme.accentColor)};
             text-decoration: none;
             border-bottom: 1px solid transparent;
             transition: border-bottom 0.2s;
         }
 
         a:hover {
-            border-bottom: 1px solid ${theme.accentColor};
+            border-bottom: 1px solid ${forExport ? '#3b82f6' : (isDark ? contentTextColor : theme.accentColor)};
         }`;
 };
 
@@ -117,16 +238,19 @@ const generateThemeStyles = (theme: ThemeConfig, options: HTMLGeneratorOptions):
  * Generate layout styles
  */
 const generateLayoutStyles = (): string => {
+    const isDark = isDarkThemeContext();
+    const contentTextColor = getContentTextColor(isDark);
+
     return `
-        h1 { 
-            font-size: 2.5em; 
-            border-bottom: 3px solid currentColor; 
-            padding-bottom: 0.3em; 
+        h1 {
+            font-size: 2.5em;
+            border-bottom: 3px solid currentColor;
+            padding-bottom: 0.3em;
         }
-        h2 { 
-            font-size: 2em; 
-            border-bottom: 2px solid currentColor; 
-            padding-bottom: 0.2em; 
+        h2 {
+            font-size: 2em;
+            border-bottom: 2px solid currentColor;
+            padding-bottom: 0.2em;
         }
         h3 { font-size: 1.5em; }
         h4 { font-size: 1.25em; }
@@ -136,51 +260,57 @@ const generateLayoutStyles = (): string => {
         p {
             margin: 1em 0;
             text-align: justify;
+            color: ${contentTextColor};
         }
 
         ul, ol {
             margin: 1em 0;
             padding-left: 2em;
+            color: ${contentTextColor};
         }
 
         li {
             margin: 0.5em 0;
+            color: ${contentTextColor};
         }`;
 };
 
 /**
  * Generate component-specific styles
  */
-const generateComponentStyles = (theme: ThemeConfig): string => {
-    const isDark = theme.backgroundColor !== '#ffffff';
+const generateComponentStyles = (theme: ThemeConfig, forExport: boolean = false): string => {
+    // Untuk export, selalu gunakan warna hitam untuk teks
+    const contentTextColor = forExport ? '#000000' : getContentTextColor(isDarkThemeContext());
+    const isDark = forExport ? false : isDarkThemeContext();
 
     return `
         blockquote {
-            border-left: 4px solid ${theme.accentColor};
+            border-left: 4px solid ${forExport ? theme.accentColor : (isDark ? contentTextColor : theme.accentColor)};
             margin: 1.5em 0;
             padding: 1em 1.5em;
-            background-color: ${isDark ? '#2a2a2a' : '#f8f9fa'};
+            background-color: ${forExport ? '#f8f9fa' : (isDark ? '#2a2a2a' : '#f8f9fa')};
             font-style: italic;
+            color: ${contentTextColor};
         }
 
         code {
-            background-color: ${isDark ? '#1f2937' : '#f8f9fa'};
-            color: ${isDark ? '#e5e7eb' : theme.primaryColor};
+            background-color: ${forExport ? '#f8f9fa' : (isDark ? '#1f2937' : '#f8f9fa')};
+            color: ${contentTextColor};
             padding: 0.2em 0.4em;
             border-radius: 3px;
             font-family: 'Courier New', monospace;
             font-size: 0.9em;
-            border: 1px solid ${isDark ? '#374151' : '#e9ecef'};
+            border: 1px solid ${forExport ? '#e9ecef' : (isDark ? '#374151' : '#e9ecef')};
         }
 
         pre {
-            background-color: ${isDark ? '#1f2937' : '#f8f9fa'};
-            color: ${isDark ? '#e5e7eb' : theme.primaryColor};
+            background-color: ${forExport ? '#f8f9fa' : (isDark ? '#1f2937' : '#f8f9fa')};
+            color: ${contentTextColor};
             padding: 1.5em;
             border-radius: 8px;
             overflow-x: auto;
             margin: 1.5em 0;
-            border: 1px solid ${isDark ? '#374151' : '#e9ecef'};
+            border: 1px solid ${forExport ? '#e9ecef' : (isDark ? '#374151' : '#e9ecef')};
         }
 
         pre code {
@@ -209,16 +339,21 @@ const generateComponentStyles = (theme: ThemeConfig): string => {
             border: 1px solid ${isDark ? '#4a4a4a' : '#e1e5e9'};
             padding: 0.75em;
             text-align: left;
+            color: ${contentTextColor};
         }
 
         th {
-            background-color: ${theme.accentColor};
-            color: white;
+            background-color: ${isDark ? '#374151' : theme.accentColor};
+            color: ${isDark ? '#ffffff' : '#ffffff'};
             font-weight: 600;
         }
 
         tr:nth-child(even) {
             background-color: ${isDark ? '#2a2a2a' : '#f8f9fa'};
+        }
+
+        tr:nth-child(even) td {
+            color: ${contentTextColor};
         }`;
 };
 

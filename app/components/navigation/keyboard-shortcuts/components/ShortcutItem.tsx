@@ -1,6 +1,6 @@
 /**
- * Komponen untuk menampilkan individual shortcut item
- * Menangani display shortcut dengan description dan key combinations
+ * Component for displaying individual shortcut item
+ * Handles shortcut display with description and key combinations
  */
 
 import React from 'react';
@@ -12,10 +12,10 @@ export const ShortcutItem: React.FC<ShortcutItemProps> = ({
   showMacKeys = false,
   index
 }) => {
-  // Pilih keys berdasarkan platform
+  // Select keys based on platform
   const keys = showMacKeys && item.macKeys ? item.macKeys : item.keys;
   
-  // Tentukan apakah shortcut enabled
+  // Determine if shortcut is enabled
   const isEnabled = item.enabled !== false;
 
   return (

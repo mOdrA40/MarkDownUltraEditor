@@ -36,7 +36,6 @@
 }
 
 .pdf-preview .content {
-  font-family: 'Times New Roman', serif;
   color: #212529;
   line-height: 1.6;
 }
@@ -65,7 +64,6 @@
 }
 
 .docx-preview .content {
-  font-family: 'Times New Roman', serif;
   color: #000000;
   line-height: 1.8;
   padding: 60px 40px;
@@ -108,7 +106,6 @@
 }
 
 .epub-preview .content {
-  font-family: 'Georgia', serif;
   color: #374151;
   line-height: 1.7;
   padding: 50px;
@@ -275,37 +272,135 @@
 }
 
 /* Dark theme adjustments */
-.dark .pdf-preview {
+.dark .pdf-preview,
+[data-theme="dark"] .pdf-preview,
+.theme-dark .pdf-preview {
   background: linear-gradient(to bottom, #1f2937 0%, #111827 100%);
   border-color: #374151;
 }
 
-.dark .docx-preview {
-  background: #1f2937;
+.dark .docx-preview,
+[data-theme="dark"] .docx-preview,
+.theme-dark .docx-preview {
+  background: #1f2937 !important;
   border-color: #4b5563;
 }
 
-.dark .docx-preview .content {
+.dark .docx-preview .content,
+[data-theme="dark"] .docx-preview .content,
+.theme-dark .docx-preview .content {
   color: #f9fafb;
 }
 
-.dark .epub-preview {
+.dark .epub-preview,
+[data-theme="dark"] .epub-preview,
+.theme-dark .epub-preview {
   background: linear-gradient(135deg, #1f2937 0%, #111827 100%);
   border-color: #4b5563;
 }
 
-.dark .epub-preview .content {
+.dark .epub-preview .content,
+[data-theme="dark"] .epub-preview .content,
+.theme-dark .epub-preview .content {
   color: #e5e7eb;
 }
 
-.dark .presentation-preview {
+.dark .presentation-preview,
+[data-theme="dark"] .presentation-preview,
+.theme-dark .presentation-preview {
   background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
   border-color: #475569;
 }
 
-.dark .presentation-preview .slide {
+.dark .presentation-preview .slide,
+[data-theme="dark"] .presentation-preview .slide,
+.theme-dark .presentation-preview .slide {
   background: #1f2937;
   border-color: #4b5563;
+}
+
+/* Enhanced dark theme text color overrides */
+/* Force all text elements to be white in dark theme */
+.dark .preview-content,
+.dark .preview-content *,
+[data-theme="dark"] .preview-content,
+[data-theme="dark"] .preview-content *,
+.theme-dark .preview-content,
+.theme-dark .preview-content * {
+  color: #ffffff !important;
+}
+
+/* Override for links to maintain visibility */
+.dark .preview-content a,
+[data-theme="dark"] .preview-content a,
+.theme-dark .preview-content a {
+  color: #60a5fa !important;
+}
+
+/* Specific format overrides for dark theme */
+.dark .pdf-preview *,
+.dark .docx-preview *,
+.dark .epub-preview *,
+.dark .presentation-preview *,
+[data-theme="dark"] .pdf-preview *,
+[data-theme="dark"] .docx-preview *,
+[data-theme="dark"] .epub-preview *,
+[data-theme="dark"] .presentation-preview *,
+.theme-dark .pdf-preview *,
+.theme-dark .docx-preview *,
+.theme-dark .epub-preview *,
+.theme-dark .presentation-preview * {
+  color: #ffffff !important;
+}
+
+/* Links in format previews */
+.dark .pdf-preview a,
+.dark .docx-preview a,
+.dark .epub-preview a,
+.dark .presentation-preview a,
+[data-theme="dark"] .pdf-preview a,
+[data-theme="dark"] .docx-preview a,
+[data-theme="dark"] .epub-preview a,
+[data-theme="dark"] .presentation-preview a,
+.theme-dark .pdf-preview a,
+.theme-dark .docx-preview a,
+.theme-dark .epub-preview a,
+.theme-dark .presentation-preview a {
+  color: #60a5fa !important;
+}
+
+/* Additional fallback for dark theme detection */
+/* When body has dark background, force white text */
+body[style*="background-color: rgb(15, 23, 42)"] .preview-content *,
+body[style*="background-color: rgb(30, 41, 59)"] .preview-content *,
+body[style*="background-color: rgb(31, 41, 55)"] .preview-content *,
+body[style*="background-color: rgb(17, 24, 39)"] .preview-content *,
+body[style*="background-color: #0f172a"] .preview-content *,
+body[style*="background-color: #1e293b"] .preview-content *,
+body[style*="background-color: #1f2937"] .preview-content *,
+body[style*="background-color: #111827"] .preview-content * {
+  color: #ffffff !important;
+}
+
+/* When body has light text color, assume dark theme */
+body[style*="color: rgb(241, 245, 249)"] .preview-content *,
+body[style*="color: rgb(255, 255, 255)"] .preview-content *,
+body[style*="color: rgb(229, 231, 235)"] .preview-content *,
+body[style*="color: #f1f5f9"] .preview-content *,
+body[style*="color: #ffffff"] .preview-content *,
+body[style*="color: #e5e7eb"] .preview-content * {
+  color: #ffffff !important;
+}
+
+/* Universal dark theme override - most aggressive approach */
+/* This will catch any dark theme regardless of detection method */
+@media (prefers-color-scheme: dark) {
+  .preview-content *:not(a) {
+    color: #ffffff !important;
+  }
+  .preview-content a {
+    color: #60a5fa !important;
+  }
 }
 
 /* Responsive adjustments */
@@ -332,6 +427,157 @@
   .presentation-preview p {
     font-size: 1em;
   }
+}
+
+/* ReactMarkdown specific styles for Advanced Export */
+.preview-content .prose {
+  max-width: none !important;
+  color: inherit;
+}
+
+/* Force dark theme background for all formats when theme is dark */
+.theme-dark.pdf-preview,
+.theme-dark.docx-preview,
+.theme-dark.epub-preview,
+.theme-dark.presentation-preview {
+  background: #1f2937 !important;
+  color: #ffffff !important;
+}
+
+.theme-dark.docx-preview {
+  background: #1f2937 !important;
+  border-color: #4b5563 !important;
+}
+
+.theme-dark.pdf-preview {
+  background: linear-gradient(to bottom, #1f2937 0%, #111827 100%) !important;
+  border-color: #374151 !important;
+}
+
+.theme-dark.epub-preview {
+  background: linear-gradient(135deg, #1f2937 0%, #111827 100%) !important;
+  border-color: #4b5563 !important;
+}
+
+.theme-dark.presentation-preview {
+  background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%) !important;
+  border-color: #475569 !important;
+}
+
+/* Additional specific override for RTF/DOCX in dark theme */
+.preview-content.docx-preview.theme-dark,
+.preview-content.theme-dark.docx-preview,
+.preview-content[data-theme="dark"].docx-preview,
+.preview-content.docx-preview[data-theme="dark"] {
+  background-color: #1f2937 !important;
+  color: #ffffff !important;
+}
+
+/* Override any inline styles for dark theme */
+.preview-content[style*="backgroundColor"].theme-dark,
+.preview-content[style*="backgroundColor"][data-theme="dark"] {
+  background-color: #1f2937 !important;
+}
+
+.preview-content[style*="color"].theme-dark,
+.preview-content[style*="color"][data-theme="dark"] {
+  color: #ffffff !important;
+}
+
+/* Specific selectors for all formats with dark theme */
+.preview-content[data-theme="dark"].pdf-preview {
+  background: linear-gradient(to bottom, #1f2937 0%, #111827 100%) !important;
+  color: #ffffff !important;
+}
+
+.preview-content[data-theme="dark"].docx-preview {
+  background: #1f2937 !important;
+  color: #ffffff !important;
+}
+
+.preview-content[data-theme="dark"].epub-preview {
+  background: linear-gradient(135deg, #1f2937 0%, #111827 100%) !important;
+  color: #ffffff !important;
+}
+
+.preview-content[data-theme="dark"].presentation-preview {
+  background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%) !important;
+  color: #ffffff !important;
+}
+
+.preview-content .prose h1,
+.preview-content .prose h2,
+.preview-content .prose h3,
+.preview-content .prose h4,
+.preview-content .prose h5,
+.preview-content .prose h6 {
+  color: inherit !important;
+  margin-top: 0;
+}
+
+.preview-content .prose p {
+  color: inherit !important;
+  margin: 1em 0;
+}
+
+.preview-content .prose a {
+  color: var(--tw-prose-links) !important;
+  text-decoration: underline;
+}
+
+.preview-content .prose code {
+  color: var(--tw-prose-code) !important;
+  background-color: rgba(0, 0, 0, 0.1);
+  padding: 0.2em 0.4em;
+  border-radius: 0.25rem;
+  font-size: 0.875em;
+}
+
+.preview-content .prose pre {
+  background-color: var(--tw-prose-pre-bg) !important;
+  color: inherit !important;
+  border-radius: 0.5rem;
+  padding: 1rem;
+  overflow-x: auto;
+}
+
+.preview-content .prose blockquote {
+  border-left: 4px solid var(--tw-prose-quote-borders);
+  padding-left: 1rem;
+  margin: 1.5rem 0;
+  font-style: italic;
+  color: inherit !important;
+}
+
+.preview-content .prose ul,
+.preview-content .prose ol {
+  color: inherit !important;
+  margin: 1rem 0;
+  padding-left: 1.5rem;
+}
+
+.preview-content .prose li {
+  color: inherit !important;
+  margin: 0.5rem 0;
+}
+
+.preview-content .prose table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1.5rem 0;
+}
+
+.preview-content .prose th,
+.preview-content .prose td {
+  border: 1px solid var(--tw-prose-th-borders);
+  padding: 0.75rem;
+  text-align: left;
+  color: inherit !important;
+}
+
+.preview-content .prose th {
+  background-color: var(--tw-prose-pre-bg);
+  font-weight: 600;
 }
 
 /* Animation for format switching */

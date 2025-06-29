@@ -1,7 +1,7 @@
 /**
  * UndoRedo Utilities
- * Fungsi-fungsi utility untuk operasi undo/redo
- * 
+ * Utility functions for undo/redo operations
+ *
  * @author Axel Modra
  */
 
@@ -15,7 +15,7 @@ import type {
 } from '../types/undoRedo.types';
 
 /**
- * Konfigurasi keyboard shortcuts default
+ * Default keyboard shortcuts configuration
  */
 export const DEFAULT_KEYBOARD_SHORTCUTS: KeyboardShortcutConfig = {
   undo: {
@@ -35,7 +35,7 @@ export const DEFAULT_KEYBOARD_SHORTCUTS: KeyboardShortcutConfig = {
 };
 
 /**
- * Konfigurasi button untuk undo dan redo
+ * Button configuration for undo and redo
  */
 export const BUTTON_CONFIGS: Record<UndoRedoAction, ButtonConfig> = {
   undo: {

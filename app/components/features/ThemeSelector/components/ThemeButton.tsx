@@ -1,7 +1,7 @@
 /**
  * ThemeButton Component
- * Komponen button individual untuk memilih tema
- * 
+ * Individual button component for selecting themes
+ *
  * @author Axel Modra
  */
 

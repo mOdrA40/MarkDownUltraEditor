@@ -1,7 +1,7 @@
 /**
  * UndoRedoButton Component
- * Komponen button individual untuk undo atau redo action
- * 
+ * Individual button component for undo or redo action
+ *
  * @author Axel Modra
  */
 
@@ -48,16 +48,16 @@ export const UndoRedoButton: React.FC<UndoRedoButtonProps> = React.memo(({
     }
   };
 
-  // CSS classes untuk button
+  // CSS classes for button
   const buttonClasses = cn(
     getButtonClasses(isClickable, 'desktop', compact),
     className
   );
 
-  // CSS classes untuk icon
+  // CSS classes for icon
   const iconClasses = getIconClasses('desktop', compact);
 
-  // Aria label dengan shortcut info
+  // Aria label with shortcut info
   const ariaLabel = getAriaLabel(type, !!shortcut);
 
   // Tooltip text
@@ -84,5 +84,5 @@ export const UndoRedoButton: React.FC<UndoRedoButtonProps> = React.memo(({
   );
 });
 
-// Set display name untuk debugging
+// Set display name for debugging
 UndoRedoButton.displayName = 'UndoRedoButton';

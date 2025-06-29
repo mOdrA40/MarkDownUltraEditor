@@ -27,7 +27,7 @@ export const ShortcutKey: React.FC<ShortcutKeyProps> = ({
   };
 
   /**
-   * Format key name untuk display yang lebih baik
+   * Format key name for better display
    */
   const formatKeyName = (key: string): string => {
     const keyMappings: Record<string, string> = {

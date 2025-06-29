@@ -79,8 +79,8 @@ export const EXPORT_FORMATS: ExportFormatOption[] = [
   {
     value: 'docx',
     icon: FileText,
-    label: 'RTF',
-    desc: 'Rich Text Format'
+    label: 'DOCX',
+    desc: 'Word Document'
   },
   {
     value: 'epub',
@@ -225,7 +225,7 @@ export const ERROR_MESSAGES = {
  */
 export const SUCCESS_MESSAGES = {
   PDF_EXPORTED: 'PDF export berhasil dimulai. Pilih "Save as PDF" di dialog print.',
-  RTF_EXPORTED: 'Dokumen berhasil di-export sebagai RTF (dapat dibuka di Word).',
+  DOCX_EXPORTED: 'Dokumen berhasil di-export sebagai DOCX (dapat dibuka di Word).',
   HTML_EXPORTED: 'Dokumen berhasil di-export sebagai HTML (format e-book).',
   PRESENTATION_EXPORTED: 'Dokumen berhasil di-export sebagai HTML presentation.'
 } as const;

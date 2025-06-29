@@ -74,11 +74,11 @@ h1 {
       }`}>
         <h4 className="font-medium mb-2">💡 CSS Tips:</h4>
         <ul className="space-y-1 text-muted-foreground">
-          <li>• Gunakan <code className="bg-muted px-1 rounded">body</code> untuk styling global</li>
-          <li>• Gunakan <code className="bg-muted px-1 rounded">h1, h2, h3</code> untuk heading</li>
-          <li>• Gunakan <code className="bg-muted px-1 rounded">p</code> untuk paragraf</li>
-          <li>• Gunakan <code className="bg-muted px-1 rounded">blockquote</code> untuk quote</li>
-          <li>• Gunakan <code className="bg-muted px-1 rounded">code, pre</code> untuk kode</li>
+          <li>• Use <code className="bg-muted px-1 rounded">body</code> for global styling</li>
+          <li>• Use <code className="bg-muted px-1 rounded">h1, h2, h3</code> for headings</li>
+          <li>• Use <code className="bg-muted px-1 rounded">p</code> for paragraphs</li>
+          <li>• Use <code className="bg-muted px-1 rounded">blockquote</code> for quotes</li>
+          <li>• Use <code className="bg-muted px-1 rounded">code, pre</code> for code blocks</li>
         </ul>
       </div>
 

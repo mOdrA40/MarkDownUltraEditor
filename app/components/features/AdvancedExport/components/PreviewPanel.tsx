@@ -1,24 +1,22 @@
-import React, { useRef } from 'react';
+import React, { useRef, useMemo, useEffect } from 'react';
+import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
+import rehypeHighlight from 'rehype-highlight';
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { 
-  Eye, 
-  Monitor, 
-  Tablet, 
-  Smartphone, 
-  Download, 
-  Loader2 
+import {
+  Eye,
+  Monitor,
+  Tablet,
+  Smartphone,
+  Download,
+  Loader2
 } from "lucide-react";
 import { PreviewPanelProps } from '../types/export.types';
-import { convertMarkdownToHTML } from '../utils/markdownConverter';
-import { generateStyledHTML } from '../utils/htmlGenerator';
 import { THEMES } from '../utils/constants';
 import { generateHeaderStyles } from '@/utils/themeUtils';
-import {
-  generateRTFPreviewHTML,
-  generateEpubPreviewHTML,
-  generateSlidesPreviewHTML
-} from '../utils/formatPreviewGenerators';
+import { createMarkdownComponents } from '../../../editor/PreviewPane/components/MarkdownComponents';
+import { useHighlightJs } from '../../../editor/PreviewPane/hooks/useHighlightJs';
 import '../styles/formatPreview.css';
 
 /**
@@ -37,103 +35,310 @@ export const PreviewPanel: React.FC<PreviewPanelProps> = ({
 }) => {
   const previewRef = useRef<HTMLDivElement>(null);
 
-  // Generate preview HTML berdasarkan format yang dipilih
-  const generatePreviewHTML = (): string => {
-    const { html: htmlContent } = convertMarkdownToHTML(markdown);
+  // Setup highlight.js dengan theme management
+  const isDarkMode = currentTheme?.id === 'dark' || options.theme === 'dark' ||
+    (typeof window !== 'undefined' && window.matchMedia('(prefers-color-scheme: dark)').matches);
+  useHighlightJs(isDarkMode, currentTheme);
+
+  // Inject CSS dinamis untuk font family real-time dan dark theme detection
+  useEffect(() => {
+    const styleId = 'advanced-export-preview-styles';
+    let styleElement = document.getElementById(styleId) as HTMLStyleElement;
+
+    if (!styleElement) {
+      styleElement = document.createElement('style');
+      styleElement.id = styleId;
+      document.head.appendChild(styleElement);
+    }
+
+    const fontFamily = getFontFamilyForPreview(options.fontFamily);
+
+    // Detect if current theme is dark
+    const isDarkTheme = () => {
+      const body = document.body;
+      const html = document.documentElement;
+
+      // Check data attributes
+      const bodyTheme = body.getAttribute('data-theme');
+      const htmlTheme = html.getAttribute('data-theme');
+
+      // Check classes
+      const hasDarkClass = body.classList.contains('dark') ||
+                          body.classList.contains('theme-dark') ||
+                          html.classList.contains('dark') ||
+                          html.classList.contains('theme-dark');
+
+      // Check if theme is explicitly dark
+      const isExplicitlyDark = bodyTheme === 'dark' || htmlTheme === 'dark';
+
+      // Check CSS custom properties
+      const rootStyles = getComputedStyle(html);
+      const bgColor = rootStyles.getPropertyValue('--background') || '';
+      const textColor = rootStyles.getPropertyValue('--foreground') || '';
+
+      // Dark theme typically has dark background colors
+      const hasDarkBgColor = bgColor.includes('0f172a') ||
+                            bgColor.includes('1e293b') ||
+                            bgColor.includes('1f2937') ||
+                            bgColor.includes('111827') ||
+                            bgColor.includes('1a1a1a');
+
+      // Light text color indicates dark theme
+      const hasLightTextColor = textColor.includes('f1f5f9') ||
+                               textColor.includes('ffffff') ||
+                               textColor.includes('e5e7eb');
+
+      return isExplicitlyDark || hasDarkClass || hasDarkBgColor || hasLightTextColor;
+    };
+
+    const isCurrentlyDark = isDarkTheme();
+    const textColor = isCurrentlyDark ? '#ffffff' : '#000000';
+    const linkColor = isCurrentlyDark ? '#60a5fa' : '#3b82f6';
+
+    const css = `
+      .preview-content * {
+        font-family: ${fontFamily} !important;
+        color: ${textColor} !important;
+      }
+      .preview-content h1,
+      .preview-content h2,
+      .preview-content h3,
+      .preview-content h4,
+      .preview-content h5,
+      .preview-content h6 {
+        font-family: ${fontFamily} !important;
+        color: ${textColor} !important;
+      }
+      .preview-content p,
+      .preview-content li,
+      .preview-content blockquote,
+      .preview-content td,
+      .preview-content th,
+      .preview-content span,
+      .preview-content div {
+        font-family: ${fontFamily} !important;
+        color: ${textColor} !important;
+      }
+      .preview-content a {
+        color: ${linkColor} !important;
+      }
+      /* Force override for all text elements */
+      .preview-content *:not(a) {
+        color: ${textColor} !important;
+      }
+    `;
+
+    styleElement.textContent = css;
+
+    return () => {
+      // Cleanup saat component unmount
+      if (styleElement && styleElement.parentNode) {
+        styleElement.parentNode.removeChild(styleElement);
+      }
+    };
+  }, [options.fontFamily, currentTheme]);
+
+  // Watch for theme changes and update styles accordingly
+  useEffect(() => {
+    const updatePreviewStyles = () => {
+      const styleId = 'advanced-export-preview-styles';
+      const styleElement = document.getElementById(styleId) as HTMLStyleElement;
+
+      if (styleElement) {
+        // Trigger re-render of styles
+        const event = new CustomEvent('themeChanged');
+        document.dispatchEvent(event);
+      }
+    };
+
+    // Watch for changes in body attributes and classes
+    const observer = new MutationObserver((mutations) => {
+      mutations.forEach((mutation) => {
+        if (mutation.type === 'attributes' &&
+            (mutation.attributeName === 'data-theme' ||
+             mutation.attributeName === 'class')) {
+          updatePreviewStyles();
+        }
+      });
+    });
+
+    // Observe body and html for theme changes
+    observer.observe(document.body, {
+      attributes: true,
+      attributeFilter: ['data-theme', 'class']
+    });
+
+    observer.observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ['data-theme', 'class']
+    });
+
+    return () => {
+      observer.disconnect();
+    };
+  }, []);
+
+  // Create markdown components dengan current props dan theme
+  const markdownComponents = useMemo(() => {
     const themeConfig = THEMES[options.theme] || THEMES.default;
 
-    // Generate HTML berdasarkan format export yang dipilih
-    switch (options.format) {
-      case 'pdf':
-        return generateStyledHTML({
-          ...options,
-          htmlContent,
-          themeConfig
-        });
+    // Untuk preview, gunakan warna yang sesuai dengan theme yang dipilih
+    // Jika theme dark, gunakan warna putih untuk teks
+    const isThemeDark = options.theme === 'dark' || themeConfig.backgroundColor === '#1f2937';
 
-      case 'docx': // RTF format
-        return generateRTFPreviewHTML({
-          ...options,
-          htmlContent,
-          themeConfig
-        });
+    const previewTheme = {
+      id: options.theme,
+      name: themeConfig.name,
+      text: isThemeDark ? '#ffffff' : themeConfig.primaryColor || '#000000',
+      primary: isThemeDark ? '#60a5fa' : (themeConfig.primaryColor || '#3b82f6'),
+      secondary: isThemeDark ? '#9ca3af' : (themeConfig.accentColor || '#6b7280'),
+      accent: isThemeDark ? '#60a5fa' : (themeConfig.accentColor || '#ec4899'),
+      surface: themeConfig.backgroundColor || '#f8fafc',
+      background: themeConfig.backgroundColor || '#ffffff',
+      gradient: currentTheme?.gradient || 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)'
+    };
 
-      case 'epub': // HTML format
-        return generateEpubPreviewHTML({
-          ...options,
-          htmlContent,
-          themeConfig
-        });
+    return createMarkdownComponents({
+      markdown,
+      theme: previewTheme,
+      isMobile,
+      isTablet
+    });
+  }, [markdown, options.theme, currentTheme, isMobile, isTablet]);
 
-      case 'presentation': // Slides format
-        return generateSlidesPreviewHTML({
-          ...options,
-          htmlContent,
-          themeConfig
-        });
-
-      default:
-        return generateStyledHTML({
-          ...options,
-          htmlContent,
-          themeConfig
-        });
-    }
-  };
-
-  // Extract body content untuk preview
-  const getPreviewContent = (): string => {
-    const fullHTML = generatePreviewHTML();
-    const bodyMatch = fullHTML.match(/<body[^>]*>(.*?)<\/body>/s);
-    return bodyMatch?.[1] || '';
-  };
+  // Generate unique key untuk force re-render saat options berubah
+  const previewKey = useMemo(() => {
+    const keyComponents = [
+      options.format,
+      options.theme,
+      options.fontFamily,
+      options.fontSize,
+      options.pageSize,
+      options.orientation,
+      options.customCSS ? btoa(options.customCSS).substring(0, 10) : 'no-css',
+      options.watermark ? btoa(options.watermark).substring(0, 10) : 'no-watermark',
+      options.title,
+      options.author,
+      markdown.substring(0, 50), // Include part of markdown for content changes
+      currentTheme?.id || 'default'
+    ];
+    return keyComponents.join('-');
+  }, [
+    options.format,
+    options.theme,
+    options.fontFamily,
+    options.fontSize,
+    options.pageSize,
+    options.orientation,
+    options.customCSS,
+    options.watermark,
+    options.title,
+    options.author,
+    options.description,
+    options.headerFooter,
+    markdown,
+    currentTheme
+  ]);
 
   // Get header styles for consistent theming
   const headerStyles = generateHeaderStyles(currentTheme);
 
-  // Format-specific styling helpers
-  const getFormatSpecificFontSize = (format: string): string => {
-    switch (format) {
-      case 'pdf':
-        return '14px';
-      case 'docx':
-        return '13px';
-      case 'epub':
-        return '15px';
-      case 'presentation':
-        return '16px';
+  // Format-specific styling helpers dengan memoization
+  const formatSpecificStyles = useMemo(() => {
+    const getFontSize = (format: string): string => {
+      // Base font size dari options, dengan adjustment per format
+      const baseSize = options.fontSize;
+      switch (format) {
+        case 'pdf':
+          return `${baseSize}px`;
+        case 'docx':
+          return `${baseSize - 1}px`;
+        case 'epub':
+          return `${baseSize + 1}px`;
+        case 'presentation':
+          return `${baseSize + 2}px`;
+        default:
+          return `${baseSize}px`;
+      }
+    };
+
+    const getLineHeight = (format: string): string => {
+      switch (format) {
+        case 'pdf':
+          return '1.6';
+        case 'docx':
+          return '1.8';
+        case 'epub':
+          return '1.7';
+        case 'presentation':
+          return '1.5';
+        default:
+          return '1.6';
+      }
+    };
+
+    const getMinHeight = (format: string): string => {
+      switch (format) {
+        case 'pdf':
+          return '600px';
+        case 'docx':
+          return '550px';
+        case 'epub':
+          return '650px';
+        case 'presentation':
+          return '700px';
+        default:
+          return '600px';
+      }
+    };
+
+    return {
+      fontSize: getFontSize(options.format),
+      lineHeight: getLineHeight(options.format),
+      minHeight: getMinHeight(options.format)
+    };
+  }, [options.format, options.fontSize]);
+
+  // Font family helper untuk preview real-time
+  const getFontFamilyForPreview = (fontFamily: string): string => {
+    const fontMap: Record<string, string> = {
+      'Arial': 'Arial, "Helvetica Neue", Helvetica, sans-serif',
+      'Times New Roman': '"Times New Roman", Times, serif',
+      'Helvetica': '"Helvetica Neue", Helvetica, Arial, sans-serif',
+      'Georgia': 'Georgia, "Times New Roman", Times, serif',
+      'Verdana': 'Verdana, Geneva, sans-serif',
+      'Roboto': 'Roboto, "Segoe UI", Arial, sans-serif',
+      'Open Sans': '"Open Sans", "Segoe UI", Arial, sans-serif'
+    };
+    return fontMap[fontFamily] || `${fontFamily}, Arial, sans-serif`;
+  };
+
+  // Page size helpers untuk preview real-time
+  const getPageWidthForPreview = (pageSize: string, orientation: string): string => {
+    const isLandscape = orientation === 'landscape';
+    switch (pageSize.toLowerCase()) {
+      case 'a4':
+        return isLandscape ? '842px' : '595px';
+      case 'letter':
+        return isLandscape ? '792px' : '612px';
+      case 'legal':
+        return isLandscape ? '1008px' : '612px';
       default:
-        return '14px';
+        return isLandscape ? '842px' : '595px';
     }
   };
 
-  const getFormatSpecificLineHeight = (format: string): string => {
-    switch (format) {
-      case 'pdf':
-        return '1.6';
-      case 'docx':
-        return '1.8';
-      case 'epub':
-        return '1.7';
-      case 'presentation':
-        return '1.5';
+  const getPageHeightForPreview = (pageSize: string, orientation: string): string => {
+    const isLandscape = orientation === 'landscape';
+    switch (pageSize.toLowerCase()) {
+      case 'a4':
+        return isLandscape ? '595px' : '842px';
+      case 'letter':
+        return isLandscape ? '612px' : '792px';
+      case 'legal':
+        return isLandscape ? '612px' : '1008px';
       default:
-        return '1.6';
-    }
-  };
-
-  const getFormatSpecificMinHeight = (format: string): string => {
-    switch (format) {
-      case 'pdf':
-        return '600px';
-      case 'docx':
-        return '550px';
-      case 'epub':
-        return '650px';
-      case 'presentation':
-        return '700px';
-      default:
-        return '600px';
+        return isLandscape ? '595px' : '842px';
     }
   };
 
@@ -153,6 +358,7 @@ export const PreviewPanel: React.FC<PreviewPanelProps> = ({
         {/* Format Indicator */}
         <div className="flex items-center justify-between mb-2">
           <Badge
+            key={`badge-${options.format}-${options.theme}`}
             variant="secondary"
             className="text-xs font-medium"
             style={{
@@ -163,10 +369,10 @@ export const PreviewPanel: React.FC<PreviewPanelProps> = ({
             {options.format.toUpperCase()} Preview
           </Badge>
           <div className="text-xs opacity-70">
-            {options.format === 'pdf' && 'Print-ready document'}
-            {options.format === 'docx' && 'Rich Text Format'}
-            {options.format === 'epub' && 'Web Document'}
-            {options.format === 'presentation' && 'HTML Presentation'}
+            {options.format === 'pdf' && `Print-ready document (${options.fontFamily}, ${options.fontSize}px)`}
+            {options.format === 'docx' && `Rich Text Format (${options.fontFamily}, ${options.fontSize}px)`}
+            {options.format === 'epub' && `Web Document (${options.fontFamily}, ${options.fontSize}px)`}
+            {options.format === 'presentation' && `HTML Presentation (${options.fontFamily}, ${options.fontSize}px)`}
           </div>
         </div>
         <div className={`flex items-center gap-2 ${
@@ -308,24 +514,89 @@ export const PreviewPanel: React.FC<PreviewPanelProps> = ({
           `}
         >
           <div
+            key={previewKey}
             ref={previewRef}
+            data-theme={options.theme}
             className={`preview-content ${
               isMobile
                 ? previewMode === 'mobile'
                   ? 'p-4 text-base leading-relaxed'
                   : 'p-4 text-sm leading-relaxed'
                 : 'p-3 sm:p-4 text-xs sm:text-sm'
-            } ${options.format}-preview`}
+            } ${options.format}-preview ${options.theme === 'dark' ? 'theme-dark' : ''}`}
             style={{
-              fontSize: isMobile ? '15px' : getFormatSpecificFontSize(options.format),
-              lineHeight: isMobile ? '1.7' : getFormatSpecificLineHeight(options.format),
-              minHeight: isMobile ? '480px' : getFormatSpecificMinHeight(options.format),
-              position: 'relative'
+              fontSize: isMobile ? '15px' : formatSpecificStyles.fontSize,
+              lineHeight: isMobile ? '1.7' : formatSpecificStyles.lineHeight,
+              position: 'relative',
+              fontFamily: getFontFamilyForPreview(options.fontFamily),
+              maxWidth: getPageWidthForPreview(options.pageSize, options.orientation),
+              minHeight: isMobile ? '480px' : getPageHeightForPreview(options.pageSize, options.orientation),
+              border: '2px dashed #ccc',
+              margin: '0 auto',
+              // Hanya set background dan color jika bukan theme dark, biarkan CSS handle dark theme
+              ...(options.theme !== 'dark' ? {
+                backgroundColor: THEMES[options.theme]?.backgroundColor || '#ffffff',
+                color: THEMES[options.theme]?.primaryColor || '#000000'
+              } : {})
             }}
-            dangerouslySetInnerHTML={{
-              __html: getPreviewContent()
+          >
+            <div
+              className={`
+                prose prose-lg max-w-none transition-colors duration-200
+                ${isDarkMode ? 'prose-invert' : ''}
+                ${(isMobile || isTablet) ? 'preview-pane-responsive' : ''}
+                ${options.format}-content
+              `}
+              style={{
+                '--tw-prose-headings': options.theme === 'dark' ? '#ffffff' : (THEMES[options.theme]?.primaryColor || '#000000'),
+                '--tw-prose-body': options.theme === 'dark' ? '#ffffff' : (THEMES[options.theme]?.primaryColor || '#000000'),
+                '--tw-prose-links': options.theme === 'dark' ? '#60a5fa' : (THEMES[options.theme]?.accentColor || '#3b82f6'),
+                '--tw-prose-bold': options.theme === 'dark' ? '#ffffff' : (THEMES[options.theme]?.primaryColor || '#000000'),
+                '--tw-prose-code': options.theme === 'dark' ? '#60a5fa' : (THEMES[options.theme]?.accentColor || '#ec4899'),
+                '--tw-prose-pre-bg': options.theme === 'dark' ?
+                  'rgba(255, 255, 255, 0.1)' :
+                  'rgba(0, 0, 0, 0.05)',
+                '--tw-prose-th-borders': options.theme === 'dark' ? '#4b5563' : '#d1d5db',
+                '--tw-prose-td-borders': options.theme === 'dark' ? '#4b5563' : '#d1d5db',
+                '--tw-prose-quotes': options.theme === 'dark' ? '#ffffff' : (THEMES[options.theme]?.primaryColor || '#000000'),
+                '--tw-prose-quote-borders': options.theme === 'dark' ? '#60a5fa' : (THEMES[options.theme]?.accentColor || '#3b82f6'),
+                fontSize: getFontFamilyForPreview(options.fontFamily) !== 'inherit' ?
+                  `${options.fontSize}px` : 'inherit',
+                fontFamily: getFontFamilyForPreview(options.fontFamily),
+                lineHeight: options.format === 'docx' ? '1.8' :
+                           options.format === 'epub' ? '1.7' : '1.6'
+              } as React.CSSProperties}
+            >
+              <ReactMarkdown
+                remarkPlugins={[remarkGfm]}
+                rehypePlugins={[rehypeHighlight]}
+                components={markdownComponents}
+              >
+                {markdown}
+              </ReactMarkdown>
+            </div>
+          </div>
+
+          {/* Page Size Indicator */}
+          <div
+            style={{
+              position: 'absolute',
+              bottom: '10px',
+              left: '15px',
+              background: 'rgba(0,0,0,0.1)',
+              padding: '4px 8px',
+              borderRadius: '4px',
+              fontSize: '10px',
+              color: '#666',
+              textTransform: 'uppercase',
+              fontWeight: 'bold',
+              zIndex: 10,
+              pointerEvents: 'none',
+              backdropFilter: 'blur(4px)'
             }}
-          />
+          >
+            {options.pageSize.toUpperCase()} {options.orientation.toUpperCase()}
+          </div>
         </div>
       </div>
 

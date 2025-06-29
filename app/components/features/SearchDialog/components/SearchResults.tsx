@@ -8,7 +8,7 @@ import { Badge } from "@/components/ui/badge";
 import { SearchResultsProps } from '../types/search.types';
 
 /**
- * Komponen untuk menampilkan informasi hasil pencarian
+ * Component for displaying search results information
  */
 export const SearchResults: React.FC<SearchResultsProps> = ({
   matches,

@@ -19,15 +19,15 @@ import { SearchResults } from './SearchDialog/components/SearchResults';
 import { SearchDialogProps } from './SearchDialog/types/search.types';
 
 /**
- * Komponen dialog untuk search dan replace dengan architecture yang bersih
- * Menggunakan composition pattern dan separation of concerns
+ * Dialog component for search and replace with clean architecture
+ * Uses composition pattern and separation of concerns
  */
 export const SearchDialog: React.FC<SearchDialogProps> = ({
   markdown,
   onReplace,
   onClose
 }) => {
-  // Setup search engine dengan custom hook
+  // Setup search engine with custom hook
   const {
     searchTerm,
     replaceTerm,
@@ -45,7 +45,7 @@ export const SearchDialog: React.FC<SearchDialogProps> = ({
   } = useSearchEngine(markdown);
 
   /**
-   * Handle replace one dengan cleanup
+   * Handle replace one with cleanup
    */
   const handleReplaceOne = useCallback(() => {
     const result = replaceOne();

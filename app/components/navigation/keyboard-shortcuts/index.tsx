@@ -1,6 +1,6 @@
 /**
  * Main KeyboardShortcuts Component
- * Menampilkan dialog dengan semua keyboard shortcuts yang tersedia
+ * Displays dialog with all available keyboard shortcuts
  */
 
 import React, { useState, useMemo } from 'react';
@@ -24,8 +24,7 @@ import { ShortcutCategory } from './components/ShortcutCategory';
 // Import types and constants
 import { KeyboardShortcutsProps } from './types/shortcutTypes';
 import { getShortcutsForPlatform } from './constants/shortcuts';
-import type { Theme } from '@/components/features/ThemeSelector';
-import { generateHeaderStyles, getThemeTextColor } from '@/utils/themeUtils';
+import { getThemeTextColor } from '@/utils/themeUtils';
 
 export const KeyboardShortcuts: React.FC<KeyboardShortcutsProps> = ({
   onClose,
@@ -36,7 +35,7 @@ export const KeyboardShortcuts: React.FC<KeyboardShortcutsProps> = ({
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedPlatform, setSelectedPlatform] = useState<'windows' | 'mac' | 'auto'>('auto');
   
-  // Deteksi platform otomatis
+  // Auto-detect platform
   const isMac = useMemo(() => {
     if (typeof window !== 'undefined') {
       return /Mac|iPod|iPhone|iPad/.test(navigator.userAgent);
@@ -44,7 +43,7 @@ export const KeyboardShortcuts: React.FC<KeyboardShortcutsProps> = ({
     return false;
   }, []);
 
-  // Tentukan apakah menggunakan Mac keys
+  // Determine whether to use Mac keys
   const shouldShowMacKeys = useMemo(() => {
     if (showMacKeys !== undefined) return showMacKeys;
     if (selectedPlatform === 'mac') return true;
@@ -52,21 +51,21 @@ export const KeyboardShortcuts: React.FC<KeyboardShortcutsProps> = ({
     return isMac; // auto detection
   }, [showMacKeys, selectedPlatform, isMac]);
 
-  // Gabungkan default shortcuts dengan custom shortcuts
+  // Combine default shortcuts with custom shortcuts
   const allShortcuts = useMemo(() => {
     return getShortcutsForPlatform(shouldShowMacKeys ? 'mac' : 'windows');
   }, [shouldShowMacKeys]);
 
-  // Filter shortcuts berdasarkan search dan visible categories
+  // Filter shortcuts based on search and visible categories
   const filteredShortcuts = useMemo(() => {
     let filtered = allShortcuts;
 
-    // Filter berdasarkan visible categories
+    // Filter based on visible categories
     if (visibleCategories && visibleCategories.length > 0) {
       filtered = filtered.filter(cat => visibleCategories.includes(cat.category));
     }
 
-    // Filter berdasarkan search term
+    // Filter based on search term
     if (searchTerm.trim()) {
       const term = searchTerm.toLowerCase();
       filtered = filtered.map(category => ({
@@ -81,7 +80,7 @@ export const KeyboardShortcuts: React.FC<KeyboardShortcutsProps> = ({
     return filtered.sort((a, b) => (a.order || 999) - (b.order || 999));
   }, [allShortcuts, searchTerm, visibleCategories]);
 
-  // Statistik shortcuts
+  // Shortcuts statistics
   const stats = useMemo(() => {
     const totalShortcuts = allShortcuts.reduce((sum, cat) => sum + cat.items.length, 0);
     const filteredCount = filteredShortcuts.reduce((sum, cat) => sum + cat.items.length, 0);
@@ -109,7 +108,6 @@ export const KeyboardShortcuts: React.FC<KeyboardShortcutsProps> = ({
   };
 
   // Get theme-based styling
-  const headerStyles = generateHeaderStyles(currentTheme);
   const textColor = getThemeTextColor(currentTheme);
 
   return (
@@ -179,7 +177,7 @@ export const KeyboardShortcuts: React.FC<KeyboardShortcutsProps> = ({
           <div className="relative flex-1">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
             <Input
-              placeholder="Cari shortcuts atau deskripsi..."
+              placeholder="Search shortcuts or descriptions..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               className="pl-10 pr-10"
@@ -200,7 +198,7 @@ export const KeyboardShortcuts: React.FC<KeyboardShortcutsProps> = ({
           <div className="flex items-center space-x-2 text-sm text-muted-foreground">
             <Filter className="h-4 w-4" />
             <span>
-              {stats.categories} kategori, {stats.filtered} shortcuts
+              {stats.categories} categories, {stats.filtered} shortcuts
             </span>
           </div>
         </div>
@@ -213,13 +211,13 @@ export const KeyboardShortcuts: React.FC<KeyboardShortcutsProps> = ({
               <div className="text-center">
                 <Search className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
                 <h3 className="text-lg font-medium mb-2">
-                  Tidak ada shortcuts ditemukan
+                  No shortcuts found
                 </h3>
                 <p className="text-muted-foreground mb-4">
-                  Coba sesuaikan pencarian Anda atau hapus filter.
+                  Try adjusting your search or clear the filter.
                 </p>
                 <Button onClick={handleClearSearch} variant="outline">
-                  Hapus Pencarian
+                  Clear Search
                 </Button>
               </div>
             </div>
@@ -254,8 +252,8 @@ export const KeyboardShortcuts: React.FC<KeyboardShortcutsProps> = ({
 
           <p>
             {shouldShowMacKeys
-              ? 'Gunakan ⌘ (Cmd) sebagai pengganti Ctrl'
-              : 'Pada Mac, gunakan ⌘ (Cmd) sebagai pengganti Ctrl'
+              ? 'Use ⌘ (Cmd) instead of Ctrl'
+              : 'On Mac, use ⌘ (Cmd) instead of Ctrl'
             }
           </p>
         </div>

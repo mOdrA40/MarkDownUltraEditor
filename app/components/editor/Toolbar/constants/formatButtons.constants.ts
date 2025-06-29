@@ -15,25 +15,6 @@ export interface FormatButtonConfig extends Omit<FormatButton, 'action'> {
 }
 
 /**
- * Fungsi helper untuk membuat format button
- */
-// const createFormatButton = (
-//   label: string,
-//   template: string,
-//   tooltip: string,
-//   category: ButtonCategory,
-//   style?: string,
-//   shortcut?: string
-// ): FormatButtonConfig => ({
-//   label,
-//   tooltip,
-//   category,
-//   style,
-//   shortcut,
-//   template
-// });
-
-/**
  * Template markdown untuk berbagai format
  */
 export const MARKDOWN_TEMPLATES: Record<string, MarkdownTemplate> = {
@@ -118,7 +99,7 @@ export const MARKDOWN_TEMPLATES: Record<string, MarkdownTemplate> = {
 };
 
 /**
- * Konfigurasi format buttons dengan kategori dan shortcuts
+ * Format buttons configuration with categories and shortcuts
  */
 export const FORMAT_BUTTON_CONFIGS: FormatButtonConfig[] = [
   {
@@ -213,7 +194,7 @@ export const FORMAT_BUTTON_CONFIGS: FormatButtonConfig[] = [
 ];
 
 /**
- * Grouping buttons berdasarkan kategori
+ * Grouping buttons by category
  */
 export const BUTTON_GROUPS = {
   heading: FORMAT_BUTTON_CONFIGS.filter(btn => btn.category === 'heading'),

@@ -1,6 +1,6 @@
 /**
- * TypeScript interfaces untuk Keyboard Shortcuts
- * Mendefinisikan struktur data untuk shortcuts dan kategori
+ * TypeScript interfaces for Keyboard Shortcuts
+ * Defines data structure for shortcuts and categories
  */
 
 import type { Theme } from '@/components/features/ThemeSelector';
@@ -8,64 +8,64 @@ import type { Theme } from '@/components/features/ThemeSelector';
 export interface ShortcutItem {
   /** Array key combinations (e.g., ["Ctrl", "B"]) */
   keys: string[];
-  /** Deskripsi fungsi shortcut */
+  /** Description of shortcut function */
   description: string;
   /** Platform-specific keys (optional) */
   macKeys?: string[];
-  /** Apakah shortcut aktif/tersedia */
+  /** Whether shortcut is active/available */
   enabled?: boolean;
 }
 
 export interface ShortcutCategory {
-  /** Nama kategori */
+  /** Category name */
   category: string;
-  /** Icon untuk kategori (optional) */
+  /** Icon for category (optional) */
   icon?: string;
-  /** Array shortcut items dalam kategori */
+  /** Array of shortcut items in category */
   items: ShortcutItem[];
-  /** Urutan tampilan kategori */
+  /** Display order of category */
   order?: number;
 }
 
 export interface KeyboardShortcutsProps {
-  /** Callback untuk menutup dialog */
+  /** Callback to close dialog */
   onClose: () => void;
   /** Custom shortcuts (optional) */
   customShortcuts?: ShortcutCategory[];
-  /** Apakah menampilkan Mac-specific keys */
+  /** Whether to display Mac-specific keys */
   showMacKeys?: boolean;
-  /** Filter kategori yang ditampilkan */
+  /** Filter categories to display */
   visibleCategories?: string[];
   /** Current theme for styling */
   currentTheme?: Theme;
 }
 
 export interface ShortcutCategoryProps {
-  /** Data kategori shortcut */
+  /** Shortcut category data */
   category: ShortcutCategory;
-  /** Apakah menampilkan Mac keys */
+  /** Whether to display Mac keys */
   showMacKeys?: boolean;
-  /** Index kategori untuk styling */
+  /** Category index for styling */
   index: number;
-  /** Total kategori untuk separator logic */
+  /** Total categories for separator logic */
   totalCategories: number;
 }
 
 export interface ShortcutItemProps {
-  /** Data shortcut item */
+  /** Shortcut item data */
   item: ShortcutItem;
-  /** Apakah menampilkan Mac keys */
+  /** Whether to display Mac keys */
   showMacKeys?: boolean;
-  /** Index item dalam kategori */
+  /** Item index in category */
   index: number;
 }
 
 export interface ShortcutKeyProps {
-  /** Key yang akan ditampilkan */
+  /** Key to be displayed */
   keyName: string;
-  /** Apakah ini key terakhir dalam kombinasi */
+  /** Whether this is the last key in combination */
   isLast?: boolean;
-  /** Variant styling */
+  /** Styling variant */
   variant?: 'default' | 'mac' | 'special';
 }
 

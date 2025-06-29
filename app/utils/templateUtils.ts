@@ -1,5 +1,5 @@
 /**
- * Utility functions untuk DocumentTemplates components
+ * Utility functions for DocumentTemplates components
  */
 
 import { DocumentTemplate, TemplateDifficulty, TemplateCategory, DifficultyColors, CategoryIcons } from '@/types/templates';

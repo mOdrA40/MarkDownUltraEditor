@@ -1,6 +1,6 @@
 /**
- * Komponen untuk menampilkan kategori shortcuts
- * Menangani grouping shortcuts berdasarkan kategori dengan header dan separator
+ * Component for displaying shortcut categories
+ * Handles grouping shortcuts by category with header and separator
  */
 
 import React from 'react';
@@ -18,7 +18,7 @@ import {
 import { ShortcutCategoryProps } from '../types/shortcutTypes';
 import { ShortcutItem } from './ShortcutItem';
 
-// Icon mapping untuk kategori
+// Icon mapping for categories
 const CATEGORY_ICONS = {
   "Text Formatting": Type,
   "View & Navigation": Eye,
@@ -35,10 +35,10 @@ export const ShortcutCategory: React.FC<ShortcutCategoryProps> = ({
   index,
   totalCategories
 }) => {
-  // Dapatkan icon untuk kategori
+  // Get icon for category
   const IconComponent = CATEGORY_ICONS[category.category as keyof typeof CATEGORY_ICONS] || CATEGORY_ICONS.default;
-  
-  // Filter item yang enabled
+
+  // Filter enabled items
   const enabledItems = category.items.filter(item => item.enabled !== false);
   const disabledItems = category.items.filter(item => item.enabled === false);
   
