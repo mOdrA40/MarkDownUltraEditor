@@ -3,14 +3,27 @@
  * @author Axel Modra
  */
 
-import * as fileSaver from 'file-saver';
-import { 
-  ExportConfig, 
-  JsonExportData, 
-  ExportResult, 
-  FileOperationCallbacks 
+import {
+  ExportConfig,
+  JsonExportData,
+  ExportResult,
+  FileOperationCallbacks
 } from '../types/fileOperations.types';
 import { generateHtmlTemplate } from './htmlTemplateService';
+
+/**
+ * Safe file saver function that works with SSR
+ */
+const safeFileSaver = async (blob: Blob, filename: string): Promise<void> => {
+  // Check if we're in a browser environment
+  if (typeof window !== 'undefined') {
+    const { saveAs } = await import('file-saver');
+    saveAs(blob, filename);
+  } else {
+    // In SSR environment, we can't save files
+    console.warn('File saving is not available in server-side rendering environment');
+  }
+};
 
 /**
  * Export markdown file
@@ -24,7 +37,7 @@ export const exportMarkdown = async (
       type: 'text/markdown;charset=utf-8' 
     });
     
-    fileSaver.saveAs(blob, config.fileName);
+    await safeFileSaver(blob, config.fileName);
     
     callbacks.onSuccess(`${config.fileName} has been downloaded.`);
     
@@ -62,7 +75,7 @@ export const exportHtml = async (
     });
     
     const htmlFileName = config.fileName.replace('.md', '.html');
-    fileSaver.saveAs(blob, htmlFileName);
+    await safeFileSaver(blob, htmlFileName);
     
     callbacks.onSuccess('Your document has been exported as HTML.');
     
@@ -188,7 +201,7 @@ export const exportJson = async (
     });
 
     const jsonFileName = config.fileName.replace('.md', '.json');
-    fileSaver.saveAs(blob, jsonFileName);
+    await safeFileSaver(blob, jsonFileName);
 
     callbacks.onSuccess(`JSON exported with ${wordCount} words and ${lineCount} lines.`);
 
