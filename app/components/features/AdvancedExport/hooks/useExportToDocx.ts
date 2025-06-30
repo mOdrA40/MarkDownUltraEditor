@@ -4,109 +4,64 @@
  */
 
 import { useState, useCallback } from 'react';
-import { ExportOptions, UseExportReturn, ThemeConfig } from '../types/export.types';
+import { ExportOptions, UseExportReturn } from '../types/export.types';
 import { downloadFile, sanitizeFilename } from '../utils/downloadFile';
-import { EXPORT_PROGRESS_STEPS, SUCCESS_MESSAGES, ERROR_MESSAGES, THEMES } from '../utils/constants';
+import { EXPORT_PROGRESS_STEPS, SUCCESS_MESSAGES, ERROR_MESSAGES } from '../utils/constants';
 import { convertMarkdownToHTML } from '../utils/markdownConverter';
 import { generateStyledHTML } from '../utils/htmlGenerator';
 
-/**
- * Get colorful theme configuration for export
- * Maps theme names to colorful theme configs instead of black/white
- */
-const getThemeConfigForExport = (themeName: string): ThemeConfig => {
-  const colorfulThemes: Record<string, ThemeConfig> = {
-    ocean: {
-      name: 'Ocean',
-      primaryColor: '#0c4a6e', // Ocean dark blue for text
-      backgroundColor: '#ffffff', // White background for print
-      accentColor: '#0284c7' // Ocean blue for headings and links
-    },
-    forest: {
-      name: 'Forest',
-      primaryColor: '#14532d', // Forest dark green for text
-      backgroundColor: '#ffffff',
-      accentColor: '#10b981' // Forest green for headings and links
-    },
-    sunset: {
-      name: 'Sunset',
-      primaryColor: '#9a3412', // Sunset dark orange for text
-      backgroundColor: '#ffffff',
-      accentColor: '#f97316' // Sunset orange for headings and links
-    },
-    purple: {
-      name: 'Purple',
-      primaryColor: '#581c87', // Purple dark for text
-      backgroundColor: '#ffffff',
-      accentColor: '#a855f7' // Purple for headings and links
-    },
-    rose: {
-      name: 'Rose',
-      primaryColor: '#881337', // Rose dark for text
-      backgroundColor: '#ffffff',
-      accentColor: '#f43f5e' // Rose for headings and links
-    },
-    dark: {
-      name: 'Dark',
-      primaryColor: '#1f2937', // Dark gray for text (readable on white)
-      backgroundColor: '#ffffff',
-      accentColor: '#6366f1' // Indigo for headings and links
-    },
-    default: {
-      name: 'Default',
-      primaryColor: '#1f2937', // Dark gray for text
-      backgroundColor: '#ffffff',
-      accentColor: '#3b82f6' // Blue for headings and links
-    }
-  };
 
-  return colorfulThemes[themeName] || colorfulThemes.default;
-};
-
-/**
- * Get lighter background color for code blocks based on accent color
- */
-const getCodeBackgroundColor = (accentColor: string): string => {
-  const colorMap: Record<string, string> = {
-    '#0284c7': '#f0f9ff', // Ocean - very light blue
-    '#10b981': '#f0fdf4', // Forest - very light green
-    '#f97316': '#fff7ed', // Sunset - very light orange
-    '#a855f7': '#faf5ff', // Purple - very light purple
-    '#f43f5e': '#fff1f2', // Rose - very light pink
-    '#6366f1': '#f8fafc', // Dark/Indigo - very light gray
-    '#3b82f6': '#f8fafc'  // Default - very light gray
-  };
-
-  return colorMap[accentColor] || '#f8fafc';
-};
-
-/**
- * Get lighter border color based on accent color
- */
-const getLighterColor = (accentColor: string): string => {
-  const colorMap: Record<string, string> = {
-    '#0284c7': '#bae6fd', // Ocean - light blue
-    '#10b981': '#bbf7d0', // Forest - light green
-    '#f97316': '#fed7aa', // Sunset - light orange
-    '#a855f7': '#e9d5ff', // Purple - light purple
-    '#f43f5e': '#fecdd3', // Rose - light pink
-    '#6366f1': '#e0e7ff', // Dark/Indigo - light indigo
-    '#3b82f6': '#dbeafe'  // Default - light blue
-  };
-
-  return colorMap[accentColor] || '#e5e7eb';
-};
 
 /**
  * Wrap emojis in spans to preserve their original colors
+ * Enhanced version with better Word compatibility
  */
 const wrapEmojisInSpans = (html: string): string => {
-  // Common emoji Unicode ranges
-  const emojiRegex = /[\u{1F600}-\u{1F64F}]|[\u{1F300}-\u{1F5FF}]|[\u{1F680}-\u{1F6FF}]|[\u{1F1E0}-\u{1F1FF}]|[\u{2600}-\u{26FF}]|[\u{2700}-\u{27BF}]|[\u{1F900}-\u{1F9FF}]|[\u{1F018}-\u{1F270}]|[\u{238C}-\u{2454}]|[\u{20D0}-\u{20FF}]/gu;
+  // Enhanced emoji regex yang mencakup lebih banyak range emoji
+  const emojiRegex = /[\u{1F600}-\u{1F64F}]|[\u{1F300}-\u{1F5FF}]|[\u{1F680}-\u{1F6FF}]|[\u{1F1E0}-\u{1F1FF}]|[\u{2600}-\u{26FF}]|[\u{2700}-\u{27BF}]|[\u{1F900}-\u{1F9FF}]|[\u{1F018}-\u{1F270}]|[\u{238C}-\u{2454}]|[\u{20D0}-\u{20FF}]|[\u{1FA70}-\u{1FAFF}]|[\u{1F004}]|[\u{1F0CF}]|[\u{1F170}-\u{1F251}]|[\u{1F004}]|[\u{1F17E}-\u{1F17F}]|[\u{1F18E}]|[\u{3030}]|[\u{2B50}]|[\u{2B55}]|[\u{2934}-\u{2935}]|[\u{2B05}-\u{2B07}]|[\u{2B1B}-\u{2B1C}]|[\u{3297}]|[\u{3299}]|[\u{303D}]|[\u{00A9}]|[\u{00AE}]|[\u{2122}]|[\u{23F3}]|[\u{24C2}]|[\u{23E9}-\u{23EF}]|[\u{25B6}]|[\u{23F8}-\u{23FA}]|[\u{200D}]|[\u{20E3}]|[\u{FE0F}]/gu;
 
   return html.replace(emojiRegex, (emoji) => {
-    return `<span class="emoji-preserve" style="color: initial !important; font-family: 'Segoe UI Emoji', 'Apple Color Emoji', 'Noto Color Emoji', sans-serif !important;">${emoji}</span>`;
+    // Menggunakan Word-specific styling untuk mempertahankan warna emoji
+    return `<span style="color: auto !important; font-family: 'Segoe UI Emoji', 'Apple Color Emoji', 'Noto Color Emoji', 'Twemoji Mozilla', 'EmojiOne', sans-serif !important; mso-font-charset: 1; mso-generic-font-family: auto; mso-font-pitch: variable; mso-font-signature: 0 0 0 0 0 0;">${emoji}</span>`;
   });
+};
+
+/**
+ * Additional emoji enhancement for better Word compatibility
+ */
+const enhanceEmojiForWord = (html: string): string => {
+  // Tambahan untuk emoji yang tidak tertangkap regex pertama
+  // Pattern untuk emoji yang sering digunakan
+  const additionalEmojiPatterns = [
+    // Checkmarks dan symbols
+    { pattern: /✅/g, replacement: '<span style="color: #00AA00 !important; font-family: \'Segoe UI Emoji\', \'Apple Color Emoji\', \'Noto Color Emoji\', sans-serif !important;">✅</span>' },
+    { pattern: /❌/g, replacement: '<span style="color: #FF0000 !important; font-family: \'Segoe UI Emoji\', \'Apple Color Emoji\', \'Noto Color Emoji\', sans-serif !important;">❌</span>' },
+    { pattern: /⭐/g, replacement: '<span style="color: #FFD700 !important; font-family: \'Segoe UI Emoji\', \'Apple Color Emoji\', \'Noto Color Emoji\', sans-serif !important;">⭐</span>' },
+    { pattern: /✨/g, replacement: '<span style="color: #FFD700 !important; font-family: \'Segoe UI Emoji\', \'Apple Color Emoji\', \'Noto Color Emoji\', sans-serif !important;">✨</span>' },
+    { pattern: /🎉/g, replacement: '<span style="color: auto !important; font-family: \'Segoe UI Emoji\', \'Apple Color Emoji\', \'Noto Color Emoji\', sans-serif !important;">🎉</span>' },
+    { pattern: /🚀/g, replacement: '<span style="color: auto !important; font-family: \'Segoe UI Emoji\', \'Apple Color Emoji\', \'Noto Color Emoji\', sans-serif !important;">🚀</span>' },
+    { pattern: /📝/g, replacement: '<span style="color: auto !important; font-family: \'Segoe UI Emoji\', \'Apple Color Emoji\', \'Noto Color Emoji\', sans-serif !important;">📝</span>' },
+    { pattern: /🎨/g, replacement: '<span style="color: auto !important; font-family: \'Segoe UI Emoji\', \'Apple Color Emoji\', \'Noto Color Emoji\', sans-serif !important;">🎨</span>' },
+    { pattern: /📊/g, replacement: '<span style="color: auto !important; font-family: \'Segoe UI Emoji\', \'Apple Color Emoji\', \'Noto Color Emoji\', sans-serif !important;">📊</span>' },
+    { pattern: /🔧/g, replacement: '<span style="color: auto !important; font-family: \'Segoe UI Emoji\', \'Apple Color Emoji\', \'Noto Color Emoji\', sans-serif !important;">🔧</span>' },
+    { pattern: /💡/g, replacement: '<span style="color: auto !important; font-family: \'Segoe UI Emoji\', \'Apple Color Emoji\', \'Noto Color Emoji\', sans-serif !important;">💡</span>' },
+    { pattern: /📚/g, replacement: '<span style="color: auto !important; font-family: \'Segoe UI Emoji\', \'Apple Color Emoji\', \'Noto Color Emoji\', sans-serif !important;">📚</span>' }
+  ];
+
+  let processedHTML = html;
+
+  // Apply specific patterns untuk emoji yang sering digunakan, hanya jika belum di-wrap
+  additionalEmojiPatterns.forEach(({ pattern, replacement }) => {
+    // Check apakah emoji sudah dalam span dengan styling khusus
+    const existingSpanRegex = new RegExp(`<span[^>]*style[^>]*>${pattern.source.replace(/\//g, '')}</span>`, 'g');
+
+    // Hanya replace jika emoji belum di-wrap dalam span
+    if (!existingSpanRegex.test(processedHTML)) {
+      processedHTML = processedHTML.replace(pattern, replacement);
+    }
+  });
+
+  return processedHTML;
 };
 
 /**
@@ -222,6 +177,9 @@ const convertHTMLToDocx = (htmlContent: string, options: ExportOptions): string 
   // Wrap emojis in spans to preserve their original appearance
   cleanedHTML = wrapEmojisInSpans(cleanedHTML);
 
+  // Additional processing for better emoji rendering in Word
+  cleanedHTML = enhanceEmojiForWord(cleanedHTML);
+
   // Enhance tables for better Word compatibility
   cleanedHTML = cleanedHTML.replace(/<table[^>]*>/gi, () => {
     return `<table border="1" cellpadding="8" cellspacing="0" style="border-collapse: collapse; width: 100%; mso-table-layout-alt: fixed;">`;
@@ -242,6 +200,8 @@ const convertHTMLToDocx = (htmlContent: string, options: ExportOptions): string 
   <meta name="ProgId" content="Word.Document">
   <meta name="Generator" content="Microsoft Word 15">
   <meta name="Originator" content="Microsoft Word 15">
+  <meta http-equiv="Content-Language" content="id">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>${(options.title || 'Document').replace(/[<>&"]/g, (char) => {
     const escapeMap: { [key: string]: string } = { '<': '&lt;', '>': '&gt;', '&': '&amp;', '"': '&quot;' };
     return escapeMap[char] || char;
@@ -283,25 +243,32 @@ const convertHTMLToDocx = (htmlContent: string, options: ExportOptions): string 
     h5 { font-size: ${Math.max(10, Math.min(options.fontSize * 0.9, 12))}pt; color: #000000; }
     h6 { font-size: ${Math.max(9, Math.min(options.fontSize * 0.8, 11))}pt; color: #000000; }
 
-    /* Preserve emoji colors - override theme colors for emoji spans */
-    .emoji-preserve {
-      color: initial !important;
-      font-family: 'Segoe UI Emoji', 'Apple Color Emoji', 'Noto Color Emoji', sans-serif !important;
+    /* Enhanced emoji preservation for Word compatibility */
+    span[style*="mso-font-charset"] {
+      color: auto !important;
+      font-family: 'Segoe UI Emoji', 'Apple Color Emoji', 'Noto Color Emoji', 'Twemoji Mozilla', 'EmojiOne', sans-serif !important;
       font-size: inherit !important;
+      mso-font-charset: 1;
+      mso-generic-font-family: auto;
+      mso-font-pitch: variable;
+      mso-font-signature: 0 0 0 0 0 0;
     }
 
-    /* Ensure emojis don't inherit parent colors */
-    h1 .emoji-preserve,
-    h2 .emoji-preserve,
-    h3 .emoji-preserve,
-    h4 .emoji-preserve,
-    h5 .emoji-preserve,
-    h6 .emoji-preserve,
-    p .emoji-preserve,
-    li .emoji-preserve,
-    strong .emoji-preserve,
-    b .emoji-preserve {
-      color: initial !important;
+    /* Prevent emoji inheritance from parent elements */
+    h1 span[style*="mso-font-charset"],
+    h2 span[style*="mso-font-charset"],
+    h3 span[style*="mso-font-charset"],
+    h4 span[style*="mso-font-charset"],
+    h5 span[style*="mso-font-charset"],
+    h6 span[style*="mso-font-charset"],
+    p span[style*="mso-font-charset"],
+    li span[style*="mso-font-charset"],
+    strong span[style*="mso-font-charset"],
+    b span[style*="mso-font-charset"],
+    em span[style*="mso-font-charset"],
+    i span[style*="mso-font-charset"] {
+      color: auto !important;
+      font-family: 'Segoe UI Emoji', 'Apple Color Emoji', 'Noto Color Emoji', 'Twemoji Mozilla', 'EmojiOne', sans-serif !important;
     }
     p {
       margin: 6pt 0;
@@ -377,6 +344,16 @@ const convertHTMLToDocx = (htmlContent: string, options: ExportOptions): string 
     }
     a:hover {
       color: #000000;
+    }
+
+    /* Additional emoji-specific styles */
+    span[style*="color: #00AA00"] { color: #00AA00 !important; } /* Green checkmarks */
+    span[style*="color: #FF0000"] { color: #FF0000 !important; } /* Red X marks */
+    span[style*="color: #FFD700"] { color: #FFD700 !important; } /* Gold stars */
+    
+    /* Force emoji font family everywhere */
+    *[style*="Segoe UI Emoji"] {
+      font-family: 'Segoe UI Emoji', 'Apple Color Emoji', 'Noto Color Emoji', 'Twemoji Mozilla', 'EmojiOne', sans-serif !important;
     }
   </style>
 </head>

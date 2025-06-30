@@ -1,12 +1,7 @@
 import { HTMLGeneratorOptions, ThemeConfig } from '../types/export.types';
 import { THEMES } from './constants';
 
-/**
- * Get appropriate text color based on current theme context
- */
-const getTextColorForTheme = (isDarkTheme: boolean): string => {
-    return isDarkTheme ? '#ffffff' : '#000000';
-};
+
 
 /**
  * Get appropriate content text color based on current app theme
@@ -32,9 +27,9 @@ const isCurrentAppThemeDark = (): boolean => {
 
     // Check classes
     const hasDarkClass = body.classList.contains('dark') ||
-                        body.classList.contains('theme-dark') ||
-                        html.classList.contains('dark') ||
-                        html.classList.contains('theme-dark');
+        body.classList.contains('theme-dark') ||
+        html.classList.contains('dark') ||
+        html.classList.contains('theme-dark');
 
     // Check if theme is explicitly dark
     const isExplicitlyDark = bodyTheme === 'dark' || htmlTheme === 'dark';
@@ -46,15 +41,15 @@ const isCurrentAppThemeDark = (): boolean => {
 
     // Dark theme typically has dark background colors
     const hasDarkBgColor = bgColor.includes('0f172a') ||
-                          bgColor.includes('1e293b') ||
-                          bgColor.includes('1f2937') ||
-                          bgColor.includes('111827') ||
-                          bgColor.includes('1a1a1a');
+        bgColor.includes('1e293b') ||
+        bgColor.includes('1f2937') ||
+        bgColor.includes('111827') ||
+        bgColor.includes('1a1a1a');
 
     // Light text color indicates dark theme
     const hasLightTextColor = textColor.includes('f1f5f9') ||
-                             textColor.includes('ffffff') ||
-                             textColor.includes('e5e7eb');
+        textColor.includes('ffffff') ||
+        textColor.includes('e5e7eb');
 
     // Additional check for theme selector state
     const themeSelector = document.querySelector('[data-theme-selector]') as HTMLElement;
@@ -65,7 +60,7 @@ const isCurrentAppThemeDark = (): boolean => {
     let storedTheme = '';
     try {
         storedTheme = localStorage.getItem('theme') || localStorage.getItem('selectedTheme') || '';
-    } catch (e) {
+    } catch {
         // Ignore localStorage errors
     }
     const isStoredDark = storedTheme === 'dark';
@@ -111,13 +106,13 @@ const isDarkThemeContext = (): boolean => {
 
             // If background is dark or text is light, assume dark theme
             const isDarkBg = backgroundColor.includes('rgb(15, 23, 42)') || // slate-900
-                           backgroundColor.includes('rgb(30, 41, 59)') || // slate-800
-                           backgroundColor.includes('rgb(31, 41, 55)') || // gray-800
-                           backgroundColor.includes('rgb(17, 24, 39)');   // gray-900
+                backgroundColor.includes('rgb(30, 41, 59)') || // slate-800
+                backgroundColor.includes('rgb(31, 41, 55)') || // gray-800
+                backgroundColor.includes('rgb(17, 24, 39)');   // gray-900
 
             const isLightText = color.includes('rgb(241, 245, 249)') || // slate-100
-                              color.includes('rgb(255, 255, 255)') ||   // white
-                              color.includes('rgb(229, 231, 235)');     // gray-200
+                color.includes('rgb(255, 255, 255)') ||   // white
+                color.includes('rgb(229, 231, 235)');     // gray-200
 
             if (isDarkBg || isLightText) {
                 return true;
@@ -151,6 +146,7 @@ export const generateStyledHTML = (options: HTMLGeneratorOptions): string => {
         ${generateThemeStyles(theme, options, true)} /* true = forExport */
         ${generateLayoutStyles()}
         ${generateComponentStyles(theme, true)} /* true = forExport */
+        ${generateEmojiStyles()} /* Emoji preservation styles */
         ${generatePrintStyles()}
         ${generatePageSizeCSS(options.pageSize, options.orientation)}
         ${options.customCSS}
@@ -206,14 +202,24 @@ const generateThemeStyles = (theme: ThemeConfig, options: HTMLGeneratorOptions, 
             padding: 40px 20px;
         }
 
-        /* Force all text elements to use correct color */
-        body * {
+        /* Force all text elements to use correct color, except emojis */
+        body *:not([style*="mso-font-charset"]):not(span[style*="Segoe UI Emoji"]):not(span[style*="color: #00AA00"]):not(span[style*="color: #FF0000"]):not(span[style*="color: #FFD700"]) {
             color: ${contentTextColor} !important;
         }
 
         /* Override specific elements that should keep their own colors */
         body a {
             color: ${forExport ? '#3b82f6' : (isDark ? '#60a5fa' : '#3b82f6')} !important;
+        }
+
+        /* Preserve emoji colors explicitly */
+        body span[style*="mso-font-charset"],
+        body span[style*="Segoe UI Emoji"],
+        body span[style*="color: #00AA00"],
+        body span[style*="color: #FF0000"], 
+        body span[style*="color: #FFD700"],
+        body span[style*="color: auto"] {
+            color: inherit !important;
         }
 
         h1, h2, h3, h4, h5, h6 {
@@ -358,6 +364,58 @@ const generateComponentStyles = (theme: ThemeConfig, forExport: boolean = false)
 };
 
 /**
+ * Generate emoji-specific styles untuk export compatibility
+ */
+const generateEmojiStyles = (): string => {
+    return `
+        /* Enhanced emoji preservation for all export formats */
+        span[style*="mso-font-charset"],
+        span[style*="Segoe UI Emoji"],
+        span[style*="Apple Color Emoji"],
+        span[style*="Noto Color Emoji"] {
+            color: auto !important;
+            font-family: 'Segoe UI Emoji', 'Apple Color Emoji', 'Noto Color Emoji', 'Twemoji Mozilla', 'EmojiOne', sans-serif !important;
+            font-size: inherit !important;
+            text-decoration: none !important;
+        }
+
+        /* Specific emoji color preservation */
+        span[style*="color: #00AA00"] { color: #00AA00 !important; } /* Green checkmarks ✅ */
+        span[style*="color: #FF0000"] { color: #FF0000 !important; } /* Red X marks ❌ */
+        span[style*="color: #FFD700"] { color: #FFD700 !important; } /* Gold stars ⭐✨ */
+        span[style*="color: auto"] { color: auto !important; } /* Auto color emojis */
+
+        /* Force emoji styling in all contexts */
+        h1 span[style*="mso-font-charset"],
+        h2 span[style*="mso-font-charset"],
+        h3 span[style*="mso-font-charset"],
+        h4 span[style*="mso-font-charset"],
+        h5 span[style*="mso-font-charset"],
+        h6 span[style*="mso-font-charset"],
+        p span[style*="mso-font-charset"],
+        li span[style*="mso-font-charset"],
+        strong span[style*="mso-font-charset"],
+        b span[style*="mso-font-charset"],
+        em span[style*="mso-font-charset"],
+        i span[style*="mso-font-charset"],
+        td span[style*="mso-font-charset"],
+        th span[style*="mso-font-charset"],
+        blockquote span[style*="mso-font-charset"] {
+            color: auto !important;
+            font-family: 'Segoe UI Emoji', 'Apple Color Emoji', 'Noto Color Emoji', 'Twemoji Mozilla', 'EmojiOne', sans-serif !important;
+        }
+
+        /* Additional fallback for emoji preservation */
+        [style*="Segoe UI Emoji"],
+        [style*="Apple Color Emoji"],
+        [style*="Noto Color Emoji"] {
+            color: auto !important;
+            font-family: 'Segoe UI Emoji', 'Apple Color Emoji', 'Noto Color Emoji', sans-serif !important;
+        }
+    `;
+};
+
+/**
  * Generate print-specific styles
  */
 const generatePrintStyles = (): string => {
@@ -424,10 +482,10 @@ const generateHeader = (options: HTMLGeneratorOptions, textColor?: string): stri
 
     // Detect current theme context for better color selection
     const isDark = typeof window !== 'undefined' &&
-      (document.body.classList.contains('dark') ||
-       document.body.classList.contains('theme-dark') ||
-       document.body.getAttribute('data-theme') === 'dark' ||
-       window.matchMedia('(prefers-color-scheme: dark)').matches);
+        (document.body.classList.contains('dark') ||
+            document.body.classList.contains('theme-dark') ||
+            document.body.getAttribute('data-theme') === 'dark' ||
+            window.matchMedia('(prefers-color-scheme: dark)').matches);
 
     // Smart color selection based on theme and context
     let authorColor = textColor;
@@ -435,7 +493,7 @@ const generateHeader = (options: HTMLGeneratorOptions, textColor?: string): stri
         // For dark themes or dark context, use light colors
         const themeConfig = THEMES[options.theme];
         const isDarkTheme = options.theme === 'dark' ||
-                           (themeConfig && themeConfig.backgroundColor !== '#ffffff' && themeConfig.backgroundColor !== '#fafafa');
+            (themeConfig && themeConfig.backgroundColor !== '#ffffff' && themeConfig.backgroundColor !== '#fafafa');
 
         if (isDark || isDarkTheme) {
             authorColor = '#e5e7eb'; // Light gray for dark backgrounds
