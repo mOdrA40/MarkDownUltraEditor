@@ -14,19 +14,48 @@ const getTextColorForTheme = (isDarkTheme: boolean): string => {
 };
 
 /**
- * Get appropriate description text color based on current theme context
- * For description text, we want black color for all themes except dark theme
+ * Get description text color with better contrast
  */
 const getDescriptionTextColor = (isDarkTheme: boolean): string => {
-    return isDarkTheme ? '#ffffff' : '#000000';
+    return isDarkTheme ? '#d1d5db' : '#6b7280';
 };
 
 /**
- * Get appropriate text color for all content based on current app theme
- * This ensures all text (including content) is visible in all themes
+ * Get content text color for readability
  */
 const getContentTextColor = (isDarkTheme: boolean): string => {
-    return isDarkTheme ? '#ffffff' : '#000000';
+    return isDarkTheme ? '#f9fafb' : '#111827';
+};
+
+/**
+ * Get table header text color for better visibility
+ */
+const getTableHeaderTextColor = (isDarkTheme: boolean, accentColor: string): string => {
+    // Untuk theme dark, gunakan warna yang kontras dengan background dark
+    if (isDarkTheme) {
+        // Jika accent color adalah warna terang, gunakan warna gelap untuk teks
+        if (accentColor === '#60a5fa' || accentColor === '#3b82f6' || accentColor.includes('blue')) {
+            return '#1e3a8a'; // Navy blue untuk kontras yang baik
+        }
+        // Untuk accent color gelap, gunakan putih
+        return '#ffffff';
+    }
+    // Untuk theme light, selalu gunakan putih di atas accent color
+    return '#ffffff';
+};
+
+/**
+ * Get table header background color for better visibility
+ */
+const getTableHeaderBackgroundColor = (isDarkTheme: boolean, accentColor: string): string => {
+    if (isDarkTheme) {
+        // Untuk theme dark, pastikan background header terlihat dengan baik
+        if (accentColor === '#60a5fa') {
+            return '#3b82f6'; // Darker blue untuk kontras
+        }
+        return accentColor; // Gunakan accent color sebagai background
+    }
+    return accentColor; // Untuk theme light, gunakan accent color normal
 };
 
 /**
@@ -45,9 +74,9 @@ const isCurrentAppThemeDark = (): boolean => {
 
     // Check classes
     const hasDarkClass = body.classList.contains('dark') ||
-                        body.classList.contains('theme-dark') ||
-                        html.classList.contains('dark') ||
-                        html.classList.contains('theme-dark');
+        body.classList.contains('theme-dark') ||
+        html.classList.contains('dark') ||
+        html.classList.contains('theme-dark');
 
     // Check if theme is explicitly dark
     const isExplicitlyDark = bodyTheme === 'dark' || htmlTheme === 'dark';
@@ -59,15 +88,15 @@ const isCurrentAppThemeDark = (): boolean => {
 
     // Dark theme typically has dark background colors
     const hasDarkBgColor = bgColor.includes('0f172a') ||
-                          bgColor.includes('1e293b') ||
-                          bgColor.includes('1f2937') ||
-                          bgColor.includes('111827') ||
-                          bgColor.includes('1a1a1a');
+        bgColor.includes('1e293b') ||
+        bgColor.includes('1f2937') ||
+        bgColor.includes('111827') ||
+        bgColor.includes('1a1a1a');
 
     // Light text color indicates dark theme
     const hasLightTextColor = textColor.includes('f1f5f9') ||
-                             textColor.includes('ffffff') ||
-                             textColor.includes('e5e7eb');
+        textColor.includes('ffffff') ||
+        textColor.includes('e5e7eb');
 
     // Additional check for theme selector state
     const themeSelector = document.querySelector('[data-theme-selector]') as HTMLElement;
@@ -78,7 +107,7 @@ const isCurrentAppThemeDark = (): boolean => {
     let storedTheme = '';
     try {
         storedTheme = localStorage.getItem('theme') || localStorage.getItem('selectedTheme') || '';
-    } catch (e) {
+    } catch {
         // Ignore localStorage errors
     }
     const isStoredDark = storedTheme === 'dark';
@@ -140,13 +169,13 @@ const isDarkThemeContext = (options?: HTMLGeneratorOptions): boolean => {
 
             // If background is dark or text is light, assume dark theme
             const isDarkBg = backgroundColor.includes('rgb(15, 23, 42)') || // slate-900
-                           backgroundColor.includes('rgb(30, 41, 59)') || // slate-800
-                           backgroundColor.includes('rgb(31, 41, 55)') || // gray-800
-                           backgroundColor.includes('rgb(17, 24, 39)');   // gray-900
+                backgroundColor.includes('rgb(30, 41, 59)') || // slate-800
+                backgroundColor.includes('rgb(31, 41, 55)') || // gray-800
+                backgroundColor.includes('rgb(17, 24, 39)');   // gray-900
 
             const isLightText = color.includes('rgb(241, 245, 249)') || // slate-100
-                              color.includes('rgb(255, 255, 255)') ||   // white
-                              color.includes('rgb(229, 231, 235)');     // gray-200
+                color.includes('rgb(255, 255, 255)') ||   // white
+                color.includes('rgb(229, 231, 235)');     // gray-200
 
             if (isDarkBg || isLightText) {
                 return true;
@@ -203,12 +232,12 @@ const generatePageSizeStyles = (pageSize: string, orientation: string): string =
 
     // Convert to approximate pixel values for preview
     const widthPx = pageSize === 'a4' ? (isLandscape ? '842px' : '595px') :
-                   pageSize === 'letter' ? (isLandscape ? '792px' : '612px') :
-                   pageSize === 'legal' ? (isLandscape ? '1008px' : '612px') : '595px';
+        pageSize === 'letter' ? (isLandscape ? '792px' : '612px') :
+            pageSize === 'legal' ? (isLandscape ? '1008px' : '612px') : '595px';
 
     const heightPx = pageSize === 'a4' ? (isLandscape ? '595px' : '842px') :
-                    pageSize === 'letter' ? (isLandscape ? '612px' : '792px') :
-                    pageSize === 'legal' ? (isLandscape ? '612px' : '1008px') : '842px';
+        pageSize === 'letter' ? (isLandscape ? '612px' : '792px') :
+            pageSize === 'legal' ? (isLandscape ? '612px' : '1008px') : '842px';
 
     return `
         .content {
@@ -338,8 +367,11 @@ export const generateSlidesPreviewHTML = (options: HTMLGeneratorOptions): string
  * Generate RTF-specific styles
  */
 const generateRTFStyles = (theme: ThemeConfig, options: HTMLGeneratorOptions): string => {
-    // Untuk export RTF, selalu gunakan warna hitam untuk teks agar mudah dibaca
-    const contentTextColor = '#000000';
+    // Detect dark theme context
+    const isDark = isDarkThemeContext(options);
+    const contentTextColor = getContentTextColor(isDark);
+    const tableHeaderTextColor = getTableHeaderTextColor(isDark, theme.accentColor);
+    const tableHeaderBgColor = getTableHeaderBackgroundColor(isDark, theme.accentColor);
 
     return `
         * {
@@ -353,10 +385,10 @@ const generateRTFStyles = (theme: ThemeConfig, options: HTMLGeneratorOptions): s
             font-size: ${options.fontSize}px !important;
             line-height: 1.8;
             color: ${contentTextColor};
-            background-color: ${theme.backgroundColor};
-            max-width: 700px;
+            background-color: ${isDark ? '#1f2937' : theme.backgroundColor};
+            max-width: 800px;
             margin: 0 auto;
-            padding: 60px 40px;
+            padding: 40px 30px;
         }
 
         .content {
@@ -371,7 +403,7 @@ const generateRTFStyles = (theme: ThemeConfig, options: HTMLGeneratorOptions): s
 
         /* Override specific elements that should keep their own colors */
         .content a {
-            color: #3b82f6 !important;
+            color: ${isDark ? '#60a5fa' : '#3b82f6'} !important;
         }
 
         h1, h2, h3, h4, h5, h6 {
@@ -389,14 +421,22 @@ const generateRTFStyles = (theme: ThemeConfig, options: HTMLGeneratorOptions): s
 
         h1, h2, h3, h4, h5, h6 {
             color: ${contentTextColor} !important;
-            margin: 2em 0 1em 0;
-            font-weight: bold;
-            text-align: left;
+            margin: 1.8em 0 0.8em 0;
+            font-weight: 600;
+            line-height: 1.3;
         }
 
-        h1 { font-size: 2.2em; }
-        h2 { font-size: 1.8em; }
-        h3 { font-size: 1.5em; }
+        h1 {
+            font-size: 2.5em;
+            border-bottom: 3px solid ${theme.accentColor};
+            padding-bottom: 0.3em;
+        }
+        h2 {
+            font-size: 2em;
+            border-bottom: 2px solid ${theme.accentColor};
+            padding-bottom: 0.2em;
+        }
+        h3 { font-size: 1.6em; }
         h4 { font-size: 1.3em; }
         h5 { font-size: 1.1em; }
         h6 { font-size: 1em; }
@@ -411,11 +451,11 @@ const generateRTFStyles = (theme: ThemeConfig, options: HTMLGeneratorOptions): s
 
         /* RTF-specific formatting */
         .content {
-            background-color: #ffffff;
-            border: 1px solid #e0e0e0;
+            background-color: ${isDark ? '#1f2937' : '#ffffff'};
+            border: 1px solid ${isDark ? '#4b5563' : '#e0e0e0'};
             border-radius: 8px;
             padding: 40px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            box-shadow: 0 4px 12px ${isDark ? 'rgba(0,0,0,0.3)' : 'rgba(0,0,0,0.1)'};
         }
 
         ul, ol {
@@ -434,13 +474,13 @@ const generateRTFStyles = (theme: ThemeConfig, options: HTMLGeneratorOptions): s
             border-left: 4px solid ${theme.accentColor};
             margin: 2em 0;
             padding: 1.5em 2em;
-            background-color: #f9f9f9;
+            background-color: ${isDark ? '#374151' : '#f9f9f9'};
             font-style: italic;
             color: ${contentTextColor};
         }
 
         code {
-            background-color: #f1f1f1;
+            background-color: ${isDark ? '#374151' : '#f1f1f1'};
             color: ${contentTextColor};
             padding: 0.3em 0.5em;
             border-radius: 3px;
@@ -449,36 +489,39 @@ const generateRTFStyles = (theme: ThemeConfig, options: HTMLGeneratorOptions): s
         }
 
         pre {
-            background-color: #f8f8f8;
+            background-color: ${isDark ? '#374151' : '#f8f8f8'};
             color: ${contentTextColor};
             padding: 1.5em;
             border-radius: 5px;
             overflow-x: auto;
             margin: 2em 0;
-            border: 1px solid #e0e0e0;
+            border: 1px solid ${isDark ? '#4b5563' : '#e0e0e0'};
         }
 
         table {
             width: 100%;
             border-collapse: collapse;
             margin: 2em 0;
+            box-shadow: 0 2px 8px ${isDark ? 'rgba(0,0,0,0.3)' : 'rgba(0,0,0,0.1)'};
+            border-radius: 8px;
+            overflow: hidden;
         }
 
         th, td {
-            border: 1px solid #ccc;
+            border: 1px solid ${isDark ? '#4b5563' : '#ccc'};
             padding: 0.8em;
             text-align: left;
             color: ${contentTextColor};
         }
 
         th {
-            background-color: ${theme.accentColor};
-            color: #ffffff;
+            background-color: ${tableHeaderBgColor};
+            color: ${tableHeaderTextColor} !important;
             font-weight: bold;
         }
 
         tr:nth-child(even) {
-            background-color: #f9f9f9;
+            background-color: ${isDark ? '#374151' : '#f9f9f9'};
         }
 
         tr:nth-child(even) td {
@@ -490,7 +533,7 @@ const generateRTFStyles = (theme: ThemeConfig, options: HTMLGeneratorOptions): s
             top: 10px;
             right: 10px;
             background: ${theme.accentColor};
-            color: white;
+            color: ${tableHeaderTextColor};
             padding: 4px 8px;
             border-radius: 4px;
             font-size: 0.8em;
@@ -503,8 +546,11 @@ const generateRTFStyles = (theme: ThemeConfig, options: HTMLGeneratorOptions): s
  * Generate EPUB/HTML-specific styles
  */
 const generateEpubStyles = (theme: ThemeConfig, options: HTMLGeneratorOptions): string => {
-    // Untuk export EPUB/HTML, selalu gunakan warna hitam untuk teks agar mudah dibaca
-    const contentTextColor = '#000000';
+    // Detect dark theme context
+    const isDark = isDarkThemeContext(options);
+    const contentTextColor = getContentTextColor(isDark);
+    const tableHeaderTextColor = getTableHeaderTextColor(isDark, theme.accentColor);
+    const tableHeaderBgColor = getTableHeaderBackgroundColor(isDark, theme.accentColor);
 
     return `
         * {
@@ -518,7 +564,7 @@ const generateEpubStyles = (theme: ThemeConfig, options: HTMLGeneratorOptions): 
             font-size: ${options.fontSize}px !important;
             line-height: 1.7;
             color: ${contentTextColor};
-            background-color: ${theme.backgroundColor};
+            background-color: ${isDark ? '#1f2937' : theme.backgroundColor};
             max-width: 800px;
             margin: 0 auto;
             padding: 40px 30px;
@@ -536,7 +582,7 @@ const generateEpubStyles = (theme: ThemeConfig, options: HTMLGeneratorOptions): 
 
         /* Override specific elements that should keep their own colors */
         .content a {
-            color: #3b82f6 !important;
+            color: ${isDark ? '#60a5fa' : '#3b82f6'} !important;
         }
 
         h1, h2, h3, h4, h5, h6 {
@@ -595,14 +641,14 @@ const generateEpubStyles = (theme: ThemeConfig, options: HTMLGeneratorOptions): 
             border-left: 4px solid ${theme.accentColor};
             margin: 2em 0;
             padding: 1.5em 2em;
-            background-color: #f8f9fa;
+            background-color: ${isDark ? '#374151' : '#f8f9fa'};
             font-style: italic;
             border-radius: 0 8px 8px 0;
             color: ${contentTextColor};
         }
 
         code {
-            background-color: #f8f9fa;
+            background-color: ${isDark ? '#374151' : '#f8f9fa'};
             color: ${contentTextColor};
             padding: 0.2em 0.4em;
             border-radius: 4px;
@@ -611,13 +657,13 @@ const generateEpubStyles = (theme: ThemeConfig, options: HTMLGeneratorOptions): 
         }
 
         pre {
-            background-color: #f8f9fa;
+            background-color: ${isDark ? '#374151' : '#f8f9fa'};
             color: ${contentTextColor};
             padding: 1.5em;
             border-radius: 8px;
             overflow-x: auto;
             margin: 2em 0;
-            border: 1px solid #e9ecef;
+            border: 1px solid ${isDark ? '#4b5563' : '#e9ecef'};
         }
 
         img {
@@ -625,33 +671,33 @@ const generateEpubStyles = (theme: ThemeConfig, options: HTMLGeneratorOptions): 
             height: auto;
             margin: 2em 0;
             border-radius: 8px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            box-shadow: 0 4px 12px ${isDark ? 'rgba(0,0,0,0.3)' : 'rgba(0,0,0,0.1)'};
         }
 
         table {
             width: 100%;
             border-collapse: collapse;
             margin: 2em 0;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            box-shadow: 0 2px 8px ${isDark ? 'rgba(0,0,0,0.3)' : 'rgba(0,0,0,0.1)'};
             border-radius: 8px;
             overflow: hidden;
         }
 
         th, td {
-            border: 1px solid #e1e5e9;
+            border: 1px solid ${isDark ? '#4b5563' : '#e1e5e9'};
             padding: 1em;
             text-align: left;
             color: ${contentTextColor};
         }
 
         th {
-            background-color: ${theme.accentColor};
-            color: #ffffff;
+            background-color: ${tableHeaderBgColor};
+            color: ${tableHeaderTextColor} !important;
             font-weight: 600;
         }
 
         tr:nth-child(even) {
-            background-color: #f8f9fa;
+            background-color: ${isDark ? '#374151' : '#f8f9fa'};
         }
 
         tr:nth-child(even) td {
@@ -660,11 +706,11 @@ const generateEpubStyles = (theme: ThemeConfig, options: HTMLGeneratorOptions): 
 
         /* HTML/EPUB-specific formatting */
         .content {
-            background-color: #ffffff;
+            background-color: ${isDark ? '#1f2937' : '#ffffff'};
             border-radius: 12px;
             padding: 50px;
-            box-shadow: 0 8px 24px rgba(0,0,0,0.12);
-            border: 1px solid #e5e7eb;
+            box-shadow: 0 8px 24px ${isDark ? 'rgba(0,0,0,0.3)' : 'rgba(0,0,0,0.12)'};
+            border: 1px solid ${isDark ? '#4b5563' : '#e5e7eb'};
         }
 
         /* Enhanced typography for web reading */
@@ -679,7 +725,7 @@ const generateEpubStyles = (theme: ThemeConfig, options: HTMLGeneratorOptions): 
             top: 10px;
             right: 10px;
             background: ${theme.accentColor};
-            color: white;
+            color: ${tableHeaderTextColor};
             padding: 4px 8px;
             border-radius: 4px;
             font-size: 0.8em;
@@ -692,8 +738,11 @@ const generateEpubStyles = (theme: ThemeConfig, options: HTMLGeneratorOptions): 
  * Generate Slides/Presentation-specific styles
  */
 const generateSlidesStyles = (theme: ThemeConfig, options: HTMLGeneratorOptions): string => {
-    // Untuk export Slides, selalu gunakan warna hitam untuk teks agar mudah dibaca
-    const contentTextColor = '#000000';
+    // Detect dark theme context
+    const isDark = isDarkThemeContext(options);
+    const contentTextColor = getContentTextColor(isDark);
+    const tableHeaderTextColor = getTableHeaderTextColor(isDark, theme.accentColor);
+    const tableHeaderBgColor = getTableHeaderBackgroundColor(isDark, theme.accentColor);
 
     return `
         * {
@@ -707,7 +756,7 @@ const generateSlidesStyles = (theme: ThemeConfig, options: HTMLGeneratorOptions)
             font-size: ${Math.max(options.fontSize + 2, 14)}px !important;
             line-height: 1.5;
             color: ${contentTextColor};
-            background-color: ${theme.backgroundColor};
+            background-color: ${isDark ? '#1e293b' : theme.backgroundColor};
             padding: 20px;
         }
 
@@ -723,7 +772,7 @@ const generateSlidesStyles = (theme: ThemeConfig, options: HTMLGeneratorOptions)
 
         /* Override specific elements that should keep their own colors */
         .slides-content a {
-            color: #3b82f6 !important;
+            color: ${isDark ? '#60a5fa' : '#3b82f6'} !important;
         }
 
         .slide h1, .slide h2, .slide h3, .slide h4, .slide h5, .slide h6 {
@@ -739,19 +788,19 @@ const generateSlidesStyles = (theme: ThemeConfig, options: HTMLGeneratorOptions)
         .slides-content {
             max-width: 900px;
             margin: 0 auto;
-            background: linear-gradient(135deg, ${theme.backgroundColor}, ${theme.backgroundColor}dd);
+            background: linear-gradient(135deg, ${isDark ? '#1e293b' : theme.backgroundColor}, ${isDark ? '#0f172a' : theme.backgroundColor + 'dd'});
             border-radius: 16px;
             padding: 20px;
         }
 
         .slide {
-            background-color: #ffffff;
+            background-color: ${isDark ? '#1f2937' : '#ffffff'};
             border: 2px solid ${theme.accentColor};
             border-radius: 12px;
             padding: 40px;
             margin: 30px 0;
             min-height: 400px;
-            box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+            box-shadow: 0 8px 24px ${isDark ? 'rgba(0,0,0,0.3)' : 'rgba(0,0,0,0.15)'};
             position: relative;
             display: flex;
             flex-direction: column;
@@ -764,7 +813,7 @@ const generateSlidesStyles = (theme: ThemeConfig, options: HTMLGeneratorOptions)
             top: 15px;
             right: 20px;
             background: ${theme.accentColor};
-            color: white;
+            color: ${tableHeaderTextColor};
             padding: 5px 10px;
             border-radius: 20px;
             font-size: 0.8em;
@@ -811,7 +860,7 @@ const generateSlidesStyles = (theme: ThemeConfig, options: HTMLGeneratorOptions)
         .slide li {
             margin: 1em 0;
             padding: 0.8em 1.5em;
-            background-color: #f8f9fa;
+            background-color: ${isDark ? '#374151' : '#f8f9fa'};
             border-radius: 8px;
             border-left: 4px solid ${theme.accentColor};
             font-size: 1.1em;
@@ -849,7 +898,7 @@ const generateSlidesStyles = (theme: ThemeConfig, options: HTMLGeneratorOptions)
         }
 
         .slide code {
-            background-color: #f1f1f1;
+            background-color: ${isDark ? '#374151' : '#f1f1f1'};
             color: ${contentTextColor};
             padding: 0.3em 0.6em;
             border-radius: 6px;
@@ -859,7 +908,7 @@ const generateSlidesStyles = (theme: ThemeConfig, options: HTMLGeneratorOptions)
         }
 
         .slide pre {
-            background-color: #f8f8f8;
+            background-color: ${isDark ? '#374151' : '#f8f8f8'};
             color: ${contentTextColor};
             padding: 2em;
             border-radius: 12px;
@@ -875,7 +924,7 @@ const generateSlidesStyles = (theme: ThemeConfig, options: HTMLGeneratorOptions)
             margin: 2em auto;
             display: block;
             border-radius: 12px;
-            box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+            box-shadow: 0 8px 24px ${isDark ? 'rgba(0,0,0,0.3)' : 'rgba(0,0,0,0.2)'};
             border: 3px solid ${theme.accentColor};
         }
 
@@ -885,7 +934,7 @@ const generateSlidesStyles = (theme: ThemeConfig, options: HTMLGeneratorOptions)
             margin: 2em 0;
             border-radius: 12px;
             overflow: hidden;
-            box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+            box-shadow: 0 8px 24px ${isDark ? 'rgba(0,0,0,0.3)' : 'rgba(0,0,0,0.15)'};
         }
 
         .slide th, .slide td {
@@ -897,14 +946,14 @@ const generateSlidesStyles = (theme: ThemeConfig, options: HTMLGeneratorOptions)
         }
 
         .slide th {
-            background-color: ${theme.accentColor};
-            color: white;
+            background-color: ${tableHeaderBgColor};
+            color: ${tableHeaderTextColor} !important;
             font-weight: bold;
             font-size: 1.2em;
         }
 
         .slide tr:nth-child(even) {
-            background-color: #f8f9fa;
+            background-color: ${isDark ? '#374151' : '#f8f9fa'};
         }
 
         .slide tr:nth-child(even) td {
@@ -916,7 +965,7 @@ const generateSlidesStyles = (theme: ThemeConfig, options: HTMLGeneratorOptions)
             top: 10px;
             right: 10px;
             background: ${theme.accentColor};
-            color: white;
+            color: ${tableHeaderTextColor};
             padding: 4px 8px;
             border-radius: 4px;
             font-size: 0.8em;
@@ -937,7 +986,7 @@ const generateRTFHeader = (options: HTMLGeneratorOptions, textColor?: string): s
     let authorColor = textColor;
     if (!authorColor) {
         const isDarkTheme = options.theme === 'dark' ||
-                           (theme && theme.backgroundColor !== '#ffffff' && theme.backgroundColor !== '#fafafa');
+            (theme && theme.backgroundColor !== '#ffffff' && theme.backgroundColor !== '#fafafa');
 
         if (isDark || isDarkTheme) {
             authorColor = '#e5e7eb';
@@ -995,7 +1044,7 @@ const generateEpubHeader = (options: HTMLGeneratorOptions, textColor?: string): 
     let authorColor = textColor;
     if (!authorColor) {
         const isDarkTheme = options.theme === 'dark' ||
-                           (theme && theme.backgroundColor !== '#ffffff' && theme.backgroundColor !== '#fafafa');
+            (theme && theme.backgroundColor !== '#ffffff' && theme.backgroundColor !== '#fafafa');
 
         if (isDark || isDarkTheme) {
             authorColor = '#e5e7eb';
@@ -1052,7 +1101,7 @@ const generateSlidesHeader = (options: HTMLGeneratorOptions, textColor?: string)
     let authorColor = textColor;
     if (!authorColor) {
         const isDarkTheme = options.theme === 'dark' ||
-                           (theme && theme.backgroundColor !== '#ffffff' && theme.backgroundColor !== '#fafafa');
+            (theme && theme.backgroundColor !== '#ffffff' && theme.backgroundColor !== '#fafafa');
 
         if (isDark || isDarkTheme) {
             authorColor = '#e5e7eb';

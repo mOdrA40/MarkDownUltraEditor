@@ -590,3 +590,133 @@ body[style*="color: #e5e7eb"] .preview-content * {
   opacity: 1;
   transform: scale(1);
 }
+
+/* ===== ENHANCED TABLE STYLING FOR DARK THEME ===== */
+
+/* Table styling improvements for all formats */
+.preview-content table {
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.preview-content th {
+  font-weight: 600;
+  position: relative;
+}
+
+/* Dark theme specific table improvements */
+.dark .preview-content table,
+[data-theme="dark"] .preview-content table,
+.theme-dark .preview-content table {
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  border: 1px solid #4b5563;
+}
+
+.dark .preview-content th,
+[data-theme="dark"] .preview-content th,
+.theme-dark .preview-content th {
+  background-color: #3b82f6 !important;
+  color: #ffffff !important;
+  border-color: #2563eb !important;
+}
+
+.dark .preview-content td,
+[data-theme="dark"] .preview-content td,
+.theme-dark .preview-content td {
+  border-color: #4b5563 !important;
+  background-color: transparent !important;
+}
+
+.dark .preview-content tr:nth-child(even) td,
+[data-theme="dark"] .preview-content tr:nth-child(even) td,
+.theme-dark .preview-content tr:nth-child(even) td {
+  background-color: #374151 !important;
+}
+
+/* Forest theme table headers */
+[data-theme="forest"] .preview-content th {
+  background-color: #10b981 !important;
+  color: #ffffff !important;
+}
+
+/* Ocean theme table headers */
+[data-theme="ocean"] .preview-content th {
+  background-color: #0ea5e9 !important;
+  color: #ffffff !important;
+}
+
+/* Sunset theme table headers */
+[data-theme="sunset"] .preview-content th {
+  background-color: #f97316 !important;
+  color: #ffffff !important;
+}
+
+/* Purple theme table headers */
+[data-theme="purple"] .preview-content th {
+  background-color: #a855f7 !important;
+  color: #ffffff !important;
+}
+
+/* Rose theme table headers */
+[data-theme="rose"] .preview-content th {
+  background-color: #f43f5e !important;
+  color: #ffffff !important;
+}
+
+/* Format-specific table enhancements */
+.pdf-preview table,
+.docx-preview table,
+.epub-preview table,
+.presentation-preview table {
+  margin: 1.5rem 0;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.dark .pdf-preview th,
+.dark .docx-preview th,
+.dark .epub-preview th,
+.dark .presentation-preview th,
+[data-theme="dark"] .pdf-preview th,
+[data-theme="dark"] .docx-preview th,
+[data-theme="dark"] .epub-preview th,
+[data-theme="dark"] .presentation-preview th,
+.theme-dark .pdf-preview th,
+.theme-dark .docx-preview th,
+.theme-dark .epub-preview th,
+.theme-dark .presentation-preview th {
+  background-color: #3b82f6 !important;
+  color: #ffffff !important;
+  font-weight: bold !important;
+}
+
+/* Ensure table text is visible in all themes */
+.preview-content table th {
+  text-shadow: none !important;
+  font-weight: 600 !important;
+}
+
+.preview-content table td {
+  color: inherit !important;
+}
+
+/* Override any inline styles that might interfere */
+.preview-content table th[style*="background"],
+.preview-content table th[style*="color"] {
+  background-color: var(--table-header-bg, #3b82f6) !important;
+  color: var(--table-header-text, #ffffff) !important;
+}
+
+/* Media query for better print styling */
+@media print {
+  .preview-content table th {
+    background-color: #f3f4f6 !important;
+    color: #111827 !important;
+    border: 1px solid #d1d5db !important;
+  }
+  
+  .preview-content table td {
+    border: 1px solid #d1d5db !important;
+  }
+}

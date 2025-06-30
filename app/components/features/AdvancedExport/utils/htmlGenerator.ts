@@ -349,8 +349,8 @@ const generateComponentStyles = (theme: ThemeConfig, forExport: boolean = false)
         }
 
         th {
-            background-color: ${isDark ? '#374151' : theme.accentColor};
-            color: ${isDark ? '#ffffff' : '#ffffff'};
+            background-color: ${forExport ? theme.accentColor : (isDark ? '#3b82f6' : theme.accentColor)};
+            color: #ffffff !important;
             font-weight: 600;
         }
 
