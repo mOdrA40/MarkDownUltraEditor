@@ -28,6 +28,9 @@ import {
   MemoizedEditorFooter
 } from './components/Performance';
 import { DEFAULT_FILE } from './utils/constants';
+import { WelcomeDialog, useWelcomeDialog } from '../../auth/WelcomeDialog';
+import { useFileStorage } from '@/hooks/useFileStorage';
+import { useRenderPerformance, usePerformanceDebug } from '@/hooks/core/usePerformance';
 
 /**
  * Main MarkdownEditor component - Refactored with clean architecture
@@ -55,6 +58,31 @@ export const MarkdownEditor: React.FC<MarkdownEditorProps> = ({
   const themeManager = useThemeManager(initialTheme);
   const dialogManager = useDialogManager();
   const editorSettings = useEditorSettings();
+  const welcomeDialog = useWelcomeDialog();
+  const fileStorage = useFileStorage();
+
+  // Performance monitoring
+  useRenderPerformance('MarkdownEditor');
+  usePerformanceDebug();
+
+  // Test Supabase connection on mount
+  React.useEffect(() => {
+    const testConnection = async () => {
+      try {
+        const { testSupabaseConnection } = await import('@/lib/supabase');
+        const isConnected = await testSupabaseConnection();
+        if (isConnected) {
+          console.log('✓ Supabase connection test successful');
+        } else {
+          console.warn('⚠️ Supabase connection test failed');
+        }
+      } catch (error) {
+        console.error('Error testing Supabase connection:', error);
+      }
+    };
+
+    testConnection();
+  }, []);
 
   // Destructure state and actions
   const { state: editor, actions: editorActions, undoRedo } = editorState;
@@ -141,6 +169,30 @@ export const MarkdownEditor: React.FC<MarkdownEditorProps> = ({
     themeActions.setTheme(newTheme);
     eventHandlers.onThemeChange?.(newTheme);
   }, [themeActions, eventHandlers]);
+
+  // Auto-save functionality
+  React.useEffect(() => {
+    if (!editor.markdown || !editor.fileName || !editor.isModified) return;
+
+    const autoSaveTimer = setTimeout(async () => {
+      if (fileStorage.isAuthenticated && fileStorage.saveFile) {
+        try {
+          console.log('Auto-saving file to cloud:', editor.fileName);
+          await fileStorage.saveFile({
+            title: editor.fileName,
+            content: editor.markdown,
+            fileType: 'markdown',
+            tags: [],
+          });
+          console.log('Auto-save successful');
+        } catch (error) {
+          console.warn('Auto-save failed:', error);
+        }
+      }
+    }, 2000); // Auto-save after 2 seconds of inactivity
+
+    return () => clearTimeout(autoSaveTimer);
+  }, [editor.markdown, editor.fileName, editor.isModified, fileStorage]);
 
   return (
     <EditorErrorBoundary enableReporting={process.env.NODE_ENV === 'production'}>
@@ -262,6 +314,14 @@ export const MarkdownEditor: React.FC<MarkdownEditorProps> = ({
             onMarkdownChange={handleMarkdownChange}
             onLoadTemplate={loadTemplate}
             currentTheme={theme.currentTheme}
+          />
+
+          {/* Welcome Dialog */}
+          <WelcomeDialog
+            isOpen={welcomeDialog.isOpen}
+            onClose={welcomeDialog.handleClose}
+            onSignUp={welcomeDialog.handleSignUp}
+            onContinueAsGuest={welcomeDialog.handleContinueAsGuest}
           />
         </EditorContainer>
       </PerformanceMonitor>

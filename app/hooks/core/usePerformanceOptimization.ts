@@ -38,6 +38,7 @@ export const usePerformanceOptimization = () => {
   }, []);
 
   const requestAnimationFrame = useCallback((fn: () => void) => {
+    if (typeof window === 'undefined') return;
     if (frameRef.current) {
       cancelAnimationFrame(frameRef.current);
     }

@@ -4,6 +4,7 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { MarkdownEditor } from "@/components/editor/MarkdownEditor";
+import { UpdateNotification } from "@/components/shared/UpdateNotification";
 
 export const meta: MetaFunction = () => {
   return [
@@ -44,6 +45,7 @@ export default function Index() {
         <Sonner />
         <div className="min-h-screen w-full bg-gradient-to-br from-slate-50 to-blue-50">
           <MarkdownEditor />
+          <UpdateNotification />
         </div>
       </TooltipProvider>
     </QueryClientProvider>

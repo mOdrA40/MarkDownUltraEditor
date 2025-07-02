@@ -5,7 +5,30 @@
  * @author Axel Modra
  */
 
-/* Import component styles */
-@import './navigation/index.css';
-@import './buttons/base.css';
-@import './dialogs/base.css';
+/* Component Styles */
+@import "./buttons/base.css";
+@import "./dialogs/base.css";
+@import "./navigation/index.css";
+
+/* Auth Dropdown Positioning - Force to stay in viewport */
+[data-radix-popper-content-wrapper] {
+  max-width: calc(100vw - 16px) !important;
+}
+
+/* Specific for dropdown menus in header */
+.user-dropdown-content {
+  max-width: 12rem !important;
+}
+
+@media (max-width: 768px) {
+  .auth-dropdown-content {
+    @apply right-2 left-auto;
+    transform: translateX(0) !important;
+  }
+}
+
+@media (min-width: 769px) {
+  .auth-dropdown-content {
+    @apply right-0;
+  }
+}

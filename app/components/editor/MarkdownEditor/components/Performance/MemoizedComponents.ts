@@ -169,9 +169,9 @@ export function useStableComputation<T>(
   return useMemo(() => {
     if (!shouldCompute) return undefined;
 
-    const start = performance.now();
+    const start = typeof window !== 'undefined' ? performance.now() : Date.now();
     const result = computation();
-    const duration = performance.now() - start;
+    const duration = typeof window !== 'undefined' ? performance.now() - start : Date.now() - start;
 
     if (process.env.NODE_ENV === 'development' && duration > 16) {
       console.warn(`Expensive computation took ${duration.toFixed(2)}ms`);

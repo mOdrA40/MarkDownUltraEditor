@@ -1,3 +1,4 @@
+import React from "react";
 import {
   Links,
   Meta,
@@ -6,8 +7,16 @@ import {
   ScrollRestoration,
 } from "react-router";
 import type { LinksFunction, HeadersFunction } from "react-router";
+import { ClerkProvider } from "@clerk/react-router";
+import { rootAuthLoader } from "@clerk/react-router/ssr.server";
+import type { Route } from "./+types/root";
 
 import "./tailwind.css";
+
+// Add the loader function for Clerk authentication
+export async function loader(args: Route.LoaderArgs) {
+  return rootAuthLoader(args);
+}
 
 export const links: LinksFunction = () => [
   // 🎨 Custom favicon - dengan cache busting
@@ -40,8 +49,8 @@ export const headers: HeadersFunction = () => ({
   "X-XSS-Protection": "1; mode=block",
   // Referrer Policy
   "Referrer-Policy": "strict-origin-when-cross-origin",
-  // Content Security Policy
-  "Content-Security-Policy": "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self' data: https://fonts.googleapis.com https://fonts.gstatic.com; connect-src 'self'; media-src 'self'; object-src 'none'; child-src 'none'; worker-src 'self'; frame-ancestors 'none'; form-action 'self'; base-uri 'self';"
+  // Content Security Policy - Enhanced for Clerk and Supabase
+  "Content-Security-Policy": "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://clerk.com https://*.clerk.accounts.dev https://*.clerk.com https://challenges.cloudflare.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://clerk.com https://*.clerk.accounts.dev; img-src 'self' data: blob: https://*.clerk.com https://*.clerk.accounts.dev https://img.clerk.com; font-src 'self' data: https://fonts.googleapis.com https://fonts.gstatic.com; connect-src 'self' https://*.supabase.co https://clerk.com https://*.clerk.accounts.dev https://*.clerk.com wss://*.supabase.co wss://*.clerk.com; media-src 'self'; object-src 'none'; child-src 'none'; worker-src 'self' blob:; frame-src 'self' https://clerk.com https://*.clerk.accounts.dev https://*.clerk.com https://challenges.cloudflare.com; frame-ancestors 'none'; form-action 'self' https://clerk.com https://*.clerk.accounts.dev; base-uri 'self';"
 });
 
 export function Layout({ children }: { children: React.ReactNode }) {
@@ -98,6 +107,28 @@ export function ErrorBoundary() {
   );
 }
 
-export default function App() {
-  return <Outlet />;
+export default function App({ loaderData }: Route.ComponentProps) {
+  const publishableKey = process.env.VITE_CLERK_PUBLISHABLE_KEY;
+
+  if (!publishableKey) {
+    throw new Error("Missing Clerk Publishable Key");
+  }
+
+  return (
+    <ClerkProvider
+      loaderData={loaderData}
+      publishableKey={publishableKey}
+      signInUrl="/sign-in"
+      signUpUrl="/sign-up"
+      signInFallbackRedirectUrl="/"
+      signUpFallbackRedirectUrl="/"
+      appearance={{
+        elements: {
+          formButtonPrimary: "normal-case",
+        }
+      }}
+    >
+      <Outlet />
+    </ClerkProvider>
+  );
 }

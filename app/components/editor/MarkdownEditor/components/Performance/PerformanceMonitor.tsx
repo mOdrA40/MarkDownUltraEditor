@@ -39,7 +39,7 @@ export const PerformanceMonitor: React.FC<PerformanceMonitorProps> = ({
    * Measure memory usage
    */
   const measureMemoryUsage = useCallback((): number => {
-    if ('memory' in performance) {
+    if (typeof window !== 'undefined' && 'memory' in performance) {
       const memory = (performance as { memory: { usedJSHeapSize?: number } }).memory;
       return memory?.usedJSHeapSize || 0;
     }
@@ -86,32 +86,36 @@ export const PerformanceMonitor: React.FC<PerformanceMonitorProps> = ({
    * Track component mount time
    */
   useEffect(() => {
-    componentMountTime.current = performance.now();
+    if (typeof window !== 'undefined') {
+      componentMountTime.current = performance.now();
+    }
   }, []);
 
   /**
    * Track render times
    */
   useEffect(() => {
-    renderStartTime.current = performance.now();
-    
-    // Use requestAnimationFrame to measure after render
-    const measureRender = () => {
-      updateMetrics();
-    };
-    
-    requestAnimationFrame(measureRender);
+    if (typeof window !== 'undefined') {
+      renderStartTime.current = performance.now();
+
+      // Use requestAnimationFrame to measure after render
+      const measureRender = () => {
+        updateMetrics();
+      };
+
+      requestAnimationFrame(measureRender);
+    }
   });
 
   /**
    * Set up performance observer for Core Web Vitals
    */
   useEffect(() => {
-    if (!enabled || !window.PerformanceObserver) return;
+    if (!enabled || typeof window === 'undefined' || !window.PerformanceObserver) return;
 
     const observer = new PerformanceObserver((list) => {
       const entries = list.getEntries();
-      
+
       entries.forEach((entry) => {
         if (entry.entryType === 'measure') {
           console.log(`Performance measure: ${entry.name} - ${entry.duration}ms`);
@@ -149,12 +153,12 @@ export const PerformanceMonitor: React.FC<PerformanceMonitorProps> = ({
  */
 export const usePerformanceMeasure = (name: string, enabled: boolean = true) => {
   const startMeasure = useCallback(() => {
-    if (!enabled) return;
+    if (!enabled || typeof window === 'undefined') return;
     performance.mark(`${name}-start`);
   }, [name, enabled]);
 
   const endMeasure = useCallback(() => {
-    if (!enabled) return;
+    if (!enabled || typeof window === 'undefined') return;
     performance.mark(`${name}-end`);
     performance.measure(name, `${name}-start`, `${name}-end`);
   }, [name, enabled]);
@@ -170,16 +174,20 @@ export const useRenderTime = (componentName: string) => {
   const [renderTime, setRenderTime] = useState<number>(0);
 
   useEffect(() => {
-    renderStartTime.current = performance.now();
+    if (typeof window !== 'undefined') {
+      renderStartTime.current = performance.now();
+    }
   });
 
   useEffect(() => {
-    const endTime = performance.now();
-    const duration = endTime - renderStartTime.current;
-    setRenderTime(duration);
+    if (typeof window !== 'undefined') {
+      const endTime = performance.now();
+      const duration = endTime - renderStartTime.current;
+      setRenderTime(duration);
 
-    if (process.env.NODE_ENV === 'development') {
-      console.log(`${componentName} render time: ${duration.toFixed(2)}ms`);
+      if (process.env.NODE_ENV === 'development') {
+        console.log(`${componentName} render time: ${duration.toFixed(2)}ms`);
+      }
     }
   }, [componentName]);
 
@@ -193,6 +201,8 @@ export const useMemoryUsage = () => {
   const [memoryUsage, setMemoryUsage] = useState<number>(0);
 
   useEffect(() => {
+    if (typeof window === 'undefined') return;
+
     const updateMemoryUsage = () => {
       if ('memory' in performance) {
         const memory = (performance as { memory: { usedJSHeapSize?: number } }).memory;

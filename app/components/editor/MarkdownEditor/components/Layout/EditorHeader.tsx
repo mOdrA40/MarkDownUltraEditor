@@ -8,11 +8,12 @@ import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
 import { Badge } from "@/components/ui/badge";
 import { FileText, Eye, EyeOff, Search, Maximize2, Minimize2, Keyboard } from "lucide-react";
-import { Theme , ThemeSelector } from "../../../../features/ThemeSelector";
+import { Theme, ThemeSelector } from "../../../../features/ThemeSelector";
 import { FileOperations } from "../../../../features/FileOperations";
 import { Toolbar } from "../../../Toolbar";
 import { WritingSettings } from "../../../../features/WritingSettings";
 import { UndoRedoButtons } from "../../../UndoRedoButtons";
+import { AuthButtons } from "../../../../auth/AuthButtons";
 import { StorageStatus } from "../../../../features/StorageStatus/StorageStatus";
 import { EditorSettings, ResponsiveState } from '../../types';
 import { getHeaderClassName, generateHeaderStyles } from '@/utils/themeUtils';
@@ -24,42 +25,42 @@ export interface EditorHeaderProps {
   fileName: string;
   isModified: boolean;
   onFileNameChange: (name: string) => void;
-  
+
   // Theme
   currentTheme: Theme;
   onThemeChange: (theme: Theme) => void;
-  
+
   // File operations
   markdown: string;
   onLoad: (content: string, name: string) => void;
   onNewFile: () => void;
-  
+
   // View controls
   showPreview: boolean;
   onTogglePreview: () => void;
-  
+
   // Dialog controls
   onShowSearch: () => void;
   onShowTemplates: () => void;
   onShowAdvancedExport: () => void;
   onShowShortcuts: () => void;
-  
+
   // Toolbar
   onInsertText: (text: string) => void;
-  
+
   // Settings
   settings: EditorSettings;
   onSettingsChange: (settings: Partial<EditorSettings>) => void;
-  
+
   // Undo/Redo
   onUndo: () => void;
   onRedo: () => void;
   canUndo: boolean;
   canRedo: boolean;
-  
+
   // Responsive
   responsive: ResponsiveState;
-  
+
   // Zen mode
   zenMode: boolean;
 }
@@ -133,9 +134,9 @@ export const EditorHeader: React.FC<EditorHeaderProps> = ({
         {/* File Info Row */}
         <div className="flex items-center space-x-2 sm:space-x-4 min-w-0 flex-1">
           <div className="flex items-center space-x-2 min-w-0 flex-1">
-            <FileText 
-              className="h-4 w-4 sm:h-5 sm:w-5 flex-shrink-0" 
-              style={{ color: currentTheme.primary }} 
+            <FileText
+              className="h-4 w-4 sm:h-5 sm:w-5 flex-shrink-0"
+              style={{ color: currentTheme.primary }}
             />
             <Input
               value={fileName}
@@ -268,6 +269,21 @@ export const EditorHeader: React.FC<EditorHeaderProps> = ({
             >
               New
             </Button>
+
+            {/* Authentication Buttons */}
+            <div className="flex items-center">
+              <Separator orientation="vertical" className="h-4 sm:h-6 mx-1" />
+              <AuthButtons
+                responsive={responsive}
+                onViewFiles={() => {
+                  window.location.href = '/files';
+                }}
+                onSettings={() => {
+                  // TODO: Open settings dialog
+                  console.log('Open settings dialog');
+                }}
+              />
+            </div>
           </div>
         </div>
       </div>
@@ -275,7 +291,7 @@ export const EditorHeader: React.FC<EditorHeaderProps> = ({
       <div className={`${isSmallTablet ? 'overflow-x-auto toolbar-small-tablet' : 'overflow-x-hidden'}`}>
         <Toolbar onInsertText={onInsertText} />
       </div>
-      
+
       {/* Writing Settings - Only on desktop/tablet */}
       <div className={`${isSmallTablet ? 'overflow-x-auto writing-settings-compact' : 'overflow-x-hidden'}`}>
         <WritingSettings
