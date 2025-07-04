@@ -51,6 +51,7 @@ export const CodeBlock: React.FC<CodeBlockProps> = ({
 
             {/* Copy button */}
             <button
+              type="button"
               onClick={handleCopyClick}
               className="opacity-0 group-hover:opacity-100 transition-all duration-200 px-3 py-1 rounded-md text-xs bg-gray-200 dark:bg-gray-600 hover:bg-gray-300 dark:hover:bg-gray-500 text-gray-700 dark:text-gray-300 font-medium"
               title="Copy code to clipboard"

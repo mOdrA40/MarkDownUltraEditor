@@ -70,14 +70,16 @@ const findMatches = (
 
   const regex = createSearchRegex(searchTerm, options);
   const matches: SearchMatch[] = [];
-  let match;
+  let match: RegExpExecArray | null;
 
-  while ((match = regex.exec(markdown)) !== null) {
+  match = regex.exec(markdown);
+  while (match !== null) {
     matches.push({
       index: match.index,
       text: match[0],
       length: match[0].length,
     });
+    match = regex.exec(markdown);
   }
 
   return {

@@ -48,9 +48,9 @@ export const TabletToolbar: React.FC<TabletToolbarProps> = React.memo(
         >
           {/* Row 1: Essential formatting - Compact */}
           <div className="flex items-center justify-center space-x-1 mb-2 overflow-x-auto scroll-container-stable">
-            {headingButtons.map((button, index) => (
+            {headingButtons.map((button) => (
               <ToolbarButton
-                key={`heading-${index}`}
+                key={button.label}
                 button={button}
                 className="h-6 px-2 text-xs font-medium flex-shrink-0"
                 size="sm"
@@ -61,9 +61,9 @@ export const TabletToolbar: React.FC<TabletToolbarProps> = React.memo(
 
             <Separator orientation="vertical" className="h-4 mx-1" />
 
-            {formattingButtons.map((button, index) => (
+            {formattingButtons.map((button) => (
               <ToolbarButton
-                key={`formatting-${index}`}
+                key={button.label}
                 button={button}
                 className="h-6 px-2 text-xs flex-shrink-0"
                 size="sm"
@@ -101,9 +101,9 @@ export const TabletToolbar: React.FC<TabletToolbarProps> = React.memo(
 
           {/* Row 2: Content elements - Compact */}
           <div className="flex items-center justify-center space-x-1 overflow-x-auto scroll-container-stable">
-            {contentButtons.map((button, index) => (
+            {contentButtons.map((button) => (
               <ToolbarButton
-                key={`content-${index}`}
+                key={button.label}
                 button={button}
                 className="h-6 px-2 text-xs flex-shrink-0"
                 size="sm"
@@ -126,9 +126,9 @@ export const TabletToolbar: React.FC<TabletToolbarProps> = React.memo(
       >
         {/* Row 1: Headings & Formatting */}
         <div className="flex items-center justify-center space-x-2 mb-2">
-          {headingButtons.map((button, index) => (
+          {headingButtons.map((button) => (
             <ToolbarButton
-              key={`heading-${index}`}
+              key={button.label}
               button={button}
               className="h-7 px-3 text-xs font-medium"
               size="sm"
@@ -139,9 +139,9 @@ export const TabletToolbar: React.FC<TabletToolbarProps> = React.memo(
 
           <Separator orientation="vertical" className="h-5" />
 
-          {formattingButtons.map((button, index) => (
+          {formattingButtons.map((button) => (
             <ToolbarButton
-              key={`formatting-${index}`}
+              key={button.label}
               button={button}
               className="h-7 px-3 text-xs"
               size="sm"
@@ -181,9 +181,9 @@ export const TabletToolbar: React.FC<TabletToolbarProps> = React.memo(
 
         {/* Row 2: Content elements */}
         <div className="flex items-center justify-center space-x-2">
-          {contentButtons.map((button, index) => (
+          {contentButtons.map((button) => (
             <ToolbarButton
-              key={`content-${index}`}
+              key={button.label}
               button={button}
               className="h-7 px-3 text-xs"
               size="sm"

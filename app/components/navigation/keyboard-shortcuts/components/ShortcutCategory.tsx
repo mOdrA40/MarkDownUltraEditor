@@ -62,7 +62,7 @@ export const ShortcutCategory: React.FC<ShortcutCategoryProps> = ({
         {/* Enabled Items */}
         {enabledItems.map((item, itemIndex) => (
           <ShortcutItem
-            key={`enabled-${itemIndex}`}
+            key={`enabled-${item.description}`}
             item={item}
             showMacKeys={showMacKeys}
             index={itemIndex}
@@ -80,7 +80,7 @@ export const ShortcutCategory: React.FC<ShortcutCategoryProps> = ({
 
             {disabledItems.map((item, itemIndex) => (
               <ShortcutItem
-                key={`disabled-${itemIndex}`}
+                key={`disabled-${item.description}`}
                 item={item}
                 showMacKeys={showMacKeys}
                 index={enabledItems.length + itemIndex}

@@ -41,7 +41,7 @@ export const ShortcutItem: React.FC<ShortcutItemProps> = ({ item, showMacKeys = 
       <div className="flex items-center space-x-0 ml-4">
         {keys.map((key, keyIndex) => (
           <ShortcutKey
-            key={`${key}-${keyIndex}`}
+            key={`${item.description}-${key}-${keyIndex}`}
             keyName={key}
             isLast={keyIndex === keys.length - 1}
             variant={showMacKeys ? 'mac' : 'default'}

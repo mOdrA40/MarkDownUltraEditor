@@ -38,29 +38,27 @@ export const WritingStats: React.FC<WritingStatsProps> = memo(
     // Loading state
     if (isCalculating) {
       return (
-        <div
+        <output
           className={`bg-muted/20 border-t p-4 ${className}`}
-          role="status"
           aria-label="Calculating statistics..."
         >
           <div className="flex items-center justify-center">
             <div className="animate-pulse text-xs text-muted-foreground">Calculating...</div>
           </div>
-        </div>
+        </output>
       );
     }
 
     return (
-      <div
+      <section
         className="writing-stats"
-        role="region"
         aria-label={A11Y.labels.statsContainer}
         aria-live={A11Y.liveRegion}
       >
         <ResponsiveStatsLayout screenSize={screenSize} stats={stats} className={className}>
           {children}
         </ResponsiveStatsLayout>
-      </div>
+      </section>
     );
   }
 );

@@ -47,7 +47,7 @@ export const useHeadingCache = (markdown: string) => {
   // Clear cache ketika markdown berubah
   useEffect(() => {
     headingCache.clear();
-  }, [markdown]);
+  }, []);
 
   // Setup debugging tools untuk development
   useEffect(() => {
@@ -94,7 +94,7 @@ export const useHeadingCache = (markdown: string) => {
 
       // Check cache first
       if (headingCache.has(cacheKey)) {
-        return headingCache.get(cacheKey)!.id;
+        return headingCache.get(cacheKey)?.id || '';
       }
 
       // Generate new ID

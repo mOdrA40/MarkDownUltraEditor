@@ -33,13 +33,12 @@ export const convertMarkdownToHTML = (
     const markdownElement = React.createElement(ReactMarkdown, {
       remarkPlugins: [remarkGfm],
       rehypePlugins: [rehypeHighlight],
-      children: markdown,
-    });
+    }, markdown);
 
     const html = renderToStaticMarkup(markdownElement);
 
     // Generate metadata jika diminta
-    let metadata;
+    let metadata: { headings: string[]; wordCount: number; estimatedReadTime: number } | undefined;
     if (includeMetadata) {
       const headings = extractHeadings(markdown);
       const wordCount = countWords(markdown);
@@ -60,7 +59,7 @@ export const convertMarkdownToHTML = (
     const html = convertMarkdownToHTMLSimple(markdown);
 
     // Generate metadata jika diminta
-    let metadata;
+    let metadata: { headings: string[]; wordCount: number; estimatedReadTime: number } | undefined;
     if (includeMetadata) {
       const headings = extractHeadings(markdown);
       const wordCount = countWords(markdown);

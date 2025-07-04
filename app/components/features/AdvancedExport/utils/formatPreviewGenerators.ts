@@ -824,7 +824,7 @@ const generateSlidesStyles = (theme: ThemeConfig, options: HTMLGeneratorOptions)
         .slides-content {
             max-width: 900px;
             margin: 0 auto;
-            background: linear-gradient(135deg, ${isDark ? '#1e293b' : theme.backgroundColor}, ${isDark ? '#0f172a' : theme.backgroundColor + 'dd'});
+            background: linear-gradient(135deg, ${isDark ? '#1e293b' : theme.backgroundColor}, ${isDark ? '#0f172a' : `${theme.backgroundColor}dd`});
             border-radius: 16px;
             padding: 20px;
         }

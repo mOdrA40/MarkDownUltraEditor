@@ -18,7 +18,7 @@ export const handleTabIndentation = (
   const start = textarea.selectionStart;
   const end = textarea.selectionEnd;
 
-  const newValue = markdown.substring(0, start) + '  ' + markdown.substring(end);
+  const newValue = `${markdown.substring(0, start)}  ${markdown.substring(end)}`;
   onChange(newValue);
 
   // Set cursor position after indentation

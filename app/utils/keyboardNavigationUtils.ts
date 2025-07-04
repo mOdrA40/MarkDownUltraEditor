@@ -196,7 +196,9 @@ export const throttleKeyboard = <T extends (...args: unknown[]) => void>(
     if (!inThrottle) {
       func(...args);
       inThrottle = true;
-      setTimeout(() => (inThrottle = false), limit);
+      setTimeout(() => {
+        inThrottle = false;
+      }, limit);
     }
   };
 };

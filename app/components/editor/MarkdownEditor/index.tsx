@@ -43,7 +43,7 @@ import { DEFAULT_FILE } from './utils/constants';
 export const MarkdownEditor: React.FC<MarkdownEditorProps> = ({
   initialMarkdown = DEFAULT_FILE.CONTENT,
   initialFileName = DEFAULT_FILE.NAME,
-  initialTheme,
+  initialTheme: _initialTheme,
   eventHandlers = {},
   className = '',
   style = {},
@@ -144,8 +144,12 @@ export const MarkdownEditor: React.FC<MarkdownEditorProps> = ({
       undo: undoRedo.undo,
       redo: undoRedo.redo,
       newFile: editorActions.newFile,
-      saveFile: () => {}, // Implement save functionality
-      openFile: () => {}, // Implement open functionality
+      saveFile: () => {
+        // TODO: Implement save functionality
+      },
+      openFile: () => {
+        // TODO: Implement open functionality
+      },
     }),
     [insertText, showPreview, settingsActions, dialogActions, undoRedo, editorActions]
   );

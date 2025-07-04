@@ -73,7 +73,7 @@ export const groupButtonsByCategory = (
       if (!groups[button.category]) {
         groups[button.category] = [];
       }
-      groups[button.category]!.push(button);
+      groups[button.category]?.push(button);
     }
   });
 

@@ -23,7 +23,7 @@ export const validateFontSize = (size: number, config: Partial<SettingsConfig> =
     config;
 
   // Pastikan size adalah number yang valid
-  if (typeof size !== 'number' || isNaN(size)) {
+  if (typeof size !== 'number' || Number.isNaN(size)) {
     return FONT_SIZE_CONSTRAINTS.DEFAULT;
   }
 
@@ -47,7 +47,7 @@ export const validateLineHeight = (
   } = config;
 
   // Pastikan height adalah number yang valid
-  if (typeof height !== 'number' || isNaN(height)) {
+  if (typeof height !== 'number' || Number.isNaN(height)) {
     return LINE_HEIGHT_CONSTRAINTS.DEFAULT;
   }
 

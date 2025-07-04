@@ -84,6 +84,7 @@ const DefaultErrorFallback: React.FC<{ error?: Error; retry: () => void }> = ({ 
       {error?.message || 'Something went wrong while loading this component.'}
     </p>
     <button
+      type="button"
       onClick={retry}
       className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
     >
@@ -120,9 +121,9 @@ export function withLazyLoading<P extends object>(
     errorFallback?: React.ComponentType<{ error?: Error; retry: () => void }>;
   }
 ) {
-  const LazyComponent = React.forwardRef<any, P>((props, ref) => (
+  const LazyComponent = React.forwardRef<unknown, P>((props, ref) => (
     <LazyLoader fallback={loadingProps?.fallback} errorFallback={loadingProps?.errorFallback}>
-      <Component {...(props as any)} ref={ref} />
+      <Component {...(props as P)} ref={ref} />
     </LazyLoader>
   ));
 
@@ -137,7 +138,7 @@ export function withLazyLoading<P extends object>(
 export const usePreloadComponent = () => {
   const preloadedComponents = React.useRef(new Set<string>());
 
-  const preload = React.useCallback((componentLoader: () => Promise<any>, key: string) => {
+  const preload = React.useCallback((componentLoader: () => Promise<unknown>, key: string) => {
     if (preloadedComponents.current.has(key)) {
       return;
     }

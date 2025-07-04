@@ -21,7 +21,7 @@ export default function handleRequest(
   // This is ignored so we can keep it in the template for visibility.  Feel
   // free to delete this parameter in your app if you're not using it!
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  loadContext: AppLoadContext
+  _loadContext: AppLoadContext
 ) {
   return isbot(request.headers.get('user-agent') || '')
     ? handleBotRequest(request, responseStatusCode, responseHeaders, remixContext)
@@ -36,6 +36,7 @@ function handleBotRequest(
 ) {
   return new Promise((resolve, reject) => {
     let shellRendered = false;
+    let currentStatusCode = responseStatusCode;
     const { pipe, abort } = renderToPipeableStream(
       <ServerRouter context={remixContext} url={request.url} />,
       {
@@ -49,7 +50,7 @@ function handleBotRequest(
           resolve(
             new Response(stream, {
               headers: responseHeaders,
-              status: responseStatusCode,
+              status: currentStatusCode,
             })
           );
 
@@ -59,7 +60,7 @@ function handleBotRequest(
           reject(error);
         },
         onError(error: unknown) {
-          responseStatusCode = 500;
+          currentStatusCode = 500;
           // Log streaming rendering errors from inside the shell.  Don't log
           // errors encountered during initial shell rendering since they'll
           // reject and get logged in handleDocumentRequest.
@@ -82,6 +83,7 @@ function handleBrowserRequest(
 ) {
   return new Promise((resolve, reject) => {
     let shellRendered = false;
+    let currentStatusCode = responseStatusCode;
     const { pipe, abort } = renderToPipeableStream(
       <ServerRouter context={remixContext} url={request.url} />,
       {
@@ -95,7 +97,7 @@ function handleBrowserRequest(
           resolve(
             new Response(stream, {
               headers: responseHeaders,
-              status: responseStatusCode,
+              status: currentStatusCode,
             })
           );
 
@@ -105,7 +107,7 @@ function handleBrowserRequest(
           reject(error);
         },
         onError(error: unknown) {
-          responseStatusCode = 500;
+          currentStatusCode = 500;
           // Log streaming rendering errors from inside the shell.  Don't log
           // errors encountered during initial shell rendering since they'll
           // reject and get logged in handleDocumentRequest.

@@ -43,7 +43,7 @@ export const StorageStatus: React.FC<StorageStatusProps> = ({
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isCleaningUp, setIsCleaningUp] = useState(false);
 
-  const { storageInfo, isNearCapacity, isCritical, statusColor, statusText, progressBarColor } =
+  const { storageInfo, isNearCapacity, isCritical, statusColor, statusText } =
     useStorageStatus();
 
   const { triggerCleanup, refreshInfo } = useStorageMonitor();
@@ -69,7 +69,7 @@ export const StorageStatus: React.FC<StorageStatusProps> = ({
   /**
    * Get status icon
    */
-  const getStatusIcon = () => {
+  const _getStatusIcon = () => {
     if (isCritical) return <AlertTriangle className="h-4 w-4" />;
     if (isNearCapacity) return <AlertTriangle className="h-4 w-4" />;
     return <CheckCircle className="h-4 w-4" />;

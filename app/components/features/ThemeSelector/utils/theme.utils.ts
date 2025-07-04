@@ -101,8 +101,8 @@ export const calculateLuminance = (hex: string): number => {
 
   const { r, g, b } = rgb;
   const [rs, gs, bs] = [r, g, b].map((c) => {
-    c = c / 255;
-    return c <= 0.03928 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4;
+    const normalized = c / 255;
+    return normalized <= 0.03928 ? normalized / 12.92 : ((normalized + 0.055) / 1.055) ** 2.4;
   });
 
   return 0.2126 * rs + 0.7152 * gs + 0.0722 * bs;

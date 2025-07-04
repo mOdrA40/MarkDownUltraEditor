@@ -70,14 +70,13 @@ export const FontSizeControl: React.FC<FontSizeControlProps> = memo(
         </Button>
 
         {/* Display Value */}
-        <span
+        <output
           className={`${sizeStyles.text} font-mono min-w-[2rem] text-center select-none`}
-          role="status"
           aria-live="polite"
           aria-label={`Current font size: ${formattedSize}`}
         >
           {formattedSize}
-        </span>
+        </output>
 
         {/* Increase Button */}
         <Button

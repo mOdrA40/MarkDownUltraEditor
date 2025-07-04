@@ -26,7 +26,7 @@ export interface UsePerformanceReturn {
     name: string
   ) => Promise<{ result: T; duration: number }>;
   recordCustomMetric: (key: keyof PerformanceMetrics, value: number) => void;
-  getMemoryUsage: () => any;
+  getMemoryUsage: () => unknown;
 }
 
 /**
@@ -192,7 +192,7 @@ export const useWebVitals = () => {
  * Hook for memory usage monitoring
  */
 export const useMemoryMonitoring = (interval = 5000) => {
-  const [memoryUsage, setMemoryUsage] = useState<any>(null);
+  const [memoryUsage, setMemoryUsage] = useState<unknown>(null);
   const { getMemoryUsage } = usePerformance();
 
   useEffect(() => {
@@ -239,10 +239,11 @@ export const usePerformanceDebug = (enabled = process.env.NODE_ENV === 'developm
       });
       console.log('Performance Score:', score);
       if (memoryUsage) {
+        const memory = memoryUsage as { usedJSHeapSize: number; totalJSHeapSize: number; jsHeapSizeLimit: number };
         console.log('Memory Usage:', {
-          used: `${(memoryUsage.usedJSHeapSize / 1024 / 1024).toFixed(2)} MB`,
-          total: `${(memoryUsage.totalJSHeapSize / 1024 / 1024).toFixed(2)} MB`,
-          limit: `${(memoryUsage.jsHeapSizeLimit / 1024 / 1024).toFixed(2)} MB`,
+          used: `${(memory.usedJSHeapSize / 1024 / 1024).toFixed(2)} MB`,
+          total: `${(memory.totalJSHeapSize / 1024 / 1024).toFixed(2)} MB`,
+          limit: `${(memory.jsHeapSizeLimit / 1024 / 1024).toFixed(2)} MB`,
         });
       }
       console.groupEnd();

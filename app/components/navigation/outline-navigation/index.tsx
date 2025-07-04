@@ -83,6 +83,7 @@ export const OutlineItem: React.FC<OutlineItemProps> = ({
 
   return (
     <button
+      type="button"
       className={`
         outline-item w-full text-left cursor-pointer p-2 rounded
         ${isActive ? 'bg-blue-100 dark:bg-blue-900' : 'hover:bg-gray-100 dark:hover:bg-gray-800'}
@@ -173,7 +174,9 @@ export const OutlineNavigationPanel: React.FC<OutlineNavigationPanelProps> = ({
         activeId: activeId || null,
         enabled,
         offset,
-        onActiveChange: onActiveChange || (() => {}),
+        onActiveChange: onActiveChange || (() => {
+          // No-op fallback
+        }),
       }}
     >
       <div className={`outline-navigation-panel ${className}`}>
@@ -235,6 +238,7 @@ export const OutlineBreadcrumb: React.FC<OutlineBreadcrumbProps> = ({
           <li key={item.id} className="flex items-center">
             {index > 0 && <span className="mx-2 text-gray-400">/</span>}
             <button
+              type="button"
               onClick={() => onItemClick?.(item.id)}
               className={`
                 truncate max-w-32 hover:underline

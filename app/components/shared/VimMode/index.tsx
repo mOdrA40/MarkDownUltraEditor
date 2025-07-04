@@ -130,6 +130,7 @@ export const VimCommandPalette: React.FC<VimCommandPaletteProps> = ({
       <div className="space-y-1">
         {commands.map((command) => (
           <button
+            type="button"
             key={`${command.mode}-${command.key}`}
             className="
               w-full text-left px-2 py-1 text-xs

@@ -7,14 +7,12 @@ import { useAuth } from '@clerk/react-router';
 import { formatDistanceToNow } from 'date-fns';
 import {
   ArrowLeft,
-  Calendar,
   Clock,
   Cloud,
   Copy,
   Download,
   Edit,
   FileText,
-  Filter,
   Grid3X3,
   HardDrive,
   List,
@@ -31,7 +29,7 @@ import { useNavigate } from 'react-router';
 import { AuthButtons } from '@/components/auth/AuthButtons';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -60,7 +58,7 @@ type SortDirection = 'asc' | 'desc';
  */
 export const FilesManager: React.FC = () => {
   const navigate = useNavigate();
-  const { isSignedIn } = useAuth();
+  const { isSignedIn: _isSignedIn } = useAuth();
   const responsive = useResponsiveDetection();
   const {
     files,
@@ -69,7 +67,7 @@ export const FilesManager: React.FC = () => {
     deleteFile,
     exportAllFiles,
     refreshFiles,
-    isAuthenticated,
+    isAuthenticated: _isAuthenticated,
   } = useFileStorage();
 
   // UI state
@@ -77,15 +75,14 @@ export const FilesManager: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [sortBy, setSortBy] = useState<SortOption>('date');
   const [sortDirection, setSortDirection] = useState<SortDirection>('desc');
-  const [selectedFiles, setSelectedFiles] = useState<Set<string>>(new Set());
+  const [_selectedFiles, _setSelectedFiles] = useState<Set<string>>(new Set());
 
   // Filter and sort files
   const filteredAndSortedFiles = React.useMemo(() => {
     const filtered = files.filter(
       (file) =>
         file.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        (file.tags &&
-          file.tags.some((tag) => tag.toLowerCase().includes(searchQuery.toLowerCase())))
+        file.tags?.some((tag) => tag.toLowerCase().includes(searchQuery.toLowerCase()))
     );
 
     // Sort files
@@ -170,7 +167,7 @@ export const FilesManager: React.FC = () => {
     const k = 1024;
     const sizes = ['B', 'KB', 'MB'];
     const i = Math.floor(Math.log(bytes) / Math.log(k));
-    return Number.parseFloat((bytes / k ** i).toFixed(1)) + ' ' + sizes[i];
+    return `${Number.parseFloat((bytes / k ** i).toFixed(1))} ${sizes[i]}`;
   };
 
   // Format date
@@ -218,7 +215,9 @@ export const FilesManager: React.FC = () => {
                 isTablet: responsive.isTablet,
                 isSmallTablet: responsive.windowWidth <= 640, // sm breakpoint
               }}
-              onViewFiles={() => {}} // Already on files page
+              onViewFiles={() => {
+        // Already on files page - no action needed
+      }}
               onSettings={() => navigate('/settings')}
             />
           </div>
@@ -424,7 +423,11 @@ const FileCard: React.FC<FileCardProps> = ({
       <Card className="hover:shadow-md transition-shadow cursor-pointer">
         <CardContent className="p-4">
           <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3 flex-1 min-w-0" onClick={onOpen}>
+            <button
+              type="button"
+              className="flex items-center gap-3 flex-1 min-w-0 text-left"
+              onClick={onOpen}
+            >
               <FileText className="w-5 h-5 text-primary flex-shrink-0" />
               <div className="min-w-0 flex-1">
                 <h3 className="font-medium truncate">{file.title}</h3>
@@ -450,7 +453,7 @@ const FileCard: React.FC<FileCardProps> = ({
                   )}
                 </div>
               </div>
-            </div>
+            </button>
 
             <DropdownMenu>
               <DropdownMenuTrigger asChild>

@@ -52,9 +52,13 @@ export const usePerformanceOptimization = () => {
     // Legacy compatibility
     measureScrollPerformance: () => ({}),
     getPerformanceData: () => ({}),
-    resetPerformanceData: () => {},
+    resetPerformanceData: () => {
+      // No-op fallback
+    },
     createOptimizedObserver: () => null,
-    cleanup: () => {},
+    cleanup: () => {
+      // No-op fallback
+    },
     isElementInViewport: () => false,
     getDeviceType: () => 'desktop',
     shouldReduceMotion: () => false,

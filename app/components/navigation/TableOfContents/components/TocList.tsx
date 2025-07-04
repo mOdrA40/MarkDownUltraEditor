@@ -24,19 +24,18 @@ export const TocList: React.FC<TocListProps> = ({ items, theme, onItemClick, isA
 
   return (
     <ScrollArea className="flex-1">
-      <div
+      <nav
         className="p-4"
-        role="navigation"
         aria-labelledby="toc-heading"
         aria-label="Table of Contents Navigation"
       >
-        <div className="space-y-1" role="list" aria-label="Document headings">
+        <ul className="space-y-1" aria-label="Document headings">
           {items.map((item, index) => {
             const isItemActive = isActive(item.id);
 
             return (
               <TocItem
-                key={`${item.id}-${index}`}
+                key={item.id}
                 item={item}
                 index={index}
                 isActive={isItemActive}
@@ -45,8 +44,8 @@ export const TocList: React.FC<TocListProps> = ({ items, theme, onItemClick, isA
               />
             );
           })}
-        </div>
-      </div>
+        </ul>
+      </nav>
     </ScrollArea>
   );
 };

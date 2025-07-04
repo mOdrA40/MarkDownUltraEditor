@@ -118,9 +118,6 @@ export const WritingSettings: React.FC<WritingSettingsProps> = memo(
               {children}
             </ResponsiveLayout>
           );
-
-        case 'tablet':
-        case 'desktop':
         default:
           return (
             <ResponsiveLayout breakpoint={breakpoint} className={className}>

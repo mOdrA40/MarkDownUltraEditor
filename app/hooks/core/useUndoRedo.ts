@@ -169,7 +169,7 @@ export const useUndoRedo = (
         setCurrentValue(historyValue);
       }
     }
-  }, [currentIndex, history]);
+  }, [currentIndex, history, currentValue]);
 
   return {
     value: currentValue,

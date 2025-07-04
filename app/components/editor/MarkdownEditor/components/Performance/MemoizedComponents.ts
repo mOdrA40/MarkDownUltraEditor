@@ -123,7 +123,7 @@ export function useStableCallback<T extends (...args: unknown[]) => unknown>(
   callback: T,
   deps: React.DependencyList
 ): T {
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+  // biome-ignore lint/correctness/useExhaustiveDependencies: Custom hook with explicit dependency control
   return useCallback(callback, deps) as T;
 }
 
@@ -131,7 +131,7 @@ export function useStableCallback<T extends (...args: unknown[]) => unknown>(
  * Memoized value hook with deep comparison
  */
 export function useStableValue<T>(factory: () => T, deps: React.DependencyList): T {
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+  // biome-ignore lint/correctness/useExhaustiveDependencies: Custom hook with explicit dependency control
   return useMemo(factory, deps);
 }
 
@@ -139,7 +139,7 @@ export function useStableValue<T>(factory: () => T, deps: React.DependencyList):
  * Memoized object hook to prevent unnecessary re-renders
  */
 export function useStableObject<T extends Record<string, unknown>>(obj: T): T {
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+  // biome-ignore lint/correctness/useExhaustiveDependencies: Using Object.values for deep comparison
   return useMemo(() => obj, Object.values(obj));
 }
 
@@ -147,7 +147,7 @@ export function useStableObject<T extends Record<string, unknown>>(obj: T): T {
  * Memoized array hook to prevent unnecessary re-renders
  */
 export function useStableArray<T>(arr: T[]): T[] {
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+  // biome-ignore lint/correctness/useExhaustiveDependencies: Using array itself as dependency for shallow comparison
   return useMemo(() => arr, arr);
 }
 
@@ -242,7 +242,7 @@ export function withPerformanceOptimization<P extends Record<string, unknown>>(
       }
     });
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    // biome-ignore lint/suspicious/noExplicitAny: Required for generic component wrapping
     return React.createElement(OptimizedComponent as any, props);
   };
 

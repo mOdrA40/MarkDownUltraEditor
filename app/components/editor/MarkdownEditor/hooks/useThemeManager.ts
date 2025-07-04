@@ -154,21 +154,9 @@ export const useThemeManager = (initialTheme?: Theme): UseThemeManagerReturn => 
   }, [isDarkTheme, handleSetTheme]);
 
   /**
-   * Get theme contrast ratio (for accessibility)
-   */
-  const getThemeContrastRatio = useCallback((theme: Theme): number => {
-    // Simple contrast calculation (can be enhanced)
-    const bgLuminance = getLuminance(theme.background);
-    const textLuminance = getLuminance(theme.text);
-    const lighter = Math.max(bgLuminance, textLuminance);
-    const darker = Math.min(bgLuminance, textLuminance);
-    return (lighter + 0.05) / (darker + 0.05);
-  }, []);
-
-  /**
    * Helper function to calculate luminance
    */
-  const getLuminance = (color: string): number => {
+  const getLuminance = useCallback((color: string): number => {
     // Simple luminance calculation for hex colors
     const hex = color.replace('#', '');
     const r = Number.parseInt(hex.substring(0, 2), 16) / 255;
@@ -180,7 +168,22 @@ export const useThemeManager = (initialTheme?: Theme): UseThemeManagerReturn => 
     });
 
     return 0.2126 * sRGB[0] + 0.7152 * sRGB[1] + 0.0722 * sRGB[2];
-  };
+  }, []);
+
+  /**
+   * Get theme contrast ratio (for accessibility)
+   */
+  const getThemeContrastRatio = useCallback(
+    (theme: Theme): number => {
+      // Simple contrast calculation (can be enhanced)
+      const bgLuminance = getLuminance(theme.background);
+      const textLuminance = getLuminance(theme.text);
+      const lighter = Math.max(bgLuminance, textLuminance);
+      const darker = Math.min(bgLuminance, textLuminance);
+      return (lighter + 0.05) / (darker + 0.05);
+    },
+    [getLuminance]
+  );
 
   /**
    * Load saved theme on mount

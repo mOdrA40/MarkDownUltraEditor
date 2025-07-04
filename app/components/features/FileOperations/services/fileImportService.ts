@@ -33,7 +33,7 @@ export const validateFile = (file: File): { valid: boolean; error?: string } => 
   }
 
   // Check file type
-  const fileExtension = ('.' + file.name.split('.').pop()?.toLowerCase()) as SupportedFileType;
+  const fileExtension = `.${file.name.split('.').pop()?.toLowerCase()}` as SupportedFileType;
   if (!SUPPORTED_FILE_TYPES.includes(fileExtension)) {
     return {
       valid: false,
@@ -55,7 +55,7 @@ export const importFile = async (
     // Validate file first
     const validation = validateFile(file);
     if (!validation.valid) {
-      callbacks.onError(validation.error!);
+      callbacks.onError(validation.error || 'Unknown validation error');
       return null;
     }
 

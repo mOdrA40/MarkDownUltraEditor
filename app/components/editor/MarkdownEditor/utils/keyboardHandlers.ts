@@ -147,7 +147,7 @@ export const insertHeading = (
   level: number,
   text = 'Heading'
 ): void => {
-  const prefix = '#'.repeat(Math.max(1, Math.min(6, level))) + ' ';
+  const prefix = `${'#'.repeat(Math.max(1, Math.min(6, level)))} `;
   insertTextAtCursor(textarea, prefix + text);
 };
 
@@ -283,7 +283,7 @@ export const handleTabKey = (event: KeyboardEvent, textarea: HTMLTextAreaElement
     }
   } else {
     // Indent (add tab)
-    textarea.value = value.substring(0, start) + '\t' + value.substring(end);
+    textarea.value = `${value.substring(0, start)}\t${value.substring(end)}`;
     textarea.setSelectionRange(start + 1, start + 1);
   }
 

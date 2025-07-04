@@ -26,11 +26,10 @@ export const ThemeSelector: React.FC<ThemeSelectorProps> = React.memo(
       onThemeChange,
     });
     return (
-      <div
-        className={cn('flex items-center', compact ? 'space-x-1' : 'space-x-2', className)}
-        role="group"
-        aria-label="Theme selector"
+      <fieldset
+        className={cn('flex items-center border-0 p-0 m-0', compact ? 'space-x-1' : 'space-x-2', className)}
       >
+        <legend className="sr-only">Theme selector</legend>
         {/* Icon Palette */}
         <Palette
           className={cn('text-muted-foreground', compact ? 'h-3 w-3' : 'h-4 w-4')}
@@ -56,7 +55,7 @@ export const ThemeSelector: React.FC<ThemeSelectorProps> = React.memo(
             />
           ))}
         </div>
-      </div>
+      </fieldset>
     );
   }
 );

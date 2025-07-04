@@ -176,7 +176,7 @@ export const useEditorSettings = (
 
       return () => clearTimeout(timer);
     }
-  }, [settings, saveSettings]);
+  }, [saveSettings]);
 
   /**
    * Load saved settings on mount

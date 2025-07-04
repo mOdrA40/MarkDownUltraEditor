@@ -13,7 +13,7 @@ import {
   User,
   Zap,
 } from 'lucide-react';
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router';
 import { AuthButtons } from '@/components/auth/AuthButtons';
 import { type Theme, ThemeSelector, themes, useTheme } from '@/components/features/ThemeSelector';
@@ -108,7 +108,7 @@ function SettingsPageContent() {
     };
 
     loadPreferences();
-  }, [toast]);
+  }, [toast, currentTheme]);
 
   const updatePreference = <K extends keyof AppPreferences>(key: K, value: AppPreferences[K]) => {
     setPreferences((prev) => ({ ...prev, [key]: value }));
@@ -125,7 +125,7 @@ function SettingsPageContent() {
       localStorage.setItem('markdownEditor_theme', preferences.theme.id);
       saveSettingsToStorage(preferences.writingSettings);
 
-      const { theme, writingSettings, ...appPrefs } = preferences;
+      const { theme: _theme, writingSettings: _writingSettings, ...appPrefs } = preferences;
       localStorage.setItem('markdownEditor_preferences', JSON.stringify(appPrefs));
 
       setHasUnsavedChanges(false);
@@ -211,7 +211,9 @@ function SettingsPageContent() {
                   isSmallTablet: responsive.windowWidth <= 640,
                 }}
                 onViewFiles={() => navigate('/files')}
-                onSettings={() => {}}
+                onSettings={() => {
+                  // Already on settings page - no action needed
+                }}
               />
             </div>
           </div>
@@ -255,7 +257,7 @@ function SettingsPageContent() {
                 </CardHeader>
                 <CardContent className="space-y-6">
                   <div>
-                    <label className="text-sm font-medium mb-3 block">Color Theme</label>
+                    <div className="text-sm font-medium mb-3 block">Color Theme</div>
                     <div className="p-4 border rounded-lg bg-muted/50">
                       <ThemeSelector
                         currentTheme={preferences.theme}

@@ -143,7 +143,7 @@ export const useSupabase = (): SupabaseClient<Database> | null => {
   }
 
   // For Third Party Auth integration, we use the default token
-  const getAuthenticatedClient = async (): Promise<SupabaseClient<Database> | null> => {
+  const _getAuthenticatedClient = async (): Promise<SupabaseClient<Database> | null> => {
     try {
       // Get default Clerk token (no template needed for Third Party Auth)
       const token = await getToken();
@@ -215,12 +215,13 @@ export { supabaseClient as supabase };
 /**
  * Utility function to handle Supabase errors
  */
-export const handleSupabaseError = (error: any, operation: string): void => {
+export const handleSupabaseError = (error: unknown, operation: string): void => {
+  const errorObj = error as { message?: string; details?: string; hint?: string; code?: string };
   console.error(`Supabase ${operation} error:`, {
-    message: error?.message,
-    details: error?.details,
-    hint: error?.hint,
-    code: error?.code,
+    message: errorObj?.message,
+    details: errorObj?.details,
+    hint: errorObj?.hint,
+    code: errorObj?.code,
   });
 };
 

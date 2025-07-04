@@ -23,7 +23,7 @@ export const validateFontSize = (
   rules: WritingSettingsValidation = DEFAULT_VALIDATION_RULES
 ): boolean => {
   const { min, max } = rules.fontSize;
-  return typeof size === 'number' && size >= min && size <= max && !isNaN(size);
+  return typeof size === 'number' && size >= min && size <= max && !Number.isNaN(size);
 };
 
 /**
@@ -34,7 +34,7 @@ export const validateLineHeight = (
   rules: WritingSettingsValidation = DEFAULT_VALIDATION_RULES
 ): boolean => {
   const { min, max } = rules.lineHeight;
-  return typeof height === 'number' && height >= min && height <= max && !isNaN(height);
+  return typeof height === 'number' && height >= min && height <= max && !Number.isNaN(height);
 };
 
 /**

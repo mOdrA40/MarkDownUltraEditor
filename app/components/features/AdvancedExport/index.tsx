@@ -7,7 +7,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useToast } from '@/hooks/core';
 import { useResponsiveBreakpoint } from '@/hooks/ui';
 import './styles.css';
-import { generateHeaderStyles, getThemeTextColor } from '@/utils/themeUtils';
+import { getThemeTextColor } from '@/utils/themeUtils';
 import { AdvancedOptions } from './components/AdvancedOptions';
 // Import components
 import { FormatSelector } from './components/FormatSelector';

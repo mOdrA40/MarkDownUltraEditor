@@ -89,8 +89,8 @@ class PerformanceMonitor {
 
       const observer = new PerformanceObserver((list) => {
         for (const entry of list.getEntries()) {
-          if (entry.entryType === 'layout-shift' && !(entry as any).hadRecentInput) {
-            clsValue += (entry as any).value;
+          if (entry.entryType === 'layout-shift' && !(entry as unknown as { hadRecentInput: boolean }).hadRecentInput) {
+            clsValue += (entry as unknown as { value: number }).value;
             this.updateMetric('cls', clsValue);
           }
         }
@@ -111,7 +111,7 @@ class PerformanceMonitor {
       const observer = new PerformanceObserver((list) => {
         for (const entry of list.getEntries()) {
           if (entry.entryType === 'first-input') {
-            this.updateMetric('fid', (entry as any).processingStart - entry.startTime);
+            this.updateMetric('fid', (entry as unknown as { processingStart: number }).processingStart - entry.startTime);
           }
         }
       });
@@ -345,9 +345,9 @@ export const performanceUtils = {
   /**
    * Memory usage monitoring
    */
-  getMemoryUsage: (): any => {
+  getMemoryUsage: (): unknown => {
     if (typeof window !== 'undefined' && 'memory' in performance) {
-      return (performance as any).memory;
+      return (performance as unknown as { memory: unknown }).memory;
     }
     return null;
   },

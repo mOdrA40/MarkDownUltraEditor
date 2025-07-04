@@ -80,9 +80,10 @@ export const markdownUtils = {
   extractHeadings: (markdown: string): Array<{ level: number; text: string; id: string }> => {
     const headingRegex = /^(#{1,6})\s+(.+)$/gm;
     const headings: Array<{ level: number; text: string; id: string }> = [];
-    let match;
+    let match: RegExpExecArray | null;
 
-    while ((match = headingRegex.exec(markdown)) !== null) {
+    match = headingRegex.exec(markdown);
+    while (match !== null) {
       const level = match[1].length;
       const text = match[2].trim();
       const id = text
@@ -90,6 +91,7 @@ export const markdownUtils = {
         .replace(/[^\w\s-]/g, '')
         .replace(/\s+/g, '-');
       headings.push({ level, text, id });
+      match = headingRegex.exec(markdown);
     }
 
     return headings;
@@ -101,14 +103,16 @@ export const markdownUtils = {
   extractLinks: (markdown: string): Array<{ text: string; url: string; title?: string }> => {
     const linkRegex = /\[([^\]]+)\]\(([^)]+)(?:\s+"([^"]+)")?\)/g;
     const links: Array<{ text: string; url: string; title?: string }> = [];
-    let match;
+    let match: RegExpExecArray | null;
 
-    while ((match = linkRegex.exec(markdown)) !== null) {
+    match = linkRegex.exec(markdown);
+    while (match !== null) {
       links.push({
         text: match[1],
         url: match[2],
         title: match[3] || undefined,
       });
+      match = linkRegex.exec(markdown);
     }
 
     return links;
@@ -117,17 +121,19 @@ export const markdownUtils = {
   /**
    * Extract images from markdown
    */
-  extractImages: (markdown: string): Array<ImageData> => {
+  extractImages: (markdown: string): ImageData[] => {
     const imageRegex = /!\[([^\]]*)\]\(([^)]+)(?:\s+"([^"]+)")?\)/g;
-    const images: Array<ImageData> = [];
-    let match;
+    const images: ImageData[] = [];
+    let match: RegExpExecArray | null;
 
-    while ((match = imageRegex.exec(markdown)) !== null) {
+    match = imageRegex.exec(markdown);
+    while (match !== null) {
       images.push({
         alt: match[1] || '',
         url: match[2],
         title: match[3] || undefined,
       });
+      match = imageRegex.exec(markdown);
     }
 
     return images;
@@ -139,13 +145,15 @@ export const markdownUtils = {
   extractCodeBlocks: (markdown: string): Array<{ language: string; code: string }> => {
     const codeBlockRegex = /```(\w*)\n([\s\S]*?)```/g;
     const codeBlocks: Array<{ language: string; code: string }> = [];
-    let match;
+    let match: RegExpExecArray | null;
 
-    while ((match = codeBlockRegex.exec(markdown)) !== null) {
+    match = codeBlockRegex.exec(markdown);
+    while (match !== null) {
       codeBlocks.push({
         language: match[1] || 'text',
         code: match[2].trim(),
       });
+      match = codeBlockRegex.exec(markdown);
     }
 
     return codeBlocks;
@@ -242,7 +250,7 @@ export const fileUtils = {
    * Validate file type
    */
   validateFileType: (file: File, allowedTypes: string[]): boolean => {
-    const fileExtension = '.' + file.name.split('.').pop()?.toLowerCase();
+    const fileExtension = `.${file.name.split('.').pop()?.toLowerCase()}`;
     return allowedTypes.includes(fileExtension);
   },
 
@@ -275,7 +283,7 @@ export const fileUtils = {
     const k = 1024;
     const sizes = ['Bytes', 'KB', 'MB', 'GB'];
     const i = Math.floor(Math.log(bytes) / Math.log(k));
-    return Number.parseFloat((bytes / k ** i).toFixed(2)) + ' ' + sizes[i];
+    return `${Number.parseFloat((bytes / k ** i).toFixed(2))} ${sizes[i]}`;
   },
 };
 
@@ -345,7 +353,7 @@ export const templateUtils = {
     tags: string[] = []
   ): TemplateData => {
     return {
-      id: `template-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+      id: `template-${Date.now()}-${Math.random().toString(36).substring(2, 11)}`,
       name,
       description,
       content,
@@ -412,7 +420,9 @@ export const performanceUtils = {
       if (!inThrottle) {
         func(...args);
         inThrottle = true;
-        setTimeout(() => (inThrottle = false), limit);
+        setTimeout(() => {
+          inThrottle = false;
+        }, limit);
       }
     };
   },

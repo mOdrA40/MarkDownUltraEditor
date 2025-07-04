@@ -8,7 +8,6 @@ import {
   getStorageItem,
   getStorageJSON,
   removeStorageItem,
-  setStorageItem,
   setStorageJSON,
 } from '@/components/editor/MarkdownEditor/utils/storageUtils';
 import {

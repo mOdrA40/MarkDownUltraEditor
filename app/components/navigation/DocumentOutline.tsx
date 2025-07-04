@@ -56,19 +56,18 @@ export const DocumentOutline: React.FC<DocumentOutlineProps> = ({ markdown, them
       <OutlineHeader theme={theme} headingCount={outline.length} />
 
       <ScrollArea className="flex-1">
-        <div
+        <nav
           className="p-2 space-y-1"
-          role="navigation"
           aria-labelledby="outline-heading"
           aria-label="Document Outline Navigation"
         >
-          <div role="list" aria-label="Document structure">
-            {outline.map((item, index) => {
+          <ul aria-label="Document structure">
+            {outline.map((item) => {
               const isItemActive = isActive(item.id);
 
               return (
                 <OutlineItem
-                  key={index}
+                  key={item.id}
                   item={item}
                   isActive={isItemActive}
                   theme={theme}
@@ -76,8 +75,8 @@ export const DocumentOutline: React.FC<DocumentOutlineProps> = ({ markdown, them
                 />
               );
             })}
-          </div>
-        </div>
+          </ul>
+        </nav>
       </ScrollArea>
     </div>
   );

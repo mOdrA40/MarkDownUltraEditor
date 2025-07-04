@@ -95,6 +95,7 @@ export function ErrorBoundary() {
           We&apos;re sorry, but something unexpected happened. Please try refreshing the page.
         </p>
         <button
+          type="button"
           onClick={() => window.location.reload()}
           className="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors"
         >

@@ -22,7 +22,7 @@ export const formatBytes = (bytes: number): string => {
   const sizes = ['Bytes', 'KB', 'MB', 'GB'];
   const i = Math.floor(Math.log(bytes) / Math.log(k));
 
-  return Number.parseFloat((bytes / k ** i).toFixed(2)) + ' ' + sizes[i];
+  return `${Number.parseFloat((bytes / k ** i).toFixed(2))} ${sizes[i]}`;
 };
 
 /**
@@ -135,7 +135,7 @@ export const testStorageCapacity = (): number => {
       try {
         localStorage.setItem(testKey, testData.repeat(capacity + 1));
         capacity++;
-      } catch (e) {
+      } catch (_e) {
         break;
       }
     }
@@ -144,11 +144,13 @@ export const testStorageCapacity = (): number => {
     localStorage.removeItem(testKey);
 
     return capacity * 1024; // Return in bytes
-  } catch (e) {
+  } catch (_e) {
     // Clean up on error
     try {
       localStorage.removeItem(testKey);
-    } catch {}
+    } catch {
+      // Ignore cleanup errors
+    }
     return 0;
   }
 };

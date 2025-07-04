@@ -189,7 +189,7 @@ export const useKeyboardNavigation = (
       if (!isTocElement) return;
 
       // Check key bindings
-      const { next, previous, first, last, activate, escape } = mergedKeyBindings;
+      const { next, previous, first, last, activate, escape: escapeKey } = mergedKeyBindings;
 
       if (next.includes(event.key)) {
         event.preventDefault();
@@ -212,7 +212,7 @@ export const useKeyboardNavigation = (
             container,
           });
         }
-      } else if (escape.includes(event.key)) {
+      } else if (escapeKey.includes(event.key)) {
         event.preventDefault();
         // Remove focus from TOC/Outline
         (activeElement as HTMLElement)?.blur();

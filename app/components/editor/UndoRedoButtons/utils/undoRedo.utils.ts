@@ -273,7 +273,6 @@ export const getButtonSize = (breakpoint = 'desktop', compact = false): ButtonSi
       return 'sm';
     case 'tablet':
       return 'sm';
-    case 'desktop':
     default:
       return 'md';
   }

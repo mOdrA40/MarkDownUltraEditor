@@ -245,7 +245,7 @@ export const useTheme = (): ThemeContextType => {
 export const withTheme = <P extends object>(
   Component: React.ComponentType<P & { theme: Theme }>
 ) => {
-  const WrappedComponent = React.forwardRef<any, P>((props, ref) => {
+  const WrappedComponent = React.forwardRef<unknown, P>((props, ref) => {
     const { currentTheme } = useTheme();
     return <Component {...(props as P)} theme={currentTheme} ref={ref} />;
   });

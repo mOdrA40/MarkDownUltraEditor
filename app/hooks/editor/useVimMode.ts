@@ -10,7 +10,7 @@ import { vimCommandRegistry } from './vim/vimCommands';
 
 export const useVimMode = (
   textareaRef: React.RefObject<HTMLTextAreaElement>,
-  value: string,
+  _value: string,
   onChange: (value: string) => void,
   options: UseVimModeOptions
 ): UseVimModeReturn => {

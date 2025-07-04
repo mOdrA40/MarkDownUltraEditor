@@ -39,9 +39,9 @@ export const MobileToolbar: React.FC<MobileToolbarProps> = React.memo(
       <div className={cn('w-full block sm:hidden', className)}>
         {/* Row 1: Headings (H1, H2, H3) */}
         <div className="grid grid-cols-3 gap-2 mb-3">
-          {headingButtons.map((button, index) => (
+          {headingButtons.map((button) => (
             <ToolbarButton
-              key={`heading-${index}`}
+              key={button.label}
               button={button}
               className="h-9 text-xs font-medium"
               size="sm"
@@ -53,9 +53,9 @@ export const MobileToolbar: React.FC<MobileToolbarProps> = React.memo(
 
         {/* Row 2: Text Formatting (Bold, Italic) */}
         <div className="grid grid-cols-2 gap-2 mb-3">
-          {formattingButtons.map((button, index) => (
+          {formattingButtons.map((button) => (
             <ToolbarButton
-              key={`formatting-${index}`}
+              key={button.label}
               button={button}
               className="h-9 text-xs"
               size="sm"
@@ -96,9 +96,9 @@ export const MobileToolbar: React.FC<MobileToolbarProps> = React.memo(
 
         {/* Row 4: Content Buttons (Link, Image, Quote, List, etc.) */}
         <div className="grid grid-cols-2 gap-2">
-          {contentButtons.map((button, index) => (
+          {contentButtons.map((button) => (
             <ToolbarButton
-              key={`content-${index}`}
+              key={button.label}
               button={button}
               className="h-9 text-xs"
               size="sm"

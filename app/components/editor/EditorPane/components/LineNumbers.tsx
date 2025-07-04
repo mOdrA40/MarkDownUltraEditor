@@ -22,8 +22,8 @@ export const LineNumbers: React.FC<LineNumbersConfig> = ({
       className="absolute left-0 top-0 w-12 h-full border-r text-xs font-mono pt-6 px-2 pointer-events-none select-none"
       style={lineNumberStyles}
     >
-      {markdown.split('\n').map((_, index) => (
-        <div key={index} style={{ lineHeight }}>
+      {markdown.split('\n').map((line, index) => (
+        <div key={`${index}-${line.length}`} style={{ lineHeight }}>
           {index + 1}
         </div>
       ))}

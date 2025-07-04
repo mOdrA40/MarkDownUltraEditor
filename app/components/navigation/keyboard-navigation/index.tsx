@@ -96,7 +96,7 @@ export const NavigableList: React.FC<NavigableListProps> = ({
   className = '',
   itemClassName = '',
 }) => {
-  const containerRef = React.useRef<HTMLDivElement>(null);
+  const containerRef = React.useRef<HTMLUListElement>(null);
 
   const { handleKeyDown } = useKeyboardNavigation({
     headingIds: items.map((item) => item.id),
@@ -119,14 +119,14 @@ export const NavigableList: React.FC<NavigableListProps> = ({
   }, [handleKeyDown]);
 
   return (
-    <div
+    <ul
       ref={containerRef}
       className={`navigable-list ${className}`}
       data-toc-container
-      role="list"
     >
       {items.map((item) => (
         <button
+          type="button"
           key={item.id}
           data-heading-id={item.id}
           className={`
@@ -144,7 +144,7 @@ export const NavigableList: React.FC<NavigableListProps> = ({
           )}
         </button>
       ))}
-    </div>
+    </ul>
   );
 };
 
@@ -173,12 +173,12 @@ export const KeyboardShortcutsHelp: React.FC<KeyboardShortcutsHelpProps> = ({
     <div className={`keyboard-shortcuts-help ${className}`}>
       <h3 className="text-sm font-semibold mb-2">Keyboard Shortcuts</h3>
       <div className="space-y-1">
-        {shortcuts.map((shortcut, index) => (
-          <div key={index} className="flex items-center justify-between text-xs">
+        {shortcuts.map((shortcut) => (
+          <div key={shortcut.description} className="flex items-center justify-between text-xs">
             <div className="flex space-x-1">
-              {shortcut.keys.map((key, keyIndex) => (
+              {shortcut.keys.map((key) => (
                 <kbd
-                  key={keyIndex}
+                  key={key}
                   className="
                     px-1 py-0.5 bg-gray-200 dark:bg-gray-700 
                     rounded text-xs font-mono

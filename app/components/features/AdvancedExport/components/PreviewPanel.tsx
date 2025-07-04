@@ -1,6 +1,6 @@
 import { Download, Eye, Loader2, Monitor, Smartphone, Tablet } from 'lucide-react';
 import type React from 'react';
-import { useEffect, useMemo, useRef } from 'react';
+import { useCallback, useEffect, useMemo, useRef } from 'react';
 import ReactMarkdown from 'react-markdown';
 import rehypeHighlight from 'rehype-highlight';
 import remarkGfm from 'remark-gfm';
@@ -28,6 +28,20 @@ export const PreviewPanel: React.FC<PreviewPanelProps> = ({
   currentTheme,
 }) => {
   const previewRef = useRef<HTMLDivElement>(null);
+
+  // Font family helper untuk preview real-time
+  const getFontFamilyForPreview = useCallback((fontFamily: string): string => {
+    const fontMap: Record<string, string> = {
+      Arial: 'Arial, "Helvetica Neue", Helvetica, sans-serif',
+      'Times New Roman': '"Times New Roman", Times, serif',
+      Helvetica: '"Helvetica Neue", Helvetica, Arial, sans-serif',
+      Georgia: 'Georgia, "Times New Roman", Times, serif',
+      Verdana: 'Verdana, Geneva, sans-serif',
+      Roboto: 'Roboto, "Segoe UI", Arial, sans-serif',
+      'Open Sans': '"Open Sans", "Segoe UI", Arial, sans-serif',
+    };
+    return fontMap[fontFamily] || `${fontFamily}, Arial, sans-serif`;
+  }, []);
 
   // Setup highlight.js dengan theme management
   const isDarkMode =
@@ -131,11 +145,11 @@ export const PreviewPanel: React.FC<PreviewPanelProps> = ({
 
     return () => {
       // Cleanup saat component unmount
-      if (styleElement && styleElement.parentNode) {
+      if (styleElement?.parentNode) {
         styleElement.parentNode.removeChild(styleElement);
       }
     };
-  }, [options.fontFamily, currentTheme]);
+  }, [options.fontFamily, getFontFamilyForPreview]);
 
   // Watch for theme changes and update styles accordingly
   useEffect(() => {
@@ -234,8 +248,6 @@ export const PreviewPanel: React.FC<PreviewPanelProps> = ({
     options.watermark,
     options.title,
     options.author,
-    options.description,
-    options.headerFooter,
     markdown,
     currentTheme,
   ]);
@@ -298,20 +310,6 @@ export const PreviewPanel: React.FC<PreviewPanelProps> = ({
       minHeight: getMinHeight(options.format),
     };
   }, [options.format, options.fontSize]);
-
-  // Font family helper untuk preview real-time
-  const getFontFamilyForPreview = (fontFamily: string): string => {
-    const fontMap: Record<string, string> = {
-      Arial: 'Arial, "Helvetica Neue", Helvetica, sans-serif',
-      'Times New Roman': '"Times New Roman", Times, serif',
-      Helvetica: '"Helvetica Neue", Helvetica, Arial, sans-serif',
-      Georgia: 'Georgia, "Times New Roman", Times, serif',
-      Verdana: 'Verdana, Geneva, sans-serif',
-      Roboto: 'Roboto, "Segoe UI", Arial, sans-serif',
-      'Open Sans': '"Open Sans", "Segoe UI", Arial, sans-serif',
-    };
-    return fontMap[fontFamily] || `${fontFamily}, Arial, sans-serif`;
-  };
 
   // Page size helpers untuk preview real-time
   const getPageWidthForPreview = (pageSize: string, orientation: string): string => {

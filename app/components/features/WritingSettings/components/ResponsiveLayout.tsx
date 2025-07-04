@@ -40,7 +40,8 @@ export const ResponsiveLayout: React.FC<ResponsiveLayoutProps> = memo(
     return (
       <div className={getLayoutClasses()}>
         {React.Children.map(children, (child, index) => (
-          <React.Fragment key={index}>
+          // biome-ignore lint/suspicious/noArrayIndexKey: Children don't have stable IDs
+          <React.Fragment key={`layout-item-${index}`}>
             {child}
             {index < React.Children.count(children) - 1 && renderSeparator()}
           </React.Fragment>

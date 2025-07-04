@@ -182,11 +182,12 @@ export const useFileStorage = (): UseFileStorageReturn => {
         description: `${savedFile.title} has been saved successfully.`,
       });
     },
-    onError: (error: any) => {
+    onError: (error: unknown) => {
       console.error('Error saving file:', error);
+      const errorObj = error as { message?: string };
       toast({
         title: 'Save Failed',
-        description: error.message || 'Failed to save file. Please try again.',
+        description: errorObj.message || 'Failed to save file. Please try again.',
         variant: 'destructive',
       });
     },
@@ -214,11 +215,12 @@ export const useFileStorage = (): UseFileStorageReturn => {
         description: 'File has been deleted successfully.',
       });
     },
-    onError: (error: any) => {
+    onError: (error: unknown) => {
       console.error('Error deleting file:', error);
+      const errorObj = error as { message?: string };
       toast({
         title: 'Delete Failed',
-        description: error.message || 'Failed to delete file. Please try again.',
+        description: errorObj.message || 'Failed to delete file. Please try again.',
         variant: 'destructive',
       });
     },

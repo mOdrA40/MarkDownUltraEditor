@@ -77,14 +77,13 @@ export const LineHeightControl: React.FC<LineHeightControlProps> = memo(
         </Button>
 
         {/* Display Value */}
-        <span
+        <output
           className={`${sizeStyles.text} font-mono min-w-[2rem] text-center select-none`}
-          role="status"
           aria-live="polite"
           aria-label={`Current line height: ${formattedHeight}`}
         >
           {formattedHeight}
-        </span>
+        </output>
 
         {/* Increase Button */}
         <Button

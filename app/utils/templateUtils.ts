@@ -168,7 +168,7 @@ export const makeTemplateResponsive = (content: string): string => {
   // Add responsive image classes
   responsiveContent = responsiveContent.replace(
     /!\[([^\]]*)\]\(([^)]+)\)/g,
-    '![${1}](${2}){.responsive-image .max-w-full .h-auto}'
+    '![$1]($2){.responsive-image .max-w-full .h-auto}'
   );
 
   return responsiveContent;

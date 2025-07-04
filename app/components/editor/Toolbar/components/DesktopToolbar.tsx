@@ -46,9 +46,9 @@ export const DesktopToolbar: React.FC<DesktopToolbarProps> = React.memo(
       >
         <div className="flex items-center space-x-1 overflow-x-auto scroll-container-stable">
           {/* Heading Buttons Group */}
-          {headingButtons.map((button, index) => (
+          {headingButtons.map((button) => (
             <ToolbarButton
-              key={`heading-${index}`}
+              key={button.label}
               button={button}
               className="h-8 text-xs font-medium"
               size="sm"
@@ -60,9 +60,9 @@ export const DesktopToolbar: React.FC<DesktopToolbarProps> = React.memo(
           <Separator orientation="vertical" className="h-6" />
 
           {/* Formatting Buttons Group */}
-          {formattingButtons.map((button, index) => (
+          {formattingButtons.map((button) => (
             <ToolbarButton
-              key={`formatting-${index}`}
+              key={button.label}
               button={button}
               className="h-8 text-xs"
               size="sm"
@@ -74,9 +74,9 @@ export const DesktopToolbar: React.FC<DesktopToolbarProps> = React.memo(
           <Separator orientation="vertical" className="h-6" />
 
           {/* Code Buttons Group */}
-          {codeButtons.map((button, index) => (
+          {codeButtons.map((button) => (
             <ToolbarButton
-              key={`code-${index}`}
+              key={button.label}
               button={button}
               className="h-8 text-xs"
               size="sm"
@@ -101,9 +101,9 @@ export const DesktopToolbar: React.FC<DesktopToolbarProps> = React.memo(
           <Separator orientation="vertical" className="h-6" />
 
           {/* Content Buttons Group */}
-          {contentButtons.map((button, index) => (
+          {contentButtons.map((button) => (
             <ToolbarButton
-              key={`content-${index}`}
+              key={button.label}
               button={button}
               className="h-8 text-xs"
               size="sm"
