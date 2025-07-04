@@ -1,9 +1,11 @@
 /**
  * UndoRedo Types & Interfaces
  * Definisi TypeScript untuk sistem undo/redo
- * 
+ *
  * @author Axel Modra
  */
+
+import type { Theme } from '@/components/features/ThemeSelector';
 
 /**
  * Props untuk komponen UndoRedoButtons utama
@@ -29,6 +31,8 @@ export interface UndoRedoButtonsProps {
   showTooltips?: boolean;
   /** Compact mode (opsional) */
   compact?: boolean;
+  /** Current theme (opsional) */
+  currentTheme?: Theme;
 }
 
 /**
@@ -51,6 +55,8 @@ export interface UndoRedoButtonProps {
   compact?: boolean;
   /** Keyboard shortcut text (opsional) */
   shortcut?: string;
+  /** Current theme (opsional) */
+  currentTheme?: Theme;
 }
 
 /**
@@ -75,6 +81,8 @@ export interface MobileUndoRedoProps {
   canRedo: boolean;
   /** Kelas CSS tambahan */
   className?: string;
+  /** Current theme (opsional) */
+  currentTheme?: Theme;
 }
 
 /**
@@ -91,6 +99,8 @@ export interface TabletUndoRedoProps {
   canRedo: boolean;
   /** Kelas CSS tambahan */
   className?: string;
+  /** Current theme (opsional) */
+  currentTheme?: Theme;
 }
 
 /**
@@ -107,6 +117,8 @@ export interface DesktopUndoRedoProps {
   canRedo: boolean;
   /** Kelas CSS tambahan */
   className?: string;
+  /** Current theme (opsional) */
+  currentTheme?: Theme;
 }
 
 /**

@@ -182,7 +182,7 @@ export interface UseEditorStateReturn {
     redo: () => void;
     canUndo: boolean;
     canRedo: boolean;
-    clearHistory: () => void;
+    clearHistory: (newValue?: string) => void;
   };
 }
 

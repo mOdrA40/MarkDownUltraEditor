@@ -26,7 +26,8 @@ export const Toolbar: React.FC<ToolbarProps> = React.memo(({
   className,
   compact = false,
   disabled = false,
-  customButtons = []
+  customButtons = [],
+  currentTheme
 }) => {
   // Menggunakan custom hook untuk toolbar logic
   const {
@@ -67,6 +68,7 @@ export const Toolbar: React.FC<ToolbarProps> = React.memo(({
         <MobileToolbar
           formatButtons={filteredButtons}
           onInsertText={onInsertText}
+          currentTheme={currentTheme}
         />
       )}
 
@@ -76,6 +78,7 @@ export const Toolbar: React.FC<ToolbarProps> = React.memo(({
           formatButtons={filteredButtons}
           onInsertText={onInsertText}
           compact={currentBreakpoint === 'smallTablet' || compact}
+          currentTheme={currentTheme}
         />
       )}
 
@@ -84,6 +87,7 @@ export const Toolbar: React.FC<ToolbarProps> = React.memo(({
         <DesktopToolbar
           formatButtons={filteredButtons}
           onInsertText={onInsertText}
+          currentTheme={currentTheme}
         />
       )}
     </div>

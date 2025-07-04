@@ -9,12 +9,12 @@ import { useAuth } from '@clerk/react-router';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
-import { 
-  Card, 
-  CardContent, 
-  CardDescription, 
-  CardHeader, 
-  CardTitle 
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle
 } from '@/components/ui/card';
 import {
   DropdownMenu,
@@ -23,7 +23,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { 
+import {
   ArrowLeft,
   Search,
   Grid3X3,
@@ -68,14 +68,14 @@ export const FilesManager: React.FC = () => {
   const navigate = useNavigate();
   const { isSignedIn } = useAuth();
   const responsive = useResponsiveDetection();
-  const { 
-    files, 
-    isLoadingFiles, 
-    storageInfo, 
-    deleteFile, 
+  const {
+    files,
+    isLoadingFiles,
+    storageInfo,
+    deleteFile,
     exportAllFiles,
     refreshFiles,
-    isAuthenticated 
+    isAuthenticated
   } = useFileStorage();
 
   // UI state
@@ -87,7 +87,7 @@ export const FilesManager: React.FC = () => {
 
   // Filter and sort files
   const filteredAndSortedFiles = React.useMemo(() => {
-    const filtered = files.filter(file => 
+    const filtered = files.filter(file =>
       file.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
       (file.tags && file.tags.some(tag => tag.toLowerCase().includes(searchQuery.toLowerCase())))
     );
@@ -95,7 +95,7 @@ export const FilesManager: React.FC = () => {
     // Sort files
     filtered.sort((a, b) => {
       let comparison = 0;
-      
+
       switch (sortBy) {
         case 'name':
           comparison = a.title.localeCompare(b.title);
@@ -109,7 +109,7 @@ export const FilesManager: React.FC = () => {
           comparison = (a.fileSize || 0) - (b.fileSize || 0);
           break;
       }
-      
+
       return sortDirection === 'asc' ? comparison : -comparison;
     });
 
@@ -138,7 +138,7 @@ export const FilesManager: React.FC = () => {
       title: `${file.title} (Copy)`,
       id: undefined, // Will get new ID when saved
     };
-    
+
     // Navigate to editor with duplicated content
     const params = new URLSearchParams({
       title: duplicatedFile.title,
@@ -186,9 +186,9 @@ export const FilesManager: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50">
+    <div className="min-h-screen bg-background">
       {/* Header */}
-      <div className="border-b bg-white/80 backdrop-blur-md">
+      <div className="border-b bg-card/80 backdrop-blur-md">
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
@@ -201,10 +201,10 @@ export const FilesManager: React.FC = () => {
                 <ArrowLeft className="w-4 h-4" />
                 Back to Editor
               </Button>
-              
+
               <div>
                 <h1 className="text-2xl font-bold">My Files</h1>
-                <p className="text-sm text-gray-600">
+                <p className="text-sm text-muted-foreground">
                   {storageInfo && (
                     <>
                       {storageInfo.totalFiles} files • {storageInfo.storageType === 'cloud' ? 'Cloud' : 'Local'} storage
@@ -220,7 +220,8 @@ export const FilesManager: React.FC = () => {
                 isTablet: responsive.isTablet,
                 isSmallTablet: responsive.windowWidth <= 640, // sm breakpoint
               }}
-              onViewFiles={() => {}} // Already on files page
+              onViewFiles={() => { }} // Already on files page
+              onSettings={() => navigate('/settings')}
             />
           </div>
         </div>
@@ -232,7 +233,7 @@ export const FilesManager: React.FC = () => {
         <div className="flex flex-col sm:flex-row gap-4 mb-6">
           {/* Search */}
           <div className="relative flex-1">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground" />
             <Input
               placeholder="Search files..."
               value={searchQuery}
@@ -317,20 +318,20 @@ export const FilesManager: React.FC = () => {
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
                   {storageInfo.storageType === 'cloud' ? (
-                    <Cloud className="w-5 h-5 text-blue-600" />
+                    <Cloud className="w-5 h-5 text-primary" />
                   ) : (
-                    <HardDrive className="w-5 h-5 text-gray-600" />
+                    <HardDrive className="w-5 h-5 text-muted-foreground" />
                   )}
                   <div>
                     <p className="font-medium">
                       {storageInfo.storageType === 'cloud' ? 'Cloud Storage' : 'Local Storage'}
                     </p>
-                    <p className="text-sm text-gray-600">
+                    <p className="text-sm text-muted-foreground">
                       {storageInfo.totalFiles} files • {formatFileSize(storageInfo.totalSize)}
                     </p>
                   </div>
                 </div>
-                
+
                 <div className="flex items-center gap-2">
                   {files.length > 0 && (
                     <Button
@@ -352,18 +353,18 @@ export const FilesManager: React.FC = () => {
         {/* Files display */}
         {isLoadingFiles ? (
           <div className="text-center py-12">
-            <RefreshCw className="w-8 h-8 animate-spin mx-auto mb-4 text-gray-400" />
-            <p className="text-gray-600">Loading files...</p>
+            <RefreshCw className="w-8 h-8 animate-spin mx-auto mb-4 text-muted-foreground" />
+            <p className="text-muted-foreground">Loading files...</p>
           </div>
         ) : filteredAndSortedFiles.length === 0 ? (
           <div className="text-center py-12">
-            <FileText className="w-12 h-12 mx-auto mb-4 text-gray-400" />
+            <FileText className="w-12 h-12 mx-auto mb-4 text-muted-foreground" />
             <h3 className="text-lg font-medium mb-2">
               {searchQuery ? 'No files found' : 'No files yet'}
             </h3>
-            <p className="text-gray-600 mb-4">
-              {searchQuery 
-                ? 'Try adjusting your search terms' 
+            <p className="text-muted-foreground mb-4">
+              {searchQuery
+                ? 'Try adjusting your search terms'
                 : 'Create your first markdown file to get started'
               }
             </p>
@@ -374,7 +375,7 @@ export const FilesManager: React.FC = () => {
           </div>
         ) : (
           <div className={
-            viewMode === 'grid' 
+            viewMode === 'grid'
               ? 'grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4'
               : 'space-y-2'
           }>
@@ -428,10 +429,10 @@ const FileCard: React.FC<FileCardProps> = ({
         <CardContent className="p-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3 flex-1 min-w-0" onClick={onOpen}>
-              <FileText className="w-5 h-5 text-blue-600 flex-shrink-0" />
+              <FileText className="w-5 h-5 text-primary flex-shrink-0" />
               <div className="min-w-0 flex-1">
                 <h3 className="font-medium truncate">{file.title}</h3>
-                <div className="flex items-center gap-4 text-sm text-gray-600">
+                <div className="flex items-center gap-4 text-sm text-muted-foreground">
                   <span className="flex items-center gap-1">
                     <Clock className="w-3 h-3" />
                     {formatDate(file.updatedAt || file.createdAt || '')}
@@ -454,7 +455,7 @@ const FileCard: React.FC<FileCardProps> = ({
                 </div>
               </div>
             </div>
-            
+
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button variant="ghost" size="sm">
@@ -491,7 +492,7 @@ const FileCard: React.FC<FileCardProps> = ({
     <Card className="hover:shadow-md transition-shadow cursor-pointer" onClick={onOpen}>
       <CardHeader className="pb-2">
         <div className="flex items-start justify-between">
-          <FileText className="w-6 h-6 text-blue-600" />
+          <FileText className="w-6 h-6 text-primary" />
           <DropdownMenu>
             <DropdownMenuTrigger asChild onClick={(e) => e.stopPropagation()}>
               <Button variant="ghost" size="sm">
@@ -512,8 +513,8 @@ const FileCard: React.FC<FileCardProps> = ({
                 Export
               </DropdownMenuItem>
               <DropdownMenuSeparator />
-              <DropdownMenuItem 
-                onClick={(e) => { e.stopPropagation(); onDelete(); }} 
+              <DropdownMenuItem
+                onClick={(e) => { e.stopPropagation(); onDelete(); }}
                 className="text-red-600"
               >
                 <Trash2 className="mr-2 h-4 w-4" />
@@ -526,10 +527,10 @@ const FileCard: React.FC<FileCardProps> = ({
       </CardHeader>
       <CardContent className="pt-0">
         <div className="space-y-2">
-          <p className="text-sm text-gray-600 line-clamp-2">
+          <p className="text-sm text-muted-foreground line-clamp-2">
             {file.content.substring(0, 100)}...
           </p>
-          
+
           {file.tags && file.tags.length > 0 && (
             <div className="flex flex-wrap gap-1">
               {file.tags.slice(0, 3).map(tag => (
@@ -544,8 +545,8 @@ const FileCard: React.FC<FileCardProps> = ({
               )}
             </div>
           )}
-          
-          <div className="flex items-center justify-between text-xs text-gray-500">
+
+          <div className="flex items-center justify-between text-xs text-muted-foreground">
             <span className="flex items-center gap-1">
               <Clock className="w-3 h-3" />
               {formatDate(file.updatedAt || file.createdAt || '')}

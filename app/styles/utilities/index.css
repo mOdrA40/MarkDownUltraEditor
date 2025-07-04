@@ -9,3 +9,70 @@
 @import './scroll.css';
 @import './responsive.css';
 @import './theme-colors.css';
+
+/**
+ * Utility classes
+ * Kumpulan class utility untuk keperluan styling umum
+ * 
+ * @author Axel Modra
+ */
+
+/* Z-index layering utilities */
+.z-dropdown {
+  z-index: 60;
+}
+
+.z-modal {
+  z-index: 70;
+}
+
+.z-toast {
+  z-index: 80;
+}
+
+.z-tooltip {
+  z-index: 90;
+}
+
+/* Dropdown positioning utilities */
+.dropdown-fixed {
+  position: fixed !important;
+  transform: none !important;
+}
+
+/* Backdrop blur utilities */
+.backdrop-blur-light {
+  backdrop-filter: blur(4px);
+}
+
+.backdrop-blur-medium {
+  backdrop-filter: blur(8px);
+}
+
+.backdrop-blur-strong {
+  backdrop-filter: blur(16px);
+}
+
+/* Enhanced shadows for dropdowns */
+.shadow-dropdown {
+  box-shadow: 
+    0 10px 25px -5px rgba(0, 0, 0, 0.1), 
+    0 10px 20px -6px rgba(0, 0, 0, 0.05),
+    0 0 0 1px rgba(0, 0, 0, 0.05);
+}
+
+/* Animation utilities */
+.animate-slide-down {
+  animation: slideDown 0.15s ease-out;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-8px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}

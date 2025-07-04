@@ -52,3 +52,6 @@ export {
   useThemeSelector,
   useThemeButton
 } from './hooks/useThemeSelector';
+
+// Export providers
+export { ThemeProvider, useTheme } from './providers/ThemeProvider';

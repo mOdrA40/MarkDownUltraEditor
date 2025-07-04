@@ -10,6 +10,7 @@ import type { LinksFunction, HeadersFunction } from "react-router";
 import { ClerkProvider } from "@clerk/react-router";
 import { rootAuthLoader } from "@clerk/react-router/ssr.server";
 import type { Route } from "./+types/root";
+import { ThemeProvider } from "@/components/features/ThemeSelector";
 
 import "./tailwind.css";
 
@@ -128,7 +129,9 @@ export default function App({ loaderData }: Route.ComponentProps) {
         }
       }}
     >
-      <Outlet />
+      <ThemeProvider>
+        <Outlet />
+      </ThemeProvider>
     </ClerkProvider>
   );
 }

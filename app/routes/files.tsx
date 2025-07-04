@@ -56,7 +56,7 @@ export default function FilesPage() {
       <TooltipProvider>
         <Toaster />
         <Sonner />
-        <div className="min-h-screen w-full bg-gradient-to-br from-slate-50 to-blue-50">
+        <div className="min-h-screen w-full bg-background">
           <FilesManager />
         </div>
       </TooltipProvider>

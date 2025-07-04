@@ -3,6 +3,7 @@
  * @author Axel Modra
  */
 import React from 'react';
+import { useNavigate } from 'react-router';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
@@ -92,11 +93,9 @@ export const EditorHeader: React.FC<EditorHeaderProps> = ({
   responsive,
   zenMode
 }) => {
+  const navigate = useNavigate();
   const { isMobile, isTablet, isSmallTablet } = responsive;
   const [isFullscreen, setIsFullscreen] = React.useState(false);
-
-  // Don't render header in zen mode
-  if (zenMode) return null;
 
   // Listen for fullscreen changes
   React.useEffect(() => {
@@ -107,6 +106,9 @@ export const EditorHeader: React.FC<EditorHeaderProps> = ({
     document.addEventListener('fullscreenchange', handleFullscreenChange);
     return () => document.removeEventListener('fullscreenchange', handleFullscreenChange);
   }, []);
+
+  // Don't render header in zen mode
+  if (zenMode) return null;
 
   /**
    * Toggle fullscreen mode
@@ -123,7 +125,7 @@ export const EditorHeader: React.FC<EditorHeaderProps> = ({
   const headerStyles = generateHeaderStyles(currentTheme);
   return (
     <div
-      className={`border-b backdrop-blur-md ${headerClassName}`}
+      className={`editor-header border-b backdrop-blur-md ${headerClassName}`}
       style={{
         ...headerStyles,
         backdropFilter: 'blur(12px)',
@@ -182,8 +184,10 @@ export const EditorHeader: React.FC<EditorHeaderProps> = ({
                   title="Advanced Export"
                   style={{
                     transform: 'none',
-                    willChange: 'auto'
+                    willChange: 'auto',
+                    color: currentTheme.text
                   }}
+                  data-theme-button="true"
                 >
                   Export+
                 </Button>
@@ -199,6 +203,7 @@ export const EditorHeader: React.FC<EditorHeaderProps> = ({
                 isMobile={isMobile}
                 isTablet={isTablet}
                 className={isSmallTablet ? 'undo-redo-compact' : ''}
+                currentTheme={currentTheme}
               />
             </div>
           </div>
@@ -213,6 +218,8 @@ export const EditorHeader: React.FC<EditorHeaderProps> = ({
               onClick={onShowSearch}
               className="h-6 w-6 sm:h-8 sm:w-8 p-0 sm:p-2"
               title="Search"
+              style={{ color: currentTheme.text }}
+              data-theme-button="true"
             >
               <Search className="h-3 w-3 sm:h-4 sm:w-4" />
             </Button>
@@ -223,6 +230,8 @@ export const EditorHeader: React.FC<EditorHeaderProps> = ({
               onClick={onTogglePreview}
               className="h-6 w-6 sm:h-8 sm:w-8 p-0 sm:p-2"
               title="Toggle Preview"
+              style={{ color: currentTheme.text }}
+              data-theme-button="true"
             >
               {showPreview ? <EyeOff className="h-3 w-3 sm:h-4 sm:w-4" /> : <Eye className="h-3 w-3 sm:h-4 sm:w-4" />}
             </Button>
@@ -232,6 +241,8 @@ export const EditorHeader: React.FC<EditorHeaderProps> = ({
               onClick={onShowShortcuts}
               className="h-6 w-6 sm:h-8 sm:w-8 p-0 sm:p-2"
               title="Keyboard Shortcuts (Ctrl+?)"
+              style={{ color: currentTheme.text }}
+              data-theme-button="true"
             >
               <Keyboard className="h-3 w-3 sm:h-4 sm:w-4" />
             </Button>
@@ -241,6 +252,8 @@ export const EditorHeader: React.FC<EditorHeaderProps> = ({
               onClick={toggleFullscreen}
               className="h-6 w-6 sm:h-8 sm:w-8 p-0 sm:p-2 hidden lg:flex"
               title={isFullscreen ? "Exit Fullscreen" : "Enter Fullscreen"}
+              style={{ color: currentTheme.text }}
+              data-theme-button="true"
             >
               {isFullscreen ? (
                 <Minimize2 className="h-3 w-3 sm:h-4 sm:w-4" />
@@ -254,6 +267,8 @@ export const EditorHeader: React.FC<EditorHeaderProps> = ({
               onClick={onShowTemplates}
               className="h-6 sm:h-8 px-2 sm:px-3 text-xs sm:text-sm whitespace-nowrap"
               title="Document Templates"
+              style={{ color: currentTheme.text }}
+              data-theme-button="true"
             >
               Templates
             </Button>
@@ -266,6 +281,8 @@ export const EditorHeader: React.FC<EditorHeaderProps> = ({
               }}
               className="h-6 sm:h-8 px-2 sm:px-3 text-xs sm:text-sm whitespace-nowrap"
               title="New Document"
+              style={{ color: currentTheme.text }}
+              data-theme-button="true"
             >
               New
             </Button>
@@ -279,8 +296,7 @@ export const EditorHeader: React.FC<EditorHeaderProps> = ({
                   window.location.href = '/files';
                 }}
                 onSettings={() => {
-                  // TODO: Open settings dialog
-                  console.log('Open settings dialog');
+                  navigate('/settings');
                 }}
               />
             </div>
@@ -289,7 +305,7 @@ export const EditorHeader: React.FC<EditorHeaderProps> = ({
       </div>
       {/* Toolbar - Only on desktop/tablet */}
       <div className={`${isSmallTablet ? 'overflow-x-auto toolbar-small-tablet' : 'overflow-x-hidden'}`}>
-        <Toolbar onInsertText={onInsertText} />
+        <Toolbar onInsertText={onInsertText} currentTheme={currentTheme} />
       </div>
 
       {/* Writing Settings - Only on desktop/tablet */}

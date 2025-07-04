@@ -1,9 +1,11 @@
 /**
  * Toolbar Types & Interfaces
  * Definisi TypeScript untuk sistem toolbar markdown
- * 
+ *
  * @author Axel Modra
  */
+
+import type { Theme } from '@/components/features/ThemeSelector';
 
 /**
  * Interface untuk button format markdown
@@ -50,6 +52,8 @@ export interface ToolbarProps {
   disabled?: boolean;
   /** Custom format buttons (opsional) */
   customButtons?: FormatButton[];
+  /** Current theme (opsional) */
+  currentTheme?: Theme;
 }
 
 /**
@@ -66,6 +70,8 @@ export interface ToolbarButtonProps {
   variant?: 'ghost' | 'outline' | 'default';
   /** Disabled state */
   disabled?: boolean;
+  /** Current theme (opsional) */
+  currentTheme?: Theme;
 }
 
 /**
@@ -90,6 +96,8 @@ export interface MobileToolbarProps {
   onInsertText: (text: string) => void;
   /** Kelas CSS tambahan */
   className?: string;
+  /** Current theme (opsional) */
+  currentTheme?: Theme;
 }
 
 /**
@@ -104,6 +112,8 @@ export interface TabletToolbarProps {
   className?: string;
   /** Mode kompak */
   compact?: boolean;
+  /** Current theme (opsional) */
+  currentTheme?: Theme;
 }
 
 /**
@@ -116,6 +126,8 @@ export interface DesktopToolbarProps {
   onInsertText: (text: string) => void;
   /** Kelas CSS tambahan */
   className?: string;
+  /** Current theme (opsional) */
+  currentTheme?: Theme;
 }
 
 /**

@@ -23,7 +23,8 @@ import { ToolbarButton } from './ToolbarButton';
 export const DesktopToolbar: React.FC<DesktopToolbarProps> = React.memo(({
   formatButtons,
   onInsertText,
-  className
+  className,
+  currentTheme
 }) => {
   // Pisahkan buttons berdasarkan kategori untuk grouping yang lebih baik
   const headingButtons = formatButtons.filter(btn => btn.category === 'heading').slice(0, 3);
@@ -52,6 +53,7 @@ export const DesktopToolbar: React.FC<DesktopToolbarProps> = React.memo(({
             className="h-8 text-xs font-medium"
             size="sm"
             variant="ghost"
+            currentTheme={currentTheme}
           />
         ))}
 
@@ -65,6 +67,7 @@ export const DesktopToolbar: React.FC<DesktopToolbarProps> = React.memo(({
             className="h-8 text-xs"
             size="sm"
             variant="ghost"
+            currentTheme={currentTheme}
           />
         ))}
 
@@ -78,6 +81,7 @@ export const DesktopToolbar: React.FC<DesktopToolbarProps> = React.memo(({
             className="h-8 text-xs"
             size="sm"
             variant="ghost"
+            currentTheme={currentTheme}
           />
         ))}
 
@@ -87,6 +91,8 @@ export const DesktopToolbar: React.FC<DesktopToolbarProps> = React.memo(({
           onClick={insertCodeBlock}
           className="h-8 text-xs clean-button toolbar-button-fix prevent-layout-shift"
           title="Code Block"
+          style={currentTheme ? { color: currentTheme.text } : undefined}
+          data-theme-button="true"
         >
           <FileText className="h-3 w-3 mr-1" />
           Block
@@ -102,6 +108,7 @@ export const DesktopToolbar: React.FC<DesktopToolbarProps> = React.memo(({
             className="h-8 text-xs"
             size="sm"
             variant="ghost"
+            currentTheme={currentTheme}
           />
         ))}
       </div>

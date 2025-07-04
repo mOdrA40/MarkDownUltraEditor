@@ -1,4 +1,4 @@
-import { useState, useCallback, useRef, useMemo, useEffect } from 'react';
+import { useState, useCallback, useRef, useEffect } from 'react';
 
 interface HistoryState {
   value: string;
@@ -17,7 +17,7 @@ interface UseUndoRedoReturn {
   redo: () => void;
   canUndo: boolean;
   canRedo: boolean;
-  clearHistory: () => void;
+  clearHistory: (newValue?: string) => void;
 }
 
 export const useUndoRedo = (
@@ -88,7 +88,7 @@ export const useUndoRedo = (
     // Debounce adding to history
     debounceTimer.current = setTimeout(() => {
       const currentHistoryValue = history[currentIndex]?.value;
-      if (newValue !== currentHistoryValue && newValue.trim() !== '') {
+      if (newValue !== currentHistoryValue) {
         addToHistory(newValue);
       }
     }, debounceMs);
@@ -137,13 +137,14 @@ export const useUndoRedo = (
   }, [currentIndex, history]);
 
   // Clear history - simplified and stable
-  const clearHistory = useCallback(() => {
+  const clearHistory = useCallback((newValue?: string) => {
     if (debounceTimer.current) {
       clearTimeout(debounceTimer.current);
       debounceTimer.current = null;
     }
 
-    const newHistory = [{ value: currentValue, timestamp: Date.now() }];
+    const valueToUse = newValue !== undefined ? newValue : currentValue;
+    const newHistory = [{ value: valueToUse, timestamp: Date.now() }];
     setHistory(newHistory);
     setCurrentIndex(0);
   }, [currentValue]);

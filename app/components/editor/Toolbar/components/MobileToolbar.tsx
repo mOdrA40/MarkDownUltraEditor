@@ -22,7 +22,8 @@ import { ToolbarButton } from './ToolbarButton';
 export const MobileToolbar: React.FC<MobileToolbarProps> = React.memo(({
   formatButtons,
   onInsertText,
-  className
+  className,
+  currentTheme
 }) => {
   // Pisahkan buttons berdasarkan kategori untuk layout yang lebih baik
   const headingButtons = formatButtons.filter(btn => btn.category === 'heading').slice(0, 3);
@@ -47,10 +48,11 @@ export const MobileToolbar: React.FC<MobileToolbarProps> = React.memo(({
             className="h-9 text-xs font-medium"
             size="sm"
             variant="outline"
+            currentTheme={currentTheme}
           />
         ))}
       </div>
-      
+
       {/* Row 2: Text Formatting (Bold, Italic) */}
       <div className="grid grid-cols-2 gap-2 mb-3">
         {formattingButtons.map((button, index) => (
@@ -60,6 +62,7 @@ export const MobileToolbar: React.FC<MobileToolbarProps> = React.memo(({
             className="h-9 text-xs"
             size="sm"
             variant="outline"
+            currentTheme={currentTheme}
           />
         ))}
       </div>
@@ -72,6 +75,8 @@ export const MobileToolbar: React.FC<MobileToolbarProps> = React.memo(({
           onClick={() => onInsertText('`code`')}
           className="h-9 text-xs clean-button toolbar-button-fix prevent-layout-shift"
           title="Inline Code"
+          style={currentTheme ? { color: currentTheme.text } : undefined}
+          data-theme-button="true"
         >
           <Code className="h-3 w-3 mr-1" />
           Code
@@ -83,12 +88,14 @@ export const MobileToolbar: React.FC<MobileToolbarProps> = React.memo(({
           onClick={insertCodeBlock}
           className="h-9 text-xs clean-button toolbar-button-fix prevent-layout-shift"
           title="Code Block"
+          style={currentTheme ? { color: currentTheme.text } : undefined}
+          data-theme-button="true"
         >
           <FileText className="h-3 w-3 mr-1" />
           Block
         </Button>
       </div>
-      
+
       {/* Row 4: Content Buttons (Link, Image, Quote, List, etc.) */}
       <div className="grid grid-cols-2 gap-2">
         {contentButtons.map((button, index) => (
@@ -98,6 +105,7 @@ export const MobileToolbar: React.FC<MobileToolbarProps> = React.memo(({
             className="h-9 text-xs"
             size="sm"
             variant="outline"
+            currentTheme={currentTheme}
           />
         ))}
       </div>

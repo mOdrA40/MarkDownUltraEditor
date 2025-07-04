@@ -3,7 +3,7 @@
  * @author Axel Modra
  */
 
-import { useState, useCallback, useRef, useEffect } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import { useUndoRedo , useToast } from '@/hooks/core';
 import { EditorState, UseEditorStateReturn } from '../types';
 import { DEFAULT_FILE, STORAGE_KEYS, SUCCESS_MESSAGES } from '../utils/constants';
@@ -18,8 +18,32 @@ export const useEditorState = (
   initialFileName?: string
 ): UseEditorStateReturn => {
   const { toast } = useToast();
-  
-  // Initialize undo/redo functionality with default content
+
+  // Get initial content from localStorage or use default
+  const getInitialContent = () => {
+    if (initialMarkdown) return initialMarkdown;
+
+    if (typeof localStorage !== 'undefined') {
+      const savedContent = localStorage.getItem(STORAGE_KEYS.CONTENT);
+      if (savedContent !== null) return savedContent;
+    }
+
+    return DEFAULT_FILE.CONTENT;
+  };
+
+  // Get initial filename from localStorage or use default
+  const getInitialFileName = () => {
+    if (initialFileName) return initialFileName;
+
+    if (typeof localStorage !== 'undefined') {
+      const savedFileName = localStorage.getItem(STORAGE_KEYS.FILE_NAME);
+      if (savedFileName !== null) return savedFileName;
+    }
+
+    return DEFAULT_FILE.NAME;
+  };
+
+  // Initialize undo/redo functionality with proper initial content
   const {
     value: markdown,
     setValue: setMarkdown,
@@ -28,18 +52,17 @@ export const useEditorState = (
     canUndo,
     canRedo,
     clearHistory
-  } = useUndoRedo(initialMarkdown || DEFAULT_FILE.CONTENT, {
+  } = useUndoRedo(getInitialContent(), {
     maxHistorySize: 50,
     debounceMs: 500
   });
 
   // File state management
-  const [fileName, setFileName] = useState(initialFileName || DEFAULT_FILE.NAME);
+  const [fileName, setFileName] = useState(getInitialFileName());
   const [isModified, setIsModified] = useState(false);
   const [autoSave] = useState(true);
 
-  // Track if initial load is complete to prevent loops
-  const isInitialLoadRef = useRef(false);
+
 
   /**
    * Handle markdown content changes
@@ -80,20 +103,26 @@ export const useEditorState = (
       }
     }
 
-    console.log('Creating new file with content:', DEFAULT_FILE.CONTENT);
-    console.log('Setting filename to:', DEFAULT_FILE.NAME);
+    // Create empty file for "New" button
+    const newFileContent = '';
+    const newFileName = 'untitled.md';
+
+    console.log('Creating new file with content:', newFileContent);
+    console.log('Setting filename to:', newFileName);
+
+    // Clear history first with the new content to prevent race conditions
+    clearHistory(newFileContent);
 
     // Update state
-    setMarkdown(DEFAULT_FILE.CONTENT);
-    setFileName(DEFAULT_FILE.NAME);
+    setMarkdown(newFileContent);
+    setFileName(newFileName);
     setIsModified(false);
-    clearHistory();
 
     // Immediately update localStorage to prevent race conditions
     if (typeof localStorage !== 'undefined') {
       try {
-        localStorage.setItem(STORAGE_KEYS.CONTENT, DEFAULT_FILE.CONTENT);
-        localStorage.setItem(STORAGE_KEYS.FILE_NAME, DEFAULT_FILE.NAME);
+        localStorage.setItem(STORAGE_KEYS.CONTENT, newFileContent);
+        localStorage.setItem(STORAGE_KEYS.FILE_NAME, newFileName);
       } catch (error) {
         console.warn('Failed to save to localStorage:', error);
       }
@@ -123,8 +152,8 @@ export const useEditorState = (
       console.log('Loading file:', name, 'with content length:', content.length);
     }
 
-    // Clear history first to prevent conflicts
-    clearHistory();
+    // Clear history first with the new content to prevent conflicts
+    clearHistory(content);
 
     // Update state - setMarkdown will handle the content update
     setMarkdown(content);
@@ -156,7 +185,7 @@ export const useEditorState = (
   useEffect(() => {
     if (typeof localStorage === 'undefined') return;
 
-    if (autoSave && isModified && isInitialLoadRef.current) {
+    if (autoSave && isModified) {
       const timer = setTimeout(() => {
         try {
           // Check storage capacity before saving
@@ -202,26 +231,7 @@ export const useEditorState = (
     }
   }, [markdown, fileName, autoSave, isModified, toast]);
 
-  /**
-   * Load saved content on mount
-   */
-  useEffect(() => {
-    if (isInitialLoadRef.current || typeof localStorage === 'undefined') return;
 
-    const savedContent = localStorage.getItem(STORAGE_KEYS.CONTENT);
-    const savedFileName = localStorage.getItem(STORAGE_KEYS.FILE_NAME);
-
-    if (savedContent && !initialMarkdown) {
-      setMarkdown(savedContent);
-      clearHistory();
-    }
-
-    if (savedFileName && !initialFileName) {
-      setFileName(savedFileName);
-    }
-
-    isInitialLoadRef.current = true;
-  }, [setMarkdown, clearHistory, initialMarkdown, initialFileName]);
 
   // Create state object
   const state: EditorState = {
@@ -263,6 +273,6 @@ export interface UseEditorStateExtendedReturn extends UseEditorStateReturn {
     redo: () => void;
     canUndo: boolean;
     canRedo: boolean;
-    clearHistory: () => void;
+    clearHistory: (newValue?: string) => void;
   };
 }

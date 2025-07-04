@@ -32,7 +32,8 @@ export const UndoRedoButton: React.FC<UndoRedoButtonProps> = React.memo(({
   disabled = false,
   showTooltip = true,
   compact = false,
-  shortcut
+  shortcut,
+  currentTheme
 }) => {
   // Mendapatkan konfigurasi button berdasarkan type
   const config = getButtonConfig(type);
@@ -75,8 +76,10 @@ export const UndoRedoButton: React.FC<UndoRedoButtonProps> = React.memo(({
       aria-label={ariaLabel}
       title={tooltipText}
       data-testid={getTestId(type)}
+      data-theme-button="true"
+      style={currentTheme ? { color: currentTheme.text } : undefined}
     >
-      <IconComponent 
+      <IconComponent
         className={iconClasses}
         aria-hidden="true"
       />

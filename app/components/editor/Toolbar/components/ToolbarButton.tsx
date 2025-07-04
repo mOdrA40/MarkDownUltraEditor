@@ -22,7 +22,8 @@ export const ToolbarButton: React.FC<ToolbarButtonProps> = React.memo(({
   className,
   size = 'sm',
   variant = 'ghost',
-  disabled = false
+  disabled = false,
+  currentTheme
 }) => {
   return (
     <Button
@@ -44,6 +45,8 @@ export const ToolbarButton: React.FC<ToolbarButtonProps> = React.memo(({
       title={`${button.tooltip}${button.shortcut ? ` (${button.shortcut})` : ''}`}
       aria-label={button.tooltip}
       data-testid={`toolbar-button-${button.label.toLowerCase().replace(/\s+/g, '-')}`}
+      data-theme-button="true"
+      style={currentTheme ? { color: currentTheme.text } : undefined}
     >
       {/* Icon jika ada */}
       {button.icon && (

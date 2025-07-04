@@ -25,7 +25,8 @@ export const TabletToolbar: React.FC<TabletToolbarProps> = React.memo(({
   formatButtons,
   onInsertText,
   className,
-  compact = false
+  compact = false,
+  currentTheme
 }) => {
   // Pisahkan buttons berdasarkan kategori
   const headingButtons = formatButtons.filter(btn => btn.category === 'heading').slice(0, 3);
@@ -55,6 +56,7 @@ export const TabletToolbar: React.FC<TabletToolbarProps> = React.memo(({
               className="h-6 px-2 text-xs font-medium flex-shrink-0"
               size="sm"
               variant="ghost"
+              currentTheme={currentTheme}
             />
           ))}
 
@@ -67,6 +69,7 @@ export const TabletToolbar: React.FC<TabletToolbarProps> = React.memo(({
               className="h-6 px-2 text-xs flex-shrink-0"
               size="sm"
               variant="ghost"
+              currentTheme={currentTheme}
             />
           ))}
 
@@ -78,6 +81,8 @@ export const TabletToolbar: React.FC<TabletToolbarProps> = React.memo(({
             onClick={() => onInsertText('`code`')}
             className="h-6 px-2 text-xs flex-shrink-0 clean-button toolbar-button-fix prevent-layout-shift"
             title="Inline Code"
+            style={currentTheme ? { color: currentTheme.text } : undefined}
+            data-theme-button="true"
           >
             <Code className="h-3 w-3" />
           </Button>
@@ -88,6 +93,8 @@ export const TabletToolbar: React.FC<TabletToolbarProps> = React.memo(({
             onClick={insertCodeBlock}
             className="h-6 px-2 text-xs flex-shrink-0 clean-button toolbar-button-fix prevent-layout-shift"
             title="Code Block"
+            style={currentTheme ? { color: currentTheme.text } : undefined}
+            data-theme-button="true"
           >
             <FileText className="h-3 w-3" />
           </Button>
@@ -102,6 +109,7 @@ export const TabletToolbar: React.FC<TabletToolbarProps> = React.memo(({
               className="h-6 px-2 text-xs flex-shrink-0"
               size="sm"
               variant="ghost"
+              currentTheme={currentTheme}
             />
           ))}
         </div>
@@ -124,6 +132,7 @@ export const TabletToolbar: React.FC<TabletToolbarProps> = React.memo(({
             className="h-7 px-3 text-xs font-medium"
             size="sm"
             variant="ghost"
+            currentTheme={currentTheme}
           />
         ))}
 
@@ -136,6 +145,7 @@ export const TabletToolbar: React.FC<TabletToolbarProps> = React.memo(({
             className="h-7 px-3 text-xs"
             size="sm"
             variant="ghost"
+            currentTheme={currentTheme}
           />
         ))}
 
@@ -147,6 +157,8 @@ export const TabletToolbar: React.FC<TabletToolbarProps> = React.memo(({
           onClick={() => onInsertText('`code`')}
           className="h-7 px-3 text-xs clean-button toolbar-button-fix prevent-layout-shift"
           title="Inline Code"
+          style={currentTheme ? { color: currentTheme.text } : undefined}
+          data-theme-button="true"
         >
           <Code className="h-3 w-3 mr-1" />
           Code
@@ -158,6 +170,8 @@ export const TabletToolbar: React.FC<TabletToolbarProps> = React.memo(({
           onClick={insertCodeBlock}
           className="h-7 px-3 text-xs clean-button toolbar-button-fix prevent-layout-shift"
           title="Code Block"
+          style={currentTheme ? { color: currentTheme.text } : undefined}
+          data-theme-button="true"
         >
           <FileText className="h-3 w-3 mr-1" />
           Block
@@ -173,6 +187,7 @@ export const TabletToolbar: React.FC<TabletToolbarProps> = React.memo(({
             className="h-7 px-3 text-xs"
             size="sm"
             variant="ghost"
+            currentTheme={currentTheme}
           />
         ))}
       </div>

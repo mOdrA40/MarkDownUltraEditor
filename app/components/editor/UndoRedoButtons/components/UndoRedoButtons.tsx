@@ -29,7 +29,8 @@ export const UndoRedoButtons: React.FC<UndoRedoButtonsProps> = React.memo(({
   isMobile = false,
   isTablet = false,
   className,
-  disabled = false
+  disabled = false,
+  currentTheme
 }) => {
   // State untuk window width (untuk auto-detection jika tidak ada props)
   const [windowWidth, setWindowWidth] = useState<number>(
@@ -104,6 +105,7 @@ export const UndoRedoButtons: React.FC<UndoRedoButtonsProps> = React.memo(({
         canUndo={canPerformUndo}
         canRedo={canPerformRedo}
         className={className}
+        currentTheme={currentTheme}
       />
     );
   }
@@ -117,6 +119,7 @@ export const UndoRedoButtons: React.FC<UndoRedoButtonsProps> = React.memo(({
         canUndo={canPerformUndo}
         canRedo={canPerformRedo}
         className={className}
+        currentTheme={currentTheme}
       />
     );
   }
@@ -129,6 +132,7 @@ export const UndoRedoButtons: React.FC<UndoRedoButtonsProps> = React.memo(({
       canUndo={canPerformUndo}
       canRedo={canPerformRedo}
       className={className}
+      currentTheme={currentTheme}
     />
   );
 });

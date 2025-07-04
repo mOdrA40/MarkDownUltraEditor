@@ -110,6 +110,794 @@ div.header-default,
   color: inherit !important;
 }
 
+/* ===== DROPDOWN AND UI COMPONENT STYLES ===== */
+
+/* Dropdown menu styling untuk setiap theme */
+.theme-ocean [data-radix-popper-content-wrapper] [role="menu"],
+.theme-ocean .dropdown-menu-content {
+  background-color: hsl(199 100% 94%) !important; /* Ocean card */
+  color: hsl(207 100% 22%) !important; /* Ocean foreground */
+  border-color: hsl(199 100% 89%) !important; /* Ocean border */
+}
+
+.theme-forest [data-radix-popper-content-wrapper] [role="menu"],
+.theme-forest .dropdown-menu-content {
+  background-color: hsl(138 76% 92%) !important; /* Forest card */
+  color: hsl(140 100% 20%) !important; /* Forest foreground */
+  border-color: hsl(138 76% 87%) !important; /* Forest border */
+}
+
+.theme-sunset [data-radix-popper-content-wrapper] [role="menu"],
+.theme-sunset .dropdown-menu-content {
+  background-color: hsl(24 100% 88%) !important; /* Sunset card */
+  color: hsl(17 88% 34%) !important; /* Sunset foreground */
+  border-color: hsl(24 100% 83%) !important; /* Sunset border */
+}
+
+.theme-purple [data-radix-popper-content-wrapper] [role="menu"],
+.theme-purple .dropdown-menu-content {
+  background-color: hsl(266 100% 92%) !important; /* Purple card */
+  color: hsl(270 91% 32%) !important; /* Purple foreground */
+  border-color: hsl(266 100% 87%) !important; /* Purple border */
+}
+
+.theme-rose [data-radix-popper-content-wrapper] [role="menu"],
+.theme-rose .dropdown-menu-content {
+  background-color: hsl(351 100% 86%) !important; /* Rose card */
+  color: hsl(347 77% 30%) !important; /* Rose foreground */
+  border-color: hsl(351 100% 81%) !important; /* Rose border */
+}
+
+.dark [data-radix-popper-content-wrapper] [role="menu"],
+.dark .dropdown-menu-content {
+  background-color: hsl(222.2 84% 4.9%) !important; /* Dark card */
+  color: hsl(210 40% 98%) !important; /* Dark foreground */
+  border-color: hsl(217.2 32.6% 17.5%) !important; /* Dark border */
+}
+
+/* ===== BUTTON AND INTERACTIVE ELEMENT STYLES ===== */
+
+/* Ensure proper contrast for buttons in all themes */
+.theme-ocean button:not(.btn-ghost):not(.btn-outline),
+.theme-forest button:not(.btn-ghost):not(.btn-outline),
+.theme-sunset button:not(.btn-ghost):not(.btn-outline),
+.theme-purple button:not(.btn-ghost):not(.btn-outline),
+.theme-rose button:not(.btn-ghost):not(.btn-outline) {
+  color: white !important;
+}
+
+.dark button:not(.btn-ghost):not(.btn-outline) {
+  color: hsl(210 40% 98%) !important;
+}
+
+/* Ensure proper text contrast for muted text */
+.theme-ocean .text-muted-foreground {
+  color: hsl(207 50% 45%) !important;
+}
+
+.theme-forest .text-muted-foreground {
+  color: hsl(140 50% 45%) !important;
+}
+
+.theme-sunset .text-muted-foreground {
+  color: hsl(17 50% 55%) !important;
+}
+
+.theme-purple .text-muted-foreground {
+  color: hsl(270 50% 55%) !important;
+}
+
+.theme-rose .text-muted-foreground {
+  color: hsl(347 50% 55%) !important;
+}
+
+.dark .text-muted-foreground {
+  color: hsl(215.4 16.3% 56.9%) !important;
+}
+
+/* ===== PAGE BACKGROUND OVERRIDES ===== */
+
+/* Ensure theme backgrounds override any gradient backgrounds */
+.theme-ocean,
+.theme-forest,
+.theme-sunset,
+.theme-purple,
+.theme-rose {
+  background: hsl(var(--background)) !important;
+}
+
+.dark {
+  background: hsl(var(--background)) !important;
+}
+
+/* Settings and Files page specific overrides */
+.theme-ocean .min-h-screen,
+.theme-forest .min-h-screen,
+.theme-sunset .min-h-screen,
+.theme-purple .min-h-screen,
+.theme-rose .min-h-screen {
+  background: hsl(var(--background)) !important;
+}
+
+.dark .min-h-screen {
+  background: hsl(var(--background)) !important;
+}
+
+/* ===== BUTTON COLOR OVERRIDES ===== */
+
+/* Force button colors to use theme colors with highest specificity */
+/* Ocean Theme */
+html body.theme-ocean button[data-theme-button="true"],
+html body.theme-ocean .editor-header button,
+html body.theme-ocean .toolbar button,
+html body.theme-ocean button[class*="Button"],
+html body.theme-ocean [class*="toolbar"] button,
+html body.theme-ocean button.inline-flex,
+html body.theme-ocean button[class*="ghost"] {
+  color: #1e3a8a !important; /* Ocean text color */
+}
+
+html body.theme-ocean button[data-theme-button="true"]:hover,
+html body.theme-ocean .editor-header button:hover,
+html body.theme-ocean .toolbar button:hover,
+html body.theme-ocean button[class*="Button"]:hover,
+html body.theme-ocean [class*="toolbar"] button:hover,
+html body.theme-ocean button.inline-flex:hover,
+html body.theme-ocean button[class*="ghost"]:hover {
+  color: #1e3a8a !important; /* Ocean text color on hover */
+}
+
+/* Forest Theme */
+html body.theme-forest button[data-theme-button="true"],
+html body.theme-forest .editor-header button,
+html body.theme-forest .toolbar button,
+html body.theme-forest button[class*="Button"],
+html body.theme-forest [class*="toolbar"] button,
+html body.theme-forest button.inline-flex,
+html body.theme-forest button[class*="ghost"] {
+  color: #14532d !important; /* Forest text color */
+}
+
+html body.theme-forest button[data-theme-button="true"]:hover,
+html body.theme-forest .editor-header button:hover,
+html body.theme-forest .toolbar button:hover,
+html body.theme-forest button[class*="Button"]:hover,
+html body.theme-forest [class*="toolbar"] button:hover,
+html body.theme-forest button.inline-flex:hover,
+html body.theme-forest button[class*="ghost"]:hover {
+  color: #14532d !important; /* Forest text color on hover */
+}
+
+/* Sunset Theme */
+html body.theme-sunset button[data-theme-button="true"],
+html body.theme-sunset .editor-header button,
+html body.theme-sunset .toolbar button,
+html body.theme-sunset button[class*="Button"],
+html body.theme-sunset [class*="toolbar"] button,
+html body.theme-sunset button.inline-flex,
+html body.theme-sunset button[class*="ghost"] {
+  color: #c2410c !important; /* Sunset text color */
+}
+
+html body.theme-sunset button[data-theme-button="true"]:hover,
+html body.theme-sunset .editor-header button:hover,
+html body.theme-sunset .toolbar button:hover,
+html body.theme-sunset button[class*="Button"]:hover,
+html body.theme-sunset [class*="toolbar"] button:hover,
+html body.theme-sunset button.inline-flex:hover,
+html body.theme-sunset button[class*="ghost"]:hover {
+  color: #c2410c !important; /* Sunset text color on hover */
+}
+
+/* Purple Theme */
+html body.theme-purple button[data-theme-button="true"],
+html body.theme-purple .editor-header button,
+html body.theme-purple .toolbar button,
+html body.theme-purple button[class*="Button"],
+html body.theme-purple [class*="toolbar"] button,
+html body.theme-purple button.inline-flex,
+html body.theme-purple button[class*="ghost"] {
+  color: #6b21a8 !important; /* Purple text color */
+}
+
+html body.theme-purple button[data-theme-button="true"]:hover,
+html body.theme-purple .editor-header button:hover,
+html body.theme-purple .toolbar button:hover,
+html body.theme-purple button[class*="Button"]:hover,
+html body.theme-purple [class*="toolbar"] button:hover,
+html body.theme-purple button.inline-flex:hover,
+html body.theme-purple button[class*="ghost"]:hover {
+  color: #6b21a8 !important; /* Purple text color on hover */
+}
+
+/* Rose Theme */
+html body.theme-rose button[data-theme-button="true"],
+html body.theme-rose .editor-header button,
+html body.theme-rose .toolbar button,
+html body.theme-rose button[class*="Button"],
+html body.theme-rose [class*="toolbar"] button,
+html body.theme-rose button.inline-flex,
+html body.theme-rose button[class*="ghost"] {
+  color: #be185d !important; /* Rose text color */
+}
+
+html body.theme-rose button[data-theme-button="true"]:hover,
+html body.theme-rose .editor-header button:hover,
+html body.theme-rose .toolbar button:hover,
+html body.theme-rose button[class*="Button"]:hover,
+html body.theme-rose [class*="toolbar"] button:hover,
+html body.theme-rose button.inline-flex:hover,
+html body.theme-rose button[class*="ghost"]:hover {
+  color: #be185d !important; /* Rose text color on hover */
+}
+
+/* Dark Theme */
+html body.dark button[data-theme-button="true"],
+html body.dark .editor-header button,
+html body.dark .toolbar button,
+html body.dark button[class*="Button"],
+html body.dark [class*="toolbar"] button,
+html body.dark button.inline-flex,
+html body.dark button[class*="ghost"] {
+  color: hsl(var(--foreground)) !important; /* Dark theme text color */
+}
+
+html body.dark button[data-theme-button="true"]:hover,
+html body.dark .editor-header button:hover,
+html body.dark .toolbar button:hover,
+html body.dark button[class*="Button"]:hover,
+html body.dark [class*="toolbar"] button:hover,
+html body.dark button.inline-flex:hover,
+html body.dark button[class*="ghost"]:hover {
+  color: hsl(var(--foreground)) !important; /* Dark theme text color on hover */
+}
+
+/* Additional specific selectors for toolbar buttons */
+body.theme-ocean .editor-header .flex button,
+body.theme-ocean [class*="toolbar"] .flex button,
+body.theme-ocean [class*="Toolbar"] button {
+  color: #1e3a8a !important;
+}
+
+body.theme-forest .editor-header .flex button,
+body.theme-forest [class*="toolbar"] .flex button,
+body.theme-forest [class*="Toolbar"] button {
+  color: #14532d !important;
+}
+
+body.theme-sunset .editor-header .flex button,
+body.theme-sunset [class*="toolbar"] .flex button,
+body.theme-sunset [class*="Toolbar"] button {
+  color: #c2410c !important;
+}
+
+body.theme-purple .editor-header .flex button,
+body.theme-purple [class*="toolbar"] .flex button,
+body.theme-purple [class*="Toolbar"] button {
+  color: #6b21a8 !important;
+}
+
+body.theme-rose .editor-header .flex button,
+body.theme-rose [class*="toolbar"] .flex button,
+body.theme-rose [class*="Toolbar"] button {
+  color: #be185d !important;
+}
+
+body.dark .editor-header .flex button,
+body.dark [class*="toolbar"] .flex button,
+body.dark [class*="Toolbar"] button {
+  color: hsl(var(--foreground)) !important;
+}
+
+/* ===== ULTRA HIGH SPECIFICITY OVERRIDES ===== */
+/* These rules have maximum specificity to prevent any override */
+
+/* Ocean Theme - Ultra High Specificity */
+html body.theme-ocean div.editor-header button,
+html body.theme-ocean div[class*="toolbar"] button,
+html body.theme-ocean div button[data-theme-button="true"],
+html body.theme-ocean button[class*="inline-flex"][class*="items-center"] {
+  color: #1e3a8a !important;
+}
+
+/* Forest Theme - Ultra High Specificity */
+html body.theme-forest div.editor-header button,
+html body.theme-forest div[class*="toolbar"] button,
+html body.theme-forest div button[data-theme-button="true"],
+html body.theme-forest button[class*="inline-flex"][class*="items-center"] {
+  color: #14532d !important;
+}
+
+/* Sunset Theme - Ultra High Specificity */
+html body.theme-sunset div.editor-header button,
+html body.theme-sunset div[class*="toolbar"] button,
+html body.theme-sunset div button[data-theme-button="true"],
+html body.theme-sunset button[class*="inline-flex"][class*="items-center"] {
+  color: #c2410c !important;
+}
+
+/* Purple Theme - Ultra High Specificity */
+html body.theme-purple div.editor-header button,
+html body.theme-purple div[class*="toolbar"] button,
+html body.theme-purple div button[data-theme-button="true"],
+html body.theme-purple button[class*="inline-flex"][class*="items-center"] {
+  color: #6b21a8 !important;
+}
+
+/* Rose Theme - Ultra High Specificity */
+html body.theme-rose div.editor-header button,
+html body.theme-rose div[class*="toolbar"] button,
+html body.theme-rose div button[data-theme-button="true"],
+html body.theme-rose button[class*="inline-flex"][class*="items-center"] {
+  color: #be185d !important;
+}
+
+/* Dark Theme - Ultra High Specificity */
+html body.dark div.editor-header button,
+html body.dark div[class*="toolbar"] button,
+html body.dark div button[data-theme-button="true"],
+html body.dark button[class*="inline-flex"][class*="items-center"] {
+  color: hsl(var(--foreground)) !important;
+}
+
+/* ===== PREVENT JAVASCRIPT OVERRIDE ===== */
+/* Use CSS custom properties that can't be easily overridden */
+
+:root.theme-ocean {
+  --theme-button-color: #1e3a8a;
+}
+
+:root.theme-forest {
+  --theme-button-color: #14532d;
+}
+
+:root.theme-sunset {
+  --theme-button-color: #c2410c;
+}
+
+:root.theme-purple {
+  --theme-button-color: #6b21a8;
+}
+
+:root.theme-rose {
+  --theme-button-color: #be185d;
+}
+
+:root.dark {
+  --theme-button-color: hsl(var(--foreground));
+}
+
+/* Apply custom properties with maximum specificity */
+html body[class*="theme-"] button[data-theme-button="true"],
+html body[class*="theme-"] .editor-header button,
+html body[class*="theme-"] .toolbar button,
+html body.dark button[data-theme-button="true"],
+html body.dark .editor-header button,
+html body.dark .toolbar button {
+  color: var(--theme-button-color) !important;
+}
+
+/* Force color on all possible button states */
+html body[class*="theme-"] button[data-theme-button="true"]:hover,
+html body[class*="theme-"] button[data-theme-button="true"]:focus,
+html body[class*="theme-"] button[data-theme-button="true"]:active,
+html body[class*="theme-"] .editor-header button:hover,
+html body[class*="theme-"] .editor-header button:focus,
+html body[class*="theme-"] .editor-header button:active,
+html body[class*="theme-"] .toolbar button:hover,
+html body[class*="theme-"] .toolbar button:focus,
+html body[class*="theme-"] .toolbar button:active,
+html body.dark button[data-theme-button="true"]:hover,
+html body.dark button[data-theme-button="true"]:focus,
+html body.dark button[data-theme-button="true"]:active,
+html body.dark .editor-header button:hover,
+html body.dark .editor-header button:focus,
+html body.dark .editor-header button:active,
+html body.dark .toolbar button:hover,
+html body.dark .toolbar button:focus,
+html body.dark .toolbar button:active {
+  color: var(--theme-button-color) !important;
+}
+
+/* ===== WRITING MODE BUTTONS ACTIVE STATE FIXES ===== */
+
+/* Fix untuk button active state agar tidak bertabrakan dengan font color */
+
+/* Ocean Theme - Active Button Background */
+.theme-ocean button[variant="default"],
+.theme-ocean button[data-state="on"],
+.theme-ocean .writing-mode-button.active {
+  background-color: rgba(2, 132, 199, 0.15) !important; /* Ocean accent with low opacity */
+  color: #0c4a6e !important; /* Ocean text color */
+  border: 1px solid rgba(2, 132, 199, 0.3) !important;
+}
+
+.theme-ocean button[variant="default"]:hover,
+.theme-ocean button[data-state="on"]:hover,
+.theme-ocean .writing-mode-button.active:hover {
+  background-color: rgba(2, 132, 199, 0.25) !important;
+  color: #0c4a6e !important;
+}
+
+/* Forest Theme - Active Button Background */
+.theme-forest button[variant="default"],
+.theme-forest button[data-state="on"],
+.theme-forest .writing-mode-button.active {
+  background-color: rgba(16, 185, 129, 0.15) !important; /* Forest accent with low opacity */
+  color: #14532d !important; /* Forest text color */
+  border: 1px solid rgba(16, 185, 129, 0.3) !important;
+}
+
+.theme-forest button[variant="default"]:hover,
+.theme-forest button[data-state="on"]:hover,
+.theme-forest .writing-mode-button.active:hover {
+  background-color: rgba(16, 185, 129, 0.25) !important;
+  color: #14532d !important;
+}
+
+/* Sunset Theme - Active Button Background */
+.theme-sunset button[variant="default"],
+.theme-sunset button[data-state="on"],
+.theme-sunset .writing-mode-button.active {
+  background-color: rgba(249, 115, 22, 0.15) !important; /* Sunset accent with low opacity */
+  color: #9a3412 !important; /* Sunset text color */
+  border: 1px solid rgba(249, 115, 22, 0.3) !important;
+}
+
+.theme-sunset button[variant="default"]:hover,
+.theme-sunset button[data-state="on"]:hover,
+.theme-sunset .writing-mode-button.active:hover {
+  background-color: rgba(249, 115, 22, 0.25) !important;
+  color: #9a3412 !important;
+}
+
+/* Purple Theme - Active Button Background */
+.theme-purple button[variant="default"],
+.theme-purple button[data-state="on"],
+.theme-purple .writing-mode-button.active {
+  background-color: rgba(168, 85, 247, 0.15) !important; /* Purple accent with low opacity */
+  color: #581c87 !important; /* Purple text color */
+  border: 1px solid rgba(168, 85, 247, 0.3) !important;
+}
+
+.theme-purple button[variant="default"]:hover,
+.theme-purple button[data-state="on"]:hover,
+.theme-purple .writing-mode-button.active:hover {
+  background-color: rgba(168, 85, 247, 0.25) !important;
+  color: #581c87 !important;
+}
+
+/* Rose Theme - Active Button Background */
+.theme-rose button[variant="default"],
+.theme-rose button[data-state="on"],
+.theme-rose .writing-mode-button.active {
+  background-color: rgba(244, 63, 94, 0.15) !important; /* Rose accent with low opacity */
+  color: #881337 !important; /* Rose text color */
+  border: 1px solid rgba(244, 63, 94, 0.3) !important;
+}
+
+.theme-rose button[variant="default"]:hover,
+.theme-rose button[data-state="on"]:hover,
+.theme-rose .writing-mode-button.active:hover {
+  background-color: rgba(244, 63, 94, 0.25) !important;
+  color: #881337 !important;
+}
+
+/* Dark Theme - Active Button Background */
+.dark button[variant="default"],
+.dark button[data-state="on"],
+.dark .writing-mode-button.active {
+  background-color: rgba(139, 92, 246, 0.2) !important; /* Dark accent with low opacity */
+  color: hsl(210 40% 98%) !important; /* Dark text color */
+  border: 1px solid rgba(139, 92, 246, 0.4) !important;
+}
+
+.dark button[variant="default"]:hover,
+.dark button[data-state="on"]:hover,
+.dark .writing-mode-button.active:hover {
+  background-color: rgba(139, 92, 246, 0.3) !important;
+  color: hsl(210 40% 98%) !important;
+}
+
+/* ===== ULTRA HIGH SPECIFICITY FOR WRITING MODE BUTTONS ===== */
+
+/* Ocean Theme - Ultra High Specificity for Writing Mode Buttons */
+html body.theme-ocean div button[aria-pressed="true"],
+html body.theme-ocean div button[data-state="on"],
+html body.theme-ocean .writing-mode-buttons button[variant="default"] {
+  background-color: rgba(2, 132, 199, 0.15) !important;
+  color: #0c4a6e !important;
+  border: 1px solid rgba(2, 132, 199, 0.3) !important;
+}
+
+/* Forest Theme - Ultra High Specificity for Writing Mode Buttons */
+html body.theme-forest div button[aria-pressed="true"],
+html body.theme-forest div button[data-state="on"],
+html body.theme-forest .writing-mode-buttons button[variant="default"] {
+  background-color: rgba(16, 185, 129, 0.15) !important;
+  color: #14532d !important;
+  border: 1px solid rgba(16, 185, 129, 0.3) !important;
+}
+
+/* Sunset Theme - Ultra High Specificity for Writing Mode Buttons */
+html body.theme-sunset div button[aria-pressed="true"],
+html body.theme-sunset div button[data-state="on"],
+html body.theme-sunset .writing-mode-buttons button[variant="default"] {
+  background-color: rgba(249, 115, 22, 0.15) !important;
+  color: #9a3412 !important;
+  border: 1px solid rgba(249, 115, 22, 0.3) !important;
+}
+
+/* Purple Theme - Ultra High Specificity for Writing Mode Buttons */
+html body.theme-purple div button[aria-pressed="true"],
+html body.theme-purple div button[data-state="on"],
+html body.theme-purple .writing-mode-buttons button[variant="default"] {
+  background-color: rgba(168, 85, 247, 0.15) !important;
+  color: #581c87 !important;
+  border: 1px solid rgba(168, 85, 247, 0.3) !important;
+}
+
+/* Rose Theme - Ultra High Specificity for Writing Mode Buttons */
+html body.theme-rose div button[aria-pressed="true"],
+html body.theme-rose div button[data-state="on"],
+html body.theme-rose .writing-mode-buttons button[variant="default"] {
+  background-color: rgba(244, 63, 94, 0.15) !important;
+  color: #881337 !important;
+  border: 1px solid rgba(244, 63, 94, 0.3) !important;
+}
+
+/* Dark Theme - Ultra High Specificity for Writing Mode Buttons */
+html body.dark div button[aria-pressed="true"],
+html body.dark div button[data-state="on"],
+html body.dark .writing-mode-buttons button[variant="default"] {
+  background-color: rgba(139, 92, 246, 0.2) !important;
+  color: hsl(210 40% 98%) !important;
+  border: 1px solid rgba(139, 92, 246, 0.4) !important;
+}
+
+/* ===== BUTTON VARIANT DEFAULT OVERRIDES FOR ALL THEMES ===== */
+
+/* Override button variant="default" untuk semua theme agar tidak menggunakan primary color yang bertabrakan */
+
+/* Ocean Theme - Button Default Variant Override */
+.theme-ocean button[data-variant="default"],
+.theme-ocean .writing-mode-buttons button[variant="default"],
+.theme-ocean button.bg-primary {
+  background-color: rgba(2, 132, 199, 0.15) !important;
+  color: #0c4a6e !important;
+  border: 1px solid rgba(2, 132, 199, 0.3) !important;
+}
+
+.theme-ocean button[data-variant="default"]:hover,
+.theme-ocean .writing-mode-buttons button[variant="default"]:hover,
+.theme-ocean button.bg-primary:hover {
+  background-color: rgba(2, 132, 199, 0.25) !important;
+  color: #0c4a6e !important;
+}
+
+/* Forest Theme - Button Default Variant Override */
+.theme-forest button[data-variant="default"],
+.theme-forest .writing-mode-buttons button[variant="default"],
+.theme-forest button.bg-primary {
+  background-color: rgba(16, 185, 129, 0.15) !important;
+  color: #14532d !important;
+  border: 1px solid rgba(16, 185, 129, 0.3) !important;
+}
+
+.theme-forest button[data-variant="default"]:hover,
+.theme-forest .writing-mode-buttons button[variant="default"]:hover,
+.theme-forest button.bg-primary:hover {
+  background-color: rgba(16, 185, 129, 0.25) !important;
+  color: #14532d !important;
+}
+
+/* Sunset Theme - Button Default Variant Override */
+.theme-sunset button[data-variant="default"],
+.theme-sunset .writing-mode-buttons button[variant="default"],
+.theme-sunset button.bg-primary {
+  background-color: rgba(249, 115, 22, 0.15) !important;
+  color: #9a3412 !important;
+  border: 1px solid rgba(249, 115, 22, 0.3) !important;
+}
+
+.theme-sunset button[data-variant="default"]:hover,
+.theme-sunset .writing-mode-buttons button[variant="default"]:hover,
+.theme-sunset button.bg-primary:hover {
+  background-color: rgba(249, 115, 22, 0.25) !important;
+  color: #9a3412 !important;
+}
+
+/* Purple Theme - Button Default Variant Override */
+.theme-purple button[data-variant="default"],
+.theme-purple .writing-mode-buttons button[variant="default"],
+.theme-purple button.bg-primary {
+  background-color: rgba(168, 85, 247, 0.15) !important;
+  color: #581c87 !important;
+  border: 1px solid rgba(168, 85, 247, 0.3) !important;
+}
+
+.theme-purple button[data-variant="default"]:hover,
+.theme-purple .writing-mode-buttons button[variant="default"]:hover,
+.theme-purple button.bg-primary:hover {
+  background-color: rgba(168, 85, 247, 0.25) !important;
+  color: #581c87 !important;
+}
+
+/* Rose Theme - Button Default Variant Override */
+.theme-rose button[data-variant="default"],
+.theme-rose .writing-mode-buttons button[variant="default"],
+.theme-rose button.bg-primary {
+  background-color: rgba(244, 63, 94, 0.15) !important;
+  color: #881337 !important;
+  border: 1px solid rgba(244, 63, 94, 0.3) !important;
+}
+
+.theme-rose button[data-variant="default"]:hover,
+.theme-rose .writing-mode-buttons button[variant="default"]:hover,
+.theme-rose button.bg-primary:hover {
+  background-color: rgba(244, 63, 94, 0.25) !important;
+  color: #881337 !important;
+}
+
+/* Dark Theme - Button Default Variant Override */
+.dark button[data-variant="default"],
+.dark .writing-mode-buttons button[variant="default"],
+.dark button.bg-primary {
+  background-color: rgba(139, 92, 246, 0.2) !important;
+  color: hsl(210 40% 98%) !important;
+  border: 1px solid rgba(139, 92, 246, 0.4) !important;
+}
+
+.dark button[data-variant="default"]:hover,
+.dark .writing-mode-buttons button[variant="default"]:hover,
+.dark button.bg-primary:hover {
+  background-color: rgba(139, 92, 246, 0.3) !important;
+  color: hsl(210 40% 98%) !important;
+}
+
+/* ===== MAXIMUM SPECIFICITY OVERRIDES FOR BUTTON CLASSES ===== */
+
+/* Target button dengan class yang dihasilkan oleh CVA (class-variance-authority) */
+
+/* Ocean Theme - Maximum Specificity */
+html body.theme-ocean button.inline-flex.items-center.justify-center.bg-primary,
+html body.theme-ocean button.inline-flex.items-center.justify-center[class*="bg-primary"],
+html body.theme-ocean div.writing-mode-buttons button.inline-flex.items-center.justify-center,
+html body.theme-ocean button[class*="bg-primary"][class*="text-primary-foreground"] {
+  background-color: rgba(2, 132, 199, 0.15) !important;
+  color: #0c4a6e !important;
+  border: 1px solid rgba(2, 132, 199, 0.3) !important;
+}
+
+/* Forest Theme - Maximum Specificity */
+html body.theme-forest button.inline-flex.items-center.justify-center.bg-primary,
+html body.theme-forest button.inline-flex.items-center.justify-center[class*="bg-primary"],
+html body.theme-forest div.writing-mode-buttons button.inline-flex.items-center.justify-center,
+html body.theme-forest button[class*="bg-primary"][class*="text-primary-foreground"] {
+  background-color: rgba(16, 185, 129, 0.15) !important;
+  color: #14532d !important;
+  border: 1px solid rgba(16, 185, 129, 0.3) !important;
+}
+
+/* Sunset Theme - Maximum Specificity */
+html body.theme-sunset button.inline-flex.items-center.justify-center.bg-primary,
+html body.theme-sunset button.inline-flex.items-center.justify-center[class*="bg-primary"],
+html body.theme-sunset div.writing-mode-buttons button.inline-flex.items-center.justify-center,
+html body.theme-sunset button[class*="bg-primary"][class*="text-primary-foreground"] {
+  background-color: rgba(249, 115, 22, 0.15) !important;
+  color: #9a3412 !important;
+  border: 1px solid rgba(249, 115, 22, 0.3) !important;
+}
+
+/* Purple Theme - Maximum Specificity */
+html body.theme-purple button.inline-flex.items-center.justify-center.bg-primary,
+html body.theme-purple button.inline-flex.items-center.justify-center[class*="bg-primary"],
+html body.theme-purple div.writing-mode-buttons button.inline-flex.items-center.justify-center,
+html body.theme-purple button[class*="bg-primary"][class*="text-primary-foreground"] {
+  background-color: rgba(168, 85, 247, 0.15) !important;
+  color: #581c87 !important;
+  border: 1px solid rgba(168, 85, 247, 0.3) !important;
+}
+
+/* Rose Theme - Maximum Specificity */
+html body.theme-rose button.inline-flex.items-center.justify-center.bg-primary,
+html body.theme-rose button.inline-flex.items-center.justify-center[class*="bg-primary"],
+html body.theme-rose div.writing-mode-buttons button.inline-flex.items-center.justify-center,
+html body.theme-rose button[class*="bg-primary"][class*="text-primary-foreground"] {
+  background-color: rgba(244, 63, 94, 0.15) !important;
+  color: #881337 !important;
+  border: 1px solid rgba(244, 63, 94, 0.3) !important;
+}
+
+/* Dark Theme - Maximum Specificity */
+html body.dark button.inline-flex.items-center.justify-center.bg-primary,
+html body.dark button.inline-flex.items-center.justify-center[class*="bg-primary"],
+html body.dark div.writing-mode-buttons button.inline-flex.items-center.justify-center,
+html body.dark button[class*="bg-primary"][class*="text-primary-foreground"] {
+  background-color: rgba(139, 92, 246, 0.2) !important;
+  color: hsl(210 40% 98%) !important;
+  border: 1px solid rgba(139, 92, 246, 0.4) !important;
+}
+
+/* ===== HOVER STATES FOR MAXIMUM SPECIFICITY ===== */
+
+/* Ocean Theme - Hover States */
+html body.theme-ocean button.inline-flex.items-center.justify-center.bg-primary:hover,
+html body.theme-ocean button.inline-flex.items-center.justify-center[class*="bg-primary"]:hover,
+html body.theme-ocean div.writing-mode-buttons button.inline-flex.items-center.justify-center:hover,
+html body.theme-ocean button[class*="bg-primary"][class*="text-primary-foreground"]:hover {
+  background-color: rgba(2, 132, 199, 0.25) !important;
+  color: #0c4a6e !important;
+  border: 1px solid rgba(2, 132, 199, 0.4) !important;
+}
+
+/* Forest Theme - Hover States */
+html body.theme-forest button.inline-flex.items-center.justify-center.bg-primary:hover,
+html body.theme-forest button.inline-flex.items-center.justify-center[class*="bg-primary"]:hover,
+html body.theme-forest div.writing-mode-buttons button.inline-flex.items-center.justify-center:hover,
+html body.theme-forest button[class*="bg-primary"][class*="text-primary-foreground"]:hover {
+  background-color: rgba(16, 185, 129, 0.25) !important;
+  color: #14532d !important;
+  border: 1px solid rgba(16, 185, 129, 0.4) !important;
+}
+
+/* Sunset Theme - Hover States */
+html body.theme-sunset button.inline-flex.items-center.justify-center.bg-primary:hover,
+html body.theme-sunset button.inline-flex.items-center.justify-center[class*="bg-primary"]:hover,
+html body.theme-sunset div.writing-mode-buttons button.inline-flex.items-center.justify-center:hover,
+html body.theme-sunset button[class*="bg-primary"][class*="text-primary-foreground"]:hover {
+  background-color: rgba(249, 115, 22, 0.25) !important;
+  color: #9a3412 !important;
+  border: 1px solid rgba(249, 115, 22, 0.4) !important;
+}
+
+/* Purple Theme - Hover States */
+html body.theme-purple button.inline-flex.items-center.justify-center.bg-primary:hover,
+html body.theme-purple button.inline-flex.items-center.justify-center[class*="bg-primary"]:hover,
+html body.theme-purple div.writing-mode-buttons button.inline-flex.items-center.justify-center:hover,
+html body.theme-purple button[class*="bg-primary"][class*="text-primary-foreground"]:hover {
+  background-color: rgba(168, 85, 247, 0.25) !important;
+  color: #581c87 !important;
+  border: 1px solid rgba(168, 85, 247, 0.4) !important;
+}
+
+/* Rose Theme - Hover States */
+html body.theme-rose button.inline-flex.items-center.justify-center.bg-primary:hover,
+html body.theme-rose button.inline-flex.items-center.justify-center[class*="bg-primary"]:hover,
+html body.theme-rose div.writing-mode-buttons button.inline-flex.items-center.justify-center:hover,
+html body.theme-rose button[class*="bg-primary"][class*="text-primary-foreground"]:hover {
+  background-color: rgba(244, 63, 94, 0.25) !important;
+  color: #881337 !important;
+  border: 1px solid rgba(244, 63, 94, 0.4) !important;
+}
+
+/* Dark Theme - Hover States */
+html body.dark button.inline-flex.items-center.justify-center.bg-primary:hover,
+html body.dark button.inline-flex.items-center.justify-center[class*="bg-primary"]:hover,
+html body.dark div.writing-mode-buttons button.inline-flex.items-center.justify-center:hover,
+html body.dark button[class*="bg-primary"][class*="text-primary-foreground"]:hover {
+  background-color: rgba(139, 92, 246, 0.3) !important;
+  color: hsl(210 40% 98%) !important;
+  border: 1px solid rgba(139, 92, 246, 0.5) !important;
+}
+
+/* ===== FOCUS AND ACTIVE STATES FOR ALL THEMES ===== */
+
+/* Apply focus and active states untuk semua theme dengan specificity tinggi */
+html body[class*="theme-"] button.inline-flex.items-center.justify-center:focus,
+html body[class*="theme-"] button.inline-flex.items-center.justify-center:active,
+html body[class*="theme-"] div.writing-mode-buttons button:focus,
+html body[class*="theme-"] div.writing-mode-buttons button:active,
+html body.dark button.inline-flex.items-center.justify-center:focus,
+html body.dark button.inline-flex.items-center.justify-center:active,
+html body.dark div.writing-mode-buttons button:focus,
+html body.dark div.writing-mode-buttons button:active {
+  outline: none !important;
+  box-shadow: none !important;
+  border-width: 1px !important;
+  opacity: 0.9 !important;
+}
+
 /* ===== RESPONSIVE HEADER STYLES ===== */
 
 @media (max-width: 768px) {

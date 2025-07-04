@@ -121,11 +121,13 @@ export const AuthButtons: React.FC<AuthButtonsProps> = ({
             </DropdownMenuTrigger>
 
             <DropdownMenuContent
-              align="start"
+              align="end"
               side="bottom"
-              className="w-56 z-50"
-              sideOffset={4}
-              alignOffset={-220}
+              className="w-56 z-dropdown auth-dropdown-content shadow-dropdown backdrop-blur-medium animate-slide-down dropdown-fixed"
+              sideOffset={8}
+              alignOffset={0}
+              avoidCollisions={true}
+              collisionPadding={16}
             >
               <DropdownMenuLabel className="font-normal">
                 <div className="flex flex-col space-y-1">

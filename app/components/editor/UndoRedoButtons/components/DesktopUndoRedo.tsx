@@ -31,7 +31,8 @@ export const DesktopUndoRedo: React.FC<DesktopUndoRedoProps> = React.memo(({
   onRedo,
   canUndo,
   canRedo,
-  className
+  className,
+  currentTheme
 }) => {
   // CSS classes untuk container
   const containerClasses = getContainerClasses('desktop', className);
@@ -57,6 +58,8 @@ export const DesktopUndoRedo: React.FC<DesktopUndoRedoProps> = React.memo(({
               className={cn(undoButtonClasses)}
               aria-label={getAriaLabel('undo', true)}
               data-testid="desktop-undo-button"
+              data-theme-button="true"
+              style={currentTheme ? { color: currentTheme.text } : undefined}
             >
               <RotateCcw className={iconClasses} />
             </Button>
@@ -80,6 +83,8 @@ export const DesktopUndoRedo: React.FC<DesktopUndoRedoProps> = React.memo(({
               className={cn(redoButtonClasses)}
               aria-label={getAriaLabel('redo', true)}
               data-testid="desktop-redo-button"
+              data-theme-button="true"
+              style={currentTheme ? { color: currentTheme.text } : undefined}
             >
               <RotateCw className={iconClasses} />
             </Button>

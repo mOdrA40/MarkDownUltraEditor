@@ -20,15 +20,72 @@
   max-width: 12rem !important;
 }
 
-@media (max-width: 768px) {
+/* Auth dropdown specific styling */
+.auth-dropdown-content {
+  position: fixed !important;
+  transform-origin: top right !important;
+  max-width: 14rem !important;
+  border: 1px solid rgba(226, 232, 240, 0.8) !important;
+  background: rgba(255, 255, 255, 0.95) !important;
+  border-radius: 8px !important;
+  overflow: hidden !important;
+  z-index: 70 !important;
+}
+
+/* Enhanced responsive auth dropdown positioning */
+@media (max-width: 640px) {
   .auth-dropdown-content {
-    @apply right-2 left-auto;
+    right: 4px !important;
+    left: auto !important;
     transform: translateX(0) !important;
+    max-width: calc(100vw - 24px) !important;
+    min-width: 11rem !important;
+    top: auto !important;
+    margin-top: 8px !important;
+  }
+}
+
+@media (min-width: 641px) and (max-width: 768px) {
+  .auth-dropdown-content {
+    right: 8px !important;
+    left: auto !important;
+    max-width: 15rem !important;
+    min-width: 13rem !important;
   }
 }
 
 @media (min-width: 769px) {
   .auth-dropdown-content {
-    @apply right-0;
+    right: 0 !important;
+    min-width: 14rem !important;
+    max-width: 16rem !important;
   }
+}
+
+/* Ensure dropdown content is above other elements */
+.auth-dropdown-content[data-state="open"] {
+  z-index: 70 !important;
+  animation: fadeInDown 0.15s ease-out !important;
+}
+
+@keyframes fadeInDown {
+  from {
+    opacity: 0;
+    transform: translateY(-8px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* Header z-index management */
+.editor-header {
+  z-index: 40 !important;
+  position: relative !important;
+}
+
+/* Force dropdown to be above all other elements */
+[data-radix-popper-content-wrapper] .auth-dropdown-content {
+  z-index: 70 !important;
 }

@@ -3,13 +3,17 @@
  * Validation, storage, dan helper functions
  */
 
-import { 
-  WritingSettings, 
-  WritingSettingsValidation, 
-  DEFAULT_WRITING_SETTINGS, 
+import {
+  WritingSettings,
+  WritingSettingsValidation,
+  DEFAULT_WRITING_SETTINGS,
   DEFAULT_VALIDATION_RULES,
-  WRITING_SETTINGS_CONSTANTS 
+  WRITING_SETTINGS_CONSTANTS
 } from '@/types/writingSettings';
+
+// Re-export types and constants for convenience
+export type { WritingSettings, WritingSettingsValidation };
+export { DEFAULT_WRITING_SETTINGS, DEFAULT_VALIDATION_RULES, WRITING_SETTINGS_CONSTANTS };
 
 /**
  * Validate font size

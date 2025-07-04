@@ -6,11 +6,10 @@
 import React from 'react';
 import { MobileNav } from '../../layout/MobileNav';
 import { MarkdownEditorProps } from './types';
-import { Theme } from '../../features/ThemeSelector';
+import { Theme, useTheme } from '../../features/ThemeSelector';
 import {
   useEditorState,
   useResponsiveLayout,
-  useThemeManager,
   useDialogManager,
   useEditorSettings,
   useKeyboardShortcuts
@@ -55,7 +54,7 @@ export const MarkdownEditor: React.FC<MarkdownEditorProps> = ({
   // State management hooks
   const editorState = useEditorState(initialMarkdown, initialFileName);
   const responsiveLayout = useResponsiveLayout();
-  const themeManager = useThemeManager(initialTheme);
+  const globalTheme = useTheme();
   const dialogManager = useDialogManager();
   const editorSettings = useEditorSettings();
   const welcomeDialog = useWelcomeDialog();
@@ -87,7 +86,7 @@ export const MarkdownEditor: React.FC<MarkdownEditorProps> = ({
   // Destructure state and actions
   const { state: editor, actions: editorActions, undoRedo } = editorState;
   const { state: responsive } = responsiveLayout;
-  const { state: theme, actions: themeActions } = themeManager;
+  const { currentTheme, setTheme } = globalTheme;
   const { state: dialogs, actions: dialogActions } = dialogManager;
   const { settings, actions: settingsActions } = editorSettings;
 
@@ -166,9 +165,9 @@ export const MarkdownEditor: React.FC<MarkdownEditorProps> = ({
   }, [editorActions, eventHandlers]);
 
   const handleThemeChange = React.useCallback((newTheme: Theme) => {
-    themeActions.setTheme(newTheme);
+    setTheme(newTheme);
     eventHandlers.onThemeChange?.(newTheme);
-  }, [themeActions, eventHandlers]);
+  }, [setTheme, eventHandlers]);
 
   // Auto-save functionality
   React.useEffect(() => {
@@ -198,7 +197,7 @@ export const MarkdownEditor: React.FC<MarkdownEditorProps> = ({
     <EditorErrorBoundary enableReporting={process.env.NODE_ENV === 'production'}>
       <PerformanceMonitor enabled={process.env.NODE_ENV === 'development'}>
         <EditorContainer
-          theme={theme.currentTheme}
+          theme={currentTheme}
           responsive={responsive}
           zenMode={settings.zenMode}
           onToggleZenMode={settingsActions.toggleZenMode}
@@ -208,7 +207,7 @@ export const MarkdownEditor: React.FC<MarkdownEditorProps> = ({
           {/* Mobile Navigation */}
           {responsive.isMobile && !settings.zenMode && (
             <MobileNav
-              currentTheme={theme.currentTheme}
+              currentTheme={currentTheme}
               onThemeChange={handleThemeChange}
               showPreview={showPreview}
               onTogglePreview={() => setShowPreview(!showPreview)}
@@ -249,7 +248,7 @@ export const MarkdownEditor: React.FC<MarkdownEditorProps> = ({
               fileName={editor.fileName}
               isModified={editor.isModified}
               onFileNameChange={editorActions.setFileName}
-              currentTheme={theme.currentTheme}
+              currentTheme={currentTheme}
               onThemeChange={handleThemeChange}
               markdown={editor.markdown}
               onLoad={editorActions.loadFile}
@@ -277,7 +276,7 @@ export const MarkdownEditor: React.FC<MarkdownEditorProps> = ({
             {/* Sidebar */}
             <MemoizedEditorSidebar
               markdown={editor.markdown}
-              theme={theme.currentTheme}
+              theme={currentTheme}
               uiState={uiState}
               onToggleToc={() => setShowToc(!showToc)}
               onToggleOutline={() => setShowOutline(!showOutline)}
@@ -290,7 +289,7 @@ export const MarkdownEditor: React.FC<MarkdownEditorProps> = ({
             <MemoizedEditorMainContent
               markdown={editor.markdown}
               onChange={handleMarkdownChange}
-              theme={theme.currentTheme}
+              theme={currentTheme}
               settings={settings}
               showPreview={showPreview}
               responsive={responsive}
@@ -313,7 +312,7 @@ export const MarkdownEditor: React.FC<MarkdownEditorProps> = ({
             fileName={editor.fileName}
             onMarkdownChange={handleMarkdownChange}
             onLoadTemplate={loadTemplate}
-            currentTheme={theme.currentTheme}
+            currentTheme={currentTheme}
           />
 
           {/* Welcome Dialog */}
