@@ -3,13 +3,13 @@
  * @author Axel Modra
  */
 
-import { useState, useEffect, useCallback } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import {
-  type ResponsiveState,
-  type UseResponsiveLayoutReturn,
+  type ComponentSizing,
   DeviceType,
   type LayoutConfig,
-  type ComponentSizing,
+  type ResponsiveState,
+  type UseResponsiveLayoutReturn,
 } from '../types';
 import { BREAKPOINTS } from '../utils/constants';
 

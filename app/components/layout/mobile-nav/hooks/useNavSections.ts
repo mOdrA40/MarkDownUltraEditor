@@ -3,19 +3,19 @@
  * Menangani dynamic section configuration dan action mapping
  */
 
-import { useMemo } from 'react';
 import {
-  FileText,
+  BookOpen,
   Code,
-  Type,
-  Settings,
+  Download,
   Eye,
   EyeOff,
+  FileText,
   Minimize2,
-  BookOpen,
-  Download,
+  Settings,
+  Type,
 } from 'lucide-react';
-import type { NavSection, MobileNavProps } from '../types/navTypes';
+import { useMemo } from 'react';
+import type { MobileNavProps, NavSection } from '../types/navTypes';
 
 export const useNavSections = (props: Omit<MobileNavProps, 'currentTheme' | 'onThemeChange'>) => {
   const {

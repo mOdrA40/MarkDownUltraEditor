@@ -2,16 +2,16 @@
  * Template preview dialog component
  */
 
-import type React from 'react';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Download } from 'lucide-react';
+import type React from 'react';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import type { TemplatePreviewProps } from '@/types/templates';
 import {
-  getThemeAwareDifficultyClasses,
   formatCategoryName,
   formatDifficultyName,
+  getThemeAwareDifficultyClasses,
 } from '@/utils/templateUtils';
 
 /**

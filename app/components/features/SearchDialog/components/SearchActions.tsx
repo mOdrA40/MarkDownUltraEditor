@@ -3,9 +3,9 @@
  * @author Axel Modra
  */
 
+import { Replace } from 'lucide-react';
 import type React from 'react';
 import { Button } from '@/components/ui/button';
-import { Replace } from 'lucide-react';
 import type { SearchActionsProps } from '../types/search.types';
 
 /**

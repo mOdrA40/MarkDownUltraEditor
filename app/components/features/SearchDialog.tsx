@@ -4,16 +4,15 @@
  * @refactored Memisahkan concerns dan menggunakan composition pattern
  */
 
+import { Search } from 'lucide-react';
 import type React from 'react';
 import { useCallback } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
-import { Search } from 'lucide-react';
-
+import { SearchActions } from './SearchDialog/components/SearchActions';
+import { SearchControls } from './SearchDialog/components/SearchControls';
+import { SearchResults } from './SearchDialog/components/SearchResults';
 // Custom hooks dan components
 import { useSearchEngine } from './SearchDialog/hooks/useSearchEngine';
-import { SearchControls } from './SearchDialog/components/SearchControls';
-import { SearchActions } from './SearchDialog/components/SearchActions';
-import { SearchResults } from './SearchDialog/components/SearchResults';
 
 // Types
 import type { SearchDialogProps } from './SearchDialog/types/search.types';

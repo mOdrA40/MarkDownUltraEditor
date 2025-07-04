@@ -3,21 +3,19 @@
  * Menangani slide-out menu dengan semua navigation sections
  */
 
+import { BookOpen, Download, FileText, Palette } from 'lucide-react';
 import type React from 'react';
-import { Sheet, SheetContent } from '@/components/ui/sheet';
-import { Separator } from '@/components/ui/separator';
 import { Button } from '@/components/ui/button';
-import { Palette, FileText, BookOpen, Download } from 'lucide-react';
-
-// Import components
-import { NavSection } from './NavSection';
-import { ThemeSelector } from '../../../features/ThemeSelector';
-import { FileOperations } from '../../../features/FileOperations';
+import { Separator } from '@/components/ui/separator';
+import { Sheet, SheetContent } from '@/components/ui/sheet';
 import { Toolbar } from '../../../editor/Toolbar';
+import { FileOperations } from '../../../features/FileOperations';
+import { ThemeSelector } from '../../../features/ThemeSelector';
 import { WritingSettings } from '../../../features/WritingSettings';
-
 // Import types
 import type { NavSidebarProps } from '../types/navTypes';
+// Import components
+import { NavSection } from './NavSection';
 
 export const NavSidebar: React.FC<NavSidebarProps> = ({
   isOpen,

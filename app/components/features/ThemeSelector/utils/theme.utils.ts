@@ -5,8 +5,8 @@
  * @author Axel Modra
  */
 
-import type { Theme, ThemeId, ThemeColorCategory } from '../types/theme.types';
-import { themes, themeMap } from '../constants/themes.constants';
+import { themeMap, themes } from '../constants/themes.constants';
+import type { Theme, ThemeColorCategory, ThemeId } from '../types/theme.types';
 
 /**
  * Mencari tema berdasarkan ID

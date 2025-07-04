@@ -10,18 +10,18 @@ import {
 } from '@/components/ui/select';
 import { Separator } from '@/components/ui/separator';
 import type {
+  FontFamily,
+  PageOrientation,
+  PageSize,
   StyleOptionsProps,
   ThemeType,
-  FontFamily,
-  PageSize,
-  PageOrientation,
 } from '../types/export.types';
 import {
-  THEMES,
   FONT_FAMILIES,
-  PAGE_SIZES,
-  PAGE_ORIENTATIONS,
   FONT_SIZE_RANGE,
+  PAGE_ORIENTATIONS,
+  PAGE_SIZES,
+  THEMES,
 } from '../utils/constants';
 
 /**

@@ -4,9 +4,9 @@
  */
 
 import type React from 'react';
+import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Badge } from '@/components/ui/badge';
 import type { SearchControlsProps } from '../types/search.types';
 
 /**

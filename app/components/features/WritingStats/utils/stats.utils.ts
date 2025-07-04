@@ -7,11 +7,11 @@
 
 import {
   DEFAULT_STATS_CONFIG,
-  READING_SPEED,
   FORMAT_PATTERNS,
+  READING_SPEED,
   STAT_TYPES,
 } from '../constants/stats.constants';
-import type { TextStatistics, StatsConfig, StatType, ScreenSize } from '../types/stats.types';
+import type { ScreenSize, StatsConfig, StatType, TextStatistics } from '../types/stats.types';
 
 /**
  * Membersihkan teks markdown dari markup characters

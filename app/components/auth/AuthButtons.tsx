@@ -3,10 +3,11 @@
  * @author Axel Modra
  */
 
+import { SignInButton, SignUpButton, UserButton, useAuth, useUser } from '@clerk/react-router';
+import { Cloud, Files, HardDrive, LogIn, Settings, User, UserPlus } from 'lucide-react';
 import React from 'react';
-import { useAuth, useUser, SignInButton, SignUpButton, UserButton } from '@clerk/react-router';
-import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -15,7 +16,6 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { User, LogIn, UserPlus, Files, Cloud, HardDrive, Settings } from 'lucide-react';
 
 /**
  * Props for AuthButtons component

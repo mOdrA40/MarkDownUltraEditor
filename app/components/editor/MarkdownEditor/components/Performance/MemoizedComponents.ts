@@ -3,11 +3,11 @@
  * @author Axel Modra
  */
 
-import React, { memo, useMemo, useCallback } from 'react';
-import { EditorHeader, type EditorHeaderProps } from '../Layout/EditorHeader';
-import { EditorSidebar, type EditorSidebarProps } from '../Layout/EditorSidebar';
-import { EditorMainContent, type EditorMainContentProps } from '../Layout/EditorMainContent';
+import React, { memo, useCallback, useMemo } from 'react';
 import { EditorFooter, type EditorFooterProps } from '../Layout/EditorFooter';
+import { EditorHeader, type EditorHeaderProps } from '../Layout/EditorHeader';
+import { EditorMainContent, type EditorMainContentProps } from '../Layout/EditorMainContent';
+import { EditorSidebar, type EditorSidebarProps } from '../Layout/EditorSidebar';
 
 /**
  * Memoized editor header component

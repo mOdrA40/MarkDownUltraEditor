@@ -5,8 +5,8 @@
 
 import type React from 'react';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { TocItem } from './TocItem';
 import type { TocListProps } from '../types/toc.types';
+import { TocItem } from './TocItem';
 
 /**
  * Komponen list untuk Table of Contents items

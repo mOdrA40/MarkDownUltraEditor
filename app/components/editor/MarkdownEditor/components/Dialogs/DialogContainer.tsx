@@ -4,12 +4,12 @@
  */
 
 import React from 'react';
+import { AdvancedExport } from '../../../../features/AdvancedExport';
 import { SearchDialog } from '../../../../features/SearchDialog';
+import type { Theme } from '../../../../features/ThemeSelector';
 import { KeyboardShortcuts } from '../../../../navigation/KeyboardShortcuts';
 import { DocumentTemplates } from '../../../../templates/DocumentTemplates';
-import { AdvancedExport } from '../../../../features/AdvancedExport';
 import type { DialogState } from '../../types';
-import type { Theme } from '../../../../features/ThemeSelector';
 
 /**
  * Props for DialogContainer component

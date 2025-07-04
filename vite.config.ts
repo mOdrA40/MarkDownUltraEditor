@@ -1,7 +1,7 @@
 import { reactRouter } from '@react-router/dev/vite';
+import { config } from 'dotenv';
 import { defineConfig } from 'vite';
 import tsconfigPaths from 'vite-tsconfig-paths';
-import { config } from 'dotenv';
 
 // Load environment variables
 config();

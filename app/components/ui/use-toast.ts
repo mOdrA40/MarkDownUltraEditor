@@ -1,3 +1,3 @@
-import { useToast, toast } from '@/hooks/core';
+import { toast, useToast } from '@/hooks/core';
 
 export { useToast, toast };

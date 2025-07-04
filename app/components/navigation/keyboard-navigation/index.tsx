@@ -3,15 +3,13 @@
  * Re-export semua keyboard navigation-related components dan hooks
  */
 
-// Re-export main hooks
-export { useKeyboardNavigation } from '@/hooks/navigation';
-export { useFocusManagement } from '@/hooks/navigation';
-
 // Re-export types
 export type {
   KeyboardNavigationOptions,
   UseKeyboardNavigationReturn,
 } from '@/hooks/navigation';
+// Re-export main hooks
+export { useFocusManagement, useKeyboardNavigation } from '@/hooks/navigation';
 
 export type {
   UseFocusManagementOptions,
@@ -21,25 +19,25 @@ export type {
 // Re-export utilities
 export {
   calculateTargetIndex,
-  isFocusable,
-  getFocusableElements,
-  focusElement,
-  scrollElementIntoView,
-  isElementInViewport,
-  getElementByDataAttribute,
   debounceKeyboard,
-  throttleKeyboard,
+  focusElement,
+  getElementByDataAttribute,
+  getFocusableElements,
+  isElementInViewport,
+  isFocusable,
   isKeyMatch,
   type NavigationDirection,
   type ScrollOptions,
+  scrollElementIntoView,
+  throttleKeyboard,
 } from '@/utils/keyboardNavigationUtils';
 
 /**
  * Keyboard navigation provider component
  */
-import React, { createContext, useContext, type ReactNode, useCallback } from 'react';
-import { useKeyboardNavigation } from '@/hooks/navigation';
+import React, { createContext, type ReactNode, useCallback, useContext } from 'react';
 import type { KeyboardNavigationOptions, UseKeyboardNavigationReturn } from '@/hooks/navigation';
+import { useKeyboardNavigation } from '@/hooks/navigation';
 
 const KeyboardNavigationContext = createContext<UseKeyboardNavigationReturn | null>(null);
 

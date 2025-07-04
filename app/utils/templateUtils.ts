@@ -2,14 +2,14 @@
  * Utility functions for DocumentTemplates components
  */
 
+import { BookOpen, Briefcase, FileCode, FileText, GraduationCap, Heart } from 'lucide-react';
 import type {
-  DocumentTemplate,
-  TemplateDifficulty,
-  TemplateCategory,
-  DifficultyColors,
   CategoryIcons,
+  DifficultyColors,
+  DocumentTemplate,
+  TemplateCategory,
+  TemplateDifficulty,
 } from '@/types/templates';
-import { FileCode, BookOpen, FileText, GraduationCap, Briefcase, Heart } from 'lucide-react';
 
 /**
  * Category icons mapping

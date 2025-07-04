@@ -4,13 +4,13 @@
  */
 
 import { useCallback } from 'react';
-import { scrollToHeadingGlobal, type HeadingItem } from '@/utils/headingUtils';
+import { useKeyboardNavigation, useScrollSpy } from '@/hooks/navigation';
 import { announceToScreenReader } from '@/utils/accessibility';
-import { useScrollSpy, useKeyboardNavigation } from '@/hooks/navigation';
+import { type HeadingItem, scrollToHeadingGlobal } from '@/utils/headingUtils';
 import type {
+  TocKeyboardOptions,
   TocNavigationOptions,
   TocScrollSpyOptions,
-  TocKeyboardOptions,
 } from '../types/toc.types';
 
 /**

@@ -3,7 +3,7 @@
  * @author Axel Modra
  */
 
-import { useState, useCallback } from 'react';
+import { useCallback, useState } from 'react';
 import type { DialogState, UseDialogManagerReturn } from '../types';
 
 /**

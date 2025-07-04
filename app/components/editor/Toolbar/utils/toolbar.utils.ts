@@ -5,13 +5,13 @@
  * @author Axel Modra
  */
 
-import type { FormatButton, ButtonCategory } from '../types/toolbar.types';
 import {
   FORMAT_BUTTON_CONFIGS,
+  type FormatButtonConfig,
   MARKDOWN_TEMPLATES,
   RESPONSIVE_BREAKPOINTS,
-  type FormatButtonConfig,
 } from '../constants/formatButtons.constants';
+import type { ButtonCategory, FormatButton } from '../types/toolbar.types';
 
 /**
  * Membuat format button dengan action callback

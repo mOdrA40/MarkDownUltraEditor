@@ -2,16 +2,16 @@
  * Grid/List container untuk templates
  */
 
-import type React from 'react';
 import { FileText } from 'lucide-react';
+import type React from 'react';
 import type { TemplateGridProps } from '@/types/templates';
-import { TemplateCard } from './TemplateCard';
 import {
   getGridClasses,
+  getResponsiveIconSize,
   getResponsivePadding,
   getResponsiveTextSize,
-  getResponsiveIconSize,
 } from '@/utils/templateUtils';
+import { TemplateCard } from './TemplateCard';
 
 /**
  * Container untuk menampilkan templates dalam grid atau list view

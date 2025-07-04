@@ -3,7 +3,7 @@
  * Menggunakan separated concerns dan reusable utilities
  */
 
-import { useReducer, useCallback, useEffect } from 'react';
+import { useCallback, useEffect, useReducer } from 'react';
 import type {
   ToasterToast,
   ToastInput,
@@ -11,13 +11,13 @@ import type {
   UseToastOptions,
   UseToastReturn,
 } from '@/types/toast';
-import { toastReducer, initialToastState, toastActionCreators } from '../toast/toastReducer';
 import {
-  generateToastId,
-  validateToastInput,
-  sanitizeToastContent,
   clearAllToastTimeouts,
+  generateToastId,
+  sanitizeToastContent,
+  validateToastInput,
 } from '@/utils/toastUtils';
+import { initialToastState, toastActionCreators, toastReducer } from '../toast/toastReducer';
 
 /**
  * Global state management untuk toast system

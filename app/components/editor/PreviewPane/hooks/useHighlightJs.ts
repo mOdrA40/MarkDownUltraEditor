@@ -3,74 +3,69 @@
  * @author Axel Modra
  */
 
-import { useEffect } from 'react';
 import hljs from 'highlight.js/lib/core';
-import { getHighlightTheme } from '../utils/languageUtils';
-import type { Theme } from '../../../features/ThemeSelector';
-
-// Import semua bahasa yang diperlukan
-import javascript from 'highlight.js/lib/languages/javascript';
-import typescript from 'highlight.js/lib/languages/typescript';
-import python from 'highlight.js/lib/languages/python';
-import java from 'highlight.js/lib/languages/java';
-import cpp from 'highlight.js/lib/languages/cpp';
-import csharp from 'highlight.js/lib/languages/csharp';
-import php from 'highlight.js/lib/languages/php';
-import ruby from 'highlight.js/lib/languages/ruby';
-import go from 'highlight.js/lib/languages/go';
-import rust from 'highlight.js/lib/languages/rust';
-import swift from 'highlight.js/lib/languages/swift';
-import kotlin from 'highlight.js/lib/languages/kotlin';
-import scala from 'highlight.js/lib/languages/scala';
-import dart from 'highlight.js/lib/languages/dart';
-import r from 'highlight.js/lib/languages/r';
-import matlab from 'highlight.js/lib/languages/matlab';
-import lua from 'highlight.js/lib/languages/lua';
-import perl from 'highlight.js/lib/languages/perl';
-import haskell from 'highlight.js/lib/languages/haskell';
-import clojure from 'highlight.js/lib/languages/clojure';
-import elixir from 'highlight.js/lib/languages/elixir';
-import erlang from 'highlight.js/lib/languages/erlang';
-import fsharp from 'highlight.js/lib/languages/fsharp';
-import ocaml from 'highlight.js/lib/languages/ocaml';
-import scheme from 'highlight.js/lib/languages/scheme';
-import lisp from 'highlight.js/lib/languages/lisp';
-
-// Web technologies
-import xml from 'highlight.js/lib/languages/xml';
-import css from 'highlight.js/lib/languages/css';
-import scss from 'highlight.js/lib/languages/scss';
-import less from 'highlight.js/lib/languages/less';
-import json from 'highlight.js/lib/languages/json';
-import yaml from 'highlight.js/lib/languages/yaml';
-import markdownLang from 'highlight.js/lib/languages/markdown';
-
+import apache from 'highlight.js/lib/languages/apache';
 // Shell and config
 import bash from 'highlight.js/lib/languages/bash';
-import powershell from 'highlight.js/lib/languages/powershell';
+import clojure from 'highlight.js/lib/languages/clojure';
+import cmake from 'highlight.js/lib/languages/cmake';
+import cpp from 'highlight.js/lib/languages/cpp';
+import csharp from 'highlight.js/lib/languages/csharp';
+import css from 'highlight.js/lib/languages/css';
+import dart from 'highlight.js/lib/languages/dart';
+import delphi from 'highlight.js/lib/languages/delphi';
 import dockerfile from 'highlight.js/lib/languages/dockerfile';
-import nginx from 'highlight.js/lib/languages/nginx';
-import apache from 'highlight.js/lib/languages/apache';
+import elixir from 'highlight.js/lib/languages/elixir';
+import erlang from 'highlight.js/lib/languages/erlang';
+import fortran from 'highlight.js/lib/languages/fortran';
+import fsharp from 'highlight.js/lib/languages/fsharp';
+import go from 'highlight.js/lib/languages/go';
+import gradle from 'highlight.js/lib/languages/gradle';
+import graphql from 'highlight.js/lib/languages/graphql';
+import haskell from 'highlight.js/lib/languages/haskell';
 import ini from 'highlight.js/lib/languages/ini';
-
+import java from 'highlight.js/lib/languages/java';
+// Import semua bahasa yang diperlukan
+import javascript from 'highlight.js/lib/languages/javascript';
+import json from 'highlight.js/lib/languages/json';
+import kotlin from 'highlight.js/lib/languages/kotlin';
+import latex from 'highlight.js/lib/languages/latex';
+import less from 'highlight.js/lib/languages/less';
+import lisp from 'highlight.js/lib/languages/lisp';
+import lua from 'highlight.js/lib/languages/lua';
+import makefile from 'highlight.js/lib/languages/makefile';
+import markdownLang from 'highlight.js/lib/languages/markdown';
+import matlab from 'highlight.js/lib/languages/matlab';
+import nginx from 'highlight.js/lib/languages/nginx';
+import objectivec from 'highlight.js/lib/languages/objectivec';
+import ocaml from 'highlight.js/lib/languages/ocaml';
+import perl from 'highlight.js/lib/languages/perl';
+import php from 'highlight.js/lib/languages/php';
+import powershell from 'highlight.js/lib/languages/powershell';
+import prolog from 'highlight.js/lib/languages/prolog';
+import protobuf from 'highlight.js/lib/languages/protobuf';
+import python from 'highlight.js/lib/languages/python';
+import r from 'highlight.js/lib/languages/r';
+import ruby from 'highlight.js/lib/languages/ruby';
+import rust from 'highlight.js/lib/languages/rust';
+import scala from 'highlight.js/lib/languages/scala';
+import scheme from 'highlight.js/lib/languages/scheme';
+import scss from 'highlight.js/lib/languages/scss';
 // Database
 import sql from 'highlight.js/lib/languages/sql';
-
-// Other languages
-import vim from 'highlight.js/lib/languages/vim';
-import makefile from 'highlight.js/lib/languages/makefile';
-import cmake from 'highlight.js/lib/languages/cmake';
-import gradle from 'highlight.js/lib/languages/gradle';
-import latex from 'highlight.js/lib/languages/latex';
-import protobuf from 'highlight.js/lib/languages/protobuf';
-import graphql from 'highlight.js/lib/languages/graphql';
-import objectivec from 'highlight.js/lib/languages/objectivec';
-import x86asm from 'highlight.js/lib/languages/x86asm';
+import swift from 'highlight.js/lib/languages/swift';
+import typescript from 'highlight.js/lib/languages/typescript';
 import verilog from 'highlight.js/lib/languages/verilog';
 import vhdl from 'highlight.js/lib/languages/vhdl';
-import fortran from 'highlight.js/lib/languages/fortran';
-import delphi from 'highlight.js/lib/languages/delphi';
-import prolog from 'highlight.js/lib/languages/prolog';
+// Other languages
+import vim from 'highlight.js/lib/languages/vim';
+import x86asm from 'highlight.js/lib/languages/x86asm';
+// Web technologies
+import xml from 'highlight.js/lib/languages/xml';
+import yaml from 'highlight.js/lib/languages/yaml';
+import { useEffect } from 'react';
+import type { Theme } from '../../../features/ThemeSelector';
+import { getHighlightTheme } from '../utils/languageUtils';
 
 /**
  * Register semua bahasa dengan highlight.js

@@ -6,7 +6,7 @@
  * @author Axel Modra
  */
 
-import { useState, useMemo } from 'react';
+import { useMemo, useState } from 'react';
 import type { DocumentTemplate } from '@/types/templates';
 
 // Simple filter interface

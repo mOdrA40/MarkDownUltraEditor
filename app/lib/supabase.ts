@@ -3,8 +3,8 @@
  * @author Axel Modra
  */
 
-import { createClient, type SupabaseClient } from '@supabase/supabase-js';
 import { useAuth } from '@clerk/react-router';
+import { createClient, type SupabaseClient } from '@supabase/supabase-js';
 
 // Environment variables validation
 const supabaseUrl = process.env.VITE_SUPABASE_URL;

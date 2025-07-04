@@ -4,11 +4,11 @@
  */
 
 import {
+  DEFAULT_VALIDATION_RULES,
+  DEFAULT_WRITING_SETTINGS,
+  WRITING_SETTINGS_CONSTANTS,
   type WritingSettings,
   type WritingSettingsValidation,
-  DEFAULT_WRITING_SETTINGS,
-  DEFAULT_VALIDATION_RULES,
-  WRITING_SETTINGS_CONSTANTS,
 } from '@/types/writingSettings';
 
 // Re-export types and constants for convenience

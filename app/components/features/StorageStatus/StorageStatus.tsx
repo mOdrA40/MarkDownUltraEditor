@@ -5,12 +5,11 @@
  * @author Axel Modra
  */
 
+import { AlertTriangle, CheckCircle, HardDrive, Info, RefreshCw, Trash2 } from 'lucide-react';
 import type React from 'react';
 import { useState } from 'react';
-import { Button } from '@/components/ui/button';
-import { Progress } from '@/components/ui/progress';
 import { Badge } from '@/components/ui/badge';
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+import { Button } from '@/components/ui/button';
 import {
   Dialog,
   DialogContent,
@@ -19,8 +18,9 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '@/components/ui/dialog';
-import { HardDrive, Trash2, RefreshCw, AlertTriangle, CheckCircle, Info } from 'lucide-react';
-import { useStorageStatus, useStorageMonitor } from '@/hooks/core';
+import { Progress } from '@/components/ui/progress';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+import { useStorageMonitor, useStorageStatus } from '@/hooks/core';
 import { cn } from '@/lib/utils';
 
 interface StorageStatusProps {

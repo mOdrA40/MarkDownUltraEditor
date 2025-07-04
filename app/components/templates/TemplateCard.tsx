@@ -2,16 +2,16 @@
  * Individual template card component
  */
 
+import { ArrowRight, Clock, Eye, Tag } from 'lucide-react';
 import type React from 'react';
-import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
-import { Clock, Tag, Eye, ArrowRight } from 'lucide-react';
-import type { TemplateCardProps, CategoryIcons } from '@/types/templates';
+import type { CategoryIcons, TemplateCardProps } from '@/types/templates';
 import {
+  categoryIcons,
   getThemeAwareCardClasses,
   getThemeAwareDifficultyClasses,
-  categoryIcons,
   getTruncatedTags,
 } from '@/utils/templateUtils';
 

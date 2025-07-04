@@ -3,7 +3,7 @@
  * @author Axel Modra
  */
 
-import { DeviceType, type LayoutConfig, type ComponentSizing } from '../types';
+import { type ComponentSizing, DeviceType, type LayoutConfig } from '../types';
 import type { Breakpoints } from '../types/responsive.types';
 import { BREAKPOINTS } from './constants';
 

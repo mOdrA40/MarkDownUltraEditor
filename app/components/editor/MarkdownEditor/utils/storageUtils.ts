@@ -4,7 +4,7 @@
  */
 
 import type { EditorSettings, UIState } from '../types';
-import { STORAGE_KEYS, DEFAULT_EDITOR_CONFIG } from './constants';
+import { DEFAULT_EDITOR_CONFIG, STORAGE_KEYS } from './constants';
 
 /**
  * Storage error types

@@ -7,11 +7,11 @@
 export * from './editor.types';
 export type {
   ActionType,
-  StateReducer,
-  StateMiddleware,
   StateListener,
-  StateManagerConfig,
   StateManager,
+  StateManagerConfig,
+  StateMiddleware,
+  StateReducer,
 } from './state.types';
 
 // Additional utility types

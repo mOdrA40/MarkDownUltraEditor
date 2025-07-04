@@ -3,9 +3,9 @@
  * @author Axel Modra
  */
 
-import { useState, useEffect, useCallback } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { type Theme, themes } from '../../../features/ThemeSelector';
-import type { UseThemeManagerReturn, ThemeState } from '../types';
+import type { ThemeState, UseThemeManagerReturn } from '../types';
 import { STORAGE_KEYS, THEME_CONFIG } from '../utils/constants';
 
 /**

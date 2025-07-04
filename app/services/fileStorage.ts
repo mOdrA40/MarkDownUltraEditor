@@ -3,21 +3,21 @@
  * @author Axel Modra
  */
 
-import {
-  type FileData,
-  type Database,
-  handleSupabaseError,
-  dbRowToFileData,
-  fileDataToDbInsert,
-} from '@/lib/supabase';
 import type { SupabaseClient } from '@supabase/supabase-js';
 import {
   getStorageItem,
-  setStorageItem,
-  removeStorageItem,
   getStorageJSON,
+  removeStorageItem,
+  setStorageItem,
   setStorageJSON,
 } from '@/components/editor/MarkdownEditor/utils/storageUtils';
+import {
+  type Database,
+  dbRowToFileData,
+  type FileData,
+  fileDataToDbInsert,
+  handleSupabaseError,
+} from '@/lib/supabase';
 
 // Storage keys for localStorage
 const STORAGE_KEYS = {

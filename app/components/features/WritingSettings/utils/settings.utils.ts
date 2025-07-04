@@ -6,9 +6,9 @@
  */
 
 import {
+  DEFAULT_SETTINGS,
   FONT_SIZE_CONSTRAINTS,
   LINE_HEIGHT_CONSTRAINTS,
-  DEFAULT_SETTINGS,
 } from '../constants/settings.constants';
 import type { SettingsConfig } from '../types/settings.types';
 

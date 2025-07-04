@@ -3,9 +3,12 @@
  * @author Axel Modra
  */
 
-import type React from 'react';
-import { useState, useEffect } from 'react';
 import { SignUpButton } from '@clerk/react-router';
+import { Check, Cloud, HardDrive, Shield, Smartphone, X, Zap } from 'lucide-react';
+import type React from 'react';
+import { useEffect, useState } from 'react';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
 import {
   Dialog,
   DialogContent,
@@ -14,9 +17,6 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import { Cloud, HardDrive, Smartphone, Shield, Zap, Check, X } from 'lucide-react';
 
 /**
  * Props for WelcomeDialog component

@@ -3,8 +3,8 @@
  * @author Axel Modra
  */
 
-import React, { Suspense } from 'react';
 import { RefreshCw } from 'lucide-react';
+import React, { Suspense } from 'react';
 
 /**
  * Loading spinner component

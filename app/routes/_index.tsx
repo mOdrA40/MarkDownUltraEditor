@@ -1,10 +1,10 @@
-import type { MetaFunction } from 'react-router';
-import { Toaster } from '@/components/ui/toaster';
-import { Toaster as Sonner } from '@/components/ui/sonner';
-import { TooltipProvider } from '@/components/ui/tooltip';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import type { MetaFunction } from 'react-router';
 import { MarkdownEditor } from '@/components/editor/MarkdownEditor';
 import { UpdateNotification } from '@/components/shared/UpdateNotification';
+import { Toaster as Sonner } from '@/components/ui/sonner';
+import { Toaster } from '@/components/ui/toaster';
+import { TooltipProvider } from '@/components/ui/tooltip';
 
 export const meta: MetaFunction = () => {
   return [

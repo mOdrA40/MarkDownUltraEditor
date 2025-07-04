@@ -5,15 +5,15 @@
  * @author Axel Modra
  */
 
-import { useState, useEffect, useCallback, useMemo } from 'react';
-import type { FormatButton, ButtonCategory } from '../types/toolbar.types';
+import { useCallback, useEffect, useMemo, useState } from 'react';
+import type { ButtonCategory, FormatButton } from '../types/toolbar.types';
 import {
-  createFormatButtons,
   createCodeBlockAction,
+  createFormatButtons,
   filterButtonsByCategory,
-  groupButtonsByCategory,
   getBreakpoint,
   getBreakpointConfig,
+  groupButtonsByCategory,
   matchesShortcut,
 } from '../utils/toolbar.utils';
 

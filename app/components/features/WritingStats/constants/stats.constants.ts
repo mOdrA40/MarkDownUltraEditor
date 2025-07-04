@@ -6,11 +6,11 @@
  */
 
 import type {
-  StatsConfig,
+  BadgeVariant,
   BreakpointConfig,
   StatDisplayConfig,
+  StatsConfig,
   StatType,
-  BadgeVariant,
   TextStatistics,
 } from '../types/stats.types';
 

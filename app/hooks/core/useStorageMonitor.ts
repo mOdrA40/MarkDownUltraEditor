@@ -5,11 +5,11 @@
  * @author Axel Modra
  */
 
-import { useState, useEffect, useCallback } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import {
-  getStorageInfo,
   cleanupStorage,
   formatBytes,
+  getStorageInfo,
   type StorageInfo,
 } from '@/utils/storageUtils';
 

@@ -3,10 +3,10 @@
  * Menangani collapsible sections dengan header dan content
  */
 
+import { ChevronDown, ChevronRight } from 'lucide-react';
 import type React from 'react';
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
-import { ChevronDown, ChevronRight } from 'lucide-react';
 import type { NavSectionProps } from '../types/navTypes';
 
 export const NavSection: React.FC<NavSectionProps> = ({

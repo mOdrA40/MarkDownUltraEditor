@@ -5,9 +5,9 @@
  * @author Axel Modra
  */
 
+import { Code, FileText } from 'lucide-react';
 import React from 'react';
 import { Button } from '@/components/ui/button';
-import { FileText, Code } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import type { MobileToolbarProps } from '../types/toolbar.types';
 import { ToolbarButton } from './ToolbarButton';

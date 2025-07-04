@@ -3,12 +3,34 @@
  * @author Axel Modra
  */
 
+import { useAuth } from '@clerk/react-router';
+import { formatDistanceToNow } from 'date-fns';
+import {
+  ArrowLeft,
+  Calendar,
+  Clock,
+  Cloud,
+  Copy,
+  Download,
+  Edit,
+  FileText,
+  Filter,
+  Grid3X3,
+  HardDrive,
+  List,
+  MoreVertical,
+  Plus,
+  RefreshCw,
+  Search,
+  SortAsc,
+  SortDesc,
+  Trash2,
+} from 'lucide-react';
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router';
-import { useAuth } from '@clerk/react-router';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
+import { AuthButtons } from '@/components/auth/AuthButtons';
 import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import {
   DropdownMenu,
@@ -17,32 +39,10 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import {
-  ArrowLeft,
-  Search,
-  Grid3X3,
-  List,
-  Plus,
-  MoreVertical,
-  FileText,
-  Calendar,
-  Clock,
-  Download,
-  Trash2,
-  Edit,
-  Copy,
-  Cloud,
-  HardDrive,
-  Filter,
-  SortAsc,
-  SortDesc,
-  RefreshCw,
-} from 'lucide-react';
+import { Input } from '@/components/ui/input';
+import { useResponsiveDetection } from '@/hooks/ui/useResponsive';
 import { useFileStorage } from '@/hooks/useFileStorage';
 import type { FileData } from '@/lib/supabase';
-import { AuthButtons } from '@/components/auth/AuthButtons';
-import { useResponsiveDetection } from '@/hooks/ui/useResponsive';
-import { formatDistanceToNow } from 'date-fns';
 
 /**
  * View mode type

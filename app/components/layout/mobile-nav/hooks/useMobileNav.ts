@@ -3,7 +3,7 @@
  * Menangani state sidebar, navigation actions, dan responsive behavior
  */
 
-import { useState, useCallback, useEffect } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 
 export const useMobileNav = () => {
   const [isOpen, setIsOpen] = useState(false);

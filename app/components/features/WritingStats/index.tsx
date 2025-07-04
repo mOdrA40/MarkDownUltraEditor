@@ -5,84 +5,79 @@
  * @author Axel Modra
  */
 
-// Export komponen utama
-export { WritingStats } from './components/WritingStats';
-export { StatItem } from './components/StatItem';
-export { StatBadge } from './components/StatBadge';
 export { ResponsiveStatsLayout } from './components/ResponsiveStatsLayout';
-
-// Export types
-export type {
-  WritingStatsProps,
-  StatItemProps,
-  StatBadgeProps,
-  ResponsiveStatsLayoutProps,
-  TextStatistics,
-  StatType,
-  BadgeVariant,
-  ScreenSize,
-  UseWritingStatsReturn,
-  UseResponsiveDetectionReturn,
-  StatsConfig,
-  BreakpointConfig,
-  StatDisplayConfig,
-  LayoutConfig,
-} from './types/stats.types';
+export { StatBadge } from './components/StatBadge';
+export { StatItem } from './components/StatItem';
+// Export komponen utama
+// Default export untuk backward compatibility
+export { WritingStats, WritingStats as default } from './components/WritingStats';
 
 // Export constants
 export {
-  STAT_TYPES,
-  READING_SPEED,
-  BREAKPOINTS_STATS,
-  STAT_ICONS,
+  A11Y,
+  ANIMATIONS,
+  BADGE_SIZES,
   BADGE_VARIANTS,
+  BREAKPOINTS_STATS,
   DEFAULT_STATS,
   DEFAULT_STATS_CONFIG,
-  ICON_SIZES,
-  BADGE_SIZES,
-  ANIMATIONS,
-  A11Y,
   FORMAT_PATTERNS,
+  ICON_SIZES,
+  READING_SPEED,
+  STAT_ICONS,
+  STAT_TYPES,
   THRESHOLDS,
 } from './constants/stats.constants';
-
-// Export utilities
+// Export responsive hooks
 export {
-  calculateTextStats,
-  formatStatValue,
-  getReadingTime,
-  cleanMarkdownText,
-  countWords,
-  countSentences,
-  countParagraphs,
-  validateMarkdown,
-  getStatLabel,
-  getStatsConfig,
-  isEmptyDocument,
-  isShortDocument,
-  isLongDocument,
-  getDocumentStatus,
-  compareStats,
-} from './utils/stats.utils';
+  useIsDesktop,
+  useIsMobile,
+  useIsTablet,
+  useMediaQuery,
+  useOrientation,
+  useResponsiveDetection,
+  useWindowDimensions,
+} from './hooks/useResponsiveDetection';
 
 // Export hooks
 export {
-  useWritingStats,
-  useDebouncedWritingStats,
-  useWritingStatsComparison,
   useCustomReadingSpeedStats,
+  useDebouncedWritingStats,
+  useWritingStats,
+  useWritingStatsComparison,
 } from './hooks/useWritingStats';
-
-// Export responsive hooks
+// Export types
+export type {
+  BadgeVariant,
+  BreakpointConfig,
+  LayoutConfig,
+  ResponsiveStatsLayoutProps,
+  ScreenSize,
+  StatBadgeProps,
+  StatDisplayConfig,
+  StatItemProps,
+  StatsConfig,
+  StatType,
+  TextStatistics,
+  UseResponsiveDetectionReturn,
+  UseWritingStatsReturn,
+  WritingStatsProps,
+} from './types/stats.types';
+// Export utilities
 export {
-  useResponsiveDetection,
-  useIsMobile,
-  useIsTablet,
-  useIsDesktop,
-  useWindowDimensions,
-  useMediaQuery,
-  useOrientation,
-} from './hooks/useResponsiveDetection';
-
-// Default export untuk backward compatibility
-export { WritingStats as default } from './components/WritingStats';
+  calculateTextStats,
+  cleanMarkdownText,
+  compareStats,
+  countParagraphs,
+  countSentences,
+  countWords,
+  formatStatValue,
+  getDocumentStatus,
+  getReadingTime,
+  getStatLabel,
+  getStatsConfig,
+  isEmptyDocument,
+  isLongDocument,
+  isShortDocument,
+  validateMarkdown,
+} from './utils/stats.utils';

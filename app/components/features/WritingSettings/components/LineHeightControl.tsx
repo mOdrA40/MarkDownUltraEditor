@@ -5,19 +5,19 @@
  * @author Axel Modra
  */
 
+import { AlignLeft, Minus, Plus } from 'lucide-react';
 import type React from 'react';
 import { memo, useCallback } from 'react';
 import { Button } from '@/components/ui/button';
-import { AlignLeft, Plus, Minus } from 'lucide-react';
+import { A11Y, CONTROL_SIZES } from '../constants/settings.constants';
 import { useWritingSettings } from '../hooks/useWritingSettings';
+import type { LineHeightControlProps } from '../types/settings.types';
 import {
   getNextLineHeight,
   getPreviousLineHeight,
-  isMinLineHeight,
   isMaxLineHeight,
+  isMinLineHeight,
 } from '../utils/settings.utils';
-import { CONTROL_SIZES, A11Y } from '../constants/settings.constants';
-import type { LineHeightControlProps } from '../types/settings.types';
 
 /**
  * Komponen LineHeightControl untuk mengatur line height

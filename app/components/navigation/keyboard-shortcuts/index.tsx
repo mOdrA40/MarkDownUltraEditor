@@ -3,22 +3,19 @@
  * Displays dialog with all available keyboard shortcuts
  */
 
+import { Filter, Keyboard, Monitor, Search, Smartphone, X } from 'lucide-react';
 import type React from 'react';
-import { useState, useMemo } from 'react';
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
-import { Button } from '@/components/ui/button';
+import { useMemo, useState } from 'react';
 import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
-
-import { Keyboard, Search, Monitor, Smartphone, X, Filter } from 'lucide-react';
-
+import { getThemeTextColor } from '@/utils/themeUtils';
 // Import components
 import { ShortcutCategory } from './components/ShortcutCategory';
-
+import { getShortcutsForPlatform } from './constants/shortcuts';
 // Import types and constants
 import type { KeyboardShortcutsProps } from './types/shortcutTypes';
-import { getShortcutsForPlatform } from './constants/shortcuts';
-import { getThemeTextColor } from '@/utils/themeUtils';
 
 export const KeyboardShortcuts: React.FC<KeyboardShortcutsProps> = ({
   onClose,

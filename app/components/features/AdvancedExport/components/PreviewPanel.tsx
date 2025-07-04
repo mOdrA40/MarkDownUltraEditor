@@ -1,16 +1,16 @@
+import { Download, Eye, Loader2, Monitor, Smartphone, Tablet } from 'lucide-react';
 import type React from 'react';
-import { useRef, useMemo, useEffect } from 'react';
+import { useEffect, useMemo, useRef } from 'react';
 import ReactMarkdown from 'react-markdown';
-import remarkGfm from 'remark-gfm';
 import rehypeHighlight from 'rehype-highlight';
-import { Button } from '@/components/ui/button';
+import remarkGfm from 'remark-gfm';
 import { Badge } from '@/components/ui/badge';
-import { Eye, Monitor, Tablet, Smartphone, Download, Loader2 } from 'lucide-react';
-import type { PreviewPanelProps } from '../types/export.types';
-import { THEMES } from '../utils/constants';
+import { Button } from '@/components/ui/button';
 import { generateHeaderStyles } from '@/utils/themeUtils';
 import { createMarkdownComponents } from '../../../editor/PreviewPane/components/MarkdownComponents';
 import { useHighlightJs } from '../../../editor/PreviewPane/hooks/useHighlightJs';
+import type { PreviewPanelProps } from '../types/export.types';
+import { THEMES } from '../utils/constants';
 import '../styles/formatPreview.css';
 
 /**

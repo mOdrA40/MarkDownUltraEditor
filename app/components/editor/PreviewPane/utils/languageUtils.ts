@@ -3,7 +3,7 @@
  * @author Axel Modra
  */
 
-import type { LanguageIconMap, HighlightThemeConfig } from '../types/preview.types';
+import type { HighlightThemeConfig, LanguageIconMap } from '../types/preview.types';
 
 /**
  * Icon mapping for each programming language

@@ -3,22 +3,21 @@
  * @author Axel Modra
  */
 
-export { default as SettingsPage } from '../../../routes/settings';
-
 // Re-export settings types and constants
 export type { AppPreferences } from '../../../routes/settings';
+export { default as SettingsPage } from '../../../routes/settings';
 
 /**
  * Settings integration hook
  */
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import {
+  DEFAULT_WRITING_SETTINGS,
   loadSettingsFromStorage,
   saveSettingsToStorage,
-  DEFAULT_WRITING_SETTINGS,
   type WritingSettings,
 } from '@/utils/writingSettingsUtils';
-import { themes, type Theme } from '../ThemeSelector';
+import { type Theme, themes } from '../ThemeSelector';
 
 interface UseSettingsReturn {
   theme: Theme;

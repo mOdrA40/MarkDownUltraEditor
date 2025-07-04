@@ -5,14 +5,14 @@
  * @author Axel Modra
  */
 
-import { useState, useEffect, useCallback, useMemo } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
+import type { BreakpointType, UseResponsiveLayoutReturn } from '../types/settings.types';
 import {
+  debounce,
   getBreakpointFromWidth,
   getCurrentBreakpoint,
   getViewportDimensions,
-  debounce,
 } from '../utils/responsive.utils';
-import type { BreakpointType, UseResponsiveLayoutReturn } from '../types/settings.types';
 
 /**
  * Hook untuk mendeteksi dan mengelola responsive layout

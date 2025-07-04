@@ -5,9 +5,9 @@
 
 import type {
   ExportConfig,
-  JsonExportData,
   ExportResult,
   FileOperationCallbacks,
+  JsonExportData,
 } from '../types/fileOperations.types';
 import { generateHtmlTemplate } from './htmlTemplateService';
 

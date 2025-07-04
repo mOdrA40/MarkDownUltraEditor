@@ -3,13 +3,13 @@
  * Menangani menu button, file name input, dan quick actions
  */
 
+import { Menu } from 'lucide-react';
 import type React from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Menu } from 'lucide-react';
+import { generateHeaderStyles, getHeaderClassName } from '@/utils/themeUtils';
 import type { NavHeaderProps } from '../types/navTypes';
 import { QuickActions } from './QuickActions';
-import { getHeaderClassName, generateHeaderStyles } from '@/utils/themeUtils';
 
 export const NavHeader: React.FC<NavHeaderProps> = ({
   currentTheme,

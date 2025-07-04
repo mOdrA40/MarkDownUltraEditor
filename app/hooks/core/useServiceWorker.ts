@@ -3,7 +3,7 @@
  * @author Axel Modra
  */
 
-import { useState, useEffect, useCallback } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 
 /**
  * Service Worker state interface

@@ -8,11 +8,11 @@
 import type React from 'react';
 import { memo } from 'react';
 import { useResponsiveLayout } from '../hooks/useResponsiveLayout';
+import type { WritingSettingsProps } from '../types/settings.types';
 import { FontSizeControl } from './FontSizeControl';
 import { LineHeightControl } from './LineHeightControl';
-import { WritingModeButtons } from './WritingModeButtons';
 import { ResponsiveLayout } from './ResponsiveLayout';
-import type { WritingSettingsProps } from '../types/settings.types';
+import { WritingModeButtons } from './WritingModeButtons';
 
 /**
  * Komponen WritingSettings utama

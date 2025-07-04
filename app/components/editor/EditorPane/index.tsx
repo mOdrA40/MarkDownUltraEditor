@@ -4,15 +4,15 @@
  */
 
 import type React from 'react';
-import type { EditorPaneProps } from './types/editorPane.types';
-import { useEditorState } from './hooks/useEditorState';
-import { useTypewriterMode } from './hooks/useTypewriterMode';
-import { useResponsiveEditor } from './hooks/useResponsiveEditor';
-import { useAutoResize } from './hooks/useAutoResize';
 import { EditorHeader } from './components/EditorHeader';
 import { EditorTextarea } from './components/EditorTextarea';
-import { LineNumbers } from './components/LineNumbers';
 import { FocusModeOverlay } from './components/FocusModeOverlay';
+import { LineNumbers } from './components/LineNumbers';
+import { useAutoResize } from './hooks/useAutoResize';
+import { useEditorState } from './hooks/useEditorState';
+import { useResponsiveEditor } from './hooks/useResponsiveEditor';
+import { useTypewriterMode } from './hooks/useTypewriterMode';
+import type { EditorPaneProps } from './types/editorPane.types';
 import { generateEditorStyles } from './utils/editorStyles';
 import { handleKeyDown } from './utils/keyboardHandlers';
 

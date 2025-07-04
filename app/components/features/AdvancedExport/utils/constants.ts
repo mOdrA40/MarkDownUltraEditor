@@ -1,10 +1,10 @@
+import { BookOpen, FileText, Presentation } from 'lucide-react';
 import type {
-  ExportOptions,
-  ThemeConfig,
   ExportFormatOption,
+  ExportOptions,
   FontFamily,
+  ThemeConfig,
 } from '../types/export.types';
-import { FileText, BookOpen, Presentation } from 'lucide-react';
 
 /**
  * Default export options

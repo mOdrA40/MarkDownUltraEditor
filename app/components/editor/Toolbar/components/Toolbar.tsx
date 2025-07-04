@@ -7,11 +7,11 @@
 
 import React from 'react';
 import { cn } from '@/lib/utils';
+import { useKeyboardShortcuts, useToolbar } from '../hooks/useToolbar';
 import type { ToolbarProps } from '../types/toolbar.types';
-import { useToolbar, useKeyboardShortcuts } from '../hooks/useToolbar';
+import { DesktopToolbar } from './DesktopToolbar';
 import { MobileToolbar } from './MobileToolbar';
 import { TabletToolbar } from './TabletToolbar';
-import { DesktopToolbar } from './DesktopToolbar';
 
 /**
  * Komponen Toolbar

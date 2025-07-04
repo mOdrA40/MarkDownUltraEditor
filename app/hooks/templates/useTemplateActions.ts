@@ -7,7 +7,7 @@
  * @author Axel Modra
  */
 
-import { useState, useCallback } from 'react';
+import { useCallback, useState } from 'react';
 import type { DocumentTemplate } from '@/types/templates';
 
 /**

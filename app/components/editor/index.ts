@@ -3,9 +3,9 @@
  * @author Axel Modra
  */
 
+export { EditorPane } from './EditorPane';
 // Re-export main editor components
 export { MarkdownEditor } from './MarkdownEditor';
-export { EditorPane } from './EditorPane';
 export { PreviewPane } from './PreviewPane';
 export { Toolbar } from './Toolbar';
 export { UndoRedoButtons } from './UndoRedoButtons';

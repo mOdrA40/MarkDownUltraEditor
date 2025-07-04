@@ -3,12 +3,12 @@
  * @author Axel Modra
  */
 
-import { useState, useCallback } from 'react';
+import { useCallback, useState } from 'react';
 import type { ExportOptions, UseExportReturn } from '../types/export.types';
+import { ERROR_MESSAGES, EXPORT_PROGRESS_STEPS, SUCCESS_MESSAGES } from '../utils/constants';
 import { downloadFile, sanitizeFilename } from '../utils/downloadFile';
-import { EXPORT_PROGRESS_STEPS, SUCCESS_MESSAGES, ERROR_MESSAGES } from '../utils/constants';
-import { convertMarkdownToHTML } from '../utils/markdownConverter';
 import { generateStyledHTML } from '../utils/htmlGenerator';
+import { convertMarkdownToHTML } from '../utils/markdownConverter';
 
 /**
  * Wrap emojis in spans to preserve their original colors

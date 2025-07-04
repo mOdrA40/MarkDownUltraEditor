@@ -5,9 +5,9 @@
 
 import React from 'react';
 import type { Components } from 'react-markdown';
-import { CodeBlock, InlineCode } from './CodeBlock';
-import type { MarkdownComponentsProps } from '../types/preview.types';
 import { useHeadingCache } from '../hooks/useHeadingCache';
+import type { MarkdownComponentsProps } from '../types/preview.types';
+import { CodeBlock, InlineCode } from './CodeBlock';
 
 /**
  * Props untuk heading component

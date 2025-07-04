@@ -1,10 +1,10 @@
-import type React from 'react';
-import { Links, Meta, Outlet, Scripts, ScrollRestoration } from 'react-router';
-import type { LinksFunction, HeadersFunction } from 'react-router';
 import { ClerkProvider } from '@clerk/react-router';
 import { rootAuthLoader } from '@clerk/react-router/ssr.server';
-import type { Route } from './+types/root';
+import type React from 'react';
+import type { HeadersFunction, LinksFunction } from 'react-router';
+import { Links, Meta, Outlet, Scripts, ScrollRestoration } from 'react-router';
 import { ThemeProvider } from '@/components/features/ThemeSelector';
+import type { Route } from './+types/root';
 
 import './tailwind.css';
 

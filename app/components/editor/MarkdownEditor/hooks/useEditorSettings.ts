@@ -3,7 +3,7 @@
  * @author Axel Modra
  */
 
-import { useState, useCallback, useEffect, useRef } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import type { EditorSettings } from '../types';
 import { DEFAULT_EDITOR_CONFIG, STORAGE_KEYS } from '../utils/constants';
 

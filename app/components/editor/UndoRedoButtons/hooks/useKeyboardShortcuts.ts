@@ -5,7 +5,7 @@
  * @author Axel Modra
  */
 
-import { useEffect, useCallback } from 'react';
+import { useCallback, useEffect } from 'react';
 import type { KeyboardShortcutConfig } from '../types/undoRedo.types';
 import { DEFAULT_KEYBOARD_SHORTCUTS, matchesShortcut } from '../utils/undoRedo.utils';
 

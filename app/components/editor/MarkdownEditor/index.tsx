@@ -4,29 +4,29 @@
  */
 
 import React from 'react';
-import { MobileNav } from '../../layout/MobileNav';
-import type { MarkdownEditorProps } from './types';
+import { usePerformanceDebug, useRenderPerformance } from '@/hooks/core/usePerformance';
+import { useFileStorage } from '@/hooks/useFileStorage';
+import { useWelcomeDialog, WelcomeDialog } from '../../auth/WelcomeDialog';
 import { type Theme, useTheme } from '../../features/ThemeSelector';
+import { MobileNav } from '../../layout/MobileNav';
+import { DialogContainer, EditorContainer } from './components';
 import {
-  useEditorState,
-  useResponsiveLayout,
+  EditorErrorBoundary,
+  MemoizedEditorFooter,
+  MemoizedEditorHeader,
+  MemoizedEditorMainContent,
+  MemoizedEditorSidebar,
+  PerformanceMonitor,
+} from './components/Performance';
+import {
   useDialogManager,
   useEditorSettings,
+  useEditorState,
   useKeyboardShortcuts,
+  useResponsiveLayout,
 } from './hooks';
-import { EditorContainer, DialogContainer } from './components';
-import {
-  PerformanceMonitor,
-  EditorErrorBoundary,
-  MemoizedEditorHeader,
-  MemoizedEditorSidebar,
-  MemoizedEditorMainContent,
-  MemoizedEditorFooter,
-} from './components/Performance';
+import type { MarkdownEditorProps } from './types';
 import { DEFAULT_FILE } from './utils/constants';
-import { WelcomeDialog, useWelcomeDialog } from '../../auth/WelcomeDialog';
-import { useFileStorage } from '@/hooks/useFileStorage';
-import { useRenderPerformance, usePerformanceDebug } from '@/hooks/core/usePerformance';
 
 /**
  * Main MarkdownEditor component - Refactored with clean architecture

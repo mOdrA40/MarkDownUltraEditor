@@ -4,10 +4,10 @@
  */
 
 import type React from 'react';
-import type { FileOperationsProps } from './types/fileOperations.types';
-import { useFileOperations } from './hooks/useFileOperations';
 import { FileDropdownMenu } from './components/FileDropdownMenu';
 import { FileInput } from './components/FileInput';
+import { useFileOperations } from './hooks/useFileOperations';
+import type { FileOperationsProps } from './types/fileOperations.types';
 
 /**
  * Main FileOperations component with modular service-based architecture

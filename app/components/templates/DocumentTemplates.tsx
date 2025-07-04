@@ -1,12 +1,12 @@
+import { FileText } from 'lucide-react';
 import React, { useState } from 'react';
 import { Badge } from '@/components/ui/badge';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
-import { FileText } from 'lucide-react';
+import { useTemplateActions, useTemplateFilters } from '@/hooks/templates';
 import { useResponsiveBreakpoint } from '@/hooks/ui';
-import { useTemplateFilters, useTemplateActions } from '@/hooks/templates';
+import type { DocumentTemplatesProps, ViewMode } from '@/types/templates';
 import { documentTemplates } from '@/utils/documentTemplates';
 import { getThemeAwareDialogClasses } from '@/utils/templateUtils';
-import type { DocumentTemplatesProps, ViewMode } from '@/types/templates';
 
 // Sub-components
 import { TemplateFilters } from './TemplateFilters';

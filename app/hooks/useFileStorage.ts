@@ -3,16 +3,16 @@
  * @author Axel Modra
  */
 
-import { useState, useEffect, useCallback, useMemo } from 'react';
 import { useAuth } from '@clerk/react-router';
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useToast } from '@/hooks/core/useToast';
+import { createAuthenticatedSupabaseClient, type FileData } from '@/lib/supabase';
 import {
-  type FileStorageService,
   createFileStorageService,
+  type FileStorageService,
   type StorageInfo,
 } from '@/services/fileStorage';
-import { type FileData, createAuthenticatedSupabaseClient } from '@/lib/supabase';
-import { useToast } from '@/hooks/core/useToast';
 
 // Query keys for React Query
 const QUERY_KEYS = {

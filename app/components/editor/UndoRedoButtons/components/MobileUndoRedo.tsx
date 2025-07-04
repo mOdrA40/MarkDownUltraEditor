@@ -5,16 +5,16 @@
  * @author Axel Modra
  */
 
+import { RotateCcw, RotateCw } from 'lucide-react';
 import React from 'react';
 import { Button } from '@/components/ui/button';
-import { RotateCcw, RotateCw } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import type { MobileUndoRedoProps } from '../types/undoRedo.types';
 import {
-  getButtonClasses,
-  getIconClasses,
-  getContainerClasses,
   getAriaLabel,
+  getButtonClasses,
+  getContainerClasses,
+  getIconClasses,
 } from '../utils/undoRedo.utils';
 
 /**

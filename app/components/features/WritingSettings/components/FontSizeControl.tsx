@@ -5,19 +5,19 @@
  * @author Axel Modra
  */
 
+import { Minus, Plus, Type } from 'lucide-react';
 import type React from 'react';
 import { memo, useCallback } from 'react';
 import { Button } from '@/components/ui/button';
-import { Type, Plus, Minus } from 'lucide-react';
+import { A11Y, CONTROL_SIZES } from '../constants/settings.constants';
 import { useWritingSettings } from '../hooks/useWritingSettings';
+import type { FontSizeControlProps } from '../types/settings.types';
 import {
   getNextFontSize,
   getPreviousFontSize,
-  isMinFontSize,
   isMaxFontSize,
+  isMinFontSize,
 } from '../utils/settings.utils';
-import { CONTROL_SIZES, A11Y } from '../constants/settings.constants';
-import type { FontSizeControlProps } from '../types/settings.types';
 
 /**
  * Komponen FontSizeControl untuk mengatur ukuran font

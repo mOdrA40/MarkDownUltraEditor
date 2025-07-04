@@ -5,14 +5,14 @@
  * @author Axel Modra
  */
 
+import { Clock } from 'lucide-react';
 import type React from 'react';
 import { memo } from 'react';
-import { Clock } from 'lucide-react';
-import { StatItem } from './StatItem';
-import { StatBadge } from './StatBadge';
 import { BREAKPOINTS_STATS } from '../constants/stats.constants';
-import { getDocumentStatus } from '../utils/stats.utils';
 import type { ResponsiveStatsLayoutProps } from '../types/stats.types';
+import { getDocumentStatus } from '../utils/stats.utils';
+import { StatBadge } from './StatBadge';
+import { StatItem } from './StatItem';
 
 /**
  * Komponen ResponsiveStatsLayout untuk menangani layout responsif

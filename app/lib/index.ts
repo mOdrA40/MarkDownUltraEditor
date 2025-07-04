@@ -3,70 +3,60 @@
  * @author Axel Modra
  */
 
-// Re-export utils with consistent naming
-export * from './utils';
-
 // Specific exports to avoid conflicts
 export {
+  addSkipLink,
   announceToScreenReader,
-  getFocusableElements as getAccessibilityFocusableElements,
-  isFocusable as isAccessibilityFocusable,
-  trapFocus,
   generateAccessibleId,
   getContrastRatio,
-  meetsContrastRequirement,
-  addSkipLink,
+  getFocusableElements as getAccessibilityFocusableElements,
+  isFocusable as isAccessibilityFocusable,
   KeyboardNavigation,
+  meetsContrastRequirement,
   ScreenReader,
+  trapFocus,
 } from '../utils/accessibility';
-
 export {
   codeTemplates,
   getTemplatesByCategory as getCodeTemplatesByCategory,
 } from '../utils/codeTemplates';
-
 export {
   documentTemplates,
   getTemplatesByCategory as getDocumentTemplatesByCategory,
 } from '../utils/documentTemplates';
-
 export {
-  parseMarkdownHeadings,
-  generateHeadingId,
-  scrollToHeading,
   debounce as headingDebounce,
-  throttle as headingThrottle,
+  generateHeadingId,
   isElementInViewport as isHeadingElementInViewport,
+  parseMarkdownHeadings,
+  scrollToHeading,
+  throttle as headingThrottle,
 } from '../utils/headingUtils';
-
 export {
   calculateTargetIndex,
   getFocusableElements as getNavigationFocusableElements,
   isFocusable as isNavigationFocusable,
 } from '../utils/keyboardNavigationUtils';
-
 export { handleOutlineItemClick } from '../utils/outlineUtils';
-
 export {
   BREAKPOINTS,
-  MEDIA_QUERIES,
-  getDeviceType,
   debounce as responsiveDebounce,
+  getDeviceType,
+  MEDIA_QUERIES,
   throttle as responsiveThrottle,
 } from '../utils/responsive';
-
 export {
-  generateTemplateFileName,
   formatCategoryName,
   formatDifficultyName,
-  getGridClasses,
+  generateTemplateFileName,
+  getCardClasses,
   getDialogClasses,
+  getGridClasses,
+  getResponsiveButtonSize,
+  getResponsiveIconSize,
   getResponsivePadding,
   getResponsiveTextSize,
-  getResponsiveIconSize,
-  getResponsiveButtonSize,
   getTruncatedTags,
-  getCardClasses,
   isValidTemplate,
   sortTemplates,
 } from '../utils/templateUtils';
@@ -74,15 +64,17 @@ export * from '../utils/testing';
 export * from '../utils/toastUtils';
 export * from '../utils/vimUtils';
 export {
+  areSettingsEqual,
+  debounce as writingSettingsDebounce,
+  exportWritingSettings,
+  getSettingsDiff,
+  importWritingSettings,
+  loadSettingsFromStorage,
+  sanitizeWritingSettings,
+  saveSettingsToStorage,
   validateFontSize,
   validateLineHeight,
   validateWritingSettings,
-  sanitizeWritingSettings,
-  loadSettingsFromStorage,
-  saveSettingsToStorage,
-  exportWritingSettings,
-  importWritingSettings,
-  debounce as writingSettingsDebounce,
-  areSettingsEqual,
-  getSettingsDiff,
 } from '../utils/writingSettingsUtils';
+// Re-export utils with consistent naming
+export * from './utils';

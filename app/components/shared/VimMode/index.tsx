@@ -4,53 +4,50 @@
  */
 
 // Re-export main hook
-export { useVimMode } from '@/hooks/editor';
-
+// Re-export command registry
+export {
+  registerDefaultCommands,
+  useVimMode,
+  vimCommandRegistry,
+} from '@/hooks/editor';
 // Re-export types
 export type {
-  VimMode,
   UseVimModeOptions,
   UseVimModeReturn,
-  VimContext,
   VimCommand,
   VimCommandRegistry,
+  VimContext,
+  VimMode,
   VimState,
 } from '@/types/vim';
-
-// Re-export utilities
-export {
-  applyCursorStyle,
-  getCurrentLine,
-  getLineNumber,
-  moveToLine,
-  moveToLineStart,
-  moveToLineEnd,
-  deleteCurrentLine,
-  moveByWord,
-  insertText,
-  deleteCharacter,
-  isValidVimCommand,
-  parseVimCommand,
-} from '@/utils/vimUtils';
 
 // Re-export constants from types
 export {
   DEFAULT_VIM_CURSOR_CONFIG,
   VIM_CONSTANTS,
 } from '@/types/vim';
-
-// Re-export command registry
+// Re-export utilities
 export {
-  vimCommandRegistry,
-  registerDefaultCommands,
-} from '@/hooks/editor';
+  applyCursorStyle,
+  deleteCharacter,
+  deleteCurrentLine,
+  getCurrentLine,
+  getLineNumber,
+  insertText,
+  isValidVimCommand,
+  moveByWord,
+  moveToLine,
+  moveToLineEnd,
+  moveToLineStart,
+  parseVimCommand,
+} from '@/utils/vimUtils';
 
 /**
  * Vim mode indicator component
  */
 import React from 'react';
+import { useVimMode, vimCommandRegistry } from '@/hooks/editor';
 import type { VimMode } from '@/types/vim';
-import { vimCommandRegistry, useVimMode } from '@/hooks/editor';
 
 interface VimModeIndicatorProps {
   mode: VimMode;

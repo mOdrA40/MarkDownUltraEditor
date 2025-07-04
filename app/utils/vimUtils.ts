@@ -4,10 +4,10 @@
  */
 
 import {
-  type VimContext,
-  type VimMode,
-  type VimCursorConfig,
   DEFAULT_VIM_CURSOR_CONFIG,
+  type VimContext,
+  type VimCursorConfig,
+  type VimMode,
 } from '@/types/vim';
 
 /**

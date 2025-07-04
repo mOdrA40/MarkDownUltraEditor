@@ -5,50 +5,47 @@
  * @author Axel Modra
  */
 
-// Export komponen utama
-export { UndoRedoButtons } from './components/UndoRedoButtons';
-export { UndoRedoButton } from './components/UndoRedoButton';
+export { DesktopUndoRedo } from './components/DesktopUndoRedo';
 export { MobileUndoRedo } from './components/MobileUndoRedo';
 export { TabletUndoRedo } from './components/TabletUndoRedo';
-export { DesktopUndoRedo } from './components/DesktopUndoRedo';
-
-// Export types
-export type {
-  UndoRedoButtonsProps,
-  UndoRedoButtonProps,
-  ResponsiveUndoRedoProps,
-  MobileUndoRedoProps,
-  TabletUndoRedoProps,
-  DesktopUndoRedoProps,
-  KeyboardShortcutConfig,
-  UndoRedoAction,
-  ButtonConfig,
-  ButtonSize,
-  ButtonVariant,
-  UndoRedoStyling,
-} from './types/undoRedo.types';
-
-// Export utilities
-export {
-  DEFAULT_KEYBOARD_SHORTCUTS,
-  BUTTON_CONFIGS,
-  STYLING_CONFIGS,
-  getButtonConfig,
-  getStylingConfig,
-  matchesShortcut,
-  getButtonClasses,
-  getIconClasses,
-  getAriaLabel,
-  getTooltipText,
-  getContainerClasses,
-  validateProps,
-  getButtonSize,
-  getTestId,
-} from './utils/undoRedo.utils';
-
+export { UndoRedoButton } from './components/UndoRedoButton';
+// Export komponen utama
+export { UndoRedoButtons } from './components/UndoRedoButtons';
 // Export hooks
 export {
   useKeyboardShortcuts,
-  useUndoRedoState,
   useResponsiveUndoRedo,
+  useUndoRedoState,
 } from './hooks/useKeyboardShortcuts';
+// Export types
+export type {
+  ButtonConfig,
+  ButtonSize,
+  ButtonVariant,
+  DesktopUndoRedoProps,
+  KeyboardShortcutConfig,
+  MobileUndoRedoProps,
+  ResponsiveUndoRedoProps,
+  TabletUndoRedoProps,
+  UndoRedoAction,
+  UndoRedoButtonProps,
+  UndoRedoButtonsProps,
+  UndoRedoStyling,
+} from './types/undoRedo.types';
+// Export utilities
+export {
+  BUTTON_CONFIGS,
+  DEFAULT_KEYBOARD_SHORTCUTS,
+  getAriaLabel,
+  getButtonClasses,
+  getButtonConfig,
+  getButtonSize,
+  getContainerClasses,
+  getIconClasses,
+  getStylingConfig,
+  getTestId,
+  getTooltipText,
+  matchesShortcut,
+  STYLING_CONFIGS,
+  validateProps,
+} from './utils/undoRedo.utils';

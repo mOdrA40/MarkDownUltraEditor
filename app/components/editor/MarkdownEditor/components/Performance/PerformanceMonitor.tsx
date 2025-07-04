@@ -4,7 +4,7 @@
  */
 
 import type React from 'react';
-import { useEffect, useRef, useState, useCallback } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import type { PerformanceMetrics } from '../../types';
 
 /**

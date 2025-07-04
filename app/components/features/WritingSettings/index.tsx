@@ -5,92 +5,86 @@
  * @author Axel Modra
  */
 
-// Export komponen utama
-export { WritingSettings } from './components/WritingSettings';
 export { FontSizeControl } from './components/FontSizeControl';
 export { LineHeightControl } from './components/LineHeightControl';
-export { WritingModeButtons } from './components/WritingModeButtons';
 export { ResponsiveLayout } from './components/ResponsiveLayout';
-
-// Export types
-export type {
-  WritingSettingsProps,
-  FontSizeControlProps,
-  LineHeightControlProps,
-  WritingModeButtonsProps,
-  ResponsiveLayoutProps,
-  WritingMode,
-  SettingsConfig,
-  BreakpointType,
-  ControlSize,
-  WritingModeConfig,
-  UseWritingSettingsReturn,
-  UseResponsiveLayoutReturn,
-} from './types/settings.types';
+export { WritingModeButtons } from './components/WritingModeButtons';
+// Export komponen utama
+// Default export untuk backward compatibility
+export { WritingSettings, WritingSettings as default } from './components/WritingSettings';
 
 // Export constants
 export {
-  FONT_SIZE_CONSTRAINTS,
-  LINE_HEIGHT_CONSTRAINTS,
-  WRITING_MODES,
+  A11Y,
+  ANIMATIONS,
   BREAKPOINTS,
   CONTROL_SIZES,
   DEFAULT_SETTINGS,
-  RESPONSIVE_CLASSES,
-  ANIMATIONS,
-  A11Y,
+  FONT_SIZE_CONSTRAINTS,
   KEYBOARD_SHORTCUTS,
+  LINE_HEIGHT_CONSTRAINTS,
+  RESPONSIVE_CLASSES,
+  WRITING_MODES,
 } from './constants/settings.constants';
-
-// Export utilities
-export {
-  validateFontSize,
-  validateLineHeight,
-  getNextFontSize,
-  getPreviousFontSize,
-  getNextLineHeight,
-  getPreviousLineHeight,
-  formatFontSize,
-  formatLineHeight,
-  isMinFontSize,
-  isMaxFontSize,
-  isMinLineHeight,
-  isMaxLineHeight,
-  getSettingsConfig,
-  validateSettingsConfig,
-} from './utils/settings.utils';
-
-// Export responsive utilities
-export {
-  getBreakpointFromWidth,
-  isMobileWidth,
-  isSmallTabletWidth,
-  isTabletWidth,
-  isDesktopWidth,
-  getMediaQuery,
-  matchesMediaQuery,
-  getCurrentBreakpoint,
-  debounce,
-  throttle,
-  getViewportDimensions,
-  isTouchDevice,
-  getOrientation,
-  isLandscape,
-  isPortrait,
-  getSafeAreaInsets,
-  getPreferredColorScheme,
-} from './utils/responsive.utils';
-
 // Export hooks
 export {
-  useWritingSettings,
-  useResponsiveLayout,
+  useIsDesktop,
   useIsMobile,
   useIsTablet,
-  useIsDesktop,
-  useWindowDimensions,
   useMediaQuery,
+  useResponsiveLayout,
+  useWindowDimensions,
+  useWritingSettings,
 } from './hooks/useWritingSettings';
-
-// Default export untuk backward compatibility
-export { WritingSettings as default } from './components/WritingSettings';
+// Export types
+export type {
+  BreakpointType,
+  ControlSize,
+  FontSizeControlProps,
+  LineHeightControlProps,
+  ResponsiveLayoutProps,
+  SettingsConfig,
+  UseResponsiveLayoutReturn,
+  UseWritingSettingsReturn,
+  WritingMode,
+  WritingModeButtonsProps,
+  WritingModeConfig,
+  WritingSettingsProps,
+} from './types/settings.types';
+// Export responsive utilities
+export {
+  debounce,
+  getBreakpointFromWidth,
+  getCurrentBreakpoint,
+  getMediaQuery,
+  getOrientation,
+  getPreferredColorScheme,
+  getSafeAreaInsets,
+  getViewportDimensions,
+  isDesktopWidth,
+  isLandscape,
+  isMobileWidth,
+  isPortrait,
+  isSmallTabletWidth,
+  isTabletWidth,
+  isTouchDevice,
+  matchesMediaQuery,
+  throttle,
+} from './utils/responsive.utils';
+// Export utilities
+export {
+  formatFontSize,
+  formatLineHeight,
+  getNextFontSize,
+  getNextLineHeight,
+  getPreviousFontSize,
+  getPreviousLineHeight,
+  getSettingsConfig,
+  isMaxFontSize,
+  isMaxLineHeight,
+  isMinFontSize,
+  isMinLineHeight,
+  validateFontSize,
+  validateLineHeight,
+  validateSettingsConfig,
+} from './utils/settings.utils';

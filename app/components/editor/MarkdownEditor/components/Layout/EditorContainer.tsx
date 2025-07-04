@@ -3,9 +3,9 @@
  * @author Axel Modra
  */
 
+import { Minimize2, Monitor, Smartphone, Tablet } from 'lucide-react';
 import type React from 'react';
 import { Button } from '@/components/ui/button';
-import { Minimize2, Smartphone, Tablet, Monitor } from 'lucide-react';
 import type { Theme } from '../../../../features/ThemeSelector';
 import type { ResponsiveState } from '../../types';
 import { generateResponsiveClasses, getDeviceType } from '../../utils';

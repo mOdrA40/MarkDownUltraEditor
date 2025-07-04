@@ -3,14 +3,14 @@
  * @author Axel Modra
  */
 
-import type { MetaFunction } from 'react-router';
-import { Toaster } from '@/components/ui/toaster';
-import { Toaster as Sonner } from '@/components/ui/sonner';
-import { TooltipProvider } from '@/components/ui/tooltip';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { FilesManager } from '@/components/files/FilesManager';
-import { type LoaderFunctionArgs, redirect } from 'react-router';
 import { getAuth } from '@clerk/react-router/ssr.server';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import type { MetaFunction } from 'react-router';
+import { type LoaderFunctionArgs, redirect } from 'react-router';
+import { FilesManager } from '@/components/files/FilesManager';
+import { Toaster as Sonner } from '@/components/ui/sonner';
+import { Toaster } from '@/components/ui/toaster';
+import { TooltipProvider } from '@/components/ui/tooltip';
 
 export const meta: MetaFunction = () => {
   return [

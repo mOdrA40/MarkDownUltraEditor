@@ -2,6 +2,7 @@
  * Filter controls untuk DocumentTemplates
  */
 
+import { Grid3X3, List, Search } from 'lucide-react';
 import type React from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -12,13 +13,12 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { Search, Grid3X3, List } from 'lucide-react';
 import type { TemplateFiltersProps } from '@/types/templates';
 import { getTemplateCategories } from '@/utils/documentTemplates';
 import {
-  getResponsiveTextSize,
-  getResponsiveIconSize,
   getResponsiveButtonSize,
+  getResponsiveIconSize,
+  getResponsiveTextSize,
 } from '@/utils/templateUtils';
 
 /**

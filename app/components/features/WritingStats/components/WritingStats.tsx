@@ -7,11 +7,11 @@
 
 import type React from 'react';
 import { memo, useMemo } from 'react';
-import { useWritingStats } from '../hooks/useWritingStats';
-import { useResponsiveDetection } from '../hooks/useResponsiveDetection';
-import { ResponsiveStatsLayout } from './ResponsiveStatsLayout';
 import { A11Y } from '../constants/stats.constants';
+import { useResponsiveDetection } from '../hooks/useResponsiveDetection';
+import { useWritingStats } from '../hooks/useWritingStats';
 import type { WritingStatsProps } from '../types/stats.types';
+import { ResponsiveStatsLayout } from './ResponsiveStatsLayout';
 
 /**
  * Komponen WritingStats utama

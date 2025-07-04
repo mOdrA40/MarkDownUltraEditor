@@ -5,12 +5,12 @@
 
 import type { VimCommand, VimCommandRegistry, VimMode } from '@/types/vim';
 import {
-  moveToLineStart,
-  moveToLineEnd,
-  deleteCurrentLine,
-  moveByWord,
-  insertText,
   deleteCharacter,
+  deleteCurrentLine,
+  insertText,
+  moveByWord,
+  moveToLineEnd,
+  moveToLineStart,
 } from '@/utils/vimUtils';
 
 /**

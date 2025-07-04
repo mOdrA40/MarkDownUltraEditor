@@ -3,10 +3,10 @@
  * Handles grouping shortcuts by category with header and separator
  */
 
+import { Edit3, Eye, FileText, Keyboard, Search, Settings, Type } from 'lucide-react';
 import type React from 'react';
-import { Separator } from '@/components/ui/separator';
 import { Badge } from '@/components/ui/badge';
-import { Type, Eye, Search, FileText, Edit3, Settings, Keyboard } from 'lucide-react';
+import { Separator } from '@/components/ui/separator';
 import type { ShortcutCategoryProps } from '../types/shortcutTypes';
 import { ShortcutItem } from './ShortcutItem';
 

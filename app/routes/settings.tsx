@@ -1,36 +1,35 @@
-import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router';
 import { useAuth, useUser } from '@clerk/react-router';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import {
+  ArrowLeft,
+  Database,
+  Eye,
+  Monitor,
+  Palette,
+  RotateCcw,
+  Save,
+  Settings as SettingsIcon,
+  Type,
+  User,
+  Zap,
+} from 'lucide-react';
+import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router';
+import { AuthButtons } from '@/components/auth/AuthButtons';
+import { type Theme, ThemeSelector, themes, useTheme } from '@/components/features/ThemeSelector';
+import { WritingSettings } from '@/components/features/WritingSettings';
+import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
-import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import {
-  ArrowLeft,
-  User,
-  Palette,
-  Type,
-  Settings as SettingsIcon,
-  Save,
-  RotateCcw,
-  Database,
-  Zap,
-  Eye,
-  Monitor,
-} from 'lucide-react';
-
-import { ThemeSelector, type Theme, themes, useTheme } from '@/components/features/ThemeSelector';
-import { WritingSettings } from '@/components/features/WritingSettings';
-import { AuthButtons } from '@/components/auth/AuthButtons';
-import { useResponsiveDetection } from '@/hooks/ui/useResponsive';
 import { useToast } from '@/hooks/core/useToast';
-import { loadSettingsFromStorage, saveSettingsToStorage } from '@/utils/writingSettingsUtils';
+import { useResponsiveDetection } from '@/hooks/ui/useResponsive';
 import {
   DEFAULT_WRITING_SETTINGS,
   type WritingSettings as WritingSettingsType,
 } from '@/types/writingSettings';
+import { loadSettingsFromStorage, saveSettingsToStorage } from '@/utils/writingSettingsUtils';
 
 // Create QueryClient instance
 const queryClient = new QueryClient();

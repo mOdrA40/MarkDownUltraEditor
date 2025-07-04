@@ -5,10 +5,10 @@
  * @author Axel Modra
  */
 
+import { FileText } from 'lucide-react';
 import React from 'react';
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
-import { FileText } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import type { DesktopToolbarProps } from '../types/toolbar.types';
 import { ToolbarButton } from './ToolbarButton';

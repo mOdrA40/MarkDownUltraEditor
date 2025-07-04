@@ -3,9 +3,9 @@
  * Menangani undo/redo, search, dan preview toggle
  */
 
+import { Eye, EyeOff, Search } from 'lucide-react';
 import type React from 'react';
 import { Button } from '@/components/ui/button';
-import { Search, Eye, EyeOff } from 'lucide-react';
 import { UndoRedoButtons } from '../../../editor/UndoRedoButtons';
 import type { QuickActionsProps } from '../types/navTypes';
 

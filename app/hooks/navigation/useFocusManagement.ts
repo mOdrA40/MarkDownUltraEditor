@@ -3,14 +3,14 @@
  * Specialized hook untuk managing focus state dan focus operations
  */
 
-import { useCallback, useRef, useEffect } from 'react';
+import { useCallback, useEffect, useRef } from 'react';
 import {
   focusElement,
   getElementByDataAttribute,
   getFocusableElements,
   isElementInViewport,
-  scrollElementIntoView,
   type ScrollOptions,
+  scrollElementIntoView,
 } from '@/utils/keyboardNavigationUtils';
 
 /**

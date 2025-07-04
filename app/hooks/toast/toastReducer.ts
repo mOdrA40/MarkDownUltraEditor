@@ -4,11 +4,11 @@
  */
 
 import {
-  type ToastState,
-  type ToastAction,
-  type ToasterToast,
   TOAST_ACTION_TYPES,
   TOAST_CONFIG,
+  type ToastAction,
+  type ToasterToast,
+  type ToastState,
 } from '@/types/toast';
 import { addToRemoveQueue } from '@/utils/toastUtils';
 

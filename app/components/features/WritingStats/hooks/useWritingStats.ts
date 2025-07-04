@@ -5,32 +5,32 @@
  * @author Axel Modra
  */
 
-import { useMemo, useCallback, useState, useEffect } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
+import { READING_SPEED } from '../constants/stats.constants';
+import type {
+  ScreenSize,
+  StatsConfig,
+  StatType,
+  TextStatistics,
+  UseWritingStatsReturn,
+} from '../types/stats.types';
 import {
   calculateTextStats,
+  compareStats,
   formatStatValue,
   getStatLabel,
   getStatsConfig,
-  compareStats,
 } from '../utils/stats.utils';
-import { READING_SPEED } from '../constants/stats.constants';
-import type {
-  TextStatistics,
-  StatsConfig,
-  StatType,
-  ScreenSize,
-  UseWritingStatsReturn,
-} from '../types/stats.types';
 
 // Re-export responsive hooks untuk convenience
 export {
-  useResponsiveDetection,
+  useIsDesktop,
   useIsMobile,
   useIsTablet,
-  useIsDesktop,
-  useWindowDimensions,
   useMediaQuery,
   useOrientation,
+  useResponsiveDetection,
+  useWindowDimensions,
 } from './useResponsiveDetection';
 
 /**

@@ -5,7 +5,7 @@
  * @author Axel Modra
  */
 
-import { useState, useEffect, useCallback, useMemo } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { BREAKPOINTS_STATS } from '../constants/stats.constants';
 import type { ScreenSize, UseResponsiveDetectionReturn } from '../types/stats.types';
 

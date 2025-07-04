@@ -7,11 +7,11 @@
 
 import React, {
   createContext,
+  type ReactNode,
+  useCallback,
   useContext,
   useEffect,
   useState,
-  useCallback,
-  type ReactNode,
 } from 'react';
 import { themes } from '../constants/themes.constants';
 import type { Theme } from '../types/theme.types';

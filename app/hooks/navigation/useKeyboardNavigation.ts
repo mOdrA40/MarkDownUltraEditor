@@ -3,7 +3,7 @@
  * Menggunakan separated concerns dan reusable utilities
  */
 
-import { useEffect, useCallback, useMemo } from 'react';
+import { useCallback, useEffect, useMemo } from 'react';
 import { scrollToHeading } from '@/utils/headingUtils';
 import { calculateTargetIndex, type NavigationDirection } from '@/utils/keyboardNavigationUtils';
 

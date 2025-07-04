@@ -5,7 +5,8 @@
  * @author Axel Modra
  */
 
-import { useMemo, useCallback } from 'react';
+import { useCallback, useMemo } from 'react';
+
 // Temporary types dan functions untuk menghindari error
 interface SettingsConfig {
   fontSize: { min: number; max: number; default: number };
@@ -82,9 +83,9 @@ export const useWritingSettings = (
 
 // Re-export hooks dari UI untuk convenience
 export {
-  useResponsiveDetection as useResponsiveLayout,
+  useDeviceType,
+  useIsDesktop,
   useIsMobile,
   useIsTablet,
-  useIsDesktop,
-  useDeviceType,
+  useResponsiveDetection as useResponsiveLayout,
 } from '../ui';

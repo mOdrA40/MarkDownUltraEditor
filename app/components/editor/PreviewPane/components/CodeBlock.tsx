@@ -6,9 +6,9 @@
 import type React from 'react';
 import type { CodeBlockProps } from '../types/preview.types';
 import {
-  getLanguageIcon,
-  extractTextContent,
   copyToClipboard,
+  extractTextContent,
+  getLanguageIcon,
   getResponsiveOptions,
 } from '../utils/languageUtils';
 

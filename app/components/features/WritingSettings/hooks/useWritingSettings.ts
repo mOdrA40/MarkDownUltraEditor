@@ -5,15 +5,15 @@
  * @author Axel Modra
  */
 
-import { useMemo, useCallback } from 'react';
+import { useCallback, useMemo } from 'react';
+import type { SettingsConfig, UseWritingSettingsReturn } from '../types/settings.types';
 import {
-  validateFontSize,
-  validateLineHeight,
   formatFontSize,
   formatLineHeight,
   getSettingsConfig,
+  validateFontSize,
+  validateLineHeight,
 } from '../utils/settings.utils';
-import type { SettingsConfig, UseWritingSettingsReturn } from '../types/settings.types';
 
 /**
  * Hook untuk mengelola writing settings logic
@@ -53,10 +53,10 @@ export const useWritingSettings = (
 
 // Re-export hooks dari useResponsiveLayout untuk convenience
 export {
-  useResponsiveLayout,
+  useIsDesktop,
   useIsMobile,
   useIsTablet,
-  useIsDesktop,
-  useWindowDimensions,
   useMediaQuery,
+  useResponsiveLayout,
+  useWindowDimensions,
 } from './useResponsiveLayout';

@@ -3,14 +3,14 @@
  * @author Axel Modra
  */
 
+import { PanelLeftClose, PanelLeftOpen } from 'lucide-react';
 import type React from 'react';
 import { Button } from '@/components/ui/button';
-import { PanelLeftClose, PanelLeftOpen } from 'lucide-react';
-import { TableOfContents } from '../../../../navigation/TableOfContents';
-import { DocumentOutline } from '../../../../navigation/DocumentOutline';
+import { generateHeaderStyles, getHeaderClassName } from '@/utils/themeUtils';
 import type { Theme } from '../../../../features/ThemeSelector';
+import { DocumentOutline } from '../../../../navigation/DocumentOutline';
+import { TableOfContents } from '../../../../navigation/TableOfContents';
 import type { ResponsiveState, UIState } from '../../types';
-import { getHeaderClassName, generateHeaderStyles } from '@/utils/themeUtils';
 
 /**
  * Props for EditorSidebar component

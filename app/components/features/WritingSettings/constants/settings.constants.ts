@@ -6,10 +6,10 @@
  */
 
 import type {
-  SettingsConfig,
-  WritingModeConfig,
   BreakpointType,
   ControlSize,
+  SettingsConfig,
+  WritingModeConfig,
 } from '../types/settings.types';
 
 /**

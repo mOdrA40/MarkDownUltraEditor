@@ -7,11 +7,11 @@
 
 import { RotateCcw, RotateCw } from 'lucide-react';
 import type {
-  UndoRedoAction,
   ButtonConfig,
-  KeyboardShortcutConfig,
-  UndoRedoStyling,
   ButtonSize,
+  KeyboardShortcutConfig,
+  UndoRedoAction,
+  UndoRedoStyling,
 } from '../types/undoRedo.types';
 
 /**

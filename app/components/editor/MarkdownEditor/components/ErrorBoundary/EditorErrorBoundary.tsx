@@ -3,9 +3,9 @@
  * @author Axel Modra
  */
 
+import { AlertTriangle, Bug, Copy, RefreshCw } from 'lucide-react';
 import React, { Component, type ErrorInfo, type ReactNode } from 'react';
 import { Button } from '@/components/ui/button';
-import { AlertTriangle, RefreshCw, Bug, Copy } from 'lucide-react';
 import type { ErrorBoundaryState } from '../../types';
 
 /**

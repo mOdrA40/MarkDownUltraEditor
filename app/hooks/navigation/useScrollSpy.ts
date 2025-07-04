@@ -8,7 +8,7 @@
  */
 
 // Legacy implementation untuk backward compatibility
-import { useState, useEffect, useCallback } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 
 export interface ScrollSpyOptions {
   offset?: number;

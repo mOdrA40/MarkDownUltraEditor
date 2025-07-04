@@ -4,31 +4,27 @@
  */
 
 // Re-export hooks
+// Re-export legacy hooks untuk backward compatibility
 export {
-  useResponsiveDetection,
-  useIsMobile,
-  useIsTablet,
-  useIsDesktop,
   useDeviceType,
+  useIsDesktop,
+  useIsMobile,
+  useIsMobile as useMobile,
+  useIsTablet,
+  useResponsiveBreakpoint,
+  useResponsiveDetection,
 } from '@/hooks/ui';
-
 // Re-export utilities
 export {
   BREAKPOINTS,
-  MEDIA_QUERIES,
+  type DeviceType,
   getDeviceType,
+  isDesktopWidth,
   isMobileWidth,
   isTabletWidth,
-  isDesktopWidth,
-  type DeviceType,
+  MEDIA_QUERIES,
   type ResponsiveState,
 } from '@/utils/responsive';
-
-// Re-export legacy hooks untuk backward compatibility
-export {
-  useIsMobile as useMobile,
-  useResponsiveBreakpoint,
-} from '@/hooks/ui';
 
 /**
  * Responsive wrapper component

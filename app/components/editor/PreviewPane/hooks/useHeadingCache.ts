@@ -3,7 +3,7 @@
  * @author Axel Modra
  */
 
-import { useEffect, useCallback } from 'react';
+import { useCallback, useEffect } from 'react';
 import { generateHeadingId } from '@/utils/headingUtils';
 import type { HeadingCacheEntry } from '../types/preview.types';
 

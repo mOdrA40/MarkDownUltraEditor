@@ -3,17 +3,16 @@
  * @author Axel Modra
  */
 
-// Export layout components
-export * from './Layout';
+// Re-export commonly used types
+export type {
+  EditorSettings,
+  EditorState,
+  ResponsiveState,
+  ThemeState,
+  UIState,
+} from '../types';
 
 // Export dialog components
 export * from './Dialogs';
-
-// Re-export commonly used types
-export type {
-  EditorState,
-  EditorSettings,
-  UIState,
-  ResponsiveState,
-  ThemeState,
-} from '../types';
+// Export layout components
+export * from './Layout';

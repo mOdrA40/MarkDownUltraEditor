@@ -2,10 +2,10 @@
  * Individual outline item component
  */
 
-import type React from 'react';
 import { Hash } from 'lucide-react';
+import type React from 'react';
 import type { OutlineItemProps } from '@/types/outline';
-import { getOutlineItemStyles, getOutlineItemA11yProps } from '@/utils/outlineUtils';
+import { getOutlineItemA11yProps, getOutlineItemStyles } from '@/utils/outlineUtils';
 
 /**
  * Individual outline item dengan styling dan interactions

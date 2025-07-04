@@ -2,22 +2,23 @@
  * @fileoverview Editor header component with file controls and toolbar
  * @author Axel Modra
  */
+
+import { Eye, EyeOff, FileText, Keyboard, Maximize2, Minimize2, Search } from 'lucide-react';
 import React from 'react';
 import { useNavigate } from 'react-router';
+import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Separator } from '@/components/ui/separator';
-import { Badge } from '@/components/ui/badge';
-import { FileText, Eye, EyeOff, Search, Maximize2, Minimize2, Keyboard } from 'lucide-react';
-import { type Theme, ThemeSelector } from '../../../../features/ThemeSelector';
-import { FileOperations } from '../../../../features/FileOperations';
-import { Toolbar } from '../../../Toolbar';
-import { WritingSettings } from '../../../../features/WritingSettings';
-import { UndoRedoButtons } from '../../../UndoRedoButtons';
+import { generateHeaderStyles, getHeaderClassName } from '@/utils/themeUtils';
 import { AuthButtons } from '../../../../auth/AuthButtons';
+import { FileOperations } from '../../../../features/FileOperations';
 import { StorageStatus } from '../../../../features/StorageStatus/StorageStatus';
+import { type Theme, ThemeSelector } from '../../../../features/ThemeSelector';
+import { WritingSettings } from '../../../../features/WritingSettings';
+import { Toolbar } from '../../../Toolbar';
+import { UndoRedoButtons } from '../../../UndoRedoButtons';
 import type { EditorSettings, ResponsiveState } from '../../types';
-import { getHeaderClassName, generateHeaderStyles } from '@/utils/themeUtils';
 /**
  * Props for EditorHeader component
  */

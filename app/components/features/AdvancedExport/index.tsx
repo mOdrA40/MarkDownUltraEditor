@@ -1,29 +1,26 @@
+import { Download } from 'lucide-react';
 import type React from 'react';
 import { useState } from 'react';
+import { Badge } from '@/components/ui/badge';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Badge } from '@/components/ui/badge';
 import { useToast } from '@/hooks/core';
 import { useResponsiveBreakpoint } from '@/hooks/ui';
-import { Download } from 'lucide-react';
 import './styles.css';
 import { generateHeaderStyles, getThemeTextColor } from '@/utils/themeUtils';
-
-// Import types
-import type { AdvancedExportProps, PreviewMode } from './types/export.types';
-
-// Import hooks
-import { useExportOptions } from './hooks/useExportOptions';
-import { useExportToPDF } from './hooks/useExportToPDF';
-import { useExportToDocx } from './hooks/useExportToDocx';
-import { useExportToEpub } from './hooks/useExportToEpub';
-import { useExportToPresentation } from './hooks/useExportToPresentation';
-
+import { AdvancedOptions } from './components/AdvancedOptions';
 // Import components
 import { FormatSelector } from './components/FormatSelector';
-import { StyleOptions } from './components/StyleOptions';
-import { AdvancedOptions } from './components/AdvancedOptions';
 import { PreviewPanel } from './components/PreviewPanel';
+import { StyleOptions } from './components/StyleOptions';
+// Import hooks
+import { useExportOptions } from './hooks/useExportOptions';
+import { useExportToDocx } from './hooks/useExportToDocx';
+import { useExportToEpub } from './hooks/useExportToEpub';
+import { useExportToPDF } from './hooks/useExportToPDF';
+import { useExportToPresentation } from './hooks/useExportToPresentation';
+// Import types
+import type { AdvancedExportProps, PreviewMode } from './types/export.types';
 
 /**
  * Advanced Export Component - Main Component

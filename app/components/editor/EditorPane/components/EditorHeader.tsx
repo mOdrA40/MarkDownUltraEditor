@@ -1,6 +1,6 @@
 import type React from 'react';
-import type { EditorHeaderConfig } from '../types/editorPane.types';
 import { generateHeaderStyles } from '@/utils/themeUtils';
+import type { EditorHeaderConfig } from '../types/editorPane.types';
 
 /**
  * Editor header component that displays current editor modes

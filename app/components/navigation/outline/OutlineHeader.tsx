@@ -2,11 +2,11 @@
  * Header component untuk DocumentOutline
  */
 
+import { List } from 'lucide-react';
 import type React from 'react';
 import { Badge } from '@/components/ui/badge';
-import { List } from 'lucide-react';
 import type { OutlineHeaderProps } from '@/types/outline';
-import { getHeaderStyles, getBadgeStyles, formatHeadingCount } from '@/utils/outlineUtils';
+import { formatHeadingCount, getBadgeStyles, getHeaderStyles } from '@/utils/outlineUtils';
 
 /**
  * Header dengan title dan badge count untuk outline

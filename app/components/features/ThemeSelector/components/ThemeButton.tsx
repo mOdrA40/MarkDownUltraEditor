@@ -5,12 +5,12 @@
  * @author Axel Modra
  */
 
+import { Check } from 'lucide-react';
 import React from 'react';
 import { Button } from '@/components/ui/button';
-import { Check } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import type { ThemeButtonProps } from '../types/theme.types';
 import { useThemeButton } from '../hooks/useThemeSelector';
+import type { ThemeButtonProps } from '../types/theme.types';
 
 /**
  * Komponen ThemeButton

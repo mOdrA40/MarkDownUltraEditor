@@ -3,27 +3,25 @@
  * @author Axel Modra
  */
 
-// Re-export responsive hooks dengan nama yang konsisten
-export {
-  useResponsiveDetection,
-  useIsMobile,
-  useIsTablet,
-  useIsDesktop,
-  useDeviceType,
-} from './useResponsive';
-
 // Re-export responsive utilities
 export {
   BREAKPOINTS,
-  MEDIA_QUERIES,
+  type DeviceType,
   getDeviceType,
+  isDesktopWidth,
   isMobileWidth,
   isTabletWidth,
-  isDesktopWidth,
-  type DeviceType,
+  MEDIA_QUERIES,
   type ResponsiveState,
 } from '@/utils/responsive';
-
+// Re-export responsive hooks dengan nama yang konsisten
 // Legacy aliases untuk backward compatibility
-export { useResponsiveDetection as useMobile } from './useResponsive';
-export { useResponsiveDetection as useResponsiveBreakpoint } from './useResponsive';
+export {
+  useDeviceType,
+  useIsDesktop,
+  useIsMobile,
+  useIsTablet,
+  useResponsiveDetection,
+  useResponsiveDetection as useMobile,
+  useResponsiveDetection as useResponsiveBreakpoint,
+} from './useResponsive';

@@ -4,8 +4,13 @@
  */
 
 // Re-export main hook
-export { useToast, toast } from '@/hooks/core';
-
+export { toast, useToast } from '@/hooks/core';
+// Re-export reducer dan action creators
+export {
+  initialToastState,
+  toastActionCreators,
+  toastReducer,
+} from '@/hooks/toast/toastReducer';
 // Re-export types
 export type {
   ToasterToast,
@@ -14,34 +19,26 @@ export type {
   UseToastOptions,
   UseToastReturn,
 } from '@/types/toast';
-
 // Re-export utilities
 export {
-  generateToastId,
-  validateToastInput,
-  sanitizeToastContent,
-  clearAllToastTimeouts,
   addToRemoveQueue,
+  clearAllToastTimeouts,
   clearToastTimeout,
-  getToastDuration,
   formatToastForA11y,
+  generateToastId,
+  getToastDuration,
+  sanitizeToastContent,
   shouldAutoDismiss,
+  validateToastInput,
 } from '@/utils/toastUtils';
-
-// Re-export reducer dan action creators
-export {
-  toastReducer,
-  toastActionCreators,
-  initialToastState,
-} from '@/hooks/toast/toastReducer';
 
 /**
  * Toast provider component untuk global toast management
  */
-import React, { createContext, useContext, type ReactNode } from 'react';
+import React, { createContext, type ReactNode, useContext } from 'react';
+import type { ToastActionElement } from '@/components/ui/toast';
 import { useToast } from '@/hooks/core';
 import type { UseToastReturn } from '@/types/toast';
-import type { ToastActionElement } from '@/components/ui/toast';
 
 const ToastContext = createContext<UseToastReturn | null>(null);
 

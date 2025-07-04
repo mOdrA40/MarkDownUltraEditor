@@ -2,9 +2,9 @@
  * Utility functions untuk DocumentOutline components
  */
 
-import type { HeadingItem, ThemeConfig, ScrollOptions } from '@/types/outline';
-import { scrollToHeadingGlobal, getActiveHeadingClasses } from '@/utils/headingUtils';
+import type { HeadingItem, ScrollOptions, ThemeConfig } from '@/types/outline';
 import { announceToScreenReader } from '@/utils/accessibility';
+import { getActiveHeadingClasses, scrollToHeadingGlobal } from '@/utils/headingUtils';
 
 /**
  * Generate styles untuk outline item berdasarkan level dan active state

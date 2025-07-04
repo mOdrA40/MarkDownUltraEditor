@@ -5,7 +5,7 @@
 
 import type React from 'react';
 import { Button } from '@/components/ui/button';
-import { getHeadingLevelClasses, getActiveHeadingClasses } from '@/utils/headingUtils';
+import { getActiveHeadingClasses, getHeadingLevelClasses } from '@/utils/headingUtils';
 import type { TocItemProps } from '../types/toc.types';
 
 /**

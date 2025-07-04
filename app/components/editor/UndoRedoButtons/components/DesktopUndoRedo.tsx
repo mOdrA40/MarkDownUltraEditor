@@ -5,17 +5,17 @@
  * @author Axel Modra
  */
 
+import { RotateCcw, RotateCw } from 'lucide-react';
 import React from 'react';
 import { Button } from '@/components/ui/button';
-import { Tooltip, TooltipContent, TooltipTrigger, TooltipProvider } from '@/components/ui/tooltip';
-import { RotateCcw, RotateCw } from 'lucide-react';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { cn } from '@/lib/utils';
 import type { DesktopUndoRedoProps } from '../types/undoRedo.types';
 import {
-  getButtonClasses,
-  getIconClasses,
-  getContainerClasses,
   getAriaLabel,
+  getButtonClasses,
+  getContainerClasses,
+  getIconClasses,
 } from '../utils/undoRedo.utils';
 
 /**

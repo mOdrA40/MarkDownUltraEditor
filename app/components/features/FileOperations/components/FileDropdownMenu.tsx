@@ -3,17 +3,17 @@
  * @author Axel Modra
  */
 
+import { Download, FileText, FileUp, Save, Upload } from 'lucide-react';
 import type React from 'react';
+import type { Theme } from '@/components/features/ThemeSelector';
 import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuTrigger,
   DropdownMenuSeparator,
+  DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { FileText, Download, Upload, Save, FileUp } from 'lucide-react';
-import type { Theme } from '@/components/features/ThemeSelector';
 import { getThemeTextColor } from '@/utils/themeUtils';
 
 interface FileDropdownMenuProps {

@@ -5,11 +5,11 @@
  * @author Axel Modra
  */
 
+import { Eye, Focus, Keyboard, Type } from 'lucide-react';
 import type React from 'react';
 import { memo } from 'react';
 import { Button } from '@/components/ui/button';
-import { Focus, Type, Keyboard, Eye } from 'lucide-react';
-import { WRITING_MODES, A11Y } from '../constants/settings.constants';
+import { A11Y, WRITING_MODES } from '../constants/settings.constants';
 import type { WritingModeButtonsProps } from '../types/settings.types';
 
 /**

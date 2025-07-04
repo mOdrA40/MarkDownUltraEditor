@@ -1,15 +1,14 @@
 import type React from 'react';
 import { useMemo } from 'react';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { parseMarkdownHeadings } from '@/utils/headingUtils';
-import { useScrollSpy, useKeyboardNavigation, useOutlineNavigation } from '@/hooks/navigation';
-import { isOutlineEmpty } from '@/utils/outlineUtils';
+import { useKeyboardNavigation, useOutlineNavigation, useScrollSpy } from '@/hooks/navigation';
 import type { DocumentOutlineProps } from '@/types/outline';
-
+import { parseMarkdownHeadings } from '@/utils/headingUtils';
+import { isOutlineEmpty } from '@/utils/outlineUtils';
+import { EmptyOutline } from './outline/EmptyOutline';
 // Sub-components
 import { OutlineHeader } from './outline/OutlineHeader';
 import { OutlineItem } from './outline/OutlineItem';
-import { EmptyOutline } from './outline/EmptyOutline';
 
 /**
  * Main DocumentOutline component

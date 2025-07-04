@@ -4,9 +4,9 @@
  */
 
 import type React from 'react';
+import type { Theme } from '../../../../features/ThemeSelector';
 import { EditorPane } from '../../../EditorPane';
 import { PreviewPane } from '../../../PreviewPane';
-import type { Theme } from '../../../../features/ThemeSelector';
 import type { EditorSettings, ResponsiveState } from '../../types';
 
 /**

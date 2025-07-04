@@ -5,13 +5,13 @@
  * @author Axel Modra
  */
 
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { cn } from '@/lib/utils';
-import type { UndoRedoButtonsProps } from '../types/undoRedo.types';
 import { useKeyboardShortcuts, useUndoRedoState } from '../hooks/useKeyboardShortcuts';
+import type { UndoRedoButtonsProps } from '../types/undoRedo.types';
+import { DesktopUndoRedo } from './DesktopUndoRedo';
 import { MobileUndoRedo } from './MobileUndoRedo';
 import { TabletUndoRedo } from './TabletUndoRedo';
-import { DesktopUndoRedo } from './DesktopUndoRedo';
 
 /**
  * Komponen UndoRedoButtons

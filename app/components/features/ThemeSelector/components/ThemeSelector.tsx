@@ -4,11 +4,12 @@
  *
  * @author Axel Modra
  */
-import React from 'react';
+
 import { Palette } from 'lucide-react';
+import React from 'react';
 import { cn } from '@/lib/utils';
-import type { ThemeSelectorProps } from '../types/theme.types';
 import { useThemeSelector } from '../hooks/useThemeSelector';
+import type { ThemeSelectorProps } from '../types/theme.types';
 import { ThemeButton } from './ThemeButton';
 /**
  * Komponen ThemeSelector

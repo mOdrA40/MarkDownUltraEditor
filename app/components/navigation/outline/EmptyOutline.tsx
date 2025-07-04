@@ -2,8 +2,8 @@
  * Empty state component untuk DocumentOutline
  */
 
-import type React from 'react';
 import { List } from 'lucide-react';
+import type React from 'react';
 import type { EmptyOutlineProps } from '@/types/outline';
 import { getHeaderStyles } from '@/utils/outlineUtils';
 

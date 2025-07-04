@@ -3,11 +3,11 @@
  * @author Axel Modra
  */
 
-import { useState, useCallback, useEffect } from 'react';
-import { useUndoRedo, useToast } from '@/hooks/core';
+import { useCallback, useEffect, useState } from 'react';
+import { useToast, useUndoRedo } from '@/hooks/core';
+import { cleanupStorage, formatBytes, getStorageInfo } from '@/utils/storageUtils';
 import type { EditorState, UseEditorStateReturn } from '../types';
 import { DEFAULT_FILE, STORAGE_KEYS, SUCCESS_MESSAGES } from '../utils/constants';
-import { getStorageInfo, cleanupStorage, formatBytes } from '@/utils/storageUtils';
 
 /**
  * Custom hook for managing editor state

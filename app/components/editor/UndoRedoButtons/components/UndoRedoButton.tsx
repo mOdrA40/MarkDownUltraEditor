@@ -10,10 +10,10 @@ import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import type { UndoRedoButtonProps } from '../types/undoRedo.types';
 import {
-  getButtonConfig,
-  getButtonClasses,
-  getIconClasses,
   getAriaLabel,
+  getButtonClasses,
+  getButtonConfig,
+  getIconClasses,
   getTestId,
 } from '../utils/undoRedo.utils';
 

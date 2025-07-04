@@ -5,11 +5,11 @@
  * @author Axel Modra
  */
 
+import { AlignLeft, BarChart3, Clock, FileText, Hash, Type } from 'lucide-react';
 import React, { memo } from 'react';
-import { Type, Hash, AlignLeft, BarChart3, FileText, Clock } from 'lucide-react';
-import { STAT_TYPES, ICON_SIZES, A11Y } from '../constants/stats.constants';
-import { formatStatValue } from '../utils/stats.utils';
+import { A11Y, ICON_SIZES, STAT_TYPES } from '../constants/stats.constants';
 import type { StatItemProps } from '../types/stats.types';
+import { formatStatValue } from '../utils/stats.utils';
 
 // Icon mapping
 const ICON_MAP = {

@@ -7,12 +7,11 @@
 import type React from 'react';
 import { useMemo } from 'react';
 import { parseMarkdownHeadings } from '@/utils/headingUtils';
-
-// Custom hooks dan components
-import { useTocNavigation } from './TableOfContents/hooks/useTocNavigation';
+import { EmptyToc } from './TableOfContents/components/EmptyToc';
 import { TocHeader } from './TableOfContents/components/TocHeader';
 import { TocList } from './TableOfContents/components/TocList';
-import { EmptyToc } from './TableOfContents/components/EmptyToc';
+// Custom hooks dan components
+import { useTocNavigation } from './TableOfContents/hooks/useTocNavigation';
 
 // Types
 import type { TableOfContentsProps } from './TableOfContents/types/toc.types';

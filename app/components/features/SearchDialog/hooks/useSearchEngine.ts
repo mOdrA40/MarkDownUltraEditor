@@ -3,14 +3,14 @@
  * @author Axel Modra
  */
 
-import { useState, useMemo, useCallback } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import type {
+  NavigationDirection,
+  ReplaceResult,
+  SearchEngineState,
   SearchMatch,
   SearchOptions,
   SearchResult,
-  ReplaceResult,
-  NavigationDirection,
-  SearchEngineState,
 } from '../types/search.types';
 
 /**

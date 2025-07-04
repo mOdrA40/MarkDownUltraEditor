@@ -3,14 +3,14 @@
  * Menggunakan standardized breakpoints dan efficient event handling
  */
 
-import { useState, useEffect, useCallback, useRef } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import {
-  MEDIA_QUERIES,
+  type DeviceType,
   getDeviceType,
   getWindowDimensions,
-  throttle,
-  type DeviceType,
+  MEDIA_QUERIES,
   type ResponsiveState,
+  throttle,
 } from '@/utils/responsive';
 
 /**

@@ -17,7 +17,7 @@ export type {
  * Outline navigation provider component
  */
 import type React from 'react';
-import { createContext, useContext, type ReactNode } from 'react';
+import { createContext, type ReactNode, useContext } from 'react';
 import { useOutlineNavigation } from '@/hooks/navigation';
 import type {
   HeadingItem,
