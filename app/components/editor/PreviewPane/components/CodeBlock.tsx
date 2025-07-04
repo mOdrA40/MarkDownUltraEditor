@@ -3,9 +3,14 @@
  * @author Axel Modra
  */
 
-import React from 'react';
-import { CodeBlockProps } from '../types/preview.types';
-import { getLanguageIcon, extractTextContent, copyToClipboard, getResponsiveOptions } from '../utils/languageUtils';
+import type React from 'react';
+import type { CodeBlockProps } from '../types/preview.types';
+import {
+  getLanguageIcon,
+  extractTextContent,
+  copyToClipboard,
+  getResponsiveOptions,
+} from '../utils/languageUtils';
 
 /**
  * Advanced CodeBlock component dengan styling yang indah dan copy functionality
@@ -15,7 +20,7 @@ export const CodeBlock: React.FC<CodeBlockProps> = ({
   className,
   language,
   isMobile = false,
-  isTablet = false
+  isTablet = false,
 }) => {
   const responsiveOptions = getResponsiveOptions(isMobile, isTablet);
 
@@ -32,7 +37,6 @@ export const CodeBlock: React.FC<CodeBlockProps> = ({
     <div className="relative group my-6">
       {/* 🔥 Super Ultra Indah Code Block Container */}
       <div className="relative overflow-hidden rounded-xl border border-gray-200 dark:border-gray-700 shadow-lg hover:shadow-xl transition-all duration-300 bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-800 dark:to-gray-900">
-
         {/* ✨ Header dengan language info dan copy button */}
         {language && (
           <div className="flex items-center justify-between px-4 py-2 bg-gradient-to-r from-gray-100 to-gray-200 dark:from-gray-700 dark:to-gray-800 border-b border-gray-200 dark:border-gray-600">
@@ -41,10 +45,8 @@ export const CodeBlock: React.FC<CodeBlockProps> = ({
               <span className="text-sm font-semibold text-gray-700 dark:text-gray-300">
                 {language.toUpperCase()}
               </span>
-              <div className="h-1 w-1 rounded-full bg-gray-400"></div>
-              <span className="text-xs text-gray-500 dark:text-gray-400">
-                Code Block
-              </span>
+              <div className="h-1 w-1 rounded-full bg-gray-400" />
+              <span className="text-xs text-gray-500 dark:text-gray-400">Code Block</span>
             </div>
 
             {/* Copy button */}
@@ -59,7 +61,7 @@ export const CodeBlock: React.FC<CodeBlockProps> = ({
         )}
 
         {/* 🌟 Gradient overlay untuk efek depth */}
-        <div className="absolute inset-0 bg-gradient-to-br from-transparent via-transparent to-black/5 dark:to-white/5 pointer-events-none"></div>
+        <div className="absolute inset-0 bg-gradient-to-br from-transparent via-transparent to-black/5 dark:to-white/5 pointer-events-none" />
 
         {/* 💎 Main code container */}
         <div className="relative">
@@ -68,26 +70,25 @@ export const CodeBlock: React.FC<CodeBlockProps> = ({
             style={{
               fontSize: responsiveOptions.codeSize,
               lineHeight: 1.6,
-              fontFamily: 'ui-monospace, SFMono-Regular, "SF Mono", Monaco, Consolas, "Liberation Mono", "Courier New", monospace'
+              fontFamily:
+                'ui-monospace, SFMono-Regular, "SF Mono", Monaco, Consolas, "Liberation Mono", "Courier New", monospace',
             }}
           >
-            <code className={className}>
-              {children}
-            </code>
+            <code className={className}>{children}</code>
           </pre>
 
           {/* ✨ Subtle shine effect on hover */}
           <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none">
-            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent transform -skew-x-12 -translate-x-full group-hover:translate-x-full transition-transform duration-1000"></div>
+            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent transform -skew-x-12 -translate-x-full group-hover:translate-x-full transition-transform duration-1000" />
           </div>
         </div>
 
         {/* 🎭 Bottom accent line */}
-        <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 opacity-60"></div>
+        <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 opacity-60" />
       </div>
 
       {/* 🌈 Glow effect on hover */}
-      <div className="absolute -inset-1 bg-gradient-to-r from-blue-500/20 via-purple-500/20 to-pink-500/20 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 blur-sm -z-10"></div>
+      <div className="absolute -inset-1 bg-gradient-to-r from-blue-500/20 via-purple-500/20 to-pink-500/20 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 blur-sm -z-10" />
     </div>
   );
 };

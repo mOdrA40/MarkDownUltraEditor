@@ -4,7 +4,7 @@
  */
 
 import { useState, useCallback, useEffect, useRef } from 'react';
-import { EditorSettings } from '../types';
+import type { EditorSettings } from '../types';
 import { DEFAULT_EDITOR_CONFIG, STORAGE_KEYS } from '../utils/constants';
 
 /**
@@ -37,7 +37,7 @@ export const useEditorSettings = (
   // Initialize settings with defaults
   const [settings, setSettings] = useState<EditorSettings>({
     ...DEFAULT_EDITOR_CONFIG.defaultSettings,
-    ...initialSettings
+    ...initialSettings,
   });
 
   // Track if initial load is complete
@@ -48,9 +48,9 @@ export const useEditorSettings = (
    */
   const updateFontSize = useCallback((size: number) => {
     const clampedSize = Math.max(8, Math.min(32, size)); // Clamp between 8-32px
-    setSettings(prev => ({
+    setSettings((prev) => ({
       ...prev,
-      fontSize: clampedSize
+      fontSize: clampedSize,
     }));
   }, []);
 
@@ -59,9 +59,9 @@ export const useEditorSettings = (
    */
   const updateLineHeight = useCallback((height: number) => {
     const clampedHeight = Math.max(1.0, Math.min(3.0, height)); // Clamp between 1.0-3.0
-    setSettings(prev => ({
+    setSettings((prev) => ({
       ...prev,
-      lineHeight: clampedHeight
+      lineHeight: clampedHeight,
     }));
   }, []);
 
@@ -69,9 +69,9 @@ export const useEditorSettings = (
    * Toggle focus mode
    */
   const toggleFocusMode = useCallback(() => {
-    setSettings(prev => ({
+    setSettings((prev) => ({
       ...prev,
-      focusMode: !prev.focusMode
+      focusMode: !prev.focusMode,
     }));
   }, []);
 
@@ -79,9 +79,9 @@ export const useEditorSettings = (
    * Toggle typewriter mode
    */
   const toggleTypewriterMode = useCallback(() => {
-    setSettings(prev => ({
+    setSettings((prev) => ({
       ...prev,
-      typewriterMode: !prev.typewriterMode
+      typewriterMode: !prev.typewriterMode,
     }));
   }, []);
 
@@ -89,9 +89,9 @@ export const useEditorSettings = (
    * Toggle word wrap
    */
   const toggleWordWrap = useCallback(() => {
-    setSettings(prev => ({
+    setSettings((prev) => ({
       ...prev,
-      wordWrap: !prev.wordWrap
+      wordWrap: !prev.wordWrap,
     }));
   }, []);
 
@@ -99,9 +99,9 @@ export const useEditorSettings = (
    * Toggle vim mode
    */
   const toggleVimMode = useCallback(() => {
-    setSettings(prev => ({
+    setSettings((prev) => ({
       ...prev,
-      vimMode: !prev.vimMode
+      vimMode: !prev.vimMode,
     }));
   }, []);
 
@@ -109,9 +109,9 @@ export const useEditorSettings = (
    * Toggle zen mode
    */
   const toggleZenMode = useCallback(() => {
-    setSettings(prev => ({
+    setSettings((prev) => ({
       ...prev,
-      zenMode: !prev.zenMode
+      zenMode: !prev.zenMode,
     }));
   }, []);
 
@@ -119,9 +119,9 @@ export const useEditorSettings = (
    * Update multiple settings at once
    */
   const updateSettings = useCallback((newSettings: Partial<EditorSettings>) => {
-    setSettings(prev => ({
+    setSettings((prev) => ({
       ...prev,
-      ...newSettings
+      ...newSettings,
     }));
   }, []);
 
@@ -155,9 +155,9 @@ export const useEditorSettings = (
       const savedSettings = localStorage.getItem(STORAGE_KEYS.SETTINGS);
       if (savedSettings) {
         const parsedSettings = JSON.parse(savedSettings);
-        setSettings(prev => ({
+        setSettings((prev) => ({
           ...prev,
-          ...parsedSettings
+          ...parsedSettings,
         }));
       }
     } catch (error) {
@@ -217,12 +217,12 @@ export const useEditorSettings = (
     updateSettings,
     resetSettings,
     saveSettings,
-    loadSettings
+    loadSettings,
   };
 
   return {
     settings,
-    actions
+    actions,
   };
 };
 
@@ -256,11 +256,14 @@ export const useNumericSetting = (
 ) => {
   const [value, setValue] = useState(initialValue);
 
-  const updateValue = useCallback((newValue: number) => {
-    const clampedValue = Math.max(min, Math.min(max, newValue));
-    setValue(clampedValue);
-    onChange?.(clampedValue);
-  }, [min, max, onChange]);
+  const updateValue = useCallback(
+    (newValue: number) => {
+      const clampedValue = Math.max(min, Math.min(max, newValue));
+      setValue(clampedValue);
+      onChange?.(clampedValue);
+    },
+    [min, max, onChange]
+  );
 
   const increment = useCallback(() => {
     updateValue(value + 1);
@@ -276,6 +279,6 @@ export const useNumericSetting = (
     increment,
     decrement,
     isAtMin: value <= min,
-    isAtMax: value >= max
+    isAtMax: value >= max,
   };
 };

@@ -1,6 +1,6 @@
-import React from 'react';
-import { EditorHeaderConfig } from "../types/editorPane.types";
-import { generateHeaderStyles } from "@/utils/themeUtils";
+import type React from 'react';
+import type { EditorHeaderConfig } from '../types/editorPane.types';
+import { generateHeaderStyles } from '@/utils/themeUtils';
 
 /**
  * Editor header component that displays current editor modes
@@ -11,7 +11,7 @@ export const EditorHeader: React.FC<EditorHeaderConfig> = ({
   typewriterMode,
   vimMode,
   vimModeState,
-  theme
+  theme,
 }) => {
   // Don't render if not shown or in focus mode
   if (!show || focusMode) return null;
@@ -24,21 +24,15 @@ export const EditorHeader: React.FC<EditorHeaderConfig> = ({
       style={{
         ...headerStyles,
         backdropFilter: 'blur(12px)',
-        WebkitBackdropFilter: 'blur(12px)'
+        WebkitBackdropFilter: 'blur(12px)',
       }}
     >
       <h3 className="text-sm font-medium">
         Editor
-        {focusMode && (
-          <span className="ml-2 text-xs opacity-60">(Focus Mode)</span>
-        )}
-        {typewriterMode && (
-          <span className="ml-2 text-xs opacity-60">(Typewriter)</span>
-        )}
+        {focusMode && <span className="ml-2 text-xs opacity-60">(Focus Mode)</span>}
+        {typewriterMode && <span className="ml-2 text-xs opacity-60">(Typewriter)</span>}
         {vimMode && (
-          <span className="ml-2 text-xs opacity-60">
-            (Vim: {vimModeState.toUpperCase()})
-          </span>
+          <span className="ml-2 text-xs opacity-60">(Vim: {vimModeState.toUpperCase()})</span>
         )}
       </h3>
     </div>

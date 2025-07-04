@@ -17,12 +17,12 @@ export interface StorageInfo {
  */
 export const formatBytes = (bytes: number): string => {
   if (bytes === 0) return '0 Bytes';
-  
+
   const k = 1024;
   const sizes = ['Bytes', 'KB', 'MB', 'GB'];
   const i = Math.floor(Math.log(bytes) / Math.log(k));
-  
-  return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+
+  return Number.parseFloat((bytes / k ** i).toFixed(2)) + ' ' + sizes[i];
 };
 
 /**
@@ -37,14 +37,14 @@ export const getStorageInfo = (): StorageInfo => {
       usedPercentage: 0,
       usedFormatted: '0 Bytes',
       availableFormatted: '0 Bytes',
-      totalFormatted: '0 Bytes'
+      totalFormatted: '0 Bytes',
     };
   }
 
   // Calculate used space
   let used = 0;
-  for (let key in localStorage) {
-    if (localStorage.hasOwnProperty(key)) {
+  for (const key in localStorage) {
+    if (Object.hasOwn(localStorage, key)) {
       used += localStorage[key].length + key.length;
     }
   }
@@ -62,7 +62,7 @@ export const getStorageInfo = (): StorageInfo => {
     usedPercentage,
     usedFormatted: formatBytes(used),
     availableFormatted: formatBytes(available),
-    totalFormatted: formatBytes(total)
+    totalFormatted: formatBytes(total),
   };
 };
 
@@ -79,10 +79,10 @@ export const hasEnoughSpace = (dataSize: number): boolean => {
  */
 export const getItemSize = (key: string): number => {
   if (typeof localStorage === 'undefined') return 0;
-  
+
   const item = localStorage.getItem(key);
   if (!item) return 0;
-  
+
   return item.length + key.length;
 };
 
@@ -91,27 +91,27 @@ export const getItemSize = (key: string): number => {
  */
 export const cleanupStorage = (keepKeys: string[] = []): number => {
   if (typeof localStorage === 'undefined') return 0;
-  
+
   let cleaned = 0;
   const keysToRemove: string[] = [];
-  
-  for (let key in localStorage) {
-    if (localStorage.hasOwnProperty(key) && !keepKeys.includes(key)) {
+
+  for (const key in localStorage) {
+    if (Object.hasOwn(localStorage, key) && !keepKeys.includes(key)) {
       // Remove old auto-save data (older than 7 days)
       if (key.startsWith('autosave_') || key.startsWith('backup_')) {
         const timestamp = key.split('_')[1];
-        if (timestamp && Date.now() - parseInt(timestamp) > 7 * 24 * 60 * 60 * 1000) {
+        if (timestamp && Date.now() - Number.parseInt(timestamp) > 7 * 24 * 60 * 60 * 1000) {
           keysToRemove.push(key);
         }
       }
     }
   }
-  
-  keysToRemove.forEach(key => {
+
+  keysToRemove.forEach((key) => {
     cleaned += getItemSize(key);
     localStorage.removeItem(key);
   });
-  
+
   return cleaned;
 };
 
@@ -121,15 +121,15 @@ export const cleanupStorage = (keepKeys: string[] = []): number => {
  */
 export const testStorageCapacity = (): number => {
   if (typeof localStorage === 'undefined') return 0;
-  
+
   const testKey = '__storage_test__';
   const testData = 'x'.repeat(1024); // 1KB chunks
   let capacity = 0;
-  
+
   try {
     // Clean up any existing test data
     localStorage.removeItem(testKey);
-    
+
     // Keep adding data until we hit the limit
     while (true) {
       try {
@@ -139,10 +139,10 @@ export const testStorageCapacity = (): number => {
         break;
       }
     }
-    
+
     // Clean up test data
     localStorage.removeItem(testKey);
-    
+
     return capacity * 1024; // Return in bytes
   } catch (e) {
     // Clean up on error
@@ -166,12 +166,13 @@ export const STORAGE_THRESHOLDS = {
  */
 export const getStorageWarningLevel = (): 'safe' | 'warning' | 'critical' => {
   const info = getStorageInfo();
-  
+
   if (info.usedPercentage >= STORAGE_THRESHOLDS.CRITICAL) {
     return 'critical';
-  } else if (info.usedPercentage >= STORAGE_THRESHOLDS.WARNING) {
+  }
+  if (info.usedPercentage >= STORAGE_THRESHOLDS.WARNING) {
     return 'warning';
   }
-  
+
   return 'safe';
 };

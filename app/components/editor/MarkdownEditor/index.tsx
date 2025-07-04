@@ -5,26 +5,23 @@
 
 import React from 'react';
 import { MobileNav } from '../../layout/MobileNav';
-import { MarkdownEditorProps } from './types';
-import { Theme, useTheme } from '../../features/ThemeSelector';
+import type { MarkdownEditorProps } from './types';
+import { type Theme, useTheme } from '../../features/ThemeSelector';
 import {
   useEditorState,
   useResponsiveLayout,
   useDialogManager,
   useEditorSettings,
-  useKeyboardShortcuts
+  useKeyboardShortcuts,
 } from './hooks';
-import {
-  EditorContainer,
-  DialogContainer
-} from './components';
+import { EditorContainer, DialogContainer } from './components';
 import {
   PerformanceMonitor,
   EditorErrorBoundary,
   MemoizedEditorHeader,
   MemoizedEditorSidebar,
   MemoizedEditorMainContent,
-  MemoizedEditorFooter
+  MemoizedEditorFooter,
 } from './components/Performance';
 import { DEFAULT_FILE } from './utils/constants';
 import { WelcomeDialog, useWelcomeDialog } from '../../auth/WelcomeDialog';
@@ -33,7 +30,7 @@ import { useRenderPerformance, usePerformanceDebug } from '@/hooks/core/usePerfo
 
 /**
  * Main MarkdownEditor component - Refactored with clean architecture
- * 
+ *
  * Features:
  * - Modular architecture with separation of concerns
  * - Custom hooks for state management
@@ -49,7 +46,7 @@ export const MarkdownEditor: React.FC<MarkdownEditorProps> = ({
   initialTheme,
   eventHandlers = {},
   className = '',
-  style = {}
+  style = {},
 }) => {
   // State management hooks
   const editorState = useEditorState(initialMarkdown, initialFileName);
@@ -110,64 +107,80 @@ export const MarkdownEditor: React.FC<MarkdownEditorProps> = ({
   }, [responsive.isMobile, responsive.isTablet]);
 
   // Text insertion helper
-  const insertText = React.useCallback((text: string) => {
-    const textarea = document.querySelector('textarea');
-    if (textarea) {
-      const start = textarea.selectionStart;
-      const end = textarea.selectionEnd;
-      const newText = editor.markdown.substring(0, start) + text + editor.markdown.substring(end);
-      editorActions.setMarkdown(newText);
+  const insertText = React.useCallback(
+    (text: string) => {
+      const textarea = document.querySelector('textarea');
+      if (textarea) {
+        const start = textarea.selectionStart;
+        const end = textarea.selectionEnd;
+        const newText = editor.markdown.substring(0, start) + text + editor.markdown.substring(end);
+        editorActions.setMarkdown(newText);
 
-      // Set cursor position after inserted text
-      setTimeout(() => {
-        textarea.focus();
-        textarea.setSelectionRange(start + text.length, start + text.length);
-      }, 0);
-    }
-  }, [editor.markdown, editorActions]);
-
-
+        // Set cursor position after inserted text
+        setTimeout(() => {
+          textarea.focus();
+          textarea.setSelectionRange(start + text.length, start + text.length);
+        }, 0);
+      }
+    },
+    [editor.markdown, editorActions]
+  );
 
   // Template loading helper
-  const loadTemplate = React.useCallback((content: string, fileName: string) => {
-    editorActions.loadFile(content, fileName);
-  }, [editorActions]);
+  const loadTemplate = React.useCallback(
+    (content: string, fileName: string) => {
+      editorActions.loadFile(content, fileName);
+    },
+    [editorActions]
+  );
 
   // Keyboard shortcuts context
-  const keyboardContext = React.useMemo(() => ({
-    insertText,
-    togglePreview: () => setShowPreview(!showPreview),
-    toggleZenMode: () => settingsActions.toggleZenMode(),
-    showShortcuts: () => dialogActions.showDialog('showShortcuts'),
-    undo: undoRedo.undo,
-    redo: undoRedo.redo,
-    newFile: editorActions.newFile,
-    saveFile: () => {}, // Implement save functionality
-    openFile: () => {} // Implement open functionality
-  }), [insertText, showPreview, settingsActions, dialogActions, undoRedo, editorActions]);
+  const keyboardContext = React.useMemo(
+    () => ({
+      insertText,
+      togglePreview: () => setShowPreview(!showPreview),
+      toggleZenMode: () => settingsActions.toggleZenMode(),
+      showShortcuts: () => dialogActions.showDialog('showShortcuts'),
+      undo: undoRedo.undo,
+      redo: undoRedo.redo,
+      newFile: editorActions.newFile,
+      saveFile: () => {}, // Implement save functionality
+      openFile: () => {}, // Implement open functionality
+    }),
+    [insertText, showPreview, settingsActions, dialogActions, undoRedo, editorActions]
+  );
 
   // Initialize keyboard shortcuts
   useKeyboardShortcuts(keyboardContext, !settings.zenMode);
 
   // UI state object for components
-  const uiState = React.useMemo(() => ({
-    showPreview,
-    showToc,
-    showOutline,
-    showNavigation: showToc || showOutline,
-    sidebarCollapsed
-  }), [showPreview, showToc, showOutline, sidebarCollapsed]);
+  const uiState = React.useMemo(
+    () => ({
+      showPreview,
+      showToc,
+      showOutline,
+      showNavigation: showToc || showOutline,
+      sidebarCollapsed,
+    }),
+    [showPreview, showToc, showOutline, sidebarCollapsed]
+  );
 
   // Event handlers with custom overrides
-  const handleMarkdownChange = React.useCallback((value: string) => {
-    editorActions.setMarkdown(value);
-    eventHandlers.onMarkdownChange?.(value);
-  }, [editorActions, eventHandlers]);
+  const handleMarkdownChange = React.useCallback(
+    (value: string) => {
+      editorActions.setMarkdown(value);
+      eventHandlers.onMarkdownChange?.(value);
+    },
+    [editorActions, eventHandlers]
+  );
 
-  const handleThemeChange = React.useCallback((newTheme: Theme) => {
-    setTheme(newTheme);
-    eventHandlers.onThemeChange?.(newTheme);
-  }, [setTheme, eventHandlers]);
+  const handleThemeChange = React.useCallback(
+    (newTheme: Theme) => {
+      setTheme(newTheme);
+      eventHandlers.onThemeChange?.(newTheme);
+    },
+    [setTheme, eventHandlers]
+  );
 
   // Auto-save functionality
   React.useEffect(() => {
@@ -222,7 +235,9 @@ export const MarkdownEditor: React.FC<MarkdownEditorProps> = ({
               fontSize={settings.fontSize}
               onFontSizeChange={(size) => settingsActions.updateSettings({ fontSize: size })}
               lineHeight={settings.lineHeight}
-              onLineHeightChange={(height) => settingsActions.updateSettings({ lineHeight: height })}
+              onLineHeightChange={(height) =>
+                settingsActions.updateSettings({ lineHeight: height })
+              }
               focusMode={settings.focusMode}
               onFocusModeToggle={settingsActions.toggleFocusMode}
               typewriterMode={settings.typewriterMode}

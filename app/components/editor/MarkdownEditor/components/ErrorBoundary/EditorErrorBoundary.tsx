@@ -3,10 +3,10 @@
  * @author Axel Modra
  */
 
-import React, { Component, ErrorInfo, ReactNode } from 'react';
-import { Button } from "@/components/ui/button";
-import { AlertTriangle, RefreshCw, Bug, Copy } from "lucide-react";
-import { ErrorBoundaryState } from '../../types';
+import React, { Component, type ErrorInfo, type ReactNode } from 'react';
+import { Button } from '@/components/ui/button';
+import { AlertTriangle, RefreshCw, Bug, Copy } from 'lucide-react';
+import type { ErrorBoundaryState } from '../../types';
 
 /**
  * Props for EditorErrorBoundary component
@@ -30,7 +30,7 @@ export class EditorErrorBoundary extends Component<EditorErrorBoundaryProps, Err
   static getDerivedStateFromError(error: Error): ErrorBoundaryState {
     return {
       hasError: true,
-      error
+      error,
     };
   }
 
@@ -38,7 +38,7 @@ export class EditorErrorBoundary extends Component<EditorErrorBoundaryProps, Err
     this.setState({
       hasError: true,
       error,
-      errorInfo
+      errorInfo,
     });
 
     // Call custom error handler if provided
@@ -68,7 +68,7 @@ export class EditorErrorBoundary extends Component<EditorErrorBoundaryProps, Err
         componentStack: errorInfo.componentStack,
         timestamp: new Date().toISOString(),
         userAgent: navigator.userAgent,
-        url: window.location.href
+        url: window.location.href,
       });
     } catch (reportingError) {
       console.error('Failed to report error:', reportingError);
@@ -101,7 +101,7 @@ export class EditorErrorBoundary extends Component<EditorErrorBoundaryProps, Err
       componentStack: this.state.errorInfo?.componentStack,
       timestamp: new Date().toISOString(),
       userAgent: navigator.userAgent,
-      url: window.location.href
+      url: window.location.href,
     };
 
     try {
@@ -148,20 +148,12 @@ export class EditorErrorBoundary extends Component<EditorErrorBoundaryProps, Err
 
             {/* Action buttons */}
             <div className="flex flex-col space-y-2">
-              <Button
-                onClick={this.handleReset}
-                className="w-full"
-                variant="default"
-              >
+              <Button onClick={this.handleReset} className="w-full" variant="default">
                 <RefreshCw className="h-4 w-4 mr-2" />
                 Try Again
               </Button>
 
-              <Button
-                onClick={this.handleReload}
-                className="w-full"
-                variant="outline"
-              >
+              <Button onClick={this.handleReload} className="w-full" variant="outline">
                 <RefreshCw className="h-4 w-4 mr-2" />
                 Reload Page
               </Button>
@@ -201,7 +193,8 @@ export class EditorErrorBoundary extends Component<EditorErrorBoundaryProps, Err
             {/* Help text */}
             <div className="mt-4 pt-4 border-t border-gray-200 dark:border-gray-700">
               <p className="text-xs text-gray-500 dark:text-gray-400">
-                If this problem persists, please try refreshing the page or clearing your browser cache.
+                If this problem persists, please try refreshing the page or clearing your browser
+                cache.
               </p>
             </div>
           </div>

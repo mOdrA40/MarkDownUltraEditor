@@ -4,11 +4,11 @@
  */
 
 import {
-  WritingSettings,
-  WritingSettingsValidation,
+  type WritingSettings,
+  type WritingSettingsValidation,
   DEFAULT_WRITING_SETTINGS,
   DEFAULT_VALIDATION_RULES,
-  WRITING_SETTINGS_CONSTANTS
+  WRITING_SETTINGS_CONSTANTS,
 } from '@/types/writingSettings';
 
 // Re-export types and constants for convenience
@@ -19,7 +19,7 @@ export { DEFAULT_WRITING_SETTINGS, DEFAULT_VALIDATION_RULES, WRITING_SETTINGS_CO
  * Validate font size
  */
 export const validateFontSize = (
-  size: number, 
+  size: number,
   rules: WritingSettingsValidation = DEFAULT_VALIDATION_RULES
 ): boolean => {
   const { min, max } = rules.fontSize;
@@ -30,7 +30,7 @@ export const validateFontSize = (
  * Validate line height
  */
 export const validateLineHeight = (
-  height: number, 
+  height: number,
   rules: WritingSettingsValidation = DEFAULT_VALIDATION_RULES
 ): boolean => {
   const { min, max } = rules.lineHeight;
@@ -50,8 +50,13 @@ export const validateWritingSettings = (
 
   // Check required properties
   const requiredProps: (keyof WritingSettings)[] = [
-    'fontSize', 'lineHeight', 'focusMode', 'typewriterMode',
-    'wordWrap', 'vimMode', 'zenMode'
+    'fontSize',
+    'lineHeight',
+    'focusMode',
+    'typewriterMode',
+    'wordWrap',
+    'vimMode',
+    'zenMode',
   ];
 
   for (const prop of requiredProps) {
@@ -64,7 +69,11 @@ export const validateWritingSettings = (
 
   // Validate boolean values
   const booleanProps: (keyof WritingSettings)[] = [
-    'focusMode', 'typewriterMode', 'wordWrap', 'vimMode', 'zenMode'
+    'focusMode',
+    'typewriterMode',
+    'wordWrap',
+    'vimMode',
+    'zenMode',
   ];
 
   for (const prop of booleanProps) {
@@ -101,7 +110,11 @@ export const sanitizeWritingSettings = (
 
   // Sanitize boolean values
   const booleanProps: (keyof WritingSettings)[] = [
-    'focusMode', 'typewriterMode', 'wordWrap', 'vimMode', 'zenMode'
+    'focusMode',
+    'typewriterMode',
+    'wordWrap',
+    'vimMode',
+    'zenMode',
   ];
 
   for (const prop of booleanProps) {
@@ -156,7 +169,7 @@ export const exportWritingSettings = (settings: WritingSettings): string => {
   const exportData = {
     version: WRITING_SETTINGS_CONSTANTS.EXPORT_VERSION,
     timestamp: new Date().toISOString(),
-    settings
+    settings,
   };
 
   return JSON.stringify(exportData, null, 2);
@@ -171,12 +184,12 @@ export const importWritingSettings = (
 ): WritingSettings | null => {
   try {
     const parsed = JSON.parse(jsonString);
-    
+
     // Check if it's an export format
     if (parsed.version && parsed.settings) {
       return sanitizeWritingSettings(parsed.settings, rules);
     }
-    
+
     // Try to parse as direct settings object
     return sanitizeWritingSettings(parsed, rules);
   } catch (error) {
@@ -193,7 +206,7 @@ export const debounce = <T extends (...args: unknown[]) => void>(
   wait: number
 ): ((...args: Parameters<T>) => void) => {
   let timeout: NodeJS.Timeout;
-  
+
   return (...args: Parameters<T>) => {
     clearTimeout(timeout);
     timeout = setTimeout(() => func(...args), wait);
@@ -208,8 +221,8 @@ export const areSettingsEqual = (
   settings2: WritingSettings
 ): boolean => {
   const keys = Object.keys(settings1) as (keyof WritingSettings)[];
-  
-  return keys.every(key => settings1[key] === settings2[key]);
+
+  return keys.every((key) => settings1[key] === settings2[key]);
 };
 
 /**
@@ -221,12 +234,12 @@ export const getSettingsDiff = (
 ): Partial<WritingSettings> => {
   const diff: Partial<WritingSettings> = {};
   const keys = Object.keys(newSettings) as (keyof WritingSettings)[];
-  
-  keys.forEach(key => {
+
+  keys.forEach((key) => {
     if (oldSettings[key] !== newSettings[key]) {
       (diff as unknown as Record<string, unknown>)[key] = newSettings[key];
     }
   });
-  
+
   return diff;
 };

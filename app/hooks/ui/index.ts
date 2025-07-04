@@ -9,7 +9,7 @@ export {
   useIsMobile,
   useIsTablet,
   useIsDesktop,
-  useDeviceType
+  useDeviceType,
 } from './useResponsive';
 
 // Re-export responsive utilities
@@ -21,7 +21,7 @@ export {
   isTabletWidth,
   isDesktopWidth,
   type DeviceType,
-  type ResponsiveState
+  type ResponsiveState,
 } from '@/utils/responsive';
 
 // Legacy aliases untuk backward compatibility

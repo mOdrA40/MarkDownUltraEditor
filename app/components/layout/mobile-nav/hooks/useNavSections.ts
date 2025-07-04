@@ -13,9 +13,9 @@ import {
   EyeOff,
   Minimize2,
   BookOpen,
-  Download
-} from "lucide-react";
-import { NavSection, MobileNavProps } from '../types/navTypes';
+  Download,
+} from 'lucide-react';
+import type { NavSection, MobileNavProps } from '../types/navTypes';
 
 export const useNavSections = (props: Omit<MobileNavProps, 'currentTheme' | 'onThemeChange'>) => {
   const {
@@ -24,98 +24,94 @@ export const useNavSections = (props: Omit<MobileNavProps, 'currentTheme' | 'onT
     onToggleZen,
     onNewFile,
     onShowAdvancedExport,
-    onShowTemplates
+    onShowTemplates,
   } = props;
 
   /**
    * Generate navigation sections configuration
    */
-  const sections = useMemo((): NavSection[] => [
-    {
-      id: 'file-operations',
-      title: 'File Operations',
-      icon: FileText,
-      order: 1,
-      collapsible: false,
-      actions: [
-        {
-          id: 'new-file',
-          label: 'New File',
-          icon: FileText,
-          onClick: onNewFile
-        },
-        {
-          id: 'templates',
-          label: 'Document Templates',
-          icon: BookOpen,
-          onClick: onShowTemplates
-        },
+  const sections = useMemo(
+    (): NavSection[] => [
+      {
+        id: 'file-operations',
+        title: 'File Operations',
+        icon: FileText,
+        order: 1,
+        collapsible: false,
+        actions: [
+          {
+            id: 'new-file',
+            label: 'New File',
+            icon: FileText,
+            onClick: onNewFile,
+          },
+          {
+            id: 'templates',
+            label: 'Document Templates',
+            icon: BookOpen,
+            onClick: onShowTemplates,
+          },
 
-        {
-          id: 'advanced-export',
-          label: 'Advanced Export',
-          icon: Download,
-          onClick: onShowAdvancedExport
-        }
-      ]
-    },
-    {
-      id: 'formatting',
-      title: 'Formatting',
-      icon: Code,
-      order: 2,
-      collapsible: true,
-      defaultCollapsed: false,
-      actions: [
-        // Actions akan dihandle oleh Toolbar component
-      ]
-    },
-    {
-      id: 'writing-settings',
-      title: 'Writing Settings',
-      icon: Type,
-      order: 3,
-      collapsible: true,
-      defaultCollapsed: false,
-      actions: [
-        // Actions akan dihandle oleh WritingSettings component
-      ]
-    },
-    {
-      id: 'view-options',
-      title: 'View Options',
-      icon: Settings,
-      order: 4,
-      collapsible: false,
-      actions: [
-        {
-          id: 'toggle-preview',
-          label: showPreview ? 'Hide Preview' : 'Show Preview',
-          icon: showPreview ? EyeOff : Eye,
-          onClick: onTogglePreview
-        },
-        {
-          id: 'zen-mode',
-          label: 'Zen Mode',
-          icon: Minimize2,
-          onClick: onToggleZen
-        }
-      ]
-    }
-  ], [
-    showPreview,
-    onTogglePreview,
-    onToggleZen,
-    onNewFile,
-    onShowTemplates,
-    onShowAdvancedExport
-  ]);
+          {
+            id: 'advanced-export',
+            label: 'Advanced Export',
+            icon: Download,
+            onClick: onShowAdvancedExport,
+          },
+        ],
+      },
+      {
+        id: 'formatting',
+        title: 'Formatting',
+        icon: Code,
+        order: 2,
+        collapsible: true,
+        defaultCollapsed: false,
+        actions: [
+          // Actions akan dihandle oleh Toolbar component
+        ],
+      },
+      {
+        id: 'writing-settings',
+        title: 'Writing Settings',
+        icon: Type,
+        order: 3,
+        collapsible: true,
+        defaultCollapsed: false,
+        actions: [
+          // Actions akan dihandle oleh WritingSettings component
+        ],
+      },
+      {
+        id: 'view-options',
+        title: 'View Options',
+        icon: Settings,
+        order: 4,
+        collapsible: false,
+        actions: [
+          {
+            id: 'toggle-preview',
+            label: showPreview ? 'Hide Preview' : 'Show Preview',
+            icon: showPreview ? EyeOff : Eye,
+            onClick: onTogglePreview,
+          },
+          {
+            id: 'zen-mode',
+            label: 'Zen Mode',
+            icon: Minimize2,
+            onClick: onToggleZen,
+          },
+        ],
+      },
+    ],
+    [showPreview, onTogglePreview, onToggleZen, onNewFile, onShowTemplates, onShowAdvancedExport]
+  );
 
   /**
    * Get section by ID
    */
   const getSectionById = (sectionId: string): NavSection | undefined => {
-    return sections.find(section => section.id === sectionId);
+    return sections.find((section) => section.id === sectionId);
   };
 
   /**
@@ -139,12 +135,12 @@ export const useNavSections = (props: Omit<MobileNavProps, 'currentTheme' | 'onT
   const sectionStats = useMemo(() => {
     const totalSections = sections.length;
     const totalActions = sections.reduce((sum, section) => sum + section.actions.length, 0);
-    const collapsibleSections = sections.filter(section => section.collapsible).length;
-    
+    const collapsibleSections = sections.filter((section) => section.collapsible).length;
+
     return {
       totalSections,
       totalActions,
-      collapsibleSections
+      collapsibleSections,
     };
   }, [sections]);
 
@@ -152,6 +148,6 @@ export const useNavSections = (props: Omit<MobileNavProps, 'currentTheme' | 'onT
     sections: sortedSections,
     getSectionById,
     getActionsBySectionId,
-    sectionStats
+    sectionStats,
   };
 };

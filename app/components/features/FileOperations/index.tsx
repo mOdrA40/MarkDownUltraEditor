@@ -3,8 +3,8 @@
  * @author Axel Modra
  */
 
-import React from 'react';
-import { FileOperationsProps } from './types/fileOperations.types';
+import type React from 'react';
+import type { FileOperationsProps } from './types/fileOperations.types';
 import { useFileOperations } from './hooks/useFileOperations';
 import { FileDropdownMenu } from './components/FileDropdownMenu';
 import { FileInput } from './components/FileInput';
@@ -18,7 +18,7 @@ export const FileOperations: React.FC<FileOperationsProps> = ({
   fileName,
   onLoad,
   isMobileNav = false,
-  currentTheme
+  currentTheme,
 }) => {
   // Use custom hook for file operations
   const {
@@ -27,11 +27,11 @@ export const FileOperations: React.FC<FileOperationsProps> = ({
     handleExportHtml,
     handleExportJson,
     handleLoadFile,
-    handleFileLoad
+    handleFileLoad,
   } = useFileOperations({
     markdown,
     fileName,
-    onLoad
+    onLoad,
   });
 
   return (
@@ -47,10 +47,7 @@ export const FileOperations: React.FC<FileOperationsProps> = ({
       />
 
       {/* Hidden File Input */}
-      <FileInput
-        fileInputRef={fileInputRef}
-        onChange={handleFileLoad}
-      />
+      <FileInput fileInputRef={fileInputRef} onChange={handleFileLoad} />
     </>
   );
 };

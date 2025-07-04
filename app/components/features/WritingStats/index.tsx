@@ -1,7 +1,7 @@
 /**
  * WritingStats Module - Main Export
  * Entry point untuk semua exports dari WritingStats module
- * 
+ *
  * @author Axel Modra
  */
 
@@ -26,7 +26,7 @@ export type {
   StatsConfig,
   BreakpointConfig,
   StatDisplayConfig,
-  LayoutConfig
+  LayoutConfig,
 } from './types/stats.types';
 
 // Export constants
@@ -43,7 +43,7 @@ export {
   ANIMATIONS,
   A11Y,
   FORMAT_PATTERNS,
-  THRESHOLDS
+  THRESHOLDS,
 } from './constants/stats.constants';
 
 // Export utilities
@@ -62,7 +62,7 @@ export {
   isShortDocument,
   isLongDocument,
   getDocumentStatus,
-  compareStats
+  compareStats,
 } from './utils/stats.utils';
 
 // Export hooks
@@ -70,7 +70,7 @@ export {
   useWritingStats,
   useDebouncedWritingStats,
   useWritingStatsComparison,
-  useCustomReadingSpeedStats
+  useCustomReadingSpeedStats,
 } from './hooks/useWritingStats';
 
 // Export responsive hooks
@@ -81,7 +81,7 @@ export {
   useIsDesktop,
   useWindowDimensions,
   useMediaQuery,
-  useOrientation
+  useOrientation,
 } from './hooks/useResponsiveDetection';
 
 // Default export untuk backward compatibility

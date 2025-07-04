@@ -3,21 +3,15 @@
  * @author Axel Modra
  */
 
-import React from 'react';
-import { Button } from "@/components/ui/button";
+import type React from 'react';
+import { Button } from '@/components/ui/button';
 import { getHeadingLevelClasses, getActiveHeadingClasses } from '@/utils/headingUtils';
-import { TocItemProps } from '../types/toc.types';
+import type { TocItemProps } from '../types/toc.types';
 
 /**
  * Komponen individual item untuk Table of Contents
  */
-export const TocItem: React.FC<TocItemProps> = ({
-  item,
-  index,
-  isActive,
-  theme,
-  onClick
-}) => {
+export const TocItem: React.FC<TocItemProps> = ({ item, index, isActive, theme, onClick }) => {
   const levelClasses = getHeadingLevelClasses(item.level);
   const activeClasses = getActiveHeadingClasses(isActive);
 
@@ -41,7 +35,7 @@ export const TocItem: React.FC<TocItemProps> = ({
       `}
       style={{
         backgroundColor: isActive ? `${theme?.primary || '#3b82f6'}10` : 'transparent',
-        color: isActive ? theme?.primary || '#3b82f6' : theme?.text || 'inherit'
+        color: isActive ? theme?.primary || '#3b82f6' : theme?.text || 'inherit',
       }}
       title={`Navigate to: ${item.text}`}
       aria-label={`Navigate to ${item.text} heading, level ${item.level}`}
@@ -63,7 +57,7 @@ export const TocItem: React.FC<TocItemProps> = ({
             wordBreak: 'break-word',
             overflowWrap: 'break-word',
             hyphens: 'auto',
-            lineHeight: '1.3'
+            lineHeight: '1.3',
           }}
         >
           {item.text}

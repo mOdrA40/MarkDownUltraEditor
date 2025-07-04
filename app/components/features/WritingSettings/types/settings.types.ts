@@ -1,38 +1,26 @@
 /**
  * WritingSettings Types - TypeScript Type Definitions
  * Definisi types untuk semua komponen WritingSettings
- * 
+ *
  * @author Axel Modra
  */
 
-import { ReactNode } from 'react';
+import type { ReactNode } from 'react';
 
 /**
  * Tipe untuk mode writing yang tersedia
  */
-export type WritingMode = 
-  | 'focus' 
-  | 'typewriter' 
-  | 'wordWrap' 
-  | 'vim' 
-  | 'zen';
+export type WritingMode = 'focus' | 'typewriter' | 'wordWrap' | 'vim' | 'zen';
 
 /**
  * Tipe untuk breakpoint responsif
  */
-export type BreakpointType = 
-  | 'mobile' 
-  | 'small-tablet' 
-  | 'tablet' 
-  | 'desktop';
+export type BreakpointType = 'mobile' | 'small-tablet' | 'tablet' | 'desktop';
 
 /**
  * Tipe untuk ukuran control
  */
-export type ControlSize = 
-  | 'sm' 
-  | 'md' 
-  | 'lg';
+export type ControlSize = 'sm' | 'md' | 'lg';
 
 /**
  * Interface untuk konfigurasi settings

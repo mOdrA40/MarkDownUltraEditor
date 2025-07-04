@@ -3,11 +3,11 @@
  * @author Axel Modra
  */
 
-import React from 'react';
-import { Button } from "@/components/ui/button";
-import { Minimize2, Smartphone, Tablet, Monitor } from "lucide-react";
-import { Theme } from "../../../../features/ThemeSelector";
-import { ResponsiveState } from '../../types';
+import type React from 'react';
+import { Button } from '@/components/ui/button';
+import { Minimize2, Smartphone, Tablet, Monitor } from 'lucide-react';
+import type { Theme } from '../../../../features/ThemeSelector';
+import type { ResponsiveState } from '../../types';
 import { generateResponsiveClasses, getDeviceType } from '../../utils';
 
 /**
@@ -16,17 +16,17 @@ import { generateResponsiveClasses, getDeviceType } from '../../utils';
 export interface EditorContainerProps {
   // Theme
   theme: Theme;
-  
+
   // Responsive
   responsive: ResponsiveState;
-  
+
   // Zen mode
   zenMode: boolean;
   onToggleZenMode: () => void;
-  
+
   // Children
   children: React.ReactNode;
-  
+
   // Custom styling
   className?: string;
   style?: React.CSSProperties;
@@ -42,7 +42,7 @@ export const EditorContainer: React.FC<EditorContainerProps> = ({
   onToggleZenMode,
   children,
   className = '',
-  style = {}
+  style = {},
 }) => {
   const { isMobile, isTablet } = responsive;
 
@@ -62,7 +62,7 @@ export const EditorContainer: React.FC<EditorContainerProps> = ({
       style={{
         backgroundColor: theme.background,
         color: theme.text,
-        ...style
+        ...style,
       }}
     >
       {children}
@@ -72,9 +72,7 @@ export const EditorContainer: React.FC<EditorContainerProps> = ({
         {isMobile && <Smartphone className="h-3 w-3" />}
         {isTablet && <Tablet className="h-3 w-3" />}
         {!isMobile && !isTablet && <Monitor className="h-3 w-3" />}
-        <span className="text-white">
-          {isMobile ? 'Mobile' : isTablet ? 'Tablet' : 'Desktop'}
-        </span>
+        <span className="text-white">{isMobile ? 'Mobile' : isTablet ? 'Tablet' : 'Desktop'}</span>
       </div>
 
       {/* Zen Mode Toggle (floating) */}

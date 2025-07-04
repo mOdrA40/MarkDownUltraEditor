@@ -4,12 +4,12 @@
  */
 
 // Re-export hooks
-export { 
+export {
   useResponsiveDetection,
   useIsMobile,
   useIsTablet,
   useIsDesktop,
-  useDeviceType
+  useDeviceType,
 } from '@/hooks/ui';
 
 // Re-export utilities
@@ -21,19 +21,19 @@ export {
   isTabletWidth,
   isDesktopWidth,
   type DeviceType,
-  type ResponsiveState
+  type ResponsiveState,
 } from '@/utils/responsive';
 
 // Re-export legacy hooks untuk backward compatibility
 export {
   useIsMobile as useMobile,
-  useResponsiveBreakpoint
+  useResponsiveBreakpoint,
 } from '@/hooks/ui';
 
 /**
  * Responsive wrapper component
  */
-import React from 'react';
+import type React from 'react';
 import { useResponsiveDetection } from '@/hooks/ui';
 
 interface ResponsiveWrapperProps {
@@ -45,7 +45,7 @@ interface ResponsiveWrapperProps {
 export const ResponsiveWrapper: React.FC<ResponsiveWrapperProps> = ({
   children,
   showOn = 'desktop',
-  className = ''
+  className = '',
 }) => {
   const { isMobile, isTablet, isDesktop } = useResponsiveDetection();
 

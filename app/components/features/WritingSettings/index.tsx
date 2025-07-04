@@ -1,7 +1,7 @@
 /**
  * WritingSettings Module - Main Export
  * Entry point untuk semua exports dari WritingSettings module
- * 
+ *
  * @author Axel Modra
  */
 
@@ -25,7 +25,7 @@ export type {
   ControlSize,
   WritingModeConfig,
   UseWritingSettingsReturn,
-  UseResponsiveLayoutReturn
+  UseResponsiveLayoutReturn,
 } from './types/settings.types';
 
 // Export constants
@@ -39,7 +39,7 @@ export {
   RESPONSIVE_CLASSES,
   ANIMATIONS,
   A11Y,
-  KEYBOARD_SHORTCUTS
+  KEYBOARD_SHORTCUTS,
 } from './constants/settings.constants';
 
 // Export utilities
@@ -57,7 +57,7 @@ export {
   isMinLineHeight,
   isMaxLineHeight,
   getSettingsConfig,
-  validateSettingsConfig
+  validateSettingsConfig,
 } from './utils/settings.utils';
 
 // Export responsive utilities
@@ -78,7 +78,7 @@ export {
   isLandscape,
   isPortrait,
   getSafeAreaInsets,
-  getPreferredColorScheme
+  getPreferredColorScheme,
 } from './utils/responsive.utils';
 
 // Export hooks
@@ -89,7 +89,7 @@ export {
   useIsTablet,
   useIsDesktop,
   useWindowDimensions,
-  useMediaQuery
+  useMediaQuery,
 } from './hooks/useWritingSettings';
 
 // Default export untuk backward compatibility

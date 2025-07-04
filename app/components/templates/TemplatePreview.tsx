@@ -2,13 +2,17 @@
  * Template preview dialog component
  */
 
-import React from 'react';
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { Download } from "lucide-react";
-import { TemplatePreviewProps } from '@/types/templates';
-import { getThemeAwareDifficultyClasses, formatCategoryName, formatDifficultyName } from '@/utils/templateUtils';
+import type React from 'react';
+import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { Download } from 'lucide-react';
+import type { TemplatePreviewProps } from '@/types/templates';
+import {
+  getThemeAwareDifficultyClasses,
+  formatCategoryName,
+  formatDifficultyName,
+} from '@/utils/templateUtils';
 
 /**
  * Preview dialog untuk menampilkan detail template
@@ -17,11 +21,9 @@ export const TemplatePreview: React.FC<TemplatePreviewProps> = ({
   template,
   isOpen,
   onClose,
-  onSelect
+  onSelect,
 }) => {
   if (!template) return null;
-
-
 
   const handleSelect = () => {
     onSelect(template);
@@ -37,7 +39,9 @@ export const TemplatePreview: React.FC<TemplatePreviewProps> = ({
             <div className="flex items-center">
               <span className="text-lg sm:text-2xl mr-2">{template.icon}</span>
               <span className="text-sm sm:text-base">{template.name}</span>
-              <Badge className={`ml-2 text-xs ${getThemeAwareDifficultyClasses(template.difficulty)}`}>
+              <Badge
+                className={`ml-2 text-xs ${getThemeAwareDifficultyClasses(template.difficulty)}`}
+              >
                 {formatDifficultyName(template.difficulty)}
               </Badge>
             </div>
@@ -55,7 +59,7 @@ export const TemplatePreview: React.FC<TemplatePreviewProps> = ({
             </div>
           </DialogTitle>
         </DialogHeader>
-        
+
         <div className="flex-1 flex flex-col lg:flex-row overflow-hidden min-h-0">
           {/* Template Info Sidebar */}
           <div className="w-full lg:w-80 border-b lg:border-b-0 lg:border-r bg-muted/20 p-2 sm:p-3 md:p-4 overflow-auto flex-shrink-0">
@@ -86,7 +90,7 @@ export const TemplatePreview: React.FC<TemplatePreviewProps> = ({
               <div>
                 <h4 className="font-medium mb-2 text-sm sm:text-base">Tags</h4>
                 <div className="flex flex-wrap gap-1">
-                  {template.tags.map(tag => (
+                  {template.tags.map((tag) => (
                     <Badge key={tag} variant="outline" className="text-xs">
                       {tag}
                     </Badge>

@@ -3,7 +3,8 @@
  * @author Axel Modra
  */
 
-import React, { useState, useEffect } from 'react';
+import type React from 'react';
+import { useState, useEffect } from 'react';
 import { SignUpButton } from '@clerk/react-router';
 import {
   Dialog,
@@ -15,15 +16,7 @@ import {
 } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import {
-  Cloud,
-  HardDrive,
-  Smartphone,
-  Shield,
-  Zap,
-  Check,
-  X
-} from 'lucide-react';
+import { Cloud, HardDrive, Smartphone, Shield, Zap, Check, X } from 'lucide-react';
 
 /**
  * Props for WelcomeDialog component
@@ -95,7 +88,9 @@ export const WelcomeDialog: React.FC<WelcomeDialogProps> = ({
             <div className="flex items-center gap-2 mb-3">
               <Cloud className="w-5 h-5 text-blue-600" />
               <h3 className="font-semibold text-blue-900">Sign Up for Cloud Storage</h3>
-              <Badge variant="default" className="bg-blue-600">Recommended</Badge>
+              <Badge variant="default" className="bg-blue-600">
+                Recommended
+              </Badge>
             </div>
 
             <div className="space-y-2 mb-4">
@@ -118,11 +113,7 @@ export const WelcomeDialog: React.FC<WelcomeDialogProps> = ({
             </div>
 
             <SignUpButton mode="redirect">
-              <Button
-                size="lg"
-                onClick={handleSignUp}
-                className="w-full font-semibold"
-              >
+              <Button size="lg" onClick={handleSignUp} className="w-full font-semibold">
                 Sign Up Now
               </Button>
             </SignUpButton>
@@ -154,11 +145,7 @@ export const WelcomeDialog: React.FC<WelcomeDialogProps> = ({
               </div>
             </div>
 
-            <Button
-              variant="outline"
-              className="w-full"
-              onClick={handleContinueAsGuest}
-            >
+            <Button variant="outline" className="w-full" onClick={handleContinueAsGuest}>
               <HardDrive className="w-4 h-4 mr-2" />
               Continue as Guest
             </Button>
@@ -196,12 +183,7 @@ export const WelcomeDialog: React.FC<WelcomeDialogProps> = ({
           <p className="text-xs text-gray-500 text-center sm:text-left flex-1">
             You can always sign up later to enable cloud storage
           </p>
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={handleClose}
-            className="text-gray-500"
-          >
+          <Button variant="ghost" size="sm" onClick={handleClose} className="text-gray-500">
             Maybe Later
           </Button>
         </DialogFooter>

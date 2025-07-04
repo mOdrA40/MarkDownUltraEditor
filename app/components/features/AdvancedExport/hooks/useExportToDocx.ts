@@ -4,13 +4,11 @@
  */
 
 import { useState, useCallback } from 'react';
-import { ExportOptions, UseExportReturn } from '../types/export.types';
+import type { ExportOptions, UseExportReturn } from '../types/export.types';
 import { downloadFile, sanitizeFilename } from '../utils/downloadFile';
 import { EXPORT_PROGRESS_STEPS, SUCCESS_MESSAGES, ERROR_MESSAGES } from '../utils/constants';
 import { convertMarkdownToHTML } from '../utils/markdownConverter';
 import { generateStyledHTML } from '../utils/htmlGenerator';
-
-
 
 /**
  * Wrap emojis in spans to preserve their original colors
@@ -18,7 +16,8 @@ import { generateStyledHTML } from '../utils/htmlGenerator';
  */
 const wrapEmojisInSpans = (html: string): string => {
   // Enhanced emoji regex yang mencakup lebih banyak range emoji
-  const emojiRegex = /[\u{1F600}-\u{1F64F}]|[\u{1F300}-\u{1F5FF}]|[\u{1F680}-\u{1F6FF}]|[\u{1F1E0}-\u{1F1FF}]|[\u{2600}-\u{26FF}]|[\u{2700}-\u{27BF}]|[\u{1F900}-\u{1F9FF}]|[\u{1F018}-\u{1F270}]|[\u{238C}-\u{2454}]|[\u{20D0}-\u{20FF}]|[\u{1FA70}-\u{1FAFF}]|[\u{1F004}]|[\u{1F0CF}]|[\u{1F170}-\u{1F251}]|[\u{1F004}]|[\u{1F17E}-\u{1F17F}]|[\u{1F18E}]|[\u{3030}]|[\u{2B50}]|[\u{2B55}]|[\u{2934}-\u{2935}]|[\u{2B05}-\u{2B07}]|[\u{2B1B}-\u{2B1C}]|[\u{3297}]|[\u{3299}]|[\u{303D}]|[\u{00A9}]|[\u{00AE}]|[\u{2122}]|[\u{23F3}]|[\u{24C2}]|[\u{23E9}-\u{23EF}]|[\u{25B6}]|[\u{23F8}-\u{23FA}]|[\u{200D}]|[\u{20E3}]|[\u{FE0F}]/gu;
+  const emojiRegex =
+    /[\u{1F600}-\u{1F64F}]|[\u{1F300}-\u{1F5FF}]|[\u{1F680}-\u{1F6FF}]|[\u{1F1E0}-\u{1F1FF}]|[\u{2600}-\u{26FF}]|[\u{2700}-\u{27BF}]|[\u{1F900}-\u{1F9FF}]|[\u{1F018}-\u{1F270}]|[\u{238C}-\u{2454}]|[\u{20D0}-\u{20FF}]|[\u{1FA70}-\u{1FAFF}]|[\u{1F004}]|[\u{1F0CF}]|[\u{1F170}-\u{1F251}]|[\u{1F004}]|[\u{1F17E}-\u{1F17F}]|[\u{1F18E}]|[\u{3030}]|[\u{2B50}]|[\u{2B55}]|[\u{2934}-\u{2935}]|[\u{2B05}-\u{2B07}]|[\u{2B1B}-\u{2B1C}]|[\u{3297}]|[\u{3299}]|[\u{303D}]|[\u{00A9}]|[\u{00AE}]|[\u{2122}]|[\u{23F3}]|[\u{24C2}]|[\u{23E9}-\u{23EF}]|[\u{25B6}]|[\u{23F8}-\u{23FA}]|[\u{200D}]|[\u{20E3}]|[\u{FE0F}]/gu;
 
   return html.replace(emojiRegex, (emoji) => {
     // Menggunakan Word-specific styling untuk mempertahankan warna emoji
@@ -34,18 +33,66 @@ const enhanceEmojiForWord = (html: string): string => {
   // Pattern untuk emoji yang sering digunakan
   const additionalEmojiPatterns = [
     // Checkmarks dan symbols
-    { pattern: /✅/g, replacement: '<span style="color: #00AA00 !important; font-family: \'Segoe UI Emoji\', \'Apple Color Emoji\', \'Noto Color Emoji\', sans-serif !important;">✅</span>' },
-    { pattern: /❌/g, replacement: '<span style="color: #FF0000 !important; font-family: \'Segoe UI Emoji\', \'Apple Color Emoji\', \'Noto Color Emoji\', sans-serif !important;">❌</span>' },
-    { pattern: /⭐/g, replacement: '<span style="color: #FFD700 !important; font-family: \'Segoe UI Emoji\', \'Apple Color Emoji\', \'Noto Color Emoji\', sans-serif !important;">⭐</span>' },
-    { pattern: /✨/g, replacement: '<span style="color: #FFD700 !important; font-family: \'Segoe UI Emoji\', \'Apple Color Emoji\', \'Noto Color Emoji\', sans-serif !important;">✨</span>' },
-    { pattern: /🎉/g, replacement: '<span style="color: auto !important; font-family: \'Segoe UI Emoji\', \'Apple Color Emoji\', \'Noto Color Emoji\', sans-serif !important;">🎉</span>' },
-    { pattern: /🚀/g, replacement: '<span style="color: auto !important; font-family: \'Segoe UI Emoji\', \'Apple Color Emoji\', \'Noto Color Emoji\', sans-serif !important;">🚀</span>' },
-    { pattern: /📝/g, replacement: '<span style="color: auto !important; font-family: \'Segoe UI Emoji\', \'Apple Color Emoji\', \'Noto Color Emoji\', sans-serif !important;">📝</span>' },
-    { pattern: /🎨/g, replacement: '<span style="color: auto !important; font-family: \'Segoe UI Emoji\', \'Apple Color Emoji\', \'Noto Color Emoji\', sans-serif !important;">🎨</span>' },
-    { pattern: /📊/g, replacement: '<span style="color: auto !important; font-family: \'Segoe UI Emoji\', \'Apple Color Emoji\', \'Noto Color Emoji\', sans-serif !important;">📊</span>' },
-    { pattern: /🔧/g, replacement: '<span style="color: auto !important; font-family: \'Segoe UI Emoji\', \'Apple Color Emoji\', \'Noto Color Emoji\', sans-serif !important;">🔧</span>' },
-    { pattern: /💡/g, replacement: '<span style="color: auto !important; font-family: \'Segoe UI Emoji\', \'Apple Color Emoji\', \'Noto Color Emoji\', sans-serif !important;">💡</span>' },
-    { pattern: /📚/g, replacement: '<span style="color: auto !important; font-family: \'Segoe UI Emoji\', \'Apple Color Emoji\', \'Noto Color Emoji\', sans-serif !important;">📚</span>' }
+    {
+      pattern: /✅/g,
+      replacement:
+        "<span style=\"color: #00AA00 !important; font-family: 'Segoe UI Emoji', 'Apple Color Emoji', 'Noto Color Emoji', sans-serif !important;\">✅</span>",
+    },
+    {
+      pattern: /❌/g,
+      replacement:
+        "<span style=\"color: #FF0000 !important; font-family: 'Segoe UI Emoji', 'Apple Color Emoji', 'Noto Color Emoji', sans-serif !important;\">❌</span>",
+    },
+    {
+      pattern: /⭐/g,
+      replacement:
+        "<span style=\"color: #FFD700 !important; font-family: 'Segoe UI Emoji', 'Apple Color Emoji', 'Noto Color Emoji', sans-serif !important;\">⭐</span>",
+    },
+    {
+      pattern: /✨/g,
+      replacement:
+        "<span style=\"color: #FFD700 !important; font-family: 'Segoe UI Emoji', 'Apple Color Emoji', 'Noto Color Emoji', sans-serif !important;\">✨</span>",
+    },
+    {
+      pattern: /🎉/g,
+      replacement:
+        "<span style=\"color: auto !important; font-family: 'Segoe UI Emoji', 'Apple Color Emoji', 'Noto Color Emoji', sans-serif !important;\">🎉</span>",
+    },
+    {
+      pattern: /🚀/g,
+      replacement:
+        "<span style=\"color: auto !important; font-family: 'Segoe UI Emoji', 'Apple Color Emoji', 'Noto Color Emoji', sans-serif !important;\">🚀</span>",
+    },
+    {
+      pattern: /📝/g,
+      replacement:
+        "<span style=\"color: auto !important; font-family: 'Segoe UI Emoji', 'Apple Color Emoji', 'Noto Color Emoji', sans-serif !important;\">📝</span>",
+    },
+    {
+      pattern: /🎨/g,
+      replacement:
+        "<span style=\"color: auto !important; font-family: 'Segoe UI Emoji', 'Apple Color Emoji', 'Noto Color Emoji', sans-serif !important;\">🎨</span>",
+    },
+    {
+      pattern: /📊/g,
+      replacement:
+        "<span style=\"color: auto !important; font-family: 'Segoe UI Emoji', 'Apple Color Emoji', 'Noto Color Emoji', sans-serif !important;\">📊</span>",
+    },
+    {
+      pattern: /🔧/g,
+      replacement:
+        "<span style=\"color: auto !important; font-family: 'Segoe UI Emoji', 'Apple Color Emoji', 'Noto Color Emoji', sans-serif !important;\">🔧</span>",
+    },
+    {
+      pattern: /💡/g,
+      replacement:
+        "<span style=\"color: auto !important; font-family: 'Segoe UI Emoji', 'Apple Color Emoji', 'Noto Color Emoji', sans-serif !important;\">💡</span>",
+    },
+    {
+      pattern: /📚/g,
+      replacement:
+        "<span style=\"color: auto !important; font-family: 'Segoe UI Emoji', 'Apple Color Emoji', 'Noto Color Emoji', sans-serif !important;\">📚</span>",
+    },
   ];
 
   let processedHTML = html;
@@ -53,7 +100,10 @@ const enhanceEmojiForWord = (html: string): string => {
   // Apply specific patterns untuk emoji yang sering digunakan, hanya jika belum di-wrap
   additionalEmojiPatterns.forEach(({ pattern, replacement }) => {
     // Check apakah emoji sudah dalam span dengan styling khusus
-    const existingSpanRegex = new RegExp(`<span[^>]*style[^>]*>${pattern.source.replace(/\//g, '')}</span>`, 'g');
+    const existingSpanRegex = new RegExp(
+      `<span[^>]*style[^>]*>${pattern.source.replace(/\//g, '')}</span>`,
+      'g'
+    );
 
     // Hanya replace jika emoji belum di-wrap dalam span
     if (!existingSpanRegex.test(processedHTML)) {
@@ -66,7 +116,7 @@ const enhanceEmojiForWord = (html: string): string => {
 
 /**
  * Custom hook untuk export ke DOCX (RTF format)
- * 
+ *
  * @param markdown - Konten markdown
  * @param fileName - Nama file default
  * @param onSuccess - Callback ketika export berhasil
@@ -82,55 +132,62 @@ export const useExportToDocx = (
   const [isExporting, setIsExporting] = useState(false);
   const [exportProgress, setExportProgress] = useState(0);
 
-  const startExport = useCallback(async (options: ExportOptions) => {
-    if (!markdown?.trim()) {
-      onError?.(ERROR_MESSAGES.EMPTY_CONTENT);
-      return;
-    }
+  const startExport = useCallback(
+    async (options: ExportOptions) => {
+      if (!markdown?.trim()) {
+        onError?.(ERROR_MESSAGES.EMPTY_CONTENT);
+        return;
+      }
 
-    setIsExporting(true);
-    setExportProgress(EXPORT_PROGRESS_STEPS.INITIALIZING);
+      setIsExporting(true);
+      setExportProgress(EXPORT_PROGRESS_STEPS.INITIALIZING);
 
-    try {
-      setExportProgress(EXPORT_PROGRESS_STEPS.PROCESSING);
+      try {
+        setExportProgress(EXPORT_PROGRESS_STEPS.PROCESSING);
 
-      // Convert markdown to HTML first
-      const { html: htmlContent } = convertMarkdownToHTML(markdown);
+        // Convert markdown to HTML first
+        const { html: htmlContent } = convertMarkdownToHTML(markdown);
 
-      // Generate styled HTML for DOCX with simple black/white theme
-      const styledHTML = generateStyledHTML({
-        ...options,
-        htmlContent,
-        themeConfig: { name: 'default', primaryColor: '#000000', backgroundColor: '#ffffff', accentColor: '#000000' }
-      });
+        // Generate styled HTML for DOCX with simple black/white theme
+        const styledHTML = generateStyledHTML({
+          ...options,
+          htmlContent,
+          themeConfig: {
+            name: 'default',
+            primaryColor: '#000000',
+            backgroundColor: '#ffffff',
+            accentColor: '#000000',
+          },
+        });
 
-      setExportProgress(EXPORT_PROGRESS_STEPS.GENERATING);
+        setExportProgress(EXPORT_PROGRESS_STEPS.GENERATING);
 
-      // Convert HTML to simple DOCX format (HTML with DOCX headers)
-      const docxContent = convertHTMLToDocx(styledHTML, options);
+        // Convert HTML to simple DOCX format (HTML with DOCX headers)
+        const docxContent = convertHTMLToDocx(styledHTML, options);
 
-      // Create blob dan download
-      const blob = new Blob([docxContent], {
-        type: 'application/msword'
-      });
+        // Create blob dan download
+        const blob = new Blob([docxContent], {
+          type: 'application/msword',
+        });
 
-      setExportProgress(EXPORT_PROGRESS_STEPS.FINALIZING);
+        setExportProgress(EXPORT_PROGRESS_STEPS.FINALIZING);
 
-      const safeFileName = sanitizeFilename(options.title || fileName, '.doc');
-      downloadFile(blob, safeFileName);
+        const safeFileName = sanitizeFilename(options.title || fileName, '.doc');
+        downloadFile(blob, safeFileName);
 
-      setExportProgress(EXPORT_PROGRESS_STEPS.COMPLETE);
-      onSuccess?.(SUCCESS_MESSAGES.RTF_EXPORTED);
-
-    } catch (error) {
-      console.error('DOCX export error:', error);
-      const errorMessage = error instanceof Error ? error.message : ERROR_MESSAGES.EXPORT_FAILED;
-      onError?.(errorMessage);
-    } finally {
-      setIsExporting(false);
-      setExportProgress(0);
-    }
-  }, [markdown, fileName, onSuccess, onError]);
+        setExportProgress(EXPORT_PROGRESS_STEPS.COMPLETE);
+        onSuccess?.(SUCCESS_MESSAGES.RTF_EXPORTED);
+      } catch (error) {
+        console.error('DOCX export error:', error);
+        const errorMessage = error instanceof Error ? error.message : ERROR_MESSAGES.EXPORT_FAILED;
+        onError?.(errorMessage);
+      } finally {
+        setIsExporting(false);
+        setExportProgress(0);
+      }
+    },
+    [markdown, fileName, onSuccess, onError]
+  );
 
   const resetExport = useCallback(() => {
     setIsExporting(false);
@@ -141,7 +198,7 @@ export const useExportToDocx = (
     isExporting,
     exportProgress,
     startExport,
-    resetExport
+    resetExport,
   };
 };
 
@@ -203,7 +260,12 @@ const convertHTMLToDocx = (htmlContent: string, options: ExportOptions): string 
   <meta http-equiv="Content-Language" content="id">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>${(options.title || 'Document').replace(/[<>&"]/g, (char) => {
-    const escapeMap: { [key: string]: string } = { '<': '&lt;', '>': '&gt;', '&': '&amp;', '"': '&quot;' };
+    const escapeMap: { [key: string]: string } = {
+      '<': '&lt;',
+      '>': '&gt;',
+      '&': '&amp;',
+      '"': '&quot;',
+    };
     return escapeMap[char] || char;
   })}</title>
   <!--[if gte mso 9]>
@@ -364,5 +426,3 @@ const convertHTMLToDocx = (htmlContent: string, options: ExportOptions): string 
 
   return docxHTML;
 };
-
-

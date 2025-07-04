@@ -4,11 +4,11 @@
  */
 
 import React from 'react';
-import { SearchDialog } from "../../../../features/SearchDialog";
-import { KeyboardShortcuts } from "../../../../navigation/KeyboardShortcuts";
-import { DocumentTemplates } from "../../../../templates/DocumentTemplates";
-import { AdvancedExport } from "../../../../features/AdvancedExport";
-import { DialogState } from '../../types';
+import { SearchDialog } from '../../../../features/SearchDialog';
+import { KeyboardShortcuts } from '../../../../navigation/KeyboardShortcuts';
+import { DocumentTemplates } from '../../../../templates/DocumentTemplates';
+import { AdvancedExport } from '../../../../features/AdvancedExport';
+import type { DialogState } from '../../types';
 import type { Theme } from '../../../../features/ThemeSelector';
 
 /**
@@ -42,7 +42,7 @@ export const DialogContainer: React.FC<DialogContainerProps> = ({
   fileName,
   onMarkdownChange,
   onLoadTemplate,
-  currentTheme
+  currentTheme,
 }) => {
   // Handle escape key to close dialogs
   React.useEffect(() => {
@@ -51,7 +51,7 @@ export const DialogContainer: React.FC<DialogContainerProps> = ({
         const openDialogs = Object.entries(dialogState)
           .filter(([, isOpen]) => isOpen)
           .map(([dialog]) => dialog as keyof DialogState);
-        
+
         if (openDialogs.length > 0) {
           // Close the most recently opened dialog
           const lastDialog = openDialogs[openDialogs.length - 1];
@@ -82,8 +82,6 @@ export const DialogContainer: React.FC<DialogContainerProps> = ({
           currentTheme={currentTheme}
         />
       )}
-
-
 
       {/* Document Templates Dialog */}
       {dialogState.showTemplates && (

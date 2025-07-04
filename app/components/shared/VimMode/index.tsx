@@ -14,7 +14,7 @@ export type {
   VimContext,
   VimCommand,
   VimCommandRegistry,
-  VimState
+  VimState,
 } from '@/types/vim';
 
 // Re-export utilities
@@ -30,27 +30,27 @@ export {
   insertText,
   deleteCharacter,
   isValidVimCommand,
-  parseVimCommand
+  parseVimCommand,
 } from '@/utils/vimUtils';
 
 // Re-export constants from types
 export {
   DEFAULT_VIM_CURSOR_CONFIG,
-  VIM_CONSTANTS
+  VIM_CONSTANTS,
 } from '@/types/vim';
 
 // Re-export command registry
 export {
   vimCommandRegistry,
-  registerDefaultCommands
+  registerDefaultCommands,
 } from '@/hooks/editor';
 
 /**
  * Vim mode indicator component
  */
 import React from 'react';
-import { VimMode } from '@/types/vim';
-import { vimCommandRegistry , useVimMode } from '@/hooks/editor';
+import type { VimMode } from '@/types/vim';
+import { vimCommandRegistry, useVimMode } from '@/hooks/editor';
 
 interface VimModeIndicatorProps {
   mode: VimMode;
@@ -61,7 +61,7 @@ interface VimModeIndicatorProps {
 export const VimModeIndicator: React.FC<VimModeIndicatorProps> = ({
   mode,
   isEnabled,
-  className = ''
+  className = '',
 }) => {
   if (!isEnabled) return null;
 
@@ -96,7 +96,7 @@ export const VimModeIndicator: React.FC<VimModeIndicatorProps> = ({
   };
 
   return (
-    <div 
+    <div
       className={`
         px-2 py-1 text-xs font-mono font-bold rounded
         ${getModeColor(mode)}
@@ -121,7 +121,7 @@ interface VimCommandPaletteProps {
 export const VimCommandPalette: React.FC<VimCommandPaletteProps> = ({
   mode,
   onCommandSelect,
-  className = ''
+  className = '',
 }) => {
   const commands = vimCommandRegistry.getCommands(mode);
 
@@ -129,9 +129,7 @@ export const VimCommandPalette: React.FC<VimCommandPaletteProps> = ({
 
   return (
     <div className={`vim-command-palette ${className}`}>
-      <h3 className="text-sm font-semibold mb-2">
-        Available Commands ({mode} mode)
-      </h3>
+      <h3 className="text-sm font-semibold mb-2">Available Commands ({mode} mode)</h3>
       <div className="space-y-1">
         {commands.map((command) => (
           <button
@@ -145,9 +143,7 @@ export const VimCommandPalette: React.FC<VimCommandPaletteProps> = ({
             title={command.description}
           >
             <span className="font-bold">{command.key}</span>
-            <span className="ml-2 text-gray-600 dark:text-gray-400">
-              {command.description}
-            </span>
+            <span className="ml-2 text-gray-600 dark:text-gray-400">{command.description}</span>
           </button>
         ))}
       </div>
@@ -171,38 +167,20 @@ export const VimModeWrapper: React.FC<VimModeWrapperProps> = ({
   enabled,
   showIndicator = true,
   showCommandPalette = false,
-  className = ''
+  className = '',
 }) => {
   const textareaRef = React.useRef<HTMLTextAreaElement>(null);
   const [value, setValue] = React.useState('');
-  
-  const { mode } = useVimMode(
-    textareaRef,
-    value,
-    setValue,
-    { enabled }
-  );
+
+  const { mode } = useVimMode(textareaRef, value, setValue, { enabled });
 
   return (
     <div className={`vim-mode-wrapper ${className}`}>
-      {showIndicator && (
-        <VimModeIndicator 
-          mode={mode} 
-          isEnabled={enabled}
-          className="mb-2"
-        />
-      )}
-      
-      <div className="relative">
-        {children}
-      </div>
-      
-      {showCommandPalette && enabled && (
-        <VimCommandPalette 
-          mode={mode}
-          className="mt-2"
-        />
-      )}
+      {showIndicator && <VimModeIndicator mode={mode} isEnabled={enabled} className="mb-2" />}
+
+      <div className="relative">{children}</div>
+
+      {showCommandPalette && enabled && <VimCommandPalette mode={mode} className="mt-2" />}
     </div>
   );
 };

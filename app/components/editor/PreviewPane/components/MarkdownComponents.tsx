@@ -4,9 +4,9 @@
  */
 
 import React from 'react';
-import { Components } from 'react-markdown';
+import type { Components } from 'react-markdown';
 import { CodeBlock, InlineCode } from './CodeBlock';
-import { MarkdownComponentsProps } from '../types/preview.types';
+import type { MarkdownComponentsProps } from '../types/preview.types';
 import { useHeadingCache } from '../hooks/useHeadingCache';
 
 /**
@@ -31,12 +31,12 @@ const createHeadingComponent = (level: number) => {
     const id = getOrCreateHeadingId(headingText);
 
     const HeadingTag = `h${level}` as keyof JSX.IntrinsicElements;
-    
+
     // Styling berdasarkan level
     const getHeadingStyles = (level: number) => {
       const baseStyles = {
         color: theme?.text || 'inherit',
-        scrollMarginTop: '6rem' // scroll-mt-24
+        scrollMarginTop: '6rem', // scroll-mt-24
       };
 
       switch (level) {
@@ -119,7 +119,7 @@ export const createMarkdownComponents = ({
   markdown,
   theme,
   isMobile = false,
-  isTablet = false
+  isTablet = false,
 }: MarkdownComponentsProps): Components => {
   return {
     // Heading components
@@ -132,12 +132,12 @@ export const createMarkdownComponents = ({
 
     // Blockquote component
     blockquote: ({ children }) => (
-      <blockquote 
+      <blockquote
         className="border-l-4 pl-4 py-2 my-4 italic rounded-r-lg"
-        style={{ 
+        style={{
           borderColor: theme?.primary || '#3b82f6',
           backgroundColor: theme?.surface ? `${theme.surface}40` : '#eff6ff',
-          color: theme?.text || 'inherit'
+          color: theme?.text || 'inherit',
         }}
       >
         {children}
@@ -150,9 +150,7 @@ export const createMarkdownComponents = ({
       const isInline = !match;
 
       return isInline ? (
-        <InlineCode theme={theme}>
-          {children}
-        </InlineCode>
+        <InlineCode theme={theme}>{children}</InlineCode>
       ) : (
         <code className={className} {...props}>
           {children}
@@ -172,8 +170,8 @@ export const createMarkdownComponents = ({
           typeof child.props.className === 'string' &&
           child.props.className.includes('language-')
       );
-      
-      const className = codeElement?.props?.className as string || '';
+
+      const className = (codeElement?.props?.className as string) || '';
       const match = className.match(/language-(\w+)/);
       const language = match ? match[1] : '';
 
@@ -193,7 +191,7 @@ export const createMarkdownComponents = ({
     // Table components
     table: ({ children }) => (
       <div className="overflow-x-auto my-6">
-        <table 
+        <table
           className="w-full border-collapse rounded-lg overflow-hidden shadow-sm"
           style={{ borderColor: theme?.accent || '#d1d5db' }}
         >
@@ -203,12 +201,12 @@ export const createMarkdownComponents = ({
     ),
 
     th: ({ children }) => (
-      <th 
+      <th
         className="border px-4 py-3 font-semibold text-left"
-        style={{ 
+        style={{
           borderColor: theme?.accent || '#d1d5db',
           backgroundColor: theme?.surface || '#f8fafc',
-          color: theme?.text || 'inherit'
+          color: theme?.text || 'inherit',
         }}
       >
         {children}
@@ -216,11 +214,11 @@ export const createMarkdownComponents = ({
     ),
 
     td: ({ children }) => (
-      <td 
+      <td
         className="border px-4 py-3"
-        style={{ 
+        style={{
           borderColor: theme?.accent || '#d1d5db',
-          color: theme?.text || 'inherit'
+          color: theme?.text || 'inherit',
         }}
       >
         {children}
@@ -229,7 +227,7 @@ export const createMarkdownComponents = ({
 
     // Link component
     a: ({ children, href, ...props }) => (
-      <a 
+      <a
         href={href}
         className="hover:underline transition-colors"
         style={{ color: theme?.primary || '#3b82f6' }}
@@ -240,23 +238,14 @@ export const createMarkdownComponents = ({
     ),
 
     // List components
-    ul: ({ children }) => (
-      <ul className="list-disc list-inside space-y-1 my-4 ml-4">
-        {children}
-      </ul>
-    ),
+    ul: ({ children }) => <ul className="list-disc list-inside space-y-1 my-4 ml-4">{children}</ul>,
 
     ol: ({ children }) => (
-      <ol className="list-decimal list-inside space-y-1 my-4 ml-4">
-        {children}
-      </ol>
+      <ol className="list-decimal list-inside space-y-1 my-4 ml-4">{children}</ol>
     ),
 
     li: ({ children }) => (
-      <li 
-        className="leading-relaxed"
-        style={{ color: theme?.text || 'inherit' }}
-      >
+      <li className="leading-relaxed" style={{ color: theme?.text || 'inherit' }}>
         {children}
       </li>
     ),

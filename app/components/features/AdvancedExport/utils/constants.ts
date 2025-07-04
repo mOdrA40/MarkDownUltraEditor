@@ -1,14 +1,10 @@
-import {
+import type {
   ExportOptions,
   ThemeConfig,
   ExportFormatOption,
-  FontFamily
+  FontFamily,
 } from '../types/export.types';
-import {
-  FileText,
-  BookOpen,
-  Presentation
-} from "lucide-react";
+import { FileText, BookOpen, Presentation } from 'lucide-react';
 
 /**
  * Default export options
@@ -27,7 +23,7 @@ export const DEFAULT_EXPORT_OPTIONS: ExportOptions = {
   theme: 'default',
   headerFooter: true,
   watermark: '',
-  customCSS: ''
+  customCSS: '',
 };
 
 /**
@@ -38,32 +34,32 @@ export const THEMES: Record<string, ThemeConfig> = {
     name: 'Default',
     primaryColor: '#000000',
     backgroundColor: '#ffffff',
-    accentColor: '#0066cc'
+    accentColor: '#0066cc',
   },
   professional: {
     name: 'Professional',
     primaryColor: '#2c3e50',
     backgroundColor: '#ffffff',
-    accentColor: '#3498db'
+    accentColor: '#3498db',
   },
   modern: {
     name: 'Modern',
     primaryColor: '#1a1a1a',
     backgroundColor: '#fafafa',
-    accentColor: '#6366f1'
+    accentColor: '#6366f1',
   },
   academic: {
     name: 'Academic',
     primaryColor: '#2d3748',
     backgroundColor: '#ffffff',
-    accentColor: '#805ad5'
+    accentColor: '#805ad5',
   },
   dark: {
     name: 'Dark',
     primaryColor: '#e5e7eb',
     backgroundColor: '#1f2937',
-    accentColor: '#60a5fa'
-  }
+    accentColor: '#60a5fa',
+  },
 };
 
 /**
@@ -74,26 +70,26 @@ export const EXPORT_FORMATS: ExportFormatOption[] = [
     value: 'pdf',
     icon: FileText,
     label: 'PDF',
-    desc: 'Print to PDF'
+    desc: 'Print to PDF',
   },
   {
     value: 'docx',
     icon: FileText,
     label: 'DOCX',
-    desc: 'Word Document'
+    desc: 'Word Document',
   },
   {
     value: 'epub',
     icon: BookOpen,
     label: 'HTML',
-    desc: 'Web Document'
+    desc: 'Web Document',
   },
   {
     value: 'presentation',
     icon: Presentation,
     label: 'Slides',
-    desc: 'HTML Presentation'
-  }
+    desc: 'HTML Presentation',
+  },
 ];
 
 /**
@@ -106,7 +102,7 @@ export const FONT_FAMILIES: FontFamily[] = [
   'Georgia',
   'Verdana',
   'Roboto',
-  'Open Sans'
+  'Open Sans',
 ];
 
 /**
@@ -115,7 +111,7 @@ export const FONT_FAMILIES: FontFamily[] = [
 export const PAGE_SIZES = [
   { value: 'A4', label: 'A4' },
   { value: 'Letter', label: 'Letter' },
-  { value: 'Legal', label: 'Legal' }
+  { value: 'Legal', label: 'Legal' },
 ] as const;
 
 /**
@@ -123,7 +119,7 @@ export const PAGE_SIZES = [
  */
 export const PAGE_ORIENTATIONS = [
   { value: 'portrait', label: 'Portrait' },
-  { value: 'landscape', label: 'Landscape' }
+  { value: 'landscape', label: 'Landscape' },
 ] as const;
 
 /**
@@ -132,7 +128,7 @@ export const PAGE_ORIENTATIONS = [
 export const FONT_SIZE_RANGE = {
   min: 8,
   max: 24,
-  default: 12
+  default: 12,
 } as const;
 
 /**
@@ -144,7 +140,7 @@ export const EXPORT_PROGRESS_STEPS = {
   GENERATING: 50,
   STYLING: 70,
   FINALIZING: 90,
-  COMPLETE: 100
+  COMPLETE: 100,
 } as const;
 
 /**
@@ -153,16 +149,16 @@ export const EXPORT_PROGRESS_STEPS = {
 export const PREVIEW_BREAKPOINTS = {
   mobile: {
     maxWidth: '375px',
-    label: 'Mobile'
+    label: 'Mobile',
   },
   tablet: {
     maxWidth: '768px',
-    label: 'Tablet'
+    label: 'Tablet',
   },
   desktop: {
     maxWidth: '1200px',
-    label: 'Desktop'
-  }
+    label: 'Desktop',
+  },
 } as const;
 
 /**
@@ -174,39 +170,39 @@ export const DEFAULT_STYLES = {
     lineHeight: 1.6,
     margin: '0 auto',
     maxWidth: '800px',
-    padding: '40px 20px'
+    padding: '40px 20px',
   },
   heading: {
     marginTop: '1.5em',
     marginBottom: '0.5em',
-    fontWeight: 600
+    fontWeight: 600,
   },
   paragraph: {
     margin: '1em 0',
-    textAlign: 'justify' as const
+    textAlign: 'justify' as const,
   },
   list: {
     margin: '1em 0',
-    paddingLeft: '2em'
+    paddingLeft: '2em',
   },
   blockquote: {
     borderLeft: '4px solid',
     margin: '1.5em 0',
     padding: '1em 1.5em',
-    fontStyle: 'italic' as const
+    fontStyle: 'italic' as const,
   },
   code: {
     padding: '0.2em 0.4em',
     borderRadius: '3px',
     fontFamily: 'Courier New, monospace',
-    fontSize: '0.9em'
+    fontSize: '0.9em',
   },
   pre: {
     padding: '1.5em',
     borderRadius: '8px',
     overflowX: 'auto' as const,
-    margin: '1.5em 0'
-  }
+    margin: '1.5em 0',
+  },
 } as const;
 
 /**
@@ -217,7 +213,7 @@ export const ERROR_MESSAGES = {
   INVALID_FORMAT: 'Format export tidak valid.',
   EMPTY_CONTENT: 'Konten tidak boleh kosong.',
   NETWORK_ERROR: 'Terjadi kesalahan jaringan.',
-  BROWSER_NOT_SUPPORTED: 'Browser tidak mendukung fitur ini.'
+  BROWSER_NOT_SUPPORTED: 'Browser tidak mendukung fitur ini.',
 } as const;
 
 /**
@@ -227,5 +223,5 @@ export const SUCCESS_MESSAGES = {
   PDF_EXPORTED: 'PDF export berhasil dimulai. Pilih "Save as PDF" di dialog print.',
   RTF_EXPORTED: 'Dokumen berhasil di-export sebagai DOCX (dapat dibuka di Word).',
   HTML_EXPORTED: 'Dokumen berhasil di-export sebagai HTML (format e-book).',
-  PRESENTATION_EXPORTED: 'Dokumen berhasil di-export sebagai HTML presentation.'
+  PRESENTATION_EXPORTED: 'Dokumen berhasil di-export sebagai HTML presentation.',
 } as const;

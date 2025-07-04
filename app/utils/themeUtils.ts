@@ -1,7 +1,7 @@
 /**
  * Theme Utilities
  * Utility functions untuk theme management dan styling
- * 
+ *
  * @author Axel Modra
  */
 
@@ -13,12 +13,12 @@ import type { Theme } from '@/components/features/ThemeSelector';
 export const hexToRgba = (hex: string, opacity: number): string => {
   // Remove # if present
   const cleanHex = hex.replace('#', '');
-  
+
   // Parse hex to RGB
-  const r = parseInt(cleanHex.substring(0, 2), 16);
-  const g = parseInt(cleanHex.substring(2, 4), 16);
-  const b = parseInt(cleanHex.substring(4, 6), 16);
-  
+  const r = Number.parseInt(cleanHex.substring(0, 2), 16);
+  const g = Number.parseInt(cleanHex.substring(2, 4), 16);
+  const b = Number.parseInt(cleanHex.substring(4, 6), 16);
+
   return `rgba(${r}, ${g}, ${b}, ${opacity})`;
 };
 
@@ -27,17 +27,17 @@ export const hexToRgba = (hex: string, opacity: number): string => {
  */
 export const getHeaderClassName = (theme?: Theme): string => {
   if (!theme) return 'header-default';
-  
+
   // Map theme IDs to CSS class names
   const themeClassMap: Record<string, string> = {
-    'ocean': 'header-ocean',
-    'forest': 'header-forest',
-    'sunset': 'header-sunset',
-    'purple': 'header-purple',
-    'rose': 'header-rose',
-    'dark': 'header-dark'
+    ocean: 'header-ocean',
+    forest: 'header-forest',
+    sunset: 'header-sunset',
+    purple: 'header-purple',
+    rose: 'header-rose',
+    dark: 'header-dark',
   };
-  
+
   return themeClassMap[theme.id] || 'header-default';
 };
 
@@ -49,50 +49,55 @@ export const generateHeaderStyles = (theme?: Theme) => {
     return {
       backgroundColor: 'rgba(248, 250, 252, 0.8)', // bg-slate-50 with opacity
       borderColor: 'rgba(226, 232, 240, 1)', // border-slate-200
-      color: 'inherit'
+      color: 'inherit',
     };
   }
 
   // Map specific theme colors for better consistency
-  const themeStylesMap: Record<string, { backgroundColor: string; borderColor: string; color: string }> = {
-    'ocean': {
+  const themeStylesMap: Record<
+    string,
+    { backgroundColor: string; borderColor: string; color: string }
+  > = {
+    ocean: {
       backgroundColor: 'rgba(224, 242, 254, 0.8)', // ocean surface with opacity
       borderColor: 'rgba(2, 132, 199, 1)', // ocean accent
-      color: 'rgba(12, 74, 110, 1)' // ocean text
+      color: 'rgba(12, 74, 110, 1)', // ocean text
     },
-    'forest': {
+    forest: {
       backgroundColor: 'rgba(220, 252, 231, 0.8)', // forest surface with opacity
       borderColor: 'rgba(16, 185, 129, 1)', // forest accent
-      color: 'rgba(20, 83, 45, 1)' // forest text
+      color: 'rgba(20, 83, 45, 1)', // forest text
     },
-    'sunset': {
+    sunset: {
       backgroundColor: 'rgba(254, 215, 170, 0.8)', // sunset surface with opacity
       borderColor: 'rgba(249, 115, 22, 1)', // sunset accent
-      color: 'rgba(154, 52, 18, 1)' // sunset text
+      color: 'rgba(154, 52, 18, 1)', // sunset text
     },
-    'purple': {
+    purple: {
       backgroundColor: 'rgba(243, 232, 255, 0.8)', // purple surface with opacity
       borderColor: 'rgba(147, 51, 234, 1)', // purple accent
-      color: 'rgba(88, 28, 135, 1)' // purple text
+      color: 'rgba(88, 28, 135, 1)', // purple text
     },
-    'rose': {
+    rose: {
       backgroundColor: 'rgba(255, 228, 230, 0.8)', // rose surface with opacity
       borderColor: 'rgba(244, 63, 94, 1)', // rose accent
-      color: 'rgba(159, 18, 57, 1)' // rose text
+      color: 'rgba(159, 18, 57, 1)', // rose text
     },
-    'dark': {
+    dark: {
       backgroundColor: 'rgba(30, 41, 59, 0.8)', // dark surface with opacity
       borderColor: 'rgba(139, 92, 246, 1)', // dark accent
-      color: 'rgba(241, 245, 249, 1)' // dark text
-    }
+      color: 'rgba(241, 245, 249, 1)', // dark text
+    },
   };
 
   // Return specific theme styles or fallback to computed styles
-  return themeStylesMap[theme.id] || {
-    backgroundColor: theme.surface ? hexToRgba(theme.surface, 0.8) : 'rgba(248, 250, 252, 0.8)',
-    borderColor: theme.accent || 'rgba(226, 232, 240, 1)',
-    color: theme.text || 'inherit'
-  };
+  return (
+    themeStylesMap[theme.id] || {
+      backgroundColor: theme.surface ? hexToRgba(theme.surface, 0.8) : 'rgba(248, 250, 252, 0.8)',
+      borderColor: theme.accent || 'rgba(226, 232, 240, 1)',
+      color: theme.text || 'inherit',
+    }
+  );
 };
 
 /**

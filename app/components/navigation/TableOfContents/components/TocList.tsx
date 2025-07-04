@@ -3,20 +3,15 @@
  * @author Axel Modra
  */
 
-import React from 'react';
-import { ScrollArea } from "@/components/ui/scroll-area";
+import type React from 'react';
+import { ScrollArea } from '@/components/ui/scroll-area';
 import { TocItem } from './TocItem';
-import { TocListProps } from '../types/toc.types';
+import type { TocListProps } from '../types/toc.types';
 
 /**
  * Komponen list untuk Table of Contents items
  */
-export const TocList: React.FC<TocListProps> = ({
-  items,
-  theme,
-  onItemClick,
-  isActive
-}) => {
+export const TocList: React.FC<TocListProps> = ({ items, theme, onItemClick, isActive }) => {
   if (items.length === 0) {
     return (
       <div className="p-4">
@@ -35,14 +30,10 @@ export const TocList: React.FC<TocListProps> = ({
         aria-labelledby="toc-heading"
         aria-label="Table of Contents Navigation"
       >
-        <div
-          className="space-y-1"
-          role="list"
-          aria-label="Document headings"
-        >
+        <div className="space-y-1" role="list" aria-label="Document headings">
           {items.map((item, index) => {
             const isItemActive = isActive(item.id);
-            
+
             return (
               <TocItem
                 key={`${item.id}-${index}`}

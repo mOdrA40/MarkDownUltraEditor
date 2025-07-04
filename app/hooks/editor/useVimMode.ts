@@ -4,12 +4,7 @@
  */
 
 import { useCallback, useEffect, useRef, useState } from 'react';
-import {
-  VimMode,
-  UseVimModeOptions,
-  UseVimModeReturn,
-  VimContext
-} from '@/types/vim';
+import type { VimMode, UseVimModeOptions, UseVimModeReturn, VimContext } from '@/types/vim';
 import { vimCommandRegistry } from './vim/vimCommands';
 import { applyCursorStyle, parseVimCommand, isValidVimCommand } from '@/utils/vimUtils';
 
@@ -19,27 +14,25 @@ export const useVimMode = (
   onChange: (value: string) => void,
   options: UseVimModeOptions
 ): UseVimModeReturn => {
-  const {
-    enabled,
-    onModeChange,
-    cursorConfig,
-    commandTimeout = 1000
-  } = options;
+  const { enabled, onModeChange, cursorConfig, commandTimeout = 1000 } = options;
 
   const [mode, setMode] = useState<VimMode>('normal');
   const commandBuffer = useRef<string>('');
   const commandTimeoutRef = useRef<NodeJS.Timeout>();
 
   // Mode change handler dengan cursor styling
-  const changeMode = useCallback((newMode: VimMode) => {
-    setMode(newMode);
-    onModeChange?.(newMode);
+  const changeMode = useCallback(
+    (newMode: VimMode) => {
+      setMode(newMode);
+      onModeChange?.(newMode);
 
-    // Apply cursor style menggunakan utility
-    if (textareaRef.current) {
-      applyCursorStyle(textareaRef.current, newMode, cursorConfig);
-    }
-  }, [textareaRef, onModeChange, cursorConfig]);
+      // Apply cursor style menggunakan utility
+      if (textareaRef.current) {
+        applyCursorStyle(textareaRef.current, newMode, cursorConfig);
+      }
+    },
+    [textareaRef, onModeChange, cursorConfig]
+  );
 
   /**
    * Create vim context untuk command execution
@@ -62,7 +55,7 @@ export const useVimMode = (
             textarea.setSelectionRange(newCursor, newCursor);
           }, 0);
         }
-      }
+      },
     };
   }, [mode, textareaRef, onChange, changeMode]);
 
@@ -86,27 +79,30 @@ export const useVimMode = (
   /**
    * Execute vim command menggunakan command registry
    */
-  const executeCommand = useCallback((command: string) => {
-    if (!enabled) return;
+  const executeCommand = useCallback(
+    (command: string) => {
+      if (!enabled) return;
 
-    const context = createVimContext();
-    if (!context) return;
+      const context = createVimContext();
+      if (!context) return;
 
-    // Parse command dengan repeat count
-    const { count, action } = parseVimCommand(command);
+      // Parse command dengan repeat count
+      const { count, action } = parseVimCommand(command);
 
-    // Get command dari registry
-    const vimCommand = vimCommandRegistry.getCommand(action, mode);
+      // Get command dari registry
+      const vimCommand = vimCommandRegistry.getCommand(action, mode);
 
-    if (vimCommand) {
-      // Execute command dengan repeat count
-      for (let i = 0; i < count; i++) {
-        vimCommand.execute(context);
+      if (vimCommand) {
+        // Execute command dengan repeat count
+        for (let i = 0; i < count; i++) {
+          vimCommand.execute(context);
+        }
+      } else if (isValidVimCommand(action)) {
+        console.warn(`Vim command '${action}' not implemented for mode '${mode}'`);
       }
-    } else if (isValidVimCommand(action)) {
-      console.warn(`Vim command '${action}' not implemented for mode '${mode}'`);
-    }
-  }, [enabled, mode, createVimContext]);
+    },
+    [enabled, mode, createVimContext]
+  );
 
   /**
    * Get available commands untuk current mode
@@ -127,64 +123,67 @@ export const useVimMode = (
   /**
    * Enhanced key handler menggunakan command registry
    */
-  const handleKeyDown = useCallback((e: React.KeyboardEvent<HTMLTextAreaElement>) => {
-    if (!enabled) return;
+  const handleKeyDown = useCallback(
+    (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+      if (!enabled) return;
 
-    switch (mode) {
-      case 'normal':
-        e.preventDefault();
+      switch (mode) {
+        case 'normal':
+          e.preventDefault();
 
-        // Handle multi-key commands (seperti dd)
-        if (commandBuffer.current === 'd' && e.key === 'd') {
-          executeCommand('dd');
-          commandBuffer.current = '';
-
-          // Clear timeout
-          if (commandTimeoutRef.current) {
-            clearTimeout(commandTimeoutRef.current);
-            commandTimeoutRef.current = undefined;
-          }
-        } else if (e.key === 'd') {
-          commandBuffer.current = 'd';
-
-          // Set timeout untuk clear command buffer
-          commandTimeoutRef.current = setTimeout(() => {
+          // Handle multi-key commands (seperti dd)
+          if (commandBuffer.current === 'd' && e.key === 'd') {
+            executeCommand('dd');
             commandBuffer.current = '';
-            commandTimeoutRef.current = undefined;
-          }, commandTimeout);
-        } else {
-          // Clear command buffer dan execute single command
-          commandBuffer.current = '';
-          if (commandTimeoutRef.current) {
-            clearTimeout(commandTimeoutRef.current);
-            commandTimeoutRef.current = undefined;
+
+            // Clear timeout
+            if (commandTimeoutRef.current) {
+              clearTimeout(commandTimeoutRef.current);
+              commandTimeoutRef.current = undefined;
+            }
+          } else if (e.key === 'd') {
+            commandBuffer.current = 'd';
+
+            // Set timeout untuk clear command buffer
+            commandTimeoutRef.current = setTimeout(() => {
+              commandBuffer.current = '';
+              commandTimeoutRef.current = undefined;
+            }, commandTimeout);
+          } else {
+            // Clear command buffer dan execute single command
+            commandBuffer.current = '';
+            if (commandTimeoutRef.current) {
+              clearTimeout(commandTimeoutRef.current);
+              commandTimeoutRef.current = undefined;
+            }
+            executeCommand(e.key);
           }
+          break;
+
+        case 'insert':
+          if (e.key === 'Escape') {
+            e.preventDefault();
+            executeCommand('Escape');
+          }
+          // Allow normal typing in insert mode
+          break;
+
+        case 'visual':
+          e.preventDefault();
           executeCommand(e.key);
-        }
-        break;
+          break;
 
-      case 'insert':
-        if (e.key === 'Escape') {
-          e.preventDefault();
-          executeCommand('Escape');
-        }
-        // Allow normal typing in insert mode
-        break;
-
-      case 'visual':
-        e.preventDefault();
-        executeCommand(e.key);
-        break;
-
-      case 'command':
-        if (e.key === 'Escape') {
-          e.preventDefault();
-          executeCommand('Escape');
-        }
-        // Handle command mode input
-        break;
-    }
-  }, [enabled, mode, executeCommand, commandTimeout]);
+        case 'command':
+          if (e.key === 'Escape') {
+            e.preventDefault();
+            executeCommand('Escape');
+          }
+          // Handle command mode input
+          break;
+      }
+    },
+    [enabled, mode, executeCommand, commandTimeout]
+  );
 
   // Initialize vim mode
   useEffect(() => {

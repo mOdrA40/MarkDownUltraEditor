@@ -11,7 +11,7 @@ export type {
   StateMiddleware,
   StateListener,
   StateManagerConfig,
-  StateManager
+  StateManager,
 } from './state.types';
 
 // Additional utility types

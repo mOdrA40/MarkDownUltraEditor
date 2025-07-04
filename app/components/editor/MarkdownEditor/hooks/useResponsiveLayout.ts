@@ -4,12 +4,12 @@
  */
 
 import { useState, useEffect, useCallback } from 'react';
-import { 
-  ResponsiveState, 
-  UseResponsiveLayoutReturn, 
+import {
+  type ResponsiveState,
+  type UseResponsiveLayoutReturn,
   DeviceType,
-  LayoutConfig,
-  ComponentSizing 
+  type LayoutConfig,
+  type ComponentSizing,
 } from '../types';
 import { BREAKPOINTS } from '../utils/constants';
 
@@ -22,7 +22,7 @@ export const useResponsiveLayout = (): UseResponsiveLayoutReturn => {
   const [responsiveState, setResponsiveState] = useState<ResponsiveState>({
     isMobile: false,
     isTablet: false,
-    isSmallTablet: false
+    isSmallTablet: false,
   });
 
   // Additional responsive configuration
@@ -55,9 +55,9 @@ export const useResponsiveLayout = (): UseResponsiveLayoutReturn => {
           autoCollapseSidebar: true,
           stackLayout: true,
           compactMode: true,
-          touchFriendly: true
+          touchFriendly: true,
         };
-      
+
       case DeviceType.SMALL_TABLET:
         return {
           showSidebar: true,
@@ -65,9 +65,9 @@ export const useResponsiveLayout = (): UseResponsiveLayoutReturn => {
           autoCollapseSidebar: true,
           stackLayout: true,
           compactMode: true,
-          touchFriendly: true
+          touchFriendly: true,
         };
-      
+
       case DeviceType.TABLET:
         return {
           showSidebar: true,
@@ -75,9 +75,9 @@ export const useResponsiveLayout = (): UseResponsiveLayoutReturn => {
           autoCollapseSidebar: true,
           stackLayout: false,
           compactMode: false,
-          touchFriendly: true
+          touchFriendly: true,
         };
-      
+
       case DeviceType.DESKTOP:
         return {
           showSidebar: true,
@@ -85,9 +85,9 @@ export const useResponsiveLayout = (): UseResponsiveLayoutReturn => {
           autoCollapseSidebar: false,
           stackLayout: false,
           compactMode: false,
-          touchFriendly: false
+          touchFriendly: false,
         };
-      
+
       case DeviceType.LARGE_DESKTOP:
         return {
           showSidebar: true,
@@ -95,9 +95,9 @@ export const useResponsiveLayout = (): UseResponsiveLayoutReturn => {
           autoCollapseSidebar: false,
           stackLayout: false,
           compactMode: false,
-          touchFriendly: false
+          touchFriendly: false,
         };
-      
+
       default:
         return {
           showSidebar: true,
@@ -105,7 +105,7 @@ export const useResponsiveLayout = (): UseResponsiveLayoutReturn => {
           autoCollapseSidebar: false,
           stackLayout: false,
           compactMode: false,
-          touchFriendly: false
+          touchFriendly: false,
         };
     }
   }, []);
@@ -121,52 +121,52 @@ export const useResponsiveLayout = (): UseResponsiveLayoutReturn => {
           iconSize: 16,
           fontSizeMultiplier: 0.9,
           spacingMultiplier: 0.8,
-          minTouchTarget: 44
+          minTouchTarget: 44,
         };
-      
+
       case DeviceType.SMALL_TABLET:
         return {
           buttonSize: 'sm',
           iconSize: 18,
           fontSizeMultiplier: 0.95,
           spacingMultiplier: 0.9,
-          minTouchTarget: 44
+          minTouchTarget: 44,
         };
-      
+
       case DeviceType.TABLET:
         return {
           buttonSize: 'md',
           iconSize: 20,
           fontSizeMultiplier: 1,
           spacingMultiplier: 1,
-          minTouchTarget: 44
+          minTouchTarget: 44,
         };
-      
+
       case DeviceType.DESKTOP:
         return {
           buttonSize: 'md',
           iconSize: 20,
           fontSizeMultiplier: 1,
           spacingMultiplier: 1,
-          minTouchTarget: 32
+          minTouchTarget: 32,
         };
-      
+
       case DeviceType.LARGE_DESKTOP:
         return {
           buttonSize: 'lg',
           iconSize: 24,
           fontSizeMultiplier: 1.1,
           spacingMultiplier: 1.2,
-          minTouchTarget: 32
+          minTouchTarget: 32,
         };
-      
+
       default:
         return {
           buttonSize: 'md',
           iconSize: 20,
           fontSizeMultiplier: 1,
           spacingMultiplier: 1,
-          minTouchTarget: 32
+          minTouchTarget: 32,
         };
     }
   }, []);
@@ -191,7 +191,7 @@ export const useResponsiveLayout = (): UseResponsiveLayoutReturn => {
     setResponsiveState({
       isMobile: width < 500,
       isSmallTablet: width >= 500 && width < 768,
-      isTablet: width >= 500 && width < 1024
+      isTablet: width >= 500 && width < 1024,
     });
   }, [getDeviceType]);
 
@@ -201,9 +201,11 @@ export const useResponsiveLayout = (): UseResponsiveLayoutReturn => {
   const detectTouchDevice = useCallback(() => {
     if (typeof window === 'undefined') return;
 
-    const hasTouch = 'ontouchstart' in window ||
-                    navigator.maxTouchPoints > 0 ||
-                    ('msMaxTouchPoints' in navigator && (navigator as { msMaxTouchPoints: number }).msMaxTouchPoints > 0);
+    const hasTouch =
+      'ontouchstart' in window ||
+      navigator.maxTouchPoints > 0 ||
+      ('msMaxTouchPoints' in navigator &&
+        (navigator as { msMaxTouchPoints: number }).msMaxTouchPoints > 0);
     setIsTouchDevice(hasTouch);
   }, []);
 
@@ -233,7 +235,7 @@ export const useResponsiveLayout = (): UseResponsiveLayoutReturn => {
     isAtLeast: (breakpoint: keyof typeof BREAKPOINTS) => screenWidth >= BREAKPOINTS[breakpoint],
     isAtMost: (breakpoint: keyof typeof BREAKPOINTS) => screenWidth <= BREAKPOINTS[breakpoint],
     getOptimalLayout: () => getLayoutConfig(deviceType),
-    getComponentSizing: () => getComponentSizing(deviceType)
+    getComponentSizing: () => getComponentSizing(deviceType),
   };
 
   return {
@@ -243,14 +245,14 @@ export const useResponsiveLayout = (): UseResponsiveLayoutReturn => {
       screenWidth,
       screenHeight,
       isTouchDevice,
-      orientation
+      orientation,
     },
     layout: getLayoutConfig(deviceType),
     sizing: getComponentSizing(deviceType),
     breakpoints: BREAKPOINTS,
     actions: {
-      updateBreakpoints: handleResize
+      updateBreakpoints: handleResize,
     },
-    utils
+    utils,
   };
 };

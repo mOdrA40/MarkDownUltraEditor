@@ -3,7 +3,11 @@
  */
 
 import { useCallback } from 'react';
-import { HeadingItem, UseOutlineNavigationOptions, UseOutlineNavigationReturn } from '@/types/outline';
+import type {
+  HeadingItem,
+  UseOutlineNavigationOptions,
+  UseOutlineNavigationReturn,
+} from '@/types/outline';
 import { handleOutlineItemClick } from '@/utils/outlineUtils';
 
 /**
@@ -18,20 +22,23 @@ export const useOutlineNavigation = (
   /**
    * Handle click pada heading dengan error handling
    */
-  const handleHeadingClick = useCallback(async (headingId: string) => {
-    if (!enabled) return;
+  const handleHeadingClick = useCallback(
+    async (headingId: string) => {
+      if (!enabled) return;
 
-    await handleOutlineItemClick(headingId, outline, {
-      offset,
-      behavior: 'smooth',
-      preferEditor: false
-    });
+      await handleOutlineItemClick(headingId, outline, {
+        offset,
+        behavior: 'smooth',
+        preferEditor: false,
+      });
 
-    // Update active heading jika berhasil
-    onActiveChange(headingId);
-  }, [outline, enabled, offset, onActiveChange]);
+      // Update active heading jika berhasil
+      onActiveChange(headingId);
+    },
+    [outline, enabled, offset, onActiveChange]
+  );
 
   return {
-    handleHeadingClick
+    handleHeadingClick,
   };
 };

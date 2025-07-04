@@ -1,7 +1,7 @@
 /**
  * Download file menggunakan browser API
  * Menggantikan library file-saver dengan implementasi native
- * 
+ *
  * @param blob - Blob data yang akan di-download
  * @param filename - Nama file yang akan di-download
  * @throws Error jika browser tidak mendukung download
@@ -34,10 +34,11 @@ export const downloadFile = (blob: Blob, filename: string): void => {
     // Cleanup
     document.body.removeChild(link);
     URL.revokeObjectURL(url);
-
   } catch (error) {
     console.error('Download file error:', error);
-    throw new Error(`Failed to download file: ${error instanceof Error ? error.message : 'Unknown error'}`);
+    throw new Error(
+      `Failed to download file: ${error instanceof Error ? error.message : 'Unknown error'}`
+    );
   }
 };
 
@@ -63,7 +64,7 @@ export const isBrowserDownloadSupported = (): boolean => {
 /**
  * Generate filename yang aman untuk download
  * Menghilangkan karakter yang tidak diizinkan
- * 
+ *
  * @param filename - Nama file original
  * @param extension - Extension file (opsional)
  * @returns Nama file yang aman
@@ -91,7 +92,7 @@ export const sanitizeFilename = (filename: string, extension?: string): string =
 
 /**
  * Estimate ukuran file dari content
- * 
+ *
  * @param content - Konten yang akan di-estimate
  * @returns Estimasi ukuran dalam bytes
  */
@@ -103,7 +104,7 @@ export const estimateFileSize = (content: string): number => {
 
 /**
  * Format ukuran file untuk display
- * 
+ *
  * @param bytes - Ukuran dalam bytes
  * @returns String yang formatted (e.g., "1.2 MB")
  */
@@ -114,5 +115,5 @@ export const formatFileSize = (bytes: number): string => {
   const sizes = ['Bytes', 'KB', 'MB', 'GB'];
   const i = Math.floor(Math.log(bytes) / Math.log(k));
 
-  return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+  return Number.parseFloat((bytes / k ** i).toFixed(2)) + ' ' + sizes[i];
 };

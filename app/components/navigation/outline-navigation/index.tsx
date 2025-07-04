@@ -7,21 +7,22 @@
 export { useOutlineNavigation } from '@/hooks/navigation';
 
 // Re-export types (assuming they exist in types/outline)
-export type { 
-  HeadingItem, 
-  UseOutlineNavigationOptions, 
-  UseOutlineNavigationReturn 
+export type {
+  HeadingItem,
+  UseOutlineNavigationOptions,
+  UseOutlineNavigationReturn,
 } from '@/types/outline';
 
 /**
  * Outline navigation provider component
  */
-import React, { createContext, useContext, ReactNode } from 'react';
+import type React from 'react';
+import { createContext, useContext, type ReactNode } from 'react';
 import { useOutlineNavigation } from '@/hooks/navigation';
-import type { 
-  HeadingItem, 
-  UseOutlineNavigationOptions, 
-  UseOutlineNavigationReturn 
+import type {
+  HeadingItem,
+  UseOutlineNavigationOptions,
+  UseOutlineNavigationReturn,
 } from '@/types/outline';
 
 const OutlineNavigationContext = createContext<UseOutlineNavigationReturn | null>(null);
@@ -32,10 +33,10 @@ interface OutlineNavigationProviderProps {
   options: UseOutlineNavigationOptions;
 }
 
-export const OutlineNavigationProvider: React.FC<OutlineNavigationProviderProps> = ({ 
-  children, 
+export const OutlineNavigationProvider: React.FC<OutlineNavigationProviderProps> = ({
+  children,
   outline,
-  options 
+  options,
 }) => {
   const navigationApi = useOutlineNavigation(outline, options);
 
@@ -71,7 +72,7 @@ export const OutlineItem: React.FC<OutlineItemProps> = ({
   item,
   isActive = false,
   onClick,
-  className = ''
+  className = '',
 }) => {
   const { handleHeadingClick } = useOutlineNavigationContext();
 
@@ -98,9 +99,7 @@ export const OutlineItem: React.FC<OutlineItemProps> = ({
       }}
     >
       <div className="flex items-center space-x-2">
-        <span className="text-xs text-gray-500 font-mono">
-          H{item.level}
-        </span>
+        <span className="text-xs text-gray-500 font-mono">H{item.level}</span>
         <span className="truncate">{item.text}</span>
       </div>
     </button>
@@ -121,7 +120,7 @@ export const OutlineList: React.FC<OutlineListProps> = ({
   outline,
   activeId,
   onItemClick,
-  className = ''
+  className = '',
 }) => {
   if (outline.length === 0) {
     return (
@@ -164,17 +163,17 @@ export const OutlineNavigationPanel: React.FC<OutlineNavigationPanelProps> = ({
   onActiveChange,
   enabled = true,
   offset = 100,
-  className = ''
+  className = '',
 }) => {
   return (
     <OutlineNavigationProvider
       outline={outline}
       options={{
-        headingIds: outline.map(item => item.id),
+        headingIds: outline.map((item) => item.id),
         activeId: activeId || null,
         enabled,
         offset,
-        onActiveChange: onActiveChange || (() => {})
+        onActiveChange: onActiveChange || (() => {}),
       }}
     >
       <div className={`outline-navigation-panel ${className}`}>
@@ -184,12 +183,8 @@ export const OutlineNavigationPanel: React.FC<OutlineNavigationPanelProps> = ({
             {outline.length} heading{outline.length !== 1 ? 's' : ''} found
           </p>
         </div>
-        
-        <OutlineList
-          outline={outline}
-          activeId={activeId}
-          onItemClick={onActiveChange}
-        />
+
+        <OutlineList outline={outline} activeId={activeId} onItemClick={onActiveChange} />
       </div>
     </OutlineNavigationProvider>
   );
@@ -211,18 +206,18 @@ export const OutlineBreadcrumb: React.FC<OutlineBreadcrumbProps> = ({
   activeId,
   onItemClick,
   maxItems = 3,
-  className = ''
+  className = '',
 }) => {
-  const activeItem = outline.find(item => item.id === activeId);
+  const activeItem = outline.find((item) => item.id === activeId);
   if (!activeItem) return null;
 
   // Build breadcrumb path
   const breadcrumbPath: HeadingItem[] = [];
   let currentLevel = activeItem.level;
-  
+
   // Add current item
   breadcrumbPath.unshift(activeItem);
-  
+
   // Find parent items
   for (let i = outline.indexOf(activeItem) - 1; i >= 0; i--) {
     const item = outline[i];
@@ -238,9 +233,7 @@ export const OutlineBreadcrumb: React.FC<OutlineBreadcrumbProps> = ({
       <ol className="flex items-center space-x-2 text-sm">
         {breadcrumbPath.map((item, index) => (
           <li key={item.id} className="flex items-center">
-            {index > 0 && (
-              <span className="mx-2 text-gray-400">/</span>
-            )}
+            {index > 0 && <span className="mx-2 text-gray-400">/</span>}
             <button
               onClick={() => onItemClick?.(item.id)}
               className={`

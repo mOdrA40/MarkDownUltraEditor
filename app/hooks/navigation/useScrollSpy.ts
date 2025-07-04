@@ -61,6 +61,6 @@ export const useScrollSpy = (headingIds: string[], options: ScrollSpyOptions = {
     activeId,
     setActiveId,
     setActiveHeading: setActiveId,
-    isActive: (id: string) => activeId === id
+    isActive: (id: string) => activeId === id,
   };
 };

@@ -1,12 +1,17 @@
 /**
  * Toolbar Utilities
  * Fungsi-fungsi utility untuk operasi toolbar
- * 
+ *
  * @author Axel Modra
  */
 
 import type { FormatButton, ButtonCategory } from '../types/toolbar.types';
-import { FORMAT_BUTTON_CONFIGS, MARKDOWN_TEMPLATES, RESPONSIVE_BREAKPOINTS, type FormatButtonConfig } from '../constants/formatButtons.constants';
+import {
+  FORMAT_BUTTON_CONFIGS,
+  MARKDOWN_TEMPLATES,
+  RESPONSIVE_BREAKPOINTS,
+  type FormatButtonConfig,
+} from '../constants/formatButtons.constants';
 
 /**
  * Membuat format button dengan action callback
@@ -19,7 +24,7 @@ export const createFormatButton = (
   onInsertText: (text: string) => void
 ): FormatButton => ({
   ...config,
-  action: () => onInsertText(config.template)
+  action: () => onInsertText(config.template),
 });
 
 /**
@@ -28,7 +33,7 @@ export const createFormatButton = (
  * @returns Array format buttons
  */
 export const createFormatButtons = (onInsertText: (text: string) => void): FormatButton[] => {
-  return FORMAT_BUTTON_CONFIGS.map(config => createFormatButton(config, onInsertText));
+  return FORMAT_BUTTON_CONFIGS.map((config) => createFormatButton(config, onInsertText));
 };
 
 /**
@@ -50,9 +55,7 @@ export const filterButtonsByCategory = (
   buttons: FormatButton[],
   categories: ButtonCategory[]
 ): FormatButton[] => {
-  return buttons.filter(button => 
-    button.category && categories.includes(button.category)
-  );
+  return buttons.filter((button) => button.category && categories.includes(button.category));
 };
 
 /**
@@ -60,10 +63,12 @@ export const filterButtonsByCategory = (
  * @param buttons - Array format buttons
  * @returns Object dengan buttons yang digroup
  */
-export const groupButtonsByCategory = (buttons: FormatButton[]): Record<ButtonCategory, FormatButton[]> => {
+export const groupButtonsByCategory = (
+  buttons: FormatButton[]
+): Record<ButtonCategory, FormatButton[]> => {
   const groups: Partial<Record<ButtonCategory, FormatButton[]>> = {};
-  
-  buttons.forEach(button => {
+
+  buttons.forEach((button) => {
     if (button.category) {
       if (!groups[button.category]) {
         groups[button.category] = [];
@@ -71,7 +76,7 @@ export const groupButtonsByCategory = (buttons: FormatButton[]): Record<ButtonCa
       groups[button.category]!.push(button);
     }
   });
-  
+
   return groups as Record<ButtonCategory, FormatButton[]>;
 };
 
@@ -83,13 +88,14 @@ export const groupButtonsByCategory = (buttons: FormatButton[]): Record<ButtonCa
 export const getBreakpoint = (width: number): keyof typeof RESPONSIVE_BREAKPOINTS => {
   if (width <= RESPONSIVE_BREAKPOINTS.mobile.max) {
     return 'mobile';
-  } else if (width <= RESPONSIVE_BREAKPOINTS.smallTablet.max) {
-    return 'smallTablet';
-  } else if (width <= RESPONSIVE_BREAKPOINTS.tablet.max) {
-    return 'tablet';
-  } else {
-    return 'desktop';
   }
+  if (width <= RESPONSIVE_BREAKPOINTS.smallTablet.max) {
+    return 'smallTablet';
+  }
+  if (width <= RESPONSIVE_BREAKPOINTS.tablet.max) {
+    return 'tablet';
+  }
+  return 'desktop';
 };
 
 /**
@@ -133,7 +139,7 @@ export const getButtonClasses = (
     'focus:outline-none',
     'focus:ring-2',
     'focus:ring-offset-2',
-    'focus:ring-blue-500'
+    'focus:ring-blue-500',
   ];
 
   // Tambahkan classes berdasarkan breakpoint
@@ -164,13 +170,38 @@ export const getContainerClasses = (breakpoint: keyof typeof RESPONSIVE_BREAKPOI
 
   if (breakpoint === 'mobile') {
     return baseClasses.concat(['block', 'sm:hidden']).join(' ');
-  } else if (breakpoint === 'smallTablet') {
-    return baseClasses.concat(['hidden', 'sm:block', 'md:hidden', 'px-2', 'py-2', 'border-b', 'bg-background/50', 'backdrop-blur']).join(' ');
-  } else if (breakpoint === 'tablet') {
-    return baseClasses.concat(['hidden', 'md:block', 'xl:hidden', 'px-3', 'py-2', 'border-b', 'bg-background/50', 'backdrop-blur']).join(' ');
-  } else {
-    return baseClasses.concat(['hidden', 'xl:block', 'px-4', 'py-2', 'border-b', 'bg-background/50', 'backdrop-blur']).join(' ');
   }
+  if (breakpoint === 'smallTablet') {
+    return baseClasses
+      .concat([
+        'hidden',
+        'sm:block',
+        'md:hidden',
+        'px-2',
+        'py-2',
+        'border-b',
+        'bg-background/50',
+        'backdrop-blur',
+      ])
+      .join(' ');
+  }
+  if (breakpoint === 'tablet') {
+    return baseClasses
+      .concat([
+        'hidden',
+        'md:block',
+        'xl:hidden',
+        'px-3',
+        'py-2',
+        'border-b',
+        'bg-background/50',
+        'backdrop-blur',
+      ])
+      .join(' ');
+  }
+  return baseClasses
+    .concat(['hidden', 'xl:block', 'px-4', 'py-2', 'border-b', 'bg-background/50', 'backdrop-blur'])
+    .join(' ');
 };
 
 /**
@@ -196,18 +227,20 @@ export const escapeMarkdown = (text: string): string => {
  * @param shortcut - String shortcut (e.g., "Ctrl+B")
  * @returns Object dengan key combination
  */
-export const parseShortcut = (shortcut: string): { 
-  ctrl: boolean; 
-  shift: boolean; 
-  alt: boolean; 
-  key: string; 
+export const parseShortcut = (
+  shortcut: string
+): {
+  ctrl: boolean;
+  shift: boolean;
+  alt: boolean;
+  key: string;
 } => {
   const parts = shortcut.toLowerCase().split('+');
   return {
     ctrl: parts.includes('ctrl'),
     shift: parts.includes('shift'),
     alt: parts.includes('alt'),
-    key: parts[parts.length - 1]
+    key: parts[parts.length - 1],
   };
 };
 

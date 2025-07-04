@@ -4,7 +4,7 @@
  */
 
 import { useEffect } from 'react';
-import { TypewriterConfig } from "../types/editorPane.types";
+import type { TypewriterConfig } from '../types/editorPane.types';
 
 /**
  * Custom hook for implementing typewriter mode
@@ -22,11 +22,11 @@ export const useTypewriterMode = (config: TypewriterConfig): void => {
      * Handle scroll to center current line
      */
     const handleScroll = (): void => {
-      const lineHeight = parseInt(getComputedStyle(textarea).lineHeight);
+      const lineHeight = Number.parseInt(getComputedStyle(textarea).lineHeight);
       const scrollTop = textarea.scrollTop;
       const clientHeight = textarea.clientHeight;
       const centerOffset = clientHeight / 2 - lineHeight / 2;
-      
+
       if (scrollTop > centerOffset) {
         textarea.scrollTop = scrollTop - centerOffset;
       }
@@ -35,7 +35,7 @@ export const useTypewriterMode = (config: TypewriterConfig): void => {
     // Add event listeners for typewriter effect
     textarea.addEventListener('input', handleScroll);
     textarea.addEventListener('keyup', handleScroll);
-    
+
     // Cleanup event listeners
     return () => {
       textarea.removeEventListener('input', handleScroll);

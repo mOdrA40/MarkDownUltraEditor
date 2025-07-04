@@ -1,7 +1,7 @@
 /**
  * Format Buttons Constants
  * Konstanta untuk semua format buttons yang tersedia di toolbar
- * 
+ *
  * @author Axel Modra
  */
 
@@ -22,80 +22,80 @@ export const MARKDOWN_TEMPLATES: Record<string, MarkdownTemplate> = {
     name: 'Heading 1',
     template: '# ',
     description: 'Large heading',
-    category: 'heading'
+    category: 'heading',
   },
   h2: {
     name: 'Heading 2',
     template: '## ',
     description: 'Medium heading',
-    category: 'heading'
+    category: 'heading',
   },
   h3: {
     name: 'Heading 3',
     template: '### ',
     description: 'Small heading',
-    category: 'heading'
+    category: 'heading',
   },
   bold: {
     name: 'Bold',
     template: '**bold**',
     description: 'Bold text',
-    category: 'formatting'
+    category: 'formatting',
   },
   italic: {
     name: 'Italic',
     template: '*italic*',
     description: 'Italic text',
-    category: 'formatting'
+    category: 'formatting',
   },
   inlineCode: {
     name: 'Inline Code',
     template: '`code`',
     description: 'Inline code',
-    category: 'code'
+    category: 'code',
   },
   codeBlock: {
     name: 'Code Block',
     template: '```javascript\n// Your code here\nconsole.log("Hello World!");\n```',
     description: 'Code block with syntax highlighting',
-    category: 'code'
+    category: 'code',
   },
   link: {
     name: 'Link',
     template: '[text](url)',
     description: 'Hyperlink',
-    category: 'content'
+    category: 'content',
   },
   image: {
     name: 'Image',
     template: '![alt](url)',
     description: 'Image embed',
-    category: 'media'
+    category: 'media',
   },
   quote: {
     name: 'Quote',
     template: '> quote',
     description: 'Blockquote',
-    category: 'content'
+    category: 'content',
   },
   unorderedList: {
     name: 'Unordered List',
     template: '- item',
     description: 'Bullet list',
-    category: 'list'
+    category: 'list',
   },
   orderedList: {
     name: 'Ordered List',
     template: '1. item',
     description: 'Numbered list',
-    category: 'list'
+    category: 'list',
   },
   table: {
     name: 'Table',
     template: '| Column 1 | Column 2 |\n|----------|----------|\n| Cell 1   | Cell 2   |',
     description: 'Table with headers',
-    category: 'content'
-  }
+    category: 'content',
+  },
 };
 
 /**
@@ -108,7 +108,7 @@ export const FORMAT_BUTTON_CONFIGS: FormatButtonConfig[] = [
     tooltip: 'Heading 1',
     category: 'heading',
     style: 'font-bold',
-    shortcut: 'Ctrl+1'
+    shortcut: 'Ctrl+1',
   },
   {
     label: 'H2',
@@ -116,7 +116,7 @@ export const FORMAT_BUTTON_CONFIGS: FormatButtonConfig[] = [
     tooltip: 'Heading 2',
     category: 'heading',
     style: 'font-bold',
-    shortcut: 'Ctrl+2'
+    shortcut: 'Ctrl+2',
   },
   {
     label: 'H3',
@@ -124,7 +124,7 @@ export const FORMAT_BUTTON_CONFIGS: FormatButtonConfig[] = [
     tooltip: 'Heading 3',
     category: 'heading',
     style: 'font-bold',
-    shortcut: 'Ctrl+3'
+    shortcut: 'Ctrl+3',
   },
   {
     label: 'B',
@@ -132,7 +132,7 @@ export const FORMAT_BUTTON_CONFIGS: FormatButtonConfig[] = [
     tooltip: 'Bold',
     category: 'formatting',
     style: 'font-bold',
-    shortcut: 'Ctrl+B'
+    shortcut: 'Ctrl+B',
   },
   {
     label: 'I',
@@ -140,69 +140,69 @@ export const FORMAT_BUTTON_CONFIGS: FormatButtonConfig[] = [
     tooltip: 'Italic',
     category: 'formatting',
     style: 'italic',
-    shortcut: 'Ctrl+I'
+    shortcut: 'Ctrl+I',
   },
   {
     label: 'Code',
     template: MARKDOWN_TEMPLATES.inlineCode.template,
     tooltip: 'Inline Code',
     category: 'code',
-    shortcut: 'Ctrl+`'
+    shortcut: 'Ctrl+`',
   },
   {
     label: 'Link',
     template: MARKDOWN_TEMPLATES.link.template,
     tooltip: 'Link',
     category: 'content',
-    shortcut: 'Ctrl+K'
+    shortcut: 'Ctrl+K',
   },
   {
     label: 'Image',
     template: MARKDOWN_TEMPLATES.image.template,
     tooltip: 'Image',
     category: 'media',
-    shortcut: 'Ctrl+Shift+I'
+    shortcut: 'Ctrl+Shift+I',
   },
   {
     label: 'Quote',
     template: MARKDOWN_TEMPLATES.quote.template,
     tooltip: 'Blockquote',
     category: 'content',
-    shortcut: 'Ctrl+Shift+.'
+    shortcut: 'Ctrl+Shift+.',
   },
   {
     label: 'List',
     template: MARKDOWN_TEMPLATES.unorderedList.template,
     tooltip: 'Unordered List',
     category: 'list',
-    shortcut: 'Ctrl+Shift+8'
+    shortcut: 'Ctrl+Shift+8',
   },
   {
     label: '1.',
     template: MARKDOWN_TEMPLATES.orderedList.template,
     tooltip: 'Ordered List',
     category: 'list',
-    shortcut: 'Ctrl+Shift+7'
+    shortcut: 'Ctrl+Shift+7',
   },
   {
     label: 'Table',
     template: MARKDOWN_TEMPLATES.table.template,
     tooltip: 'Table',
     category: 'content',
-    shortcut: 'Ctrl+Shift+T'
-  }
+    shortcut: 'Ctrl+Shift+T',
+  },
 ];
 
 /**
  * Grouping buttons by category
  */
 export const BUTTON_GROUPS = {
-  heading: FORMAT_BUTTON_CONFIGS.filter(btn => btn.category === 'heading'),
-  formatting: FORMAT_BUTTON_CONFIGS.filter(btn => btn.category === 'formatting'),
-  code: FORMAT_BUTTON_CONFIGS.filter(btn => btn.category === 'code'),
-  content: FORMAT_BUTTON_CONFIGS.filter(btn => btn.category === 'content'),
-  list: FORMAT_BUTTON_CONFIGS.filter(btn => btn.category === 'list'),
-  media: FORMAT_BUTTON_CONFIGS.filter(btn => btn.category === 'media')
+  heading: FORMAT_BUTTON_CONFIGS.filter((btn) => btn.category === 'heading'),
+  formatting: FORMAT_BUTTON_CONFIGS.filter((btn) => btn.category === 'formatting'),
+  code: FORMAT_BUTTON_CONFIGS.filter((btn) => btn.category === 'code'),
+  content: FORMAT_BUTTON_CONFIGS.filter((btn) => btn.category === 'content'),
+  list: FORMAT_BUTTON_CONFIGS.filter((btn) => btn.category === 'list'),
+  media: FORMAT_BUTTON_CONFIGS.filter((btn) => btn.category === 'media'),
 };
 
 /**
@@ -213,28 +213,28 @@ export const RESPONSIVE_BREAKPOINTS = {
     max: 499,
     buttonsPerRow: 3,
     showLabels: true,
-    compactMode: true
+    compactMode: true,
   },
   smallTablet: {
     min: 500,
     max: 767,
     buttonsPerRow: 6,
     showLabels: false,
-    compactMode: true
+    compactMode: true,
   },
   tablet: {
     min: 768,
     max: 1279,
     buttonsPerRow: 8,
     showLabels: true,
-    compactMode: false
+    compactMode: false,
   },
   desktop: {
     min: 1280,
     buttonsPerRow: 12,
     showLabels: true,
-    compactMode: false
-  }
+    compactMode: false,
+  },
 } as const;
 
 /**
@@ -245,20 +245,20 @@ export const BUTTON_SIZES = {
     height: 'h-9',
     padding: 'px-3',
     text: 'text-xs',
-    icon: 'h-3 w-3'
+    icon: 'h-3 w-3',
   },
   tablet: {
     height: 'h-7',
     padding: 'px-2',
     text: 'text-xs',
-    icon: 'h-3 w-3'
+    icon: 'h-3 w-3',
   },
   desktop: {
     height: 'h-8',
     padding: 'px-3',
     text: 'text-xs',
-    icon: 'h-4 w-4'
-  }
+    icon: 'h-4 w-4',
+  },
 } as const;
 
 /**
@@ -267,5 +267,5 @@ export const BUTTON_SIZES = {
 export const TOOLBAR_ANIMATIONS = {
   button: 'transition-all duration-200 hover:scale-105 active:scale-95',
   container: 'transition-all duration-300',
-  separator: 'transition-opacity duration-200'
+  separator: 'transition-opacity duration-200',
 } as const;

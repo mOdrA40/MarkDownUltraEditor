@@ -3,7 +3,7 @@
  * @author Axel Modra
  */
 
-import { FileImportResult, FileOperationCallbacks } from '../types/fileOperations.types';
+import type { FileImportResult, FileOperationCallbacks } from '../types/fileOperations.types';
 
 /**
  * Supported file types for import
@@ -13,7 +13,7 @@ export const SUPPORTED_FILE_TYPES = ['.md', '.txt', '.markdown'] as const;
 /**
  * Type for supported file extensions
  */
-type SupportedFileType = typeof SUPPORTED_FILE_TYPES[number];
+type SupportedFileType = (typeof SUPPORTED_FILE_TYPES)[number];
 
 /**
  * Maximum file size in bytes (5MB)
@@ -28,7 +28,7 @@ export const validateFile = (file: File): { valid: boolean; error?: string } => 
   if (file.size > MAX_FILE_SIZE) {
     return {
       valid: false,
-      error: `File size exceeds maximum limit of ${MAX_FILE_SIZE / (1024 * 1024)}MB`
+      error: `File size exceeds maximum limit of ${MAX_FILE_SIZE / (1024 * 1024)}MB`,
     };
   }
 
@@ -37,7 +37,7 @@ export const validateFile = (file: File): { valid: boolean; error?: string } => 
   if (!SUPPORTED_FILE_TYPES.includes(fileExtension)) {
     return {
       valid: false,
-      error: `Unsupported file type. Supported types: ${SUPPORTED_FILE_TYPES.join(', ')}`
+      error: `Unsupported file type. Supported types: ${SUPPORTED_FILE_TYPES.join(', ')}`,
     };
   }
 
@@ -66,11 +66,11 @@ export const importFile = async (
       content,
       fileName: file.name,
       size: file.size,
-      type: file.type
+      type: file.type,
     };
 
     callbacks.onSuccess(`${file.name} has been loaded successfully.`);
-    
+
     return result;
   } catch (error) {
     const errorMessage = `Failed to load file: ${error instanceof Error ? error.message : 'Unknown error'}`;
@@ -85,7 +85,7 @@ export const importFile = async (
 const readFileContent = (file: File): Promise<string> => {
   return new Promise((resolve, reject) => {
     const reader = new FileReader();
-    
+
     reader.onload = (e) => {
       const content = e.target?.result as string;
       if (content) {
@@ -94,11 +94,11 @@ const readFileContent = (file: File): Promise<string> => {
         reject(new Error('Failed to read file content'));
       }
     };
-    
+
     reader.onerror = () => {
       reject(new Error('File reading error'));
     };
-    
+
     reader.readAsText(file);
   });
 };

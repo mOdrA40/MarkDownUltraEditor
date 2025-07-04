@@ -3,7 +3,7 @@
  * @author Axel Modra
  */
 
-import { LanguageIconMap, HighlightThemeConfig } from '../types/preview.types';
+import type { LanguageIconMap, HighlightThemeConfig } from '../types/preview.types';
 
 /**
  * Icon mapping for each programming language
@@ -11,43 +11,140 @@ import { LanguageIconMap, HighlightThemeConfig } from '../types/preview.types';
  */
 export const LANGUAGE_ICONS: LanguageIconMap = {
   // Programming languages
-  javascript: '🟨', js: '🟨', typescript: '🔷', ts: '🔷',
-  python: '🐍', py: '🐍', java: '☕', cpp: '⚡', 'c++': '⚡', c: '⚡',
-  csharp: '🔷', 'c#': '🔷', cs: '🔷', php: '🐘',
-  ruby: '💎', rb: '💎', go: '🐹', golang: '🐹',
-  rust: '🦀', rs: '🦀', swift: '🍎', kotlin: '🎯', kt: '🎯',
-  scala: '🔺', dart: '🎯', flutter: '💙', r: '📊',
-  matlab: '🔢', lua: '🌙', perl: '🐪', pl: '🐪', haskell: '🔮', hs: '🔮',
-  clojure: '🔄', clj: '🔄', elixir: '💜', ex: '💜', erlang: '📡', erl: '📡',
-  fsharp: '🔷', fs: '🔷', 'f#': '🔷', ocaml: '🐫', ml: '🐫',
-  scheme: '🔮', scm: '🔮', lisp: '🔮',
-  
+  javascript: '🟨',
+  js: '🟨',
+  typescript: '🔷',
+  ts: '🔷',
+  python: '🐍',
+  py: '🐍',
+  java: '☕',
+  cpp: '⚡',
+  'c++': '⚡',
+  c: '⚡',
+  csharp: '🔷',
+  'c#': '🔷',
+  cs: '🔷',
+  php: '🐘',
+  ruby: '💎',
+  rb: '💎',
+  go: '🐹',
+  golang: '🐹',
+  rust: '🦀',
+  rs: '🦀',
+  swift: '🍎',
+  kotlin: '🎯',
+  kt: '🎯',
+  scala: '🔺',
+  dart: '🎯',
+  flutter: '💙',
+  r: '📊',
+  matlab: '🔢',
+  lua: '🌙',
+  perl: '🐪',
+  pl: '🐪',
+  haskell: '🔮',
+  hs: '🔮',
+  clojure: '🔄',
+  clj: '🔄',
+  elixir: '💜',
+  ex: '💜',
+  erlang: '📡',
+  erl: '📡',
+  fsharp: '🔷',
+  fs: '🔷',
+  'f#': '🔷',
+  ocaml: '🐫',
+  ml: '🐫',
+  scheme: '🔮',
+  scm: '🔮',
+  lisp: '🔮',
+
   // Web technologies
-  html: '🌐', css: '🎨', scss: '🎨', sass: '🎨', less: '🎨',
-  json: '📋', yaml: '📄', yml: '📄', xml: '📄', markdown: '📝', md: '📝',
-  
+  html: '🌐',
+  css: '🎨',
+  scss: '🎨',
+  sass: '🎨',
+  less: '🎨',
+  json: '📋',
+  yaml: '📄',
+  yml: '📄',
+  xml: '📄',
+  markdown: '📝',
+  md: '📝',
+
   // Shell and config
-  bash: '🐚', shell: '🐚', sh: '🐚', zsh: '🐚', powershell: '💙', ps1: '💙',
-  
+  bash: '🐚',
+  shell: '🐚',
+  sh: '🐚',
+  zsh: '🐚',
+  powershell: '💙',
+  ps1: '💙',
+
   // Database
-  sql: '🗃️', mysql: '🗃️', postgresql: '🐘', sqlite: '🗃️', mongodb: '🍃', mongo: '🍃',
-  
+  sql: '🗃️',
+  mysql: '🗃️',
+  postgresql: '🐘',
+  sqlite: '🗃️',
+  mongodb: '🍃',
+  mongo: '🍃',
+
   // DevOps and tools
-  docker: '🐳', dockerfile: '🐳', nginx: '🌐', apache: '🌐',
-  vim: '💚', makefile: '🔨', make: '🔨', cmake: '🔧', gradle: '🔧',
-  ini: '⚙️', toml: '⚙️', conf: '⚙️', config: '⚙️',
-  
+  docker: '🐳',
+  dockerfile: '🐳',
+  nginx: '🌐',
+  apache: '🌐',
+  vim: '💚',
+  makefile: '🔨',
+  make: '🔨',
+  cmake: '🔧',
+  gradle: '🔧',
+  ini: '⚙️',
+  toml: '⚙️',
+  conf: '⚙️',
+  config: '⚙️',
+
   // Scientific and specialized
-  latex: '📖', tex: '📖', graphql: '🔗', gql: '🔗', proto: '📦', protobuf: '📦',
-  objectivec: '🍎', objc: '🍎', x86asm: '⚙️', assembly: '⚙️', asm: '⚙️',
-  verilog: '🔌', v: '🔌', vhdl: '🔌', fortran: '🔬', f90: '🔬', f95: '🔬',
-  pascal: '📐', delphi: '📐', prolog: '🧠',
-  
+  latex: '📖',
+  tex: '📖',
+  graphql: '🔗',
+  gql: '🔗',
+  proto: '📦',
+  protobuf: '📦',
+  objectivec: '🍎',
+  objc: '🍎',
+  x86asm: '⚙️',
+  assembly: '⚙️',
+  asm: '⚙️',
+  verilog: '🔌',
+  v: '🔌',
+  vhdl: '🔌',
+  fortran: '🔬',
+  f90: '🔬',
+  f95: '🔬',
+  pascal: '📐',
+  delphi: '📐',
+  prolog: '🧠',
+
   // Framework aliases
-  react: '⚛️', jsx: '⚛️', tsx: '⚛️', vue: '💚', svelte: '🧡', angular: '🔺',
-  node: '💚', nodejs: '💚', nextjs: '⚫', express: '🚂',
-  django: '🐍', flask: '🐍', fastapi: '⚡', spring: '🍃', laravel: '🎭', rails: '💎',
-  gin: '🐹', actix: '🦀', rocket: '🦀'
+  react: '⚛️',
+  jsx: '⚛️',
+  tsx: '⚛️',
+  vue: '💚',
+  svelte: '🧡',
+  angular: '🔺',
+  node: '💚',
+  nodejs: '💚',
+  nextjs: '⚫',
+  express: '🚂',
+  django: '🐍',
+  flask: '🐍',
+  fastapi: '⚡',
+  spring: '🍃',
+  laravel: '🎭',
+  rails: '💎',
+  gin: '🐹',
+  actix: '🦀',
+  rocket: '🦀',
 };
 
 /**
@@ -66,38 +163,38 @@ export const HIGHLIGHT_THEMES: Record<string, HighlightThemeConfig> = {
   light: {
     id: 'github',
     url: 'https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/styles/github.min.css',
-    isDark: false
+    isDark: false,
   },
   dark: {
     id: 'github-dark',
     url: 'https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/styles/github-dark.min.css',
-    isDark: true
+    isDark: true,
   },
   ocean: {
     id: 'atom-one-dark',
     url: 'https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/styles/atom-one-dark.min.css',
-    isDark: true
+    isDark: true,
   },
   forest: {
     id: 'green-screen',
     url: 'https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/styles/base16/green-screen.min.css',
-    isDark: true
+    isDark: true,
   },
   sunset: {
     id: 'solarized-dark',
     url: 'https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/styles/base16/solarized-dark.min.css',
-    isDark: true
+    isDark: true,
   },
   purple: {
     id: 'tomorrow-night',
     url: 'https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/styles/base16/tomorrow-night.min.css',
-    isDark: true
+    isDark: true,
   },
   rose: {
     id: 'atelier-heath-light',
     url: 'https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/styles/base16/atelier-heath-light.min.css',
-    isDark: false
-  }
+    isDark: false,
+  },
 };
 
 /**
@@ -110,7 +207,7 @@ export const getHighlightTheme = (isDarkMode: boolean, themeId?: string): Highli
   if (themeId && HIGHLIGHT_THEMES[themeId]) {
     return HIGHLIGHT_THEMES[themeId];
   }
-  
+
   return isDarkMode ? HIGHLIGHT_THEMES.dark : HIGHLIGHT_THEMES.light;
 };
 
@@ -139,13 +236,13 @@ export const extractTextContent = (element: unknown): string => {
 export const copyToClipboard = async (text: string, button?: HTMLButtonElement): Promise<void> => {
   try {
     await navigator.clipboard.writeText(text);
-    
+
     if (button) {
       const originalText = button.textContent;
       button.textContent = '✅ Copied!';
       button.style.backgroundColor = '#10b981';
       button.style.color = 'white';
-      
+
       setTimeout(() => {
         button.textContent = originalText;
         button.style.backgroundColor = '';
@@ -168,6 +265,6 @@ export const getResponsiveOptions = (isMobile: boolean, isTablet: boolean) => {
     padding: isMobile ? '1rem' : isTablet ? '1.5rem' : '1.5rem',
     fontSize: isMobile ? '14px' : isTablet ? '15px' : '16px',
     lineHeight: isMobile ? 1.5 : isTablet ? 1.6 : 1.7,
-    codeSize: (isMobile || isTablet) ? '13px' : '14px'
+    codeSize: isMobile || isTablet ? '13px' : '14px',
   };
 };

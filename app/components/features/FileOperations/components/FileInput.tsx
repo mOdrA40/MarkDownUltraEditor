@@ -3,7 +3,7 @@
  * @author Axel Modra
  */
 
-import React from 'react';
+import type React from 'react';
 import { SUPPORTED_FILE_TYPES } from '../services/fileImportService';
 
 interface FileInputProps {
@@ -16,10 +16,7 @@ interface FileInputProps {
 /**
  * Hidden file input component for file uploads
  */
-export const FileInput: React.FC<FileInputProps> = ({
-  fileInputRef,
-  onChange
-}) => {
+export const FileInput: React.FC<FileInputProps> = ({ fileInputRef, onChange }) => {
   return (
     <input
       ref={fileInputRef}

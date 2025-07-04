@@ -3,20 +3,20 @@
  * @author Axel Modra
  */
 
-import { 
-  FileData, 
-  Database, 
-  handleSupabaseError, 
-  dbRowToFileData, 
-  fileDataToDbInsert 
+import {
+  type FileData,
+  type Database,
+  handleSupabaseError,
+  dbRowToFileData,
+  fileDataToDbInsert,
 } from '@/lib/supabase';
-import { SupabaseClient } from '@supabase/supabase-js';
-import { 
-  getStorageItem, 
-  setStorageItem, 
-  removeStorageItem, 
-  getStorageJSON, 
-  setStorageJSON 
+import type { SupabaseClient } from '@supabase/supabase-js';
+import {
+  getStorageItem,
+  setStorageItem,
+  removeStorageItem,
+  getStorageJSON,
+  setStorageJSON,
 } from '@/components/editor/MarkdownEditor/utils/storageUtils';
 
 // Storage keys for localStorage
@@ -43,19 +43,19 @@ export interface FileStorageService {
   loadFromCloud(fileId: string): Promise<FileData | null>;
   listCloudFiles(): Promise<FileData[]>;
   deleteFromCloud(fileId: string): Promise<void>;
-  
+
   // Local operations (non-authenticated users)
   saveToLocal(file: FileData): void;
   loadFromLocal(fileName: string): FileData | null;
   listLocalFiles(): FileData[];
   deleteFromLocal(fileName: string): void;
-  
+
   // Unified operations
   save(file: FileData): Promise<FileData>;
   load(identifier: string): Promise<FileData | null>;
   list(): Promise<FileData[]>;
   delete(identifier: string): Promise<void>;
-  
+
   // Utility operations
   getStorageInfo(): StorageInfo;
   syncLocalToCloud?(): Promise<void>;
@@ -87,11 +87,11 @@ export class HybridFileStorage implements FileStorageService {
     this.supabaseClient = supabaseClient;
     this.userId = userId;
     this.isAuthenticated = !!(supabaseClient && userId);
-    
+
     console.log('HybridFileStorage initialized:', {
       isAuthenticated: this.isAuthenticated,
       userId: userId ? 'present' : 'null',
-      supabaseClient: supabaseClient ? 'present' : 'null'
+      supabaseClient: supabaseClient ? 'present' : 'null',
     });
   }
 
@@ -103,14 +103,14 @@ export class HybridFileStorage implements FileStorageService {
 
     try {
       console.log('Saving file to cloud:', file.title);
-      
+
       // Validate file size
       if (file.content.length > STORAGE_LIMITS.MAX_FILE_SIZE) {
         throw new Error(`File size exceeds limit of ${STORAGE_LIMITS.MAX_FILE_SIZE / 1024}KB`);
       }
 
       const dbInsert = fileDataToDbInsert(file, this.userId);
-      
+
       // Check if file exists (update) or create new
       if (file.id) {
         const { data, error } = await this.supabaseClient
@@ -131,21 +131,20 @@ export class HybridFileStorage implements FileStorageService {
 
         console.log('File updated in cloud:', data.title);
         return dbRowToFileData(data);
-      } else {
-        const { data, error } = await this.supabaseClient
-          .from('user_files')
-          .insert(dbInsert)
-          .select()
-          .single();
-
-        if (error) {
-          handleSupabaseError(error, 'create file');
-          throw error;
-        }
-
-        console.log('File created in cloud:', data.title);
-        return dbRowToFileData(data);
       }
+      const { data, error } = await this.supabaseClient
+        .from('user_files')
+        .insert(dbInsert)
+        .select()
+        .single();
+
+      if (error) {
+        handleSupabaseError(error, 'create file');
+        throw error;
+      }
+
+      console.log('File created in cloud:', data.title);
+      return dbRowToFileData(data);
     } catch (error) {
       console.error('Error saving file to cloud:', error);
       throw error;
@@ -159,7 +158,7 @@ export class HybridFileStorage implements FileStorageService {
 
     try {
       console.log('Loading file from cloud:', fileId);
-      
+
       const { data, error } = await this.supabaseClient
         .from('user_files')
         .select('*')
@@ -192,7 +191,7 @@ export class HybridFileStorage implements FileStorageService {
 
     try {
       console.log('Listing files from cloud');
-      
+
       const { data, error } = await this.supabaseClient
         .from('user_files')
         .select('*')
@@ -220,7 +219,7 @@ export class HybridFileStorage implements FileStorageService {
 
     try {
       console.log('Deleting file from cloud:', fileId);
-      
+
       // Soft delete
       const { error } = await this.supabaseClient
         .from('user_files')
@@ -247,10 +246,10 @@ export class HybridFileStorage implements FileStorageService {
   saveToLocal(file: FileData): void {
     try {
       console.log('Saving file to local storage:', file.title);
-      
+
       // Get current files list
       const filesList = this.listLocalFiles();
-      
+
       // Check storage limits
       if (filesList.length >= STORAGE_LIMITS.MAX_FILES_PER_USER) {
         throw new Error(`Maximum number of files (${STORAGE_LIMITS.MAX_FILES_PER_USER}) reached`);
@@ -265,7 +264,7 @@ export class HybridFileStorage implements FileStorageService {
       setStorageJSON(fileKey, fileWithId);
 
       // Update files list
-      const updatedList = filesList.filter(f => f.id !== fileId);
+      const updatedList = filesList.filter((f) => f.id !== fileId);
       updatedList.unshift(fileWithId);
       setStorageJSON(STORAGE_KEYS.FILES_LIST, updatedList);
 
@@ -279,15 +278,15 @@ export class HybridFileStorage implements FileStorageService {
   loadFromLocal(fileName: string): FileData | null {
     try {
       console.log('Loading file from local storage:', fileName);
-      
+
       // Try to load by ID first
       const fileKey = `${STORAGE_KEYS.FILE_PREFIX}${fileName}`;
       let fileData = getStorageJSON<FileData>(fileKey);
-      
+
       if (!fileData) {
         // Try to find by title in files list
         const filesList = this.listLocalFiles();
-        fileData = filesList.find(f => f.title === fileName || f.id === fileName) || null;
+        fileData = filesList.find((f) => f.title === fileName || f.id === fileName) || null;
       }
 
       if (fileData) {
@@ -321,14 +320,14 @@ export class HybridFileStorage implements FileStorageService {
   deleteFromLocal(fileName: string): void {
     try {
       console.log('Deleting file from local storage:', fileName);
-      
+
       // Remove from files list
       const filesList = this.listLocalFiles();
-      const updatedList = filesList.filter(f => f.title !== fileName && f.id !== fileName);
+      const updatedList = filesList.filter((f) => f.title !== fileName && f.id !== fileName);
       setStorageJSON(STORAGE_KEYS.FILES_LIST, updatedList);
 
       // Remove individual file data
-      const fileToDelete = filesList.find(f => f.title === fileName || f.id === fileName);
+      const fileToDelete = filesList.find((f) => f.title === fileName || f.id === fileName);
       if (fileToDelete?.id) {
         const fileKey = `${STORAGE_KEYS.FILE_PREFIX}${fileToDelete.id}`;
         removeStorageItem(fileKey);
@@ -345,26 +344,23 @@ export class HybridFileStorage implements FileStorageService {
   async save(file: FileData): Promise<FileData> {
     if (this.isAuthenticated) {
       return await this.saveToCloud(file);
-    } else {
-      this.saveToLocal(file);
-      return file;
     }
+    this.saveToLocal(file);
+    return file;
   }
 
   async load(identifier: string): Promise<FileData | null> {
     if (this.isAuthenticated) {
       return await this.loadFromCloud(identifier);
-    } else {
-      return this.loadFromLocal(identifier);
     }
+    return this.loadFromLocal(identifier);
   }
 
   async list(): Promise<FileData[]> {
     if (this.isAuthenticated) {
       return await this.listCloudFiles();
-    } else {
-      return this.listLocalFiles();
     }
+    return this.listLocalFiles();
   }
 
   async delete(identifier: string): Promise<void> {
@@ -394,12 +390,12 @@ export class HybridFileStorage implements FileStorageService {
   async exportAllFiles(): Promise<Blob> {
     try {
       console.log('Exporting all files');
-      
+
       const files = await this.list();
       const exportData = {
         exportDate: new Date().toISOString(),
         totalFiles: files.length,
-        files: files.map(file => ({
+        files: files.map((file) => ({
           title: file.title,
           content: file.content,
           tags: file.tags,
@@ -410,7 +406,7 @@ export class HybridFileStorage implements FileStorageService {
 
       const jsonString = JSON.stringify(exportData, null, 2);
       const blob = new Blob([jsonString], { type: 'application/json' });
-      
+
       console.log(`Exported ${files.length} files`);
       return blob;
     } catch (error) {

@@ -3,8 +3,8 @@
  * @author Axel Modra
  */
 
-import { Theme } from "../../../features/ThemeSelector";
-import { EditorStyles, ResponsiveConfig } from "../types/editorPane.types";
+import type { Theme } from '../../../features/ThemeSelector';
+import type { EditorStyles, ResponsiveConfig } from '../types/editorPane.types';
 
 /**
  * Calculate responsive font size and line height based on device type
@@ -15,22 +15,18 @@ export const calculateResponsiveConfig = (
   isMobile: boolean,
   isTablet: boolean
 ): ResponsiveConfig => {
-  const responsiveFontSize = isMobile 
-    ? Math.max(14, fontSize - 1) 
-    : isTablet 
-    ? Math.max(15, fontSize) 
-    : fontSize;
-    
-  const responsiveLineHeight = isMobile 
-    ? 1.5 
-    : isTablet 
-    ? 1.6 
-    : lineHeight;
+  const responsiveFontSize = isMobile
+    ? Math.max(14, fontSize - 1)
+    : isTablet
+      ? Math.max(15, fontSize)
+      : fontSize;
+
+  const responsiveLineHeight = isMobile ? 1.5 : isTablet ? 1.6 : lineHeight;
 
   return {
     fontSize: responsiveFontSize,
     lineHeight: responsiveLineHeight,
-    isMobileOrTablet: isMobile || isTablet
+    isMobileOrTablet: isMobile || isTablet,
   };
 };
 
@@ -47,13 +43,14 @@ export const generateEditorStyles = (
   return {
     fontSize: `${fontSize}px`,
     lineHeight,
-    fontFamily: 'ui-monospace, SFMono-Regular, "SF Mono", Monaco, Consolas, "Liberation Mono", "Courier New", monospace',
-    whiteSpace: isMobileOrTablet ? 'pre-wrap' : (wordWrap ? 'pre-wrap' : 'pre'),
+    fontFamily:
+      'ui-monospace, SFMono-Regular, "SF Mono", Monaco, Consolas, "Liberation Mono", "Courier New", monospace',
+    whiteSpace: isMobileOrTablet ? 'pre-wrap' : wordWrap ? 'pre-wrap' : 'pre',
     backgroundColor: theme?.surface || 'transparent',
     color: theme?.text || 'inherit',
     borderColor: theme?.accent || 'transparent',
-    wordWrap: isMobileOrTablet ? 'break-word' : (wordWrap ? 'break-word' : 'normal'),
-    overflowWrap: isMobileOrTablet ? 'break-word' : (wordWrap ? 'break-word' : 'normal'),
+    wordWrap: isMobileOrTablet ? 'break-word' : wordWrap ? 'break-word' : 'normal',
+    overflowWrap: isMobileOrTablet ? 'break-word' : wordWrap ? 'break-word' : 'normal',
     overflowX: isMobileOrTablet ? 'hidden' : 'auto',
     hyphens: isMobileOrTablet ? 'auto' : 'none',
   } as EditorStyles;
@@ -91,9 +88,9 @@ const hexToRgba = (hex: string, opacity: number): string => {
   const cleanHex = hex.replace('#', '');
 
   // Parse hex to RGB
-  const r = parseInt(cleanHex.substring(0, 2), 16);
-  const g = parseInt(cleanHex.substring(2, 4), 16);
-  const b = parseInt(cleanHex.substring(4, 6), 16);
+  const r = Number.parseInt(cleanHex.substring(0, 2), 16);
+  const g = Number.parseInt(cleanHex.substring(2, 4), 16);
+  const b = Number.parseInt(cleanHex.substring(4, 6), 16);
 
   return `rgba(${r}, ${g}, ${b}, ${opacity})`;
 };
@@ -110,7 +107,7 @@ export const generateHeaderStyles = (theme?: Theme) => {
   return {
     backgroundColor,
     borderColor: theme?.accent || 'rgba(226, 232, 240, 1)', // border-slate-200
-    color: theme?.text || 'inherit'
+    color: theme?.text || 'inherit',
   };
 };
 

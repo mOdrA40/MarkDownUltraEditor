@@ -3,61 +3,52 @@
  * Handles grouping shortcuts by category with header and separator
  */
 
-import React from 'react';
-import { Separator } from "@/components/ui/separator";
-import { Badge } from "@/components/ui/badge";
-import { 
-  Type, 
-  Eye, 
-  Search, 
-  FileText, 
-  Edit3, 
-  Settings,
-  Keyboard
-} from "lucide-react";
-import { ShortcutCategoryProps } from '../types/shortcutTypes';
+import type React from 'react';
+import { Separator } from '@/components/ui/separator';
+import { Badge } from '@/components/ui/badge';
+import { Type, Eye, Search, FileText, Edit3, Settings, Keyboard } from 'lucide-react';
+import type { ShortcutCategoryProps } from '../types/shortcutTypes';
 import { ShortcutItem } from './ShortcutItem';
 
 // Icon mapping for categories
 const CATEGORY_ICONS = {
-  "Text Formatting": Type,
-  "View & Navigation": Eye,
-  "Search & Navigation": Search,
-  "File Operations": FileText,
-  "Editing": Edit3,
-  "Advanced Features": Settings,
-  "default": Keyboard
+  'Text Formatting': Type,
+  'View & Navigation': Eye,
+  'Search & Navigation': Search,
+  'File Operations': FileText,
+  Editing: Edit3,
+  'Advanced Features': Settings,
+  default: Keyboard,
 };
 
 export const ShortcutCategory: React.FC<ShortcutCategoryProps> = ({
   category,
   showMacKeys = false,
   index,
-  totalCategories
+  totalCategories,
 }) => {
   // Get icon for category
-  const IconComponent = CATEGORY_ICONS[category.category as keyof typeof CATEGORY_ICONS] || CATEGORY_ICONS.default;
+  const IconComponent =
+    CATEGORY_ICONS[category.category as keyof typeof CATEGORY_ICONS] || CATEGORY_ICONS.default;
 
   // Filter enabled items
-  const enabledItems = category.items.filter(item => item.enabled !== false);
-  const disabledItems = category.items.filter(item => item.enabled === false);
-  
+  const enabledItems = category.items.filter((item) => item.enabled !== false);
+  const disabledItems = category.items.filter((item) => item.enabled === false);
+
   return (
     <div className="space-y-3">
       {/* Category Header */}
       <div className="flex items-center justify-between">
         <div className="flex items-center space-x-2">
           <IconComponent className="h-4 w-4 text-muted-foreground" />
-          <h3 className="text-sm font-semibold text-muted-foreground">
-            {category.category}
-          </h3>
-          
+          <h3 className="text-sm font-semibold text-muted-foreground">{category.category}</h3>
+
           {/* Item Count Badge */}
           <Badge variant="outline" className="text-xs h-5">
             {category.items.length}
           </Badge>
         </div>
-        
+
         {/* Platform Indicator */}
         {showMacKeys && (
           <Badge variant="secondary" className="text-xs">
@@ -77,7 +68,7 @@ export const ShortcutCategory: React.FC<ShortcutCategoryProps> = ({
             index={itemIndex}
           />
         ))}
-        
+
         {/* Disabled Items (if any) */}
         {disabledItems.length > 0 && (
           <>
@@ -86,7 +77,7 @@ export const ShortcutCategory: React.FC<ShortcutCategoryProps> = ({
                 <Separator className="opacity-50" />
               </div>
             )}
-            
+
             {disabledItems.map((item, itemIndex) => (
               <ShortcutItem
                 key={`disabled-${itemIndex}`}

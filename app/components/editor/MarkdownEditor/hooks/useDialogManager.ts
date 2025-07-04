@@ -4,7 +4,7 @@
  */
 
 import { useState, useCallback } from 'react';
-import { DialogState, UseDialogManagerReturn } from '../types';
+import type { DialogState, UseDialogManagerReturn } from '../types';
 
 /**
  * Custom hook for managing dialog visibility state
@@ -16,16 +16,16 @@ export const useDialogManager = (): UseDialogManagerReturn => {
     showSearch: false,
     showShortcuts: false,
     showTemplates: false,
-    showAdvancedExport: false
+    showAdvancedExport: false,
   });
 
   /**
    * Show a specific dialog
    */
   const showDialog = useCallback((dialog: keyof DialogState) => {
-    setDialogState(prev => ({
+    setDialogState((prev) => ({
       ...prev,
-      [dialog]: true
+      [dialog]: true,
     }));
   }, []);
 
@@ -33,9 +33,9 @@ export const useDialogManager = (): UseDialogManagerReturn => {
    * Hide a specific dialog
    */
   const hideDialog = useCallback((dialog: keyof DialogState) => {
-    setDialogState(prev => ({
+    setDialogState((prev) => ({
       ...prev,
-      [dialog]: false
+      [dialog]: false,
     }));
   }, []);
 
@@ -47,7 +47,7 @@ export const useDialogManager = (): UseDialogManagerReturn => {
       showSearch: false,
       showShortcuts: false,
       showTemplates: false,
-      showAdvancedExport: false
+      showAdvancedExport: false,
     });
   }, []);
 
@@ -55,9 +55,9 @@ export const useDialogManager = (): UseDialogManagerReturn => {
    * Toggle a specific dialog
    */
   const toggleDialog = useCallback((dialog: keyof DialogState) => {
-    setDialogState(prev => ({
+    setDialogState((prev) => ({
       ...prev,
-      [dialog]: !prev[dialog]
+      [dialog]: !prev[dialog],
     }));
   }, []);
 
@@ -65,7 +65,7 @@ export const useDialogManager = (): UseDialogManagerReturn => {
    * Check if any dialog is open
    */
   const isAnyDialogOpen = useCallback((): boolean => {
-    return Object.values(dialogState).some(isOpen => isOpen);
+    return Object.values(dialogState).some((isOpen) => isOpen);
   }, [dialogState]);
 
   /**
@@ -80,16 +80,17 @@ export const useDialogManager = (): UseDialogManagerReturn => {
   /**
    * Show search dialog with optional query
    */
-  const showSearchDialog = useCallback((query?: string) => {
-    showDialog('showSearch');
-    // If query is provided, it can be passed to the search component
-    if (query) {
-      // This would typically be handled by the search component itself
-      console.log('Opening search with query:', query);
-    }
-  }, [showDialog]);
-
-
+  const showSearchDialog = useCallback(
+    (query?: string) => {
+      showDialog('showSearch');
+      // If query is provided, it can be passed to the search component
+      if (query) {
+        // This would typically be handled by the search component itself
+        console.log('Opening search with query:', query);
+      }
+    },
+    [showDialog]
+  );
 
   /**
    * Show templates dialog
@@ -128,7 +129,10 @@ export const useDialogManager = (): UseDialogManagerReturn => {
    */
   const closeSearchDialog = useCallback(() => hideDialog('showSearch'), [hideDialog]);
   const closeTemplatesDialog = useCallback(() => hideDialog('showTemplates'), [hideDialog]);
-  const closeAdvancedExportDialog = useCallback(() => hideDialog('showAdvancedExport'), [hideDialog]);
+  const closeAdvancedExportDialog = useCallback(
+    () => hideDialog('showAdvancedExport'),
+    [hideDialog]
+  );
   const closeShortcutsDialog = useCallback(() => hideDialog('showShortcuts'), [hideDialog]);
 
   // Create actions object
@@ -146,7 +150,7 @@ export const useDialogManager = (): UseDialogManagerReturn => {
     closeSearchDialog,
     closeTemplatesDialog,
     closeAdvancedExportDialog,
-    closeShortcutsDialog
+    closeShortcutsDialog,
   };
 
   // Create utility functions
@@ -154,13 +158,13 @@ export const useDialogManager = (): UseDialogManagerReturn => {
     isAnyDialogOpen,
     getOpenDialogs,
     isDialogOpen: (dialog: keyof DialogState) => dialogState[dialog],
-    getDialogCount: () => getOpenDialogs().length
+    getDialogCount: () => getOpenDialogs().length,
   };
 
   return {
     state: dialogState,
     actions,
-    utils
+    utils,
   };
 };
 

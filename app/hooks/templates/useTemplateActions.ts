@@ -8,7 +8,7 @@
  */
 
 import { useState, useCallback } from 'react';
-import { DocumentTemplate } from '@/types/templates';
+import type { DocumentTemplate } from '@/types/templates';
 
 /**
  * Template selection options interface
@@ -32,25 +32,29 @@ interface UseTemplateActionsReturn {
 /**
  * Hook untuk template actions dengan backward compatibility
  */
-export const useTemplateActions = (
-  options: TemplateSelectionOptions
-): UseTemplateActionsReturn => {
+export const useTemplateActions = (options: TemplateSelectionOptions): UseTemplateActionsReturn => {
   const { onSelectTemplate } = options;
   const [selectedTemplate, setSelectedTemplate] = useState<DocumentTemplate | null>(null);
   const [showPreview, setShowPreview] = useState(false);
 
-  const handleSelectTemplate = useCallback((template: DocumentTemplate) => {
-    // Debug logging (development only)
-    if (process.env.NODE_ENV === 'development') {
-      console.log('useTemplateActions: handleSelectTemplate called with template:', template.name);
-      console.log('useTemplateActions: template content length:', template.content.length);
-    }
+  const handleSelectTemplate = useCallback(
+    (template: DocumentTemplate) => {
+      // Debug logging (development only)
+      if (process.env.NODE_ENV === 'development') {
+        console.log(
+          'useTemplateActions: handleSelectTemplate called with template:',
+          template.name
+        );
+        console.log('useTemplateActions: template content length:', template.content.length);
+      }
 
-    setSelectedTemplate(template);
-    if (onSelectTemplate) {
-      onSelectTemplate(template.content, template.name);
-    }
-  }, [onSelectTemplate]);
+      setSelectedTemplate(template);
+      if (onSelectTemplate) {
+        onSelectTemplate(template.content, template.name);
+      }
+    },
+    [onSelectTemplate]
+  );
 
   const handlePreviewTemplate = useCallback((template: DocumentTemplate) => {
     setSelectedTemplate(template);
@@ -62,6 +66,6 @@ export const useTemplateActions = (
     handlePreviewTemplate,
     selectedTemplate,
     showPreview,
-    setShowPreview
+    setShowPreview,
   };
 };

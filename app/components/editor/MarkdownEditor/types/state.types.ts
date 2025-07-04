@@ -3,7 +3,7 @@
  * @author Axel Modra
  */
 
-import { Theme } from "../../../features/ThemeSelector";
+import type { Theme } from '../../../features/ThemeSelector';
 
 /**
  * State management action types
@@ -15,7 +15,7 @@ export enum ActionType {
   SET_MODIFIED = 'SET_MODIFIED',
   NEW_FILE = 'NEW_FILE',
   LOAD_FILE = 'LOAD_FILE',
-  
+
   // UI actions
   TOGGLE_PREVIEW = 'TOGGLE_PREVIEW',
   TOGGLE_TOC = 'TOGGLE_TOC',
@@ -23,7 +23,7 @@ export enum ActionType {
   TOGGLE_NAVIGATION = 'TOGGLE_NAVIGATION',
   TOGGLE_SIDEBAR = 'TOGGLE_SIDEBAR',
   SET_SIDEBAR_COLLAPSED = 'SET_SIDEBAR_COLLAPSED',
-  
+
   // Settings actions
   UPDATE_FONT_SIZE = 'UPDATE_FONT_SIZE',
   UPDATE_LINE_HEIGHT = 'UPDATE_LINE_HEIGHT',
@@ -33,29 +33,29 @@ export enum ActionType {
   TOGGLE_VIM_MODE = 'TOGGLE_VIM_MODE',
   TOGGLE_ZEN_MODE = 'TOGGLE_ZEN_MODE',
   UPDATE_SETTINGS = 'UPDATE_SETTINGS',
-  
+
   // Theme actions
   SET_THEME = 'SET_THEME',
   APPLY_THEME = 'APPLY_THEME',
-  
+
   // Dialog actions
   SHOW_DIALOG = 'SHOW_DIALOG',
   HIDE_DIALOG = 'HIDE_DIALOG',
   HIDE_ALL_DIALOGS = 'HIDE_ALL_DIALOGS',
-  
+
   // Responsive actions
   UPDATE_RESPONSIVE = 'UPDATE_RESPONSIVE',
   SET_DEVICE_TYPE = 'SET_DEVICE_TYPE',
-  
+
   // Undo/Redo actions
   UNDO = 'UNDO',
   REDO = 'REDO',
   CLEAR_HISTORY = 'CLEAR_HISTORY',
-  
+
   // System actions
   RESET_STATE = 'RESET_STATE',
   LOAD_SAVED_STATE = 'LOAD_SAVED_STATE',
-  SAVE_STATE = 'SAVE_STATE'
+  SAVE_STATE = 'SAVE_STATE',
 }
 
 /**

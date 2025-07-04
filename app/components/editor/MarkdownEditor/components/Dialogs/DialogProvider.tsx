@@ -4,7 +4,7 @@
  */
 
 import React, { createContext, useContext, useReducer, useCallback } from 'react';
-import { DialogState } from '../../types';
+import type { DialogState } from '../../types';
 
 /**
  * Dialog action types
@@ -35,7 +35,7 @@ const initialDialogState: DialogState = {
   showSearch: false,
   showShortcuts: false,
   showTemplates: false,
-  showAdvancedExport: false
+  showAdvancedExport: false,
 };
 
 /**
@@ -46,29 +46,29 @@ const dialogReducer = (state: DialogState, action: DialogAction): DialogState =>
     case 'SHOW_DIALOG':
       return {
         ...state,
-        [action.payload]: true
+        [action.payload]: true,
       };
-    
+
     case 'HIDE_DIALOG':
       return {
         ...state,
-        [action.payload]: false
+        [action.payload]: false,
       };
-    
+
     case 'HIDE_ALL_DIALOGS':
       return {
         showSearch: false,
         showShortcuts: false,
         showTemplates: false,
-        showAdvancedExport: false
+        showAdvancedExport: false,
       };
-    
+
     case 'TOGGLE_DIALOG':
       return {
         ...state,
-        [action.payload]: !state[action.payload]
+        [action.payload]: !state[action.payload],
       };
-    
+
     default:
       return state;
   }
@@ -90,13 +90,10 @@ interface DialogProviderProps {
 /**
  * Dialog provider component
  */
-export const DialogProvider: React.FC<DialogProviderProps> = ({
-  children,
-  initialState = {}
-}) => {
+export const DialogProvider: React.FC<DialogProviderProps> = ({ children, initialState = {} }) => {
   const [state, dispatch] = useReducer(dialogReducer, {
     ...initialDialogState,
-    ...initialState
+    ...initialState,
   });
 
   /**
@@ -131,7 +128,7 @@ export const DialogProvider: React.FC<DialogProviderProps> = ({
    * Check if any dialog is open
    */
   const isAnyDialogOpen = useCallback((): boolean => {
-    return Object.values(state).some(isOpen => isOpen);
+    return Object.values(state).some((isOpen) => isOpen);
   }, [state]);
 
   /**
@@ -165,14 +162,10 @@ export const DialogProvider: React.FC<DialogProviderProps> = ({
     hideAllDialogs,
     toggleDialog,
     isAnyDialogOpen,
-    getOpenDialogs
+    getOpenDialogs,
   };
 
-  return (
-    <DialogContext.Provider value={contextValue}>
-      {children}
-    </DialogContext.Provider>
-  );
+  return <DialogContext.Provider value={contextValue}>{children}</DialogContext.Provider>;
 };
 
 /**
@@ -191,21 +184,19 @@ export const useDialogContext = (): DialogContextType => {
  */
 export const useDialog = (dialogKey: keyof DialogState) => {
   const { state, showDialog, hideDialog, toggleDialog } = useDialogContext();
-  
+
   return {
     isOpen: state[dialogKey],
     show: () => showDialog(dialogKey),
     hide: () => hideDialog(dialogKey),
-    toggle: () => toggleDialog(dialogKey)
+    toggle: () => toggleDialog(dialogKey),
   };
 };
 
 /**
  * Higher-order component for dialog management
  */
-export const withDialogManagement = <P extends object>(
-  Component: React.ComponentType<P>
-) => {
+export const withDialogManagement = <P extends object>(Component: React.ComponentType<P>) => {
   const WrappedComponent = (props: P) => {
     return (
       <DialogProvider>

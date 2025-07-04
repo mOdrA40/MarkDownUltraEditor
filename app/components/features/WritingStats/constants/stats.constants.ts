@@ -1,7 +1,7 @@
 /**
  * WritingStats Constants - Konfigurasi dan Konstanta
  * Definisi konstanta untuk WritingStats module
- * 
+ *
  * @author Axel Modra
  */
 
@@ -11,7 +11,7 @@ import type {
   StatDisplayConfig,
   StatType,
   BadgeVariant,
-  TextStatistics
+  TextStatistics,
 } from '../types/stats.types';
 
 /**
@@ -25,7 +25,7 @@ export const READING_SPEED = {
   /** Kecepatan baca cepat */
   FAST: 250,
   /** Default yang digunakan */
-  DEFAULT: 200
+  DEFAULT: 200,
 } as const;
 
 /**
@@ -36,7 +36,7 @@ export const DEFAULT_STATS_CONFIG: StatsConfig = {
   markdownCleanRegex: /[#*`_~[\]()]/g,
   wordSplitRegex: /\s+/,
   sentenceSplitRegex: /[.!?]+/,
-  paragraphSplitRegex: /\n\s*\n/
+  paragraphSplitRegex: /\n\s*\n/,
 };
 
 /**
@@ -49,7 +49,7 @@ export const DEFAULT_STATS: TextStatistics = {
   paragraphs: 0,
   sentences: 0,
   lines: 0,
-  readingTime: 0
+  readingTime: 0,
 };
 
 /**
@@ -65,8 +65,8 @@ export const BREAKPOINTS_STATS: Record<string, BreakpointConfig> = {
       statsLeft: 'writing-stats-mobile',
       statsRight: 'badge-container',
       statItem: 'stat-item',
-      separator: 'separator-vertical bg-current opacity-30 w-px h-3'
-    }
+      separator: 'separator-vertical bg-current opacity-30 w-px h-3',
+    },
   },
   smallTablet: {
     min: 500,
@@ -77,8 +77,8 @@ export const BREAKPOINTS_STATS: Record<string, BreakpointConfig> = {
       statsLeft: 'stats-left flex items-center gap-3 flex-nowrap overflow-x-auto',
       statsRight: 'stats-right flex items-center gap-2 flex-shrink-0 ml-3',
       statItem: 'stat-item flex items-center gap-1 whitespace-nowrap',
-      separator: 'separator-vertical w-px h-3 bg-current opacity-30 flex-shrink-0'
-    }
+      separator: 'separator-vertical w-px h-3 bg-current opacity-30 flex-shrink-0',
+    },
   },
   tablet: {
     min: 768,
@@ -89,21 +89,21 @@ export const BREAKPOINTS_STATS: Record<string, BreakpointConfig> = {
       statsLeft: 'stats-left flex items-center gap-4 flex-nowrap',
       statsRight: 'stats-right flex items-center gap-3 flex-shrink-0 ml-4',
       statItem: 'stat-item flex items-center gap-1 whitespace-nowrap',
-      separator: 'separator-vertical w-px h-3 bg-current opacity-30 flex-shrink-0'
-    }
+      separator: 'separator-vertical w-px h-3 bg-current opacity-30 flex-shrink-0',
+    },
   },
   desktop: {
     min: 1024,
-    max: Infinity,
+    max: Number.POSITIVE_INFINITY,
     type: 'desktop',
     classes: {
       container: 'bg-muted/20 border-t',
       statsLeft: '',
       statsRight: '',
       statItem: '',
-      separator: ''
-    }
-  }
+      separator: '',
+    },
+  },
 } as const;
 
 /**
@@ -118,7 +118,7 @@ export const STAT_TYPES: Record<StatType, StatDisplayConfig> = {
     defaultFormat: 'long',
     showOnMobile: true,
     showOnTablet: true,
-    showOnDesktop: true
+    showOnDesktop: true,
   },
   characters: {
     id: 'characters',
@@ -128,7 +128,7 @@ export const STAT_TYPES: Record<StatType, StatDisplayConfig> = {
     defaultFormat: 'long',
     showOnMobile: true,
     showOnTablet: true,
-    showOnDesktop: true
+    showOnDesktop: true,
   },
   charactersNoSpaces: {
     id: 'charactersNoSpaces',
@@ -138,7 +138,7 @@ export const STAT_TYPES: Record<StatType, StatDisplayConfig> = {
     defaultFormat: 'long',
     showOnMobile: true,
     showOnTablet: true,
-    showOnDesktop: true
+    showOnDesktop: true,
   },
   paragraphs: {
     id: 'paragraphs',
@@ -148,7 +148,7 @@ export const STAT_TYPES: Record<StatType, StatDisplayConfig> = {
     defaultFormat: 'short',
     showOnMobile: true,
     showOnTablet: true,
-    showOnDesktop: true
+    showOnDesktop: true,
   },
   sentences: {
     id: 'sentences',
@@ -158,7 +158,7 @@ export const STAT_TYPES: Record<StatType, StatDisplayConfig> = {
     defaultFormat: 'long',
     showOnMobile: true,
     showOnTablet: true,
-    showOnDesktop: true
+    showOnDesktop: true,
   },
   lines: {
     id: 'lines',
@@ -168,7 +168,7 @@ export const STAT_TYPES: Record<StatType, StatDisplayConfig> = {
     defaultFormat: 'long',
     showOnMobile: true,
     showOnTablet: true,
-    showOnDesktop: true
+    showOnDesktop: true,
   },
   readingTime: {
     id: 'readingTime',
@@ -179,8 +179,8 @@ export const STAT_TYPES: Record<StatType, StatDisplayConfig> = {
     formatter: (value: number) => `${value} min${value === 1 ? '' : 's'}`,
     showOnMobile: true,
     showOnTablet: true,
-    showOnDesktop: true
-  }
+    showOnDesktop: true,
+  },
 } as const;
 
 /**
@@ -193,7 +193,7 @@ export const STAT_ICONS = {
   paragraphs: 'AlignLeft',
   sentences: 'BarChart3',
   lines: 'FileText',
-  readingTime: 'Clock'
+  readingTime: 'Clock',
 } as const;
 
 /**
@@ -203,7 +203,7 @@ export const BADGE_VARIANTS: Record<BadgeVariant, string> = {
   default: 'bg-primary text-primary-foreground',
   secondary: 'bg-secondary text-secondary-foreground',
   outline: 'border border-input bg-background',
-  destructive: 'bg-destructive text-destructive-foreground'
+  destructive: 'bg-destructive text-destructive-foreground',
 } as const;
 
 /**
@@ -212,7 +212,7 @@ export const BADGE_VARIANTS: Record<BadgeVariant, string> = {
 export const ICON_SIZES = {
   sm: 'h-2 w-2',
   md: 'h-3 w-3',
-  lg: 'h-4 w-4'
+  lg: 'h-4 w-4',
 } as const;
 
 /**
@@ -221,7 +221,7 @@ export const ICON_SIZES = {
 export const BADGE_SIZES = {
   mobile: 'badge-mobile h-5 text-xs',
   tablet: 'badge-tablet h-5 text-xs',
-  desktop: 'badge-desktop h-5 text-xs'
+  desktop: 'badge-desktop h-5 text-xs',
 } as const;
 
 /**
@@ -235,7 +235,7 @@ export const ANIMATIONS = {
   /** Hover effects */
   hover: 'hover:bg-muted/50 transition-colors',
   /** Loading animation */
-  loading: 'animate-pulse'
+  loading: 'animate-pulse',
 } as const;
 
 /**
@@ -251,10 +251,10 @@ export const A11Y = {
     sentenceCount: 'Sentence count',
     lineCount: 'Line count',
     readingTime: 'Estimated reading time',
-    documentStatus: 'Document status'
+    documentStatus: 'Document status',
   },
   /** Live region untuk screen readers */
-  liveRegion: 'polite'
+  liveRegion: 'polite',
 } as const;
 
 /**
@@ -269,7 +269,7 @@ export const FORMAT_PATTERNS = {
     paragraphs: (value: number) => `${value}¶`,
     sentences: (value: number) => `${value}s`,
     lines: (value: number) => `${value}l`,
-    readingTime: (value: number) => `${value}min`
+    readingTime: (value: number) => `${value}min`,
   },
   /** Format untuk tablet/desktop (lengkap) */
   desktop: {
@@ -279,8 +279,8 @@ export const FORMAT_PATTERNS = {
     paragraphs: (value: number) => `${value} ¶`,
     sentences: (value: number) => `${value} sent`,
     lines: (value: number) => `${value} lines`,
-    readingTime: (value: number) => `${value} min read`
-  }
+    readingTime: (value: number) => `${value} min read`,
+  },
 } as const;
 
 /**
@@ -291,12 +291,12 @@ export const THRESHOLDS = {
   words: {
     low: 100,
     medium: 500,
-    high: 1000
+    high: 1000,
   },
   /** Threshold untuk reading time styling */
   readingTime: {
     short: 2,
     medium: 5,
-    long: 10
-  }
+    long: 10,
+  },
 } as const;

@@ -4,7 +4,7 @@
  * @refactored Memisahkan concerns dan menggunakan composition pattern
  */
 
-import React from 'react';
+import type React from 'react';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import rehypeHighlight from 'rehype-highlight';
@@ -17,7 +17,7 @@ import { getResponsiveOptions } from './PreviewPane/utils/languageUtils';
 import { generateHeaderStyles } from '@/utils/themeUtils';
 
 // Types
-import { PreviewPaneProps } from './PreviewPane/types/preview.types';
+import type { PreviewPaneProps } from './PreviewPane/types/preview.types';
 
 /**
  * Komponen utama PreviewPane dengan architecture yang bersih
@@ -28,7 +28,7 @@ export const PreviewPane: React.FC<PreviewPaneProps> = ({
   isDarkMode,
   theme,
   isMobile = false,
-  isTablet = false
+  isTablet = false,
 }) => {
   // Setup highlight.js dengan theme management
   useHighlightJs(isDarkMode, theme);
@@ -41,7 +41,7 @@ export const PreviewPane: React.FC<PreviewPaneProps> = ({
     markdown,
     theme,
     isMobile,
-    isTablet
+    isTablet,
   });
 
   // Get responsive options
@@ -64,40 +64,40 @@ export const PreviewPane: React.FC<PreviewPaneProps> = ({
         style={{
           ...headerStyles,
           backdropFilter: 'blur(12px)',
-          WebkitBackdropFilter: 'blur(12px)'
+          WebkitBackdropFilter: 'blur(12px)',
         }}
       >
-        <h3 className="text-sm font-medium">
-          Preview
-        </h3>
+        <h3 className="text-sm font-medium">Preview</h3>
       </div>
-      
+
       <div
         data-preview-pane
-        className={`flex-1 overflow-auto transition-colors duration-200 ${(isMobile || isTablet) ? 'preview-pane-responsive' : 'p-6'}`}
+        className={`flex-1 overflow-auto transition-colors duration-200 ${isMobile || isTablet ? 'preview-pane-responsive' : 'p-6'}`}
         style={{
           ...previewStyles,
-          padding: (isMobile || isTablet) ? responsiveOptions.padding : '1.5rem'
+          padding: isMobile || isTablet ? responsiveOptions.padding : '1.5rem',
         }}
       >
         <div
           className={`
             prose prose-lg max-w-none transition-colors duration-200
             ${isDarkMode ? 'prose-invert' : ''}
-            ${(isMobile || isTablet) ? 'preview-pane-responsive' : ''}
+            ${isMobile || isTablet ? 'preview-pane-responsive' : ''}
           `}
-          style={{
-            '--tw-prose-headings': theme?.text || 'inherit',
-            '--tw-prose-body': theme?.text || 'inherit',
-            '--tw-prose-links': theme?.primary || '#3b82f6',
-            '--tw-prose-bold': theme?.text || 'inherit',
-            '--tw-prose-code': theme?.accent || '#ec4899',
-            '--tw-prose-pre-bg': theme?.surface || '#f8fafc',
-            '--tw-prose-th-borders': theme?.accent || '#d1d5db',
-            '--tw-prose-td-borders': theme?.accent || '#d1d5db',
-            '--tw-prose-quotes': theme?.text || 'inherit',
-            '--tw-prose-quote-borders': theme?.primary || '#3b82f6',
-          } as React.CSSProperties}
+          style={
+            {
+              '--tw-prose-headings': theme?.text || 'inherit',
+              '--tw-prose-body': theme?.text || 'inherit',
+              '--tw-prose-links': theme?.primary || '#3b82f6',
+              '--tw-prose-bold': theme?.text || 'inherit',
+              '--tw-prose-code': theme?.accent || '#ec4899',
+              '--tw-prose-pre-bg': theme?.surface || '#f8fafc',
+              '--tw-prose-th-borders': theme?.accent || '#d1d5db',
+              '--tw-prose-td-borders': theme?.accent || '#d1d5db',
+              '--tw-prose-quotes': theme?.text || 'inherit',
+              '--tw-prose-quote-borders': theme?.primary || '#3b82f6',
+            } as React.CSSProperties
+          }
         >
           <ReactMarkdown
             remarkPlugins={[remarkGfm]}

@@ -40,7 +40,7 @@ const processUsers = (users) =>
   users
     .filter(user => user.isActive)
     .map(({ id, name, email }) => ({ id, name, email }))
-    .sort((a, b) => a.name.localeCompare(b.name));`
+    .sort((a, b) => a.name.localeCompare(b.name));`,
   },
   {
     language: 'typescript',
@@ -85,7 +85,7 @@ type Repository<T> = {
   findById: (id: string) => T | undefined;
   findAll: () => T[];
   create: (item: T) => T;
-};`
+};`,
   },
   {
     language: 'python',
@@ -130,7 +130,7 @@ def process_data(numbers: List[int]) -> Dict[str, Any]:
             'max': max(numbers),
             'avg': sum(numbers) / len(numbers)
         }
-    }`
+    }`,
   },
   {
     language: 'java',
@@ -178,7 +178,7 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.CREATED)
             .body(convertToDto(savedUser));
     }
-}`
+}`,
   },
   {
     language: 'go',
@@ -244,7 +244,7 @@ func main() {
     http.HandleFunc("/users", service.GetUsers)
     log.Println("Server starting on :8080")
     log.Fatal(http.ListenAndServe(":8080", nil))
-}`
+}`,
   },
   {
     language: 'rust',
@@ -304,7 +304,7 @@ impl UserRepository {
         
         Ok(id)
     }
-}`
+}`,
   },
   // Web Technologies
   {
@@ -352,7 +352,7 @@ impl UserRepository {
         <p>&copy; 2024 Modern Web App. All rights reserved.</p>
     </footer>
 </body>
-</html>`
+</html>`,
   },
   {
     language: 'css',
@@ -410,7 +410,7 @@ impl UserRepository {
   .card {
     padding: 2rem;
   }
-}`
+}`,
   },
   // Database & Data
   {
@@ -450,7 +450,7 @@ SELECT
     ELSE 'Basic'
   END as customer_tier
 FROM top_customers tc
-ORDER BY tc.total_spent DESC;`
+ORDER BY tc.total_spent DESC;`,
   },
   {
     language: 'json',
@@ -519,7 +519,7 @@ ORDER BY tc.total_spent DESC;`
     "next": "https://api.example.com/users?page=2",
     "last": "https://api.example.com/users?page=8"
   }
-}`
+}`,
   },
   // Shell & Config
   {
@@ -539,10 +539,10 @@ ORDER BY tc.total_spent DESC;`
       'readonly CONFIG_FILE="${SCRIPT_DIR}/config.env"',
       '',
       '# Colors untuk output',
-      'readonly RED=\'\\033[0;31m\'',
-      'readonly GREEN=\'\\033[0;32m\'',
-      'readonly YELLOW=\'\\033[1;33m\'',
-      'readonly NC=\'\\033[0m\' # No Color',
+      "readonly RED='\\033[0;31m'",
+      "readonly GREEN='\\033[0;32m'",
+      "readonly YELLOW='\\033[1;33m'",
+      "readonly NC='\\033[0m' # No Color",
       '',
       '# Logging function',
       'log() {',
@@ -606,8 +606,8 @@ ORDER BY tc.total_spent DESC;`
       '}',
       '',
       '# Run main function with all arguments',
-      'main "$@"'
-    ].join('\n')
+      'main "$@"',
+    ].join('\n'),
   },
   {
     language: 'powershell',
@@ -675,8 +675,8 @@ ORDER BY tc.total_spent DESC;`
       '} catch {',
       '    Write-Log "Script failed" -Level "ERROR"',
       '    exit 1',
-      '}'
-    ].join('\n')
+      '}',
+    ].join('\n'),
   },
   // Additional Languages
   {
@@ -752,7 +752,7 @@ volumes:
 
 networks:
   default:
-    driver: bridge`
+    driver: bridge`,
   },
   {
     language: 'dockerfile',
@@ -806,27 +806,27 @@ EXPOSE 3000
 ENV PORT 3000
 ENV HOSTNAME "0.0.0.0"
 
-CMD ["node", "server.js"]`
-  }
+CMD ["node", "server.js"]`,
+  },
 ];
 
 /**
  * Get code templates by category
  */
 export const getTemplatesByCategory = (category: CodeTemplate['category']): CodeTemplate[] => {
-  return codeTemplates.filter(template => template.category === category);
+  return codeTemplates.filter((template) => template.category === category);
 };
 
 /**
  * Get template by language
  */
 export const getTemplateByLanguage = (language: string): CodeTemplate | undefined => {
-  return codeTemplates.find(template => template.language === language);
+  return codeTemplates.find((template) => template.language === language);
 };
 
 /**
  * Get all supported languages
  */
 export const getSupportedLanguages = (): string[] => {
-  return codeTemplates.map(template => template.language);
+  return codeTemplates.map((template) => template.language);
 };

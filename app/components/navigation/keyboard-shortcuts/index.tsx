@@ -3,26 +3,20 @@
  * Displays dialog with all available keyboard shortcuts
  */
 
-import React, { useState, useMemo } from 'react';
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { Input } from "@/components/ui/input";
+import type React from 'react';
+import { useState, useMemo } from 'react';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
+import { Input } from '@/components/ui/input';
 
-import { 
-  Keyboard, 
-  Search, 
-  Monitor, 
-  Smartphone,
-  X,
-  Filter
-} from "lucide-react";
+import { Keyboard, Search, Monitor, Smartphone, X, Filter } from 'lucide-react';
 
 // Import components
 import { ShortcutCategory } from './components/ShortcutCategory';
 
 // Import types and constants
-import { KeyboardShortcutsProps } from './types/shortcutTypes';
+import type { KeyboardShortcutsProps } from './types/shortcutTypes';
 import { getShortcutsForPlatform } from './constants/shortcuts';
 import { getThemeTextColor } from '@/utils/themeUtils';
 
@@ -30,11 +24,11 @@ export const KeyboardShortcuts: React.FC<KeyboardShortcutsProps> = ({
   onClose,
   showMacKeys,
   visibleCategories,
-  currentTheme
+  currentTheme,
 }) => {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedPlatform, setSelectedPlatform] = useState<'windows' | 'mac' | 'auto'>('auto');
-  
+
   // Auto-detect platform
   const isMac = useMemo(() => {
     if (typeof window !== 'undefined') {
@@ -62,19 +56,22 @@ export const KeyboardShortcuts: React.FC<KeyboardShortcutsProps> = ({
 
     // Filter based on visible categories
     if (visibleCategories && visibleCategories.length > 0) {
-      filtered = filtered.filter(cat => visibleCategories.includes(cat.category));
+      filtered = filtered.filter((cat) => visibleCategories.includes(cat.category));
     }
 
     // Filter based on search term
     if (searchTerm.trim()) {
       const term = searchTerm.toLowerCase();
-      filtered = filtered.map(category => ({
-        ...category,
-        items: category.items.filter(item => 
-          item.description.toLowerCase().includes(term) ||
-          item.keys.some(key => key.toLowerCase().includes(term))
-        )
-      })).filter(category => category.items.length > 0);
+      filtered = filtered
+        .map((category) => ({
+          ...category,
+          items: category.items.filter(
+            (item) =>
+              item.description.toLowerCase().includes(term) ||
+              item.keys.some((key) => key.toLowerCase().includes(term))
+          ),
+        }))
+        .filter((category) => category.items.length > 0);
     }
 
     return filtered.sort((a, b) => (a.order || 999) - (b.order || 999));
@@ -85,11 +82,11 @@ export const KeyboardShortcuts: React.FC<KeyboardShortcutsProps> = ({
     const totalShortcuts = allShortcuts.reduce((sum, cat) => sum + cat.items.length, 0);
     const filteredCount = filteredShortcuts.reduce((sum, cat) => sum + cat.items.length, 0);
     const categoriesCount = filteredShortcuts.length;
-    
+
     return {
       total: totalShortcuts,
       filtered: filteredCount,
-      categories: categoriesCount
+      categories: categoriesCount,
     };
   }, [allShortcuts, filteredShortcuts]);
 
@@ -117,7 +114,7 @@ export const KeyboardShortcuts: React.FC<KeyboardShortcutsProps> = ({
         style={{
           backgroundColor: currentTheme?.background || undefined,
           borderColor: currentTheme?.accent || undefined,
-          color: textColor
+          color: textColor,
         }}
       >
         {/* Header */}
@@ -125,7 +122,7 @@ export const KeyboardShortcuts: React.FC<KeyboardShortcutsProps> = ({
           className="flex-shrink-0 p-6 pb-4"
           style={{
             backgroundColor: currentTheme?.surface ? `${currentTheme.surface}80` : undefined,
-            borderColor: currentTheme?.accent || undefined
+            borderColor: currentTheme?.accent || undefined,
           }}
         >
           <DialogTitle
@@ -139,7 +136,7 @@ export const KeyboardShortcuts: React.FC<KeyboardShortcutsProps> = ({
                 {stats.filtered} shortcuts
               </Badge>
             </div>
-            
+
             {/* Platform Selector */}
             <div className="flex items-center space-x-1">
               <Button
@@ -193,7 +190,7 @@ export const KeyboardShortcuts: React.FC<KeyboardShortcutsProps> = ({
               </Button>
             )}
           </div>
-          
+
           {/* Results Info */}
           <div className="flex items-center space-x-2 text-sm text-muted-foreground">
             <Filter className="h-4 w-4" />
@@ -210,9 +207,7 @@ export const KeyboardShortcuts: React.FC<KeyboardShortcutsProps> = ({
             <div className="flex items-center justify-center h-full">
               <div className="text-center">
                 <Search className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
-                <h3 className="text-lg font-medium mb-2">
-                  No shortcuts found
-                </h3>
+                <h3 className="text-lg font-medium mb-2">No shortcuts found</h3>
                 <p className="text-muted-foreground mb-4">
                   Try adjusting your search or clear the filter.
                 </p>
@@ -240,9 +235,7 @@ export const KeyboardShortcuts: React.FC<KeyboardShortcutsProps> = ({
         {/* Footer */}
         <div className="flex items-center justify-between text-xs text-muted-foreground pt-4 border-t flex-shrink-0 px-6 pb-6">
           <div className="flex items-center space-x-4">
-            <span>
-              Platform: {shouldShowMacKeys ? 'macOS' : 'Windows/Linux'}
-            </span>
+            <span>Platform: {shouldShowMacKeys ? 'macOS' : 'Windows/Linux'}</span>
             {selectedPlatform === 'auto' && (
               <Badge variant="outline" className="text-xs">
                 Auto-detected
@@ -253,8 +246,7 @@ export const KeyboardShortcuts: React.FC<KeyboardShortcutsProps> = ({
           <p>
             {shouldShowMacKeys
               ? 'Use ⌘ (Cmd) instead of Ctrl'
-              : 'On Mac, use ⌘ (Cmd) instead of Ctrl'
-            }
+              : 'On Mac, use ⌘ (Cmd) instead of Ctrl'}
           </p>
         </div>
       </DialogContent>

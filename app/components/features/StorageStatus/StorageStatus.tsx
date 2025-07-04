@@ -1,21 +1,17 @@
 /**
  * Storage Status Component
  * Displays localStorage usage and provides cleanup controls
- * 
+ *
  * @author Axel Modra
  */
 
-import React, { useState } from 'react';
+import type React from 'react';
+import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
 import { Badge } from '@/components/ui/badge';
-import { 
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from '@/components/ui/tooltip';
-import { 
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+import {
   Dialog,
   DialogContent,
   DialogDescription,
@@ -23,14 +19,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '@/components/ui/dialog';
-import { 
-  HardDrive, 
-  Trash2, 
-  RefreshCw, 
-  AlertTriangle,
-  CheckCircle,
-  Info
-} from 'lucide-react';
+import { HardDrive, Trash2, RefreshCw, AlertTriangle, CheckCircle, Info } from 'lucide-react';
 import { useStorageStatus, useStorageMonitor } from '@/hooks/core';
 import { cn } from '@/lib/utils';
 
@@ -49,19 +38,13 @@ interface StorageStatusProps {
 export const StorageStatus: React.FC<StorageStatusProps> = ({
   compact = false,
   className,
-  showCleanup = true
+  showCleanup = true,
 }) => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isCleaningUp, setIsCleaningUp] = useState(false);
-  
-  const {
-    storageInfo,
-    isNearCapacity,
-    isCritical,
-    statusColor,
-    statusText,
-    progressBarColor
-  } = useStorageStatus();
+
+  const { storageInfo, isNearCapacity, isCritical, statusColor, statusText, progressBarColor } =
+    useStorageStatus();
 
   const { triggerCleanup, refreshInfo } = useStorageMonitor();
 
@@ -97,15 +80,15 @@ export const StorageStatus: React.FC<StorageStatusProps> = ({
       <TooltipProvider>
         <Tooltip>
           <TooltipTrigger asChild>
-            <div className={cn(
-              "flex items-center space-x-2 px-2 py-1 rounded-md",
-              statusColor,
-              className
-            )}>
+            <div
+              className={cn(
+                'flex items-center space-x-2 px-2 py-1 rounded-md',
+                statusColor,
+                className
+              )}
+            >
               <HardDrive className="h-3 w-3" />
-              <span className="text-xs font-medium">
-                {storageInfo.usedPercentage.toFixed(0)}%
-              </span>
+              <span className="text-xs font-medium">{storageInfo.usedPercentage.toFixed(0)}%</span>
             </div>
           </TooltipTrigger>
           <TooltipContent>
@@ -114,9 +97,7 @@ export const StorageStatus: React.FC<StorageStatusProps> = ({
               <p className="text-sm">
                 {storageInfo.usedFormatted} / {storageInfo.totalFormatted}
               </p>
-              <p className="text-sm text-muted-foreground">
-                Status: {statusText}
-              </p>
+              <p className="text-sm text-muted-foreground">Status: {statusText}</p>
             </div>
           </TooltipContent>
         </Tooltip>
@@ -125,7 +106,7 @@ export const StorageStatus: React.FC<StorageStatusProps> = ({
   }
 
   return (
-    <div className={cn("space-y-2", className)}>
+    <div className={cn('space-y-2', className)}>
       {/* Storage Status Header */}
       <div className="flex items-center justify-between">
         <div className="flex items-center space-x-2">
@@ -135,7 +116,7 @@ export const StorageStatus: React.FC<StorageStatusProps> = ({
             {statusText}
           </Badge>
         </div>
-        
+
         <div className="flex items-center space-x-1">
           <Button
             variant="ghost"
@@ -146,7 +127,7 @@ export const StorageStatus: React.FC<StorageStatusProps> = ({
           >
             <RefreshCw className="h-3 w-3" />
           </Button>
-          
+
           {showCleanup && (
             <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
               <DialogTrigger asChild>
@@ -165,11 +146,9 @@ export const StorageStatus: React.FC<StorageStatusProps> = ({
                     <HardDrive className="h-5 w-5" />
                     <span>Storage Management</span>
                   </DialogTitle>
-                  <DialogDescription>
-                    Monitor and manage your local storage usage
-                  </DialogDescription>
+                  <DialogDescription>Monitor and manage your local storage usage</DialogDescription>
                 </DialogHeader>
-                
+
                 <div className="space-y-4">
                   {/* Detailed Storage Info */}
                   <div className="space-y-2">
@@ -189,46 +168,52 @@ export const StorageStatus: React.FC<StorageStatusProps> = ({
 
                   {/* Progress Bar */}
                   <div className="space-y-2">
-                    <Progress 
-                      value={storageInfo.usedPercentage} 
-                      className="h-2"
-                    />
+                    <Progress value={storageInfo.usedPercentage} className="h-2" />
                     <div className="flex justify-between text-xs text-muted-foreground">
                       <span>0%</span>
-                      <span className={statusColor}>
-                        {storageInfo.usedPercentage.toFixed(1)}%
-                      </span>
+                      <span className={statusColor}>{storageInfo.usedPercentage.toFixed(1)}%</span>
                       <span>100%</span>
                     </div>
                   </div>
 
                   {/* Warning Messages */}
                   {(isNearCapacity || isCritical) && (
-                    <div className={cn(
-                      "flex items-start space-x-2 p-3 rounded-md",
-                      isCritical 
-                        ? "bg-red-50 dark:bg-red-950 border border-red-200 dark:border-red-800"
-                        : "bg-yellow-50 dark:bg-yellow-950 border border-yellow-200 dark:border-yellow-800"
-                    )}>
-                      <AlertTriangle className={cn(
-                        "h-4 w-4 mt-0.5",
-                        isCritical ? "text-red-600" : "text-yellow-600"
-                      )} />
+                    <div
+                      className={cn(
+                        'flex items-start space-x-2 p-3 rounded-md',
+                        isCritical
+                          ? 'bg-red-50 dark:bg-red-950 border border-red-200 dark:border-red-800'
+                          : 'bg-yellow-50 dark:bg-yellow-950 border border-yellow-200 dark:border-yellow-800'
+                      )}
+                    >
+                      <AlertTriangle
+                        className={cn(
+                          'h-4 w-4 mt-0.5',
+                          isCritical ? 'text-red-600' : 'text-yellow-600'
+                        )}
+                      />
                       <div className="space-y-1">
-                        <p className={cn(
-                          "text-sm font-medium",
-                          isCritical ? "text-red-800 dark:text-red-200" : "text-yellow-800 dark:text-yellow-200"
-                        )}>
-                          {isCritical ? "Critical Storage Level" : "Storage Nearly Full"}
+                        <p
+                          className={cn(
+                            'text-sm font-medium',
+                            isCritical
+                              ? 'text-red-800 dark:text-red-200'
+                              : 'text-yellow-800 dark:text-yellow-200'
+                          )}
+                        >
+                          {isCritical ? 'Critical Storage Level' : 'Storage Nearly Full'}
                         </p>
-                        <p className={cn(
-                          "text-xs",
-                          isCritical ? "text-red-700 dark:text-red-300" : "text-yellow-700 dark:text-yellow-300"
-                        )}>
-                          {isCritical 
-                            ? "Storage is critically low. Auto-save may fail."
-                            : "Consider cleaning up old data to free space."
-                          }
+                        <p
+                          className={cn(
+                            'text-xs',
+                            isCritical
+                              ? 'text-red-700 dark:text-red-300'
+                              : 'text-yellow-700 dark:text-yellow-300'
+                          )}
+                        >
+                          {isCritical
+                            ? 'Storage is critically low. Auto-save may fail.'
+                            : 'Consider cleaning up old data to free space.'}
                         </p>
                       </div>
                     </div>
@@ -239,7 +224,7 @@ export const StorageStatus: React.FC<StorageStatusProps> = ({
                     onClick={handleCleanup}
                     disabled={isCleaningUp}
                     className="w-full"
-                    variant={isCritical ? "destructive" : "outline"}
+                    variant={isCritical ? 'destructive' : 'outline'}
                   >
                     {isCleaningUp ? (
                       <>
@@ -266,10 +251,7 @@ export const StorageStatus: React.FC<StorageStatusProps> = ({
 
       {/* Progress Bar */}
       <div className="space-y-1">
-        <Progress 
-          value={storageInfo.usedPercentage} 
-          className="h-1.5"
-        />
+        <Progress value={storageInfo.usedPercentage} className="h-1.5" />
         <div className="flex justify-between text-xs text-muted-foreground">
           <span>{storageInfo.usedFormatted}</span>
           <span>{storageInfo.totalFormatted}</span>

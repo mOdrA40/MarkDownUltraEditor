@@ -6,7 +6,7 @@
 import { useEffect } from 'react';
 import hljs from 'highlight.js/lib/core';
 import { getHighlightTheme } from '../utils/languageUtils';
-import { Theme } from '../../../features/ThemeSelector';
+import type { Theme } from '../../../features/ThemeSelector';
 
 // Import semua bahasa yang diperlukan
 import javascript from 'highlight.js/lib/languages/javascript';
@@ -240,7 +240,7 @@ export const useHighlightJs = (isDarkMode: boolean, theme?: Theme) => {
     const loadHighlightTheme = () => {
       // Remove existing highlight.js stylesheets
       const existingLinks = document.querySelectorAll('link[href*="highlight.js"]');
-      existingLinks.forEach(link => link.remove());
+      existingLinks.forEach((link) => link.remove());
 
       // Get theme configuration
       const themeConfig = getHighlightTheme(isDarkMode, theme?.id);
@@ -250,7 +250,7 @@ export const useHighlightJs = (isDarkMode: boolean, theme?: Theme) => {
       link.rel = 'stylesheet';
       link.type = 'text/css';
       link.href = themeConfig.url;
-      
+
       document.head.appendChild(link);
     };
 
@@ -258,6 +258,6 @@ export const useHighlightJs = (isDarkMode: boolean, theme?: Theme) => {
   }, [isDarkMode, theme?.id]);
 
   return {
-    isReady: languagesRegistered
+    isReady: languagesRegistered,
   };
 };

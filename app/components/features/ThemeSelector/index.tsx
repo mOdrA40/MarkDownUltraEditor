@@ -1,7 +1,7 @@
 /**
  * ThemeSelector Module - Main Export
  * Entry point untuk semua exports dari ThemeSelector module
- * 
+ *
  * @author Axel Modra
  */
 
@@ -16,7 +16,7 @@ export type {
   ThemeButtonProps,
   ThemeId,
   ThemeColorCategory,
-  ThemeConfig
+  ThemeConfig,
 } from './types/theme.types';
 
 // Export constants
@@ -27,7 +27,7 @@ export {
   DEFAULT_THEME_ID,
   DEFAULT_THEME,
   THEME_BUTTON_SIZES,
-  THEME_ANIMATIONS
+  THEME_ANIMATIONS,
 } from './constants/themes.constants';
 
 // Export utilities
@@ -44,13 +44,13 @@ export {
   calculateContrastRatio,
   meetsWCAGAA,
   getNextTheme,
-  getPreviousTheme
+  getPreviousTheme,
 } from './utils/theme.utils';
 
 // Export hooks
 export {
   useThemeSelector,
-  useThemeButton
+  useThemeButton,
 } from './hooks/useThemeSelector';
 
 // Export providers

@@ -3,21 +3,21 @@
  * Menggunakan separated concerns dan reusable utilities
  */
 
-import { useReducer, useCallback, useEffect } from "react";
-import {
+import { useReducer, useCallback, useEffect } from 'react';
+import type {
   ToasterToast,
   ToastInput,
   ToastReturn,
   UseToastOptions,
-  UseToastReturn
-} from "@/types/toast";
-import { toastReducer, initialToastState, toastActionCreators } from "../toast/toastReducer";
+  UseToastReturn,
+} from '@/types/toast';
+import { toastReducer, initialToastState, toastActionCreators } from '../toast/toastReducer';
 import {
   generateToastId,
   validateToastInput,
   sanitizeToastContent,
-  clearAllToastTimeouts
-} from "@/utils/toastUtils";
+  clearAllToastTimeouts,
+} from '@/utils/toastUtils';
 
 /**
  * Global state management untuk toast system
@@ -62,14 +62,16 @@ function toast(props: ToastInput): ToastReturn {
 
   const dismiss = () => dispatch(toastActionCreators.dismissToast(id));
 
-  dispatch(toastActionCreators.addToast({
-    ...sanitizedProps,
-    id,
-    open: true,
-    onOpenChange: (open: boolean) => {
-      if (!open) dismiss();
-    },
-  }));
+  dispatch(
+    toastActionCreators.addToast({
+      ...sanitizedProps,
+      id,
+      open: true,
+      onOpenChange: (open: boolean) => {
+        if (!open) dismiss();
+      },
+    })
+  );
 
   return {
     id,

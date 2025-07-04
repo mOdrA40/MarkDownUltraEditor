@@ -3,7 +3,7 @@ import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import rehypeHighlight from 'rehype-highlight';
 import { renderToStaticMarkup } from 'react-dom/server';
-import { MarkdownConverterResult } from '../types/export.types';
+import type { MarkdownConverterResult } from '../types/export.types';
 
 /**
  * Konversi Markdown ke HTML dengan fitur lengkap menggunakan ReactMarkdown
@@ -22,7 +22,10 @@ export const convertMarkdownToHTML = (
   const { includeMetadata = false } = options;
 
   if (!markdown || typeof markdown !== 'string') {
-    return { html: '', metadata: includeMetadata ? { headings: [], wordCount: 0, estimatedReadTime: 0 } : undefined };
+    return {
+      html: '',
+      metadata: includeMetadata ? { headings: [], wordCount: 0, estimatedReadTime: 0 } : undefined,
+    };
   }
 
   try {
@@ -30,7 +33,7 @@ export const convertMarkdownToHTML = (
     const markdownElement = React.createElement(ReactMarkdown, {
       remarkPlugins: [remarkGfm],
       rehypePlugins: [rehypeHighlight],
-      children: markdown
+      children: markdown,
     });
 
     const html = renderToStaticMarkup(markdownElement);
@@ -43,9 +46,9 @@ export const convertMarkdownToHTML = (
       const estimatedReadTime = Math.ceil(wordCount / 200); // 200 words per minute
 
       metadata = {
-        headings: headings.map(h => h.text), // Convert to string array for compatibility
+        headings: headings.map((h) => h.text), // Convert to string array for compatibility
         wordCount,
-        estimatedReadTime
+        estimatedReadTime,
       };
     }
 
@@ -64,9 +67,9 @@ export const convertMarkdownToHTML = (
       const estimatedReadTime = Math.ceil(wordCount / 200);
 
       metadata = {
-        headings: headings.map(h => h.text),
+        headings: headings.map((h) => h.text),
         wordCount,
-        estimatedReadTime
+        estimatedReadTime,
       };
     }
 
@@ -81,12 +84,15 @@ const extractHeadings = (markdown: string): Array<{ level: number; text: string;
   const headings: Array<{ level: number; text: string; id: string }> = [];
   const lines = markdown.split('\n');
 
-  lines.forEach(line => {
+  lines.forEach((line) => {
     const match = line.match(/^(#{1,6})\s+(.*)$/);
     if (match) {
       const level = match[1].length;
       const text = match[2].trim();
-      const id = text.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+      const id = text
+        .toLowerCase()
+        .replace(/[^a-z0-9]+/g, '-')
+        .replace(/^-|-$/g, '');
 
       headings.push({ level, text, id });
     }
@@ -154,21 +160,20 @@ const countWords = (text: string): number => {
   return text
     .replace(/[^\w\s]/g, '') // Remove punctuation
     .split(/\s+/) // Split by whitespace
-    .filter(word => word.length > 0) // Filter empty strings
-    .length;
+    .filter((word) => word.length > 0).length; // Filter empty strings
 };
-
-
 
 /**
  * Generate table of contents dari headings
  */
-export const generateTableOfContents = (headings: Array<{ level: number; text: string; id: string }>): string => {
+export const generateTableOfContents = (
+  headings: Array<{ level: number; text: string; id: string }>
+): string => {
   if (headings.length === 0) return '';
 
   let toc = '<div class="table-of-contents"><h2>Table of Contents</h2><ul>';
 
-  headings.forEach(heading => {
+  headings.forEach((heading) => {
     const indent = '  '.repeat(heading.level - 1);
     toc += `${indent}<li><a href="#${heading.id}">${heading.text}</a></li>`;
   });

@@ -1,14 +1,14 @@
 /**
  * WritingSettings Utilities - Helper Functions
  * Utility functions untuk WritingSettings module
- * 
+ *
  * @author Axel Modra
  */
 
-import { 
-  FONT_SIZE_CONSTRAINTS, 
-  LINE_HEIGHT_CONSTRAINTS, 
-  DEFAULT_SETTINGS 
+import {
+  FONT_SIZE_CONSTRAINTS,
+  LINE_HEIGHT_CONSTRAINTS,
+  DEFAULT_SETTINGS,
 } from '../constants/settings.constants';
 import type { SettingsConfig } from '../types/settings.types';
 
@@ -18,17 +18,15 @@ import type { SettingsConfig } from '../types/settings.types';
  * @param config - Konfigurasi constraints (optional)
  * @returns Font size yang valid
  */
-export const validateFontSize = (
-  size: number, 
-  config: Partial<SettingsConfig> = {}
-): number => {
-  const { minFontSize = DEFAULT_SETTINGS.minFontSize, maxFontSize = DEFAULT_SETTINGS.maxFontSize } = config;
-  
+export const validateFontSize = (size: number, config: Partial<SettingsConfig> = {}): number => {
+  const { minFontSize = DEFAULT_SETTINGS.minFontSize, maxFontSize = DEFAULT_SETTINGS.maxFontSize } =
+    config;
+
   // Pastikan size adalah number yang valid
   if (typeof size !== 'number' || isNaN(size)) {
     return FONT_SIZE_CONSTRAINTS.DEFAULT;
   }
-  
+
   // Clamp nilai antara min dan max
   return Math.max(minFontSize, Math.min(maxFontSize, Math.round(size)));
 };
@@ -40,19 +38,19 @@ export const validateFontSize = (
  * @returns Line height yang valid
  */
 export const validateLineHeight = (
-  height: number, 
+  height: number,
   config: Partial<SettingsConfig> = {}
 ): number => {
-  const { 
-    minLineHeight = DEFAULT_SETTINGS.minLineHeight, 
-    maxLineHeight = DEFAULT_SETTINGS.maxLineHeight 
+  const {
+    minLineHeight = DEFAULT_SETTINGS.minLineHeight,
+    maxLineHeight = DEFAULT_SETTINGS.maxLineHeight,
   } = config;
-  
+
   // Pastikan height adalah number yang valid
   if (typeof height !== 'number' || isNaN(height)) {
     return LINE_HEIGHT_CONSTRAINTS.DEFAULT;
   }
-  
+
   // Clamp nilai antara min dan max, round ke 1 decimal place
   const clampedHeight = Math.max(minLineHeight, Math.min(maxLineHeight, height));
   return Math.round(clampedHeight * 10) / 10;
@@ -65,14 +63,14 @@ export const validateLineHeight = (
  * @returns Font size berikutnya
  */
 export const getNextFontSize = (
-  currentSize: number, 
+  currentSize: number,
   config: Partial<SettingsConfig> = {}
 ): number => {
-  const { 
-    maxFontSize = DEFAULT_SETTINGS.maxFontSize, 
-    fontSizeStep = DEFAULT_SETTINGS.fontSizeStep 
+  const {
+    maxFontSize = DEFAULT_SETTINGS.maxFontSize,
+    fontSizeStep = DEFAULT_SETTINGS.fontSizeStep,
   } = config;
-  
+
   const nextSize = currentSize + fontSizeStep;
   return validateFontSize(Math.min(maxFontSize, nextSize), config);
 };
@@ -84,14 +82,14 @@ export const getNextFontSize = (
  * @returns Font size sebelumnya
  */
 export const getPreviousFontSize = (
-  currentSize: number, 
+  currentSize: number,
   config: Partial<SettingsConfig> = {}
 ): number => {
-  const { 
-    minFontSize = DEFAULT_SETTINGS.minFontSize, 
-    fontSizeStep = DEFAULT_SETTINGS.fontSizeStep 
+  const {
+    minFontSize = DEFAULT_SETTINGS.minFontSize,
+    fontSizeStep = DEFAULT_SETTINGS.fontSizeStep,
   } = config;
-  
+
   const prevSize = currentSize - fontSizeStep;
   return validateFontSize(Math.max(minFontSize, prevSize), config);
 };
@@ -103,14 +101,14 @@ export const getPreviousFontSize = (
  * @returns Line height berikutnya
  */
 export const getNextLineHeight = (
-  currentHeight: number, 
+  currentHeight: number,
   config: Partial<SettingsConfig> = {}
 ): number => {
-  const { 
-    maxLineHeight = DEFAULT_SETTINGS.maxLineHeight, 
-    lineHeightStep = DEFAULT_SETTINGS.lineHeightStep 
+  const {
+    maxLineHeight = DEFAULT_SETTINGS.maxLineHeight,
+    lineHeightStep = DEFAULT_SETTINGS.lineHeightStep,
   } = config;
-  
+
   const nextHeight = currentHeight + lineHeightStep;
   return validateLineHeight(Math.min(maxLineHeight, nextHeight), config);
 };
@@ -122,14 +120,14 @@ export const getNextLineHeight = (
  * @returns Line height sebelumnya
  */
 export const getPreviousLineHeight = (
-  currentHeight: number, 
+  currentHeight: number,
   config: Partial<SettingsConfig> = {}
 ): number => {
-  const { 
-    minLineHeight = DEFAULT_SETTINGS.minLineHeight, 
-    lineHeightStep = DEFAULT_SETTINGS.lineHeightStep 
+  const {
+    minLineHeight = DEFAULT_SETTINGS.minLineHeight,
+    lineHeightStep = DEFAULT_SETTINGS.lineHeightStep,
   } = config;
-  
+
   const prevHeight = currentHeight - lineHeightStep;
   return validateLineHeight(Math.max(minLineHeight, prevHeight), config);
 };
@@ -140,7 +138,7 @@ export const getPreviousLineHeight = (
  * @param showUnit - Apakah menampilkan unit 'px'
  * @returns String yang diformat
  */
-export const formatFontSize = (size: number, showUnit: boolean = true): string => {
+export const formatFontSize = (size: number, showUnit = true): string => {
   const validSize = validateFontSize(size);
   return showUnit ? `${validSize}px` : validSize.toString();
 };
@@ -151,7 +149,7 @@ export const formatFontSize = (size: number, showUnit: boolean = true): string =
  * @param precision - Jumlah decimal places
  * @returns String yang diformat
  */
-export const formatLineHeight = (height: number, precision: number = 1): string => {
+export const formatLineHeight = (height: number, precision = 1): string => {
   const validHeight = validateLineHeight(height);
   return validHeight.toFixed(precision);
 };
@@ -162,10 +160,7 @@ export const formatLineHeight = (height: number, precision: number = 1): string 
  * @param config - Konfigurasi constraints (optional)
  * @returns True jika di batas minimum
  */
-export const isMinFontSize = (
-  size: number, 
-  config: Partial<SettingsConfig> = {}
-): boolean => {
+export const isMinFontSize = (size: number, config: Partial<SettingsConfig> = {}): boolean => {
   const { minFontSize = DEFAULT_SETTINGS.minFontSize } = config;
   return size <= minFontSize;
 };
@@ -176,10 +171,7 @@ export const isMinFontSize = (
  * @param config - Konfigurasi constraints (optional)
  * @returns True jika di batas maksimum
  */
-export const isMaxFontSize = (
-  size: number, 
-  config: Partial<SettingsConfig> = {}
-): boolean => {
+export const isMaxFontSize = (size: number, config: Partial<SettingsConfig> = {}): boolean => {
   const { maxFontSize = DEFAULT_SETTINGS.maxFontSize } = config;
   return size >= maxFontSize;
 };
@@ -190,10 +182,7 @@ export const isMaxFontSize = (
  * @param config - Konfigurasi constraints (optional)
  * @returns True jika di batas minimum
  */
-export const isMinLineHeight = (
-  height: number, 
-  config: Partial<SettingsConfig> = {}
-): boolean => {
+export const isMinLineHeight = (height: number, config: Partial<SettingsConfig> = {}): boolean => {
   const { minLineHeight = DEFAULT_SETTINGS.minLineHeight } = config;
   return height <= minLineHeight;
 };
@@ -204,10 +193,7 @@ export const isMinLineHeight = (
  * @param config - Konfigurasi constraints (optional)
  * @returns True jika di batas maksimum
  */
-export const isMaxLineHeight = (
-  height: number, 
-  config: Partial<SettingsConfig> = {}
-): boolean => {
+export const isMaxLineHeight = (height: number, config: Partial<SettingsConfig> = {}): boolean => {
   const { maxLineHeight = DEFAULT_SETTINGS.maxLineHeight } = config;
   return height >= maxLineHeight;
 };
@@ -220,7 +206,7 @@ export const isMaxLineHeight = (
 export const getSettingsConfig = (config: Partial<SettingsConfig> = {}): SettingsConfig => {
   return {
     ...DEFAULT_SETTINGS,
-    ...config
+    ...config,
   };
 };
 
@@ -230,14 +216,8 @@ export const getSettingsConfig = (config: Partial<SettingsConfig> = {}): Setting
  * @returns True jika konfigurasi valid
  */
 export const validateSettingsConfig = (config: Partial<SettingsConfig>): boolean => {
-  const {
-    minFontSize,
-    maxFontSize,
-    minLineHeight,
-    maxLineHeight,
-    fontSizeStep,
-    lineHeightStep
-  } = config;
+  const { minFontSize, maxFontSize, minLineHeight, maxLineHeight, fontSizeStep, lineHeightStep } =
+    config;
 
   // Validasi font size constraints
   if (minFontSize !== undefined && maxFontSize !== undefined) {

@@ -2,19 +2,18 @@
  * Individual template card component
  */
 
-import React from 'react';
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { Card, CardContent } from "@/components/ui/card";
-import { Clock, Tag, Eye, ArrowRight } from "lucide-react";
-import { TemplateCardProps, CategoryIcons } from '@/types/templates';
+import type React from 'react';
+import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
+import { Card, CardContent } from '@/components/ui/card';
+import { Clock, Tag, Eye, ArrowRight } from 'lucide-react';
+import type { TemplateCardProps, CategoryIcons } from '@/types/templates';
 import {
   getThemeAwareCardClasses,
   getThemeAwareDifficultyClasses,
   categoryIcons,
-  getTruncatedTags
-} from "@/utils/templateUtils";
-
+  getTruncatedTags,
+} from '@/utils/templateUtils';
 
 /**
  * Individual template card dengan grid/list view support
@@ -25,7 +24,7 @@ export const TemplateCard: React.FC<TemplateCardProps> = ({
   isMobile,
   isTablet,
   onPreview,
-  onSelect
+  onSelect,
 }) => {
   const CategoryIcon = categoryIcons[template.category as keyof CategoryIcons];
   const cardClasses = getThemeAwareCardClasses(viewMode);
@@ -50,17 +49,15 @@ export const TemplateCard: React.FC<TemplateCardProps> = ({
               {template.difficulty}
             </Badge>
           </div>
-          
+
           {/* Title */}
           <h3 className="font-semibold text-lg mb-2 group-hover:text-blue-600 transition-colors">
             {template.name}
           </h3>
-          
+
           {/* Description */}
-          <p className="text-sm text-muted-foreground mb-3 line-clamp-2">
-            {template.description}
-          </p>
-          
+          <p className="text-sm text-muted-foreground mb-3 line-clamp-2">{template.description}</p>
+
           {/* Meta info */}
           <div className="flex items-center justify-between text-xs text-muted-foreground mb-3">
             <div className="flex items-center space-x-1">
@@ -72,10 +69,10 @@ export const TemplateCard: React.FC<TemplateCardProps> = ({
               <span>{template.tags.length} tags</span>
             </div>
           </div>
-          
+
           {/* Tags */}
           <div className="flex flex-wrap gap-1 mb-4">
-            {visibleTags.map(tag => (
+            {visibleTags.map((tag) => (
               <Badge key={tag} variant="outline" className="text-xs">
                 {tag}
               </Badge>
@@ -86,15 +83,10 @@ export const TemplateCard: React.FC<TemplateCardProps> = ({
               </Badge>
             )}
           </div>
-          
+
           {/* Actions */}
           <div className="flex space-x-2">
-            <Button
-              size="sm"
-              onClick={handlePreview}
-              variant="outline"
-              className="flex-1"
-            >
+            <Button size="sm" onClick={handlePreview} variant="outline" className="flex-1">
               <Eye className="h-3 w-3 mr-1" />
               Preview
             </Button>
@@ -109,9 +101,7 @@ export const TemplateCard: React.FC<TemplateCardProps> = ({
           </div>
         </CardContent>
       ) : (
-        <CardContent className={`w-full ${
-          isMobile ? 'p-4' : 'flex items-center p-4'
-        }`}>
+        <CardContent className={`w-full ${isMobile ? 'p-4' : 'flex items-center p-4'}`}>
           {isMobile ? (
             // Mobile List Layout - Vertical Stack
             <div className="space-y-3">
@@ -121,8 +111,12 @@ export const TemplateCard: React.FC<TemplateCardProps> = ({
                 </div>
                 <div className="flex-1 min-w-0 overflow-hidden">
                   <div className="mb-2">
-                    <h3 className="font-semibold text-base leading-tight mb-1 pr-2">{template.name}</h3>
-                    <Badge className={`inline-block ${getThemeAwareDifficultyClasses(template.difficulty)}`}>
+                    <h3 className="font-semibold text-base leading-tight mb-1 pr-2">
+                      {template.name}
+                    </h3>
+                    <Badge
+                      className={`inline-block ${getThemeAwareDifficultyClasses(template.difficulty)}`}
+                    >
                       {template.difficulty}
                     </Badge>
                   </div>
@@ -144,12 +138,7 @@ export const TemplateCard: React.FC<TemplateCardProps> = ({
               </div>
 
               <div className="flex space-x-2">
-                <Button
-                  size="sm"
-                  onClick={handlePreview}
-                  variant="outline"
-                  className="flex-1"
-                >
+                <Button size="sm" onClick={handlePreview} variant="outline" className="flex-1">
                   <Eye className="h-3 w-3 mr-1" />
                   Preview
                 </Button>
@@ -172,8 +161,12 @@ export const TemplateCard: React.FC<TemplateCardProps> = ({
                 </div>
                 <div className="flex-1 min-w-0 overflow-hidden">
                   <div className="mb-2">
-                    <h3 className="font-semibold text-lg leading-tight mb-1 pr-2">{template.name}</h3>
-                    <Badge className={`inline-block ${getThemeAwareDifficultyClasses(template.difficulty)}`}>
+                    <h3 className="font-semibold text-lg leading-tight mb-1 pr-2">
+                      {template.name}
+                    </h3>
+                    <Badge
+                      className={`inline-block ${getThemeAwareDifficultyClasses(template.difficulty)}`}
+                    >
                       {template.difficulty}
                     </Badge>
                   </div>
@@ -195,12 +188,7 @@ export const TemplateCard: React.FC<TemplateCardProps> = ({
               </div>
 
               <div className="flex space-x-2">
-                <Button
-                  size="sm"
-                  onClick={handlePreview}
-                  variant="outline"
-                  className="flex-1"
-                >
+                <Button size="sm" onClick={handlePreview} variant="outline" className="flex-1">
                   <Eye className="h-3 w-3 mr-1" />
                   Preview
                 </Button>
@@ -229,7 +217,9 @@ export const TemplateCard: React.FC<TemplateCardProps> = ({
                       {template.description}
                     </p>
                   </div>
-                  <Badge className={`flex-shrink-0 ${getThemeAwareDifficultyClasses(template.difficulty)}`}>
+                  <Badge
+                    className={`flex-shrink-0 ${getThemeAwareDifficultyClasses(template.difficulty)}`}
+                  >
                     {template.difficulty}
                   </Badge>
                 </div>

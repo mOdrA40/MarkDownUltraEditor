@@ -1,10 +1,10 @@
-import type { MetaFunction } from "react-router";
-import { Link } from "react-router";
+import type { MetaFunction } from 'react-router';
+import { Link } from 'react-router';
 
 export const meta: MetaFunction = () => {
   return [
-    { title: "404 - Page Not Found | MarkDown Ultra Editor" },
-    { name: "description", content: "The page you're looking for doesn't exist." },
+    { title: '404 - Page Not Found | MarkDown Ultra Editor' },
+    { name: 'description', content: "The page you're looking for doesn't exist." },
   ];
 };
 

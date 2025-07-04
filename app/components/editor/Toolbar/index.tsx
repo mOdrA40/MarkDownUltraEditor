@@ -1,7 +1,7 @@
 /**
  * Toolbar Module - Main Export
  * Entry point untuk semua exports dari Toolbar module
- * 
+ *
  * @author Axel Modra
  */
 
@@ -25,7 +25,7 @@ export type {
   ToolbarConfig,
   MarkdownTemplate,
   ButtonGroup,
-  ButtonGroupProps
+  ButtonGroupProps,
 } from './types/toolbar.types';
 
 // Export constants
@@ -36,7 +36,7 @@ export {
   RESPONSIVE_BREAKPOINTS,
   BUTTON_SIZES,
   TOOLBAR_ANIMATIONS,
-  type FormatButtonConfig
+  type FormatButtonConfig,
 } from './constants/formatButtons.constants';
 
 // Export utilities
@@ -54,12 +54,12 @@ export {
   isValidMarkdownTemplate,
   escapeMarkdown,
   parseShortcut,
-  matchesShortcut
+  matchesShortcut,
 } from './utils/toolbar.utils';
 
 // Export hooks
 export {
   useToolbar,
   useKeyboardShortcuts,
-  useResponsiveLayout
+  useResponsiveLayout,
 } from './hooks/useToolbar';

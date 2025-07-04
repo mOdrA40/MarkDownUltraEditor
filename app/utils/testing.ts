@@ -29,7 +29,7 @@ export const testNavigation = {
       // Test first TOC item click
       const firstItem = tocItems[0] as HTMLElement;
       const headingId = firstItem.getAttribute('data-heading-id');
-      
+
       if (!headingId) {
         console.error('TOC item missing heading ID');
         return false;
@@ -70,7 +70,7 @@ export const testNavigation = {
       // Test keyboard navigation
       const firstItem = outlineItems[0] as HTMLElement;
       firstItem.focus();
-      
+
       if (document.activeElement !== firstItem) {
         console.error('Outline item not focusable');
         return false;
@@ -109,7 +109,7 @@ export const testNavigation = {
       console.error('Scroll spy test failed:', error);
       return false;
     }
-  }
+  },
 };
 
 /**
@@ -180,17 +180,17 @@ export const testAccessibility = {
     try {
       // This is a simplified test - in production, use tools like axe-core
       const textElements = document.querySelectorAll('p, h1, h2, h3, h4, h5, h6, span, a, button');
-      
+
       for (const element of textElements) {
         const styles = window.getComputedStyle(element);
         const color = styles.color;
         const backgroundColor = styles.backgroundColor;
-        
+
         // Skip if transparent background
         if (backgroundColor === 'rgba(0, 0, 0, 0)' || backgroundColor === 'transparent') {
           continue;
         }
-        
+
         // Basic check - in production, calculate actual contrast ratio
         if (color === backgroundColor) {
           console.error('Poor color contrast detected:', element);
@@ -204,7 +204,7 @@ export const testAccessibility = {
       console.error('Color contrast test failed:', error);
       return false;
     }
-  }
+  },
 };
 
 /**
@@ -217,15 +217,16 @@ export const testPerformance = {
   async testScrollPerformance(): Promise<boolean> {
     try {
       const startTime = performance.now();
-      
+
       // Simulate scroll events
       window.scrollTo({ top: 100, behavior: 'smooth' });
-      await new Promise(resolve => setTimeout(resolve, 100));
-      
+      await new Promise((resolve) => setTimeout(resolve, 100));
+
       const endTime = performance.now();
       const scrollTime = endTime - startTime;
-      
-      if (scrollTime > 100) { // 100ms threshold
+
+      if (scrollTime > 100) {
+        // 100ms threshold
         console.warn(`Slow scroll performance: ${scrollTime}ms`);
       }
 
@@ -243,7 +244,7 @@ export const testPerformance = {
   async testSyntaxHighlighting(): Promise<boolean> {
     try {
       const codeBlocks = document.querySelectorAll('pre code');
-      
+
       for (const block of codeBlocks) {
         const hasHighlighting = block.querySelector('.hljs-keyword, .hljs-string, .hljs-comment');
         if (!hasHighlighting && block.textContent && block.textContent.length > 10) {
@@ -265,7 +266,7 @@ export const testPerformance = {
   async testResponsiveDesign(): Promise<boolean> {
     try {
       const breakpoints = [320, 768, 1024, 1440];
-      
+
       for (const width of breakpoints) {
         // Simulate viewport resize
         Object.defineProperty(window, 'innerWidth', {
@@ -273,13 +274,13 @@ export const testPerformance = {
           configurable: true,
           value: width,
         });
-        
+
         window.dispatchEvent(new Event('resize'));
-        await new Promise(resolve => setTimeout(resolve, 50));
-        
+        await new Promise((resolve) => setTimeout(resolve, 50));
+
         // Check if layout adapts
         const tocContainer = document.querySelector('[data-toc-container]');
-        
+
         if (width < 768) {
           // Mobile: sidebars should be hidden or collapsed
           if (tocContainer && window.getComputedStyle(tocContainer).display !== 'none') {
@@ -294,7 +295,7 @@ export const testPerformance = {
       console.error('Responsive design test failed:', error);
       return false;
     }
-  }
+  },
 };
 
 /**
@@ -306,7 +307,7 @@ export const runAllTests = async (): Promise<{
   results: { [key: string]: boolean };
 }> => {
   console.log('🧪 Running comprehensive tests...');
-  
+
   const tests = {
     'TOC Navigation': testNavigation.testTOCNavigation,
     'Outline Navigation': testNavigation.testOutlineNavigation,
@@ -328,7 +329,7 @@ export const runAllTests = async (): Promise<{
       console.log(`Running ${testName}...`);
       const result = await testFunction();
       results[testName] = result;
-      
+
       if (result) {
         passed++;
       } else {
@@ -342,7 +343,7 @@ export const runAllTests = async (): Promise<{
   }
 
   console.log(`\n📊 Test Results: ${passed} passed, ${failed} failed`);
-  
+
   if (failed === 0) {
     console.log('🎉 All tests passed!');
   } else {

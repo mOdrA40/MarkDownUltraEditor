@@ -29,7 +29,7 @@ export const toastTimeouts = new Map<string, ReturnType<typeof setTimeout>>();
  */
 export const addToRemoveQueue = (
   toastId: string,
-  dispatch: (action: { type: "REMOVE_TOAST"; toastId?: string }) => void,
+  dispatch: (action: { type: 'REMOVE_TOAST'; toastId?: string }) => void,
   delay: number = TOAST_CONFIG.REMOVE_DELAY
 ): void => {
   // Clear existing timeout jika ada
@@ -42,7 +42,7 @@ export const addToRemoveQueue = (
   const timeout = setTimeout(() => {
     toastTimeouts.delete(toastId);
     dispatch({
-      type: "REMOVE_TOAST",
+      type: 'REMOVE_TOAST',
       toastId: toastId,
     });
   }, delay);
@@ -86,10 +86,7 @@ export const validateToastInput = (props: unknown): boolean => {
 /**
  * Get toast duration berdasarkan type atau custom duration
  */
-export const getToastDuration = (
-  variant?: string,
-  customDuration?: number
-): number => {
+export const getToastDuration = (variant?: string, customDuration?: number): number => {
   if (customDuration !== undefined) {
     return customDuration;
   }
@@ -110,10 +107,13 @@ export const getToastDuration = (
 /**
  * Format toast message untuk accessibility
  */
-export const formatToastForA11y = (title?: React.ReactNode, description?: React.ReactNode): string => {
+export const formatToastForA11y = (
+  title?: React.ReactNode,
+  description?: React.ReactNode
+): string => {
   const titleText = typeof title === 'string' ? title : '';
   const descriptionText = typeof description === 'string' ? description : '';
-  
+
   return [titleText, descriptionText].filter(Boolean).join('. ');
 };
 
@@ -133,6 +133,6 @@ export const sanitizeToastContent = (content: React.ReactNode): React.ReactNode 
   if (typeof content === 'string') {
     return content.trim();
   }
-  
+
   return content;
 };

@@ -3,7 +3,7 @@
  * Mendefinisikan struktur data dan props untuk sistem navigasi mobile
  */
 
-import { Theme } from "../../../features/ThemeSelector";
+import type { Theme } from '../../../features/ThemeSelector';
 
 export interface MobileNavProps {
   /** Current theme */

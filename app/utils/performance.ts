@@ -12,12 +12,12 @@ export interface PerformanceMetrics {
   lcp?: number; // Largest Contentful Paint
   fid?: number; // First Input Delay
   cls?: number; // Cumulative Layout Shift
-  
+
   // Additional metrics
   ttfb?: number; // Time to First Byte
   domContentLoaded?: number;
   loadComplete?: number;
-  
+
   // Custom metrics
   editorReady?: number;
   firstEdit?: number;
@@ -86,7 +86,7 @@ class PerformanceMonitor {
   private observeLayoutShift(): void {
     try {
       let clsValue = 0;
-      
+
       const observer = new PerformanceObserver((list) => {
         for (const entry of list.getEntries()) {
           if (entry.entryType === 'layout-shift' && !(entry as any).hadRecentInput) {
@@ -133,7 +133,10 @@ class PerformanceMonitor {
           if (entry.entryType === 'navigation') {
             const navEntry = entry as PerformanceNavigationTiming;
             this.updateMetric('ttfb', navEntry.responseStart - navEntry.requestStart);
-            this.updateMetric('domContentLoaded', navEntry.domContentLoadedEventEnd - navEntry.fetchStart);
+            this.updateMetric(
+              'domContentLoaded',
+              navEntry.domContentLoadedEventEnd - navEntry.fetchStart
+            );
             this.updateMetric('loadComplete', navEntry.loadEventEnd - navEntry.fetchStart);
           }
         }
@@ -152,7 +155,7 @@ class PerformanceMonitor {
   private updateMetric(key: keyof PerformanceMetrics, value: number): void {
     this.metrics[key] = value;
     this.notifyCallbacks();
-    
+
     // Log to console in development
     if (process.env.NODE_ENV === 'development') {
       console.log(`Performance: ${key} = ${value.toFixed(2)}ms`);
@@ -163,7 +166,7 @@ class PerformanceMonitor {
    * Notify all registered callbacks
    */
   private notifyCallbacks(): void {
-    this.callbacks.forEach(callback => {
+    this.callbacks.forEach((callback) => {
       try {
         callback({ ...this.metrics });
       } catch (error) {
@@ -177,7 +180,7 @@ class PerformanceMonitor {
    */
   public onMetricsUpdate(callback: (metrics: PerformanceMetrics) => void): () => void {
     this.callbacks.push(callback);
-    
+
     // Return unsubscribe function
     return () => {
       const index = this.callbacks.indexOf(callback);
@@ -264,7 +267,7 @@ class PerformanceMonitor {
    * Cleanup observers
    */
   public cleanup(): void {
-    this.observers.forEach(observer => {
+    this.observers.forEach((observer) => {
       try {
         observer.disconnect();
       } catch (error) {
@@ -300,13 +303,13 @@ export const performanceUtils = {
     const monitor = getPerformanceMonitor();
     const startMark = `${componentName}-render-start`;
     const endMark = `${componentName}-render-end`;
-    
+
     return {
       start: () => monitor.mark(startMark),
       end: () => {
         monitor.mark(endMark);
         return monitor.measure(`${componentName}-render`, startMark, endMark);
-      }
+      },
     };
   },
 
@@ -320,9 +323,9 @@ export const performanceUtils = {
     const start = performance.now();
     const result = await operation();
     const duration = performance.now() - start;
-    
+
     console.log(`Performance: ${name} took ${duration.toFixed(2)}ms`);
-    
+
     return { result, duration };
   },
 
@@ -353,10 +356,12 @@ export const performanceUtils = {
    * Check if performance API is available
    */
   isSupported: (): boolean => {
-    return typeof window !== 'undefined' &&
-           typeof performance !== 'undefined' &&
-           'PerformanceObserver' in window;
-  }
+    return (
+      typeof window !== 'undefined' &&
+      typeof performance !== 'undefined' &&
+      'PerformanceObserver' in window
+    );
+  },
 };
 
 export default getPerformanceMonitor;

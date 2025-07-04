@@ -7,32 +7,29 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Separator } from '@/components/ui/separator';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { 
-  ArrowLeft, 
-  User, 
-  Palette, 
-  Type, 
-  Settings as SettingsIcon, 
+import {
+  ArrowLeft,
+  User,
+  Palette,
+  Type,
+  Settings as SettingsIcon,
   Save,
   RotateCcw,
   Database,
   Zap,
   Eye,
-  Monitor
+  Monitor,
 } from 'lucide-react';
 
-import { ThemeSelector, Theme, themes, useTheme } from '@/components/features/ThemeSelector';
+import { ThemeSelector, type Theme, themes, useTheme } from '@/components/features/ThemeSelector';
 import { WritingSettings } from '@/components/features/WritingSettings';
 import { AuthButtons } from '@/components/auth/AuthButtons';
 import { useResponsiveDetection } from '@/hooks/ui/useResponsive';
 import { useToast } from '@/hooks/core/useToast';
-import { 
-  loadSettingsFromStorage, 
-  saveSettingsToStorage
-} from '@/utils/writingSettingsUtils';
-import { 
+import { loadSettingsFromStorage, saveSettingsToStorage } from '@/utils/writingSettingsUtils';
+import {
   DEFAULT_WRITING_SETTINGS,
-  type WritingSettings as WritingSettingsType
+  type WritingSettings as WritingSettingsType,
 } from '@/types/writingSettings';
 
 // Create QueryClient instance
@@ -68,7 +65,7 @@ function SettingsPageContent() {
 
   const [preferences, setPreferences] = useState<AppPreferences>({
     ...DEFAULT_PREFERENCES,
-    theme: currentTheme
+    theme: currentTheme,
   });
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
   const [activeTab, setActiveTab] = useState('appearance');
@@ -78,17 +75,17 @@ function SettingsPageContent() {
     const loadPreferences = async () => {
       try {
         setIsLoading(true);
-        
+
         const savedWritingSettings = loadSettingsFromStorage();
         const savedPreferences = localStorage.getItem('markdownEditor_preferences');
-        
+
         let loadedPrefs = {
           ...DEFAULT_PREFERENCES,
-          theme: currentTheme // Use global theme
+          theme: currentTheme, // Use global theme
         };
-        
+
         loadedPrefs.writingSettings = savedWritingSettings;
-        
+
         if (savedPreferences) {
           try {
             const parsed = JSON.parse(savedPreferences);
@@ -97,7 +94,7 @@ function SettingsPageContent() {
             console.warn('Failed to parse saved preferences:', error);
           }
         }
-        
+
         setPreferences(loadedPrefs);
       } catch (error) {
         console.error('Error loading preferences:', error);
@@ -114,11 +111,8 @@ function SettingsPageContent() {
     loadPreferences();
   }, [toast]);
 
-  const updatePreference = <K extends keyof AppPreferences>(
-    key: K,
-    value: AppPreferences[K]
-  ) => {
-    setPreferences(prev => ({ ...prev, [key]: value }));
+  const updatePreference = <K extends keyof AppPreferences>(key: K, value: AppPreferences[K]) => {
+    setPreferences((prev) => ({ ...prev, [key]: value }));
     setHasUnsavedChanges(true);
 
     // Apply theme immediately when changed
@@ -131,12 +125,12 @@ function SettingsPageContent() {
     try {
       localStorage.setItem('markdownEditor_theme', preferences.theme.id);
       saveSettingsToStorage(preferences.writingSettings);
-      
+
       const { theme, writingSettings, ...appPrefs } = preferences;
       localStorage.setItem('markdownEditor_preferences', JSON.stringify(appPrefs));
-      
+
       setHasUnsavedChanges(false);
-      
+
       toast({
         title: 'Settings Saved',
         description: 'Your preferences have been saved successfully.',
@@ -152,7 +146,11 @@ function SettingsPageContent() {
   };
 
   const resetToDefaults = () => {
-    if (window.confirm('Are you sure you want to reset all settings to defaults? This cannot be undone.')) {
+    if (
+      window.confirm(
+        'Are you sure you want to reset all settings to defaults? This cannot be undone.'
+      )
+    ) {
       setPreferences(DEFAULT_PREFERENCES);
       setHasUnsavedChanges(true);
       toast({
@@ -166,7 +164,7 @@ function SettingsPageContent() {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="text-center">
-          <div className="w-8 h-8 bg-primary rounded-full animate-pulse mx-auto mb-4"></div>
+          <div className="w-8 h-8 bg-primary rounded-full animate-pulse mx-auto mb-4" />
           <p className="text-muted-foreground">Loading settings...</p>
         </div>
       </div>
@@ -188,7 +186,7 @@ function SettingsPageContent() {
                 <ArrowLeft className="w-4 h-4" />
                 Back to Editor
               </Button>
-              
+
               <div>
                 <h1 className="text-2xl font-bold flex items-center gap-2">
                   <SettingsIcon className="w-6 h-6" />
@@ -206,7 +204,7 @@ function SettingsPageContent() {
                   Unsaved Changes
                 </Badge>
               )}
-              
+
               <AuthButtons
                 responsive={{
                   isMobile: responsive.isMobile,
@@ -254,9 +252,7 @@ function SettingsPageContent() {
                     <Palette className="w-5 h-5" />
                     Theme & Visual Settings
                   </CardTitle>
-                  <CardDescription>
-                    Customize the visual appearance of your editor
-                  </CardDescription>
+                  <CardDescription>Customize the visual appearance of your editor</CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-6">
                   <div>
@@ -277,7 +273,7 @@ function SettingsPageContent() {
                         <Eye className="w-4 h-4" />
                         Display Options
                       </h4>
-                      
+
                       <div className="flex items-center space-x-3">
                         <input
                           type="checkbox"
@@ -286,9 +282,11 @@ function SettingsPageContent() {
                           onChange={(e) => updatePreference('showLineNumbers', e.target.checked)}
                           className="rounded"
                         />
-                        <label htmlFor="showLineNumbers" className="text-sm">Show line numbers</label>
+                        <label htmlFor="showLineNumbers" className="text-sm">
+                          Show line numbers
+                        </label>
                       </div>
-                      
+
                       <div className="flex items-center space-x-3">
                         <input
                           type="checkbox"
@@ -297,9 +295,11 @@ function SettingsPageContent() {
                           onChange={(e) => updatePreference('showWordCount', e.target.checked)}
                           className="rounded"
                         />
-                        <label htmlFor="showWordCount" className="text-sm">Show word count</label>
+                        <label htmlFor="showWordCount" className="text-sm">
+                          Show word count
+                        </label>
                       </div>
-                      
+
                       <div className="flex items-center space-x-3">
                         <input
                           type="checkbox"
@@ -308,7 +308,9 @@ function SettingsPageContent() {
                           onChange={(e) => updatePreference('showCharacterCount', e.target.checked)}
                           className="rounded"
                         />
-                        <label htmlFor="showCharacterCount" className="text-sm">Show character count</label>
+                        <label htmlFor="showCharacterCount" className="text-sm">
+                          Show character count
+                        </label>
                       </div>
                     </div>
 
@@ -317,7 +319,7 @@ function SettingsPageContent() {
                         <Monitor className="w-4 h-4" />
                         Accessibility
                       </h4>
-                      
+
                       <div className="flex items-center space-x-3">
                         <input
                           type="checkbox"
@@ -326,9 +328,11 @@ function SettingsPageContent() {
                           onChange={(e) => updatePreference('reducedMotion', e.target.checked)}
                           className="rounded"
                         />
-                        <label htmlFor="reducedMotion" className="text-sm">Reduce motion effects</label>
+                        <label htmlFor="reducedMotion" className="text-sm">
+                          Reduce motion effects
+                        </label>
                       </div>
-                      
+
                       <div className="flex items-center space-x-3">
                         <input
                           type="checkbox"
@@ -337,7 +341,9 @@ function SettingsPageContent() {
                           onChange={(e) => updatePreference('soundEffects', e.target.checked)}
                           className="rounded"
                         />
-                        <label htmlFor="soundEffects" className="text-sm">Enable sound effects</label>
+                        <label htmlFor="soundEffects" className="text-sm">
+                          Enable sound effects
+                        </label>
                       </div>
                     </div>
                   </div>
@@ -360,19 +366,54 @@ function SettingsPageContent() {
                   <div className="p-4 border rounded-lg bg-muted/50">
                     <WritingSettings
                       fontSize={preferences.writingSettings.fontSize}
-                      onFontSizeChange={(size) => updatePreference('writingSettings', { ...preferences.writingSettings, fontSize: size })}
+                      onFontSizeChange={(size) =>
+                        updatePreference('writingSettings', {
+                          ...preferences.writingSettings,
+                          fontSize: size,
+                        })
+                      }
                       lineHeight={preferences.writingSettings.lineHeight}
-                      onLineHeightChange={(height) => updatePreference('writingSettings', { ...preferences.writingSettings, lineHeight: height })}
+                      onLineHeightChange={(height) =>
+                        updatePreference('writingSettings', {
+                          ...preferences.writingSettings,
+                          lineHeight: height,
+                        })
+                      }
                       focusMode={preferences.writingSettings.focusMode}
-                      onFocusModeToggle={() => updatePreference('writingSettings', { ...preferences.writingSettings, focusMode: !preferences.writingSettings.focusMode })}
+                      onFocusModeToggle={() =>
+                        updatePreference('writingSettings', {
+                          ...preferences.writingSettings,
+                          focusMode: !preferences.writingSettings.focusMode,
+                        })
+                      }
                       typewriterMode={preferences.writingSettings.typewriterMode}
-                      onTypewriterModeToggle={() => updatePreference('writingSettings', { ...preferences.writingSettings, typewriterMode: !preferences.writingSettings.typewriterMode })}
+                      onTypewriterModeToggle={() =>
+                        updatePreference('writingSettings', {
+                          ...preferences.writingSettings,
+                          typewriterMode: !preferences.writingSettings.typewriterMode,
+                        })
+                      }
                       wordWrap={preferences.writingSettings.wordWrap}
-                      onWordWrapToggle={() => updatePreference('writingSettings', { ...preferences.writingSettings, wordWrap: !preferences.writingSettings.wordWrap })}
+                      onWordWrapToggle={() =>
+                        updatePreference('writingSettings', {
+                          ...preferences.writingSettings,
+                          wordWrap: !preferences.writingSettings.wordWrap,
+                        })
+                      }
                       vimMode={preferences.writingSettings.vimMode}
-                      onVimModeToggle={() => updatePreference('writingSettings', { ...preferences.writingSettings, vimMode: !preferences.writingSettings.vimMode })}
+                      onVimModeToggle={() =>
+                        updatePreference('writingSettings', {
+                          ...preferences.writingSettings,
+                          vimMode: !preferences.writingSettings.vimMode,
+                        })
+                      }
                       zenMode={preferences.writingSettings.zenMode}
-                      onZenModeToggle={() => updatePreference('writingSettings', { ...preferences.writingSettings, zenMode: !preferences.writingSettings.zenMode })}
+                      onZenModeToggle={() =>
+                        updatePreference('writingSettings', {
+                          ...preferences.writingSettings,
+                          zenMode: !preferences.writingSettings.zenMode,
+                        })
+                      }
                     />
                   </div>
                 </CardContent>
@@ -402,12 +443,14 @@ function SettingsPageContent() {
                 <CardHeader>
                   <CardTitle>Account Information</CardTitle>
                   <CardDescription>
-                    {isSignedIn && user ? `Welcome back, ${user.fullName || 'User'}!` : 'Please sign in to manage your account.'}
+                    {isSignedIn && user
+                      ? `Welcome back, ${user.fullName || 'User'}!`
+                      : 'Please sign in to manage your account.'}
                   </CardDescription>
                 </CardHeader>
               </Card>
             </TabsContent>
-            
+
             <Card className="sticky bottom-4 bg-card/95 backdrop-blur-md border shadow-lg">
               <CardContent className="py-4">
                 <div className="flex items-center justify-between">
@@ -419,18 +462,18 @@ function SettingsPageContent() {
                       </div>
                     )}
                   </div>
-                  
+
                   <div className="flex items-center gap-3">
-                    <Button 
-                      variant="outline" 
+                    <Button
+                      variant="outline"
                       onClick={resetToDefaults}
                       className="flex items-center gap-2"
                     >
                       <RotateCcw className="w-4 h-4" />
                       Reset to Defaults
                     </Button>
-                    
-                    <Button 
+
+                    <Button
                       onClick={savePreferences}
                       disabled={!hasUnsavedChanges}
                       className="flex items-center gap-2"

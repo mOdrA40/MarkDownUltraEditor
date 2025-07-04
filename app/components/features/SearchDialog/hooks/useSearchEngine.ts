@@ -4,13 +4,13 @@
  */
 
 import { useState, useMemo, useCallback } from 'react';
-import { 
-  SearchMatch, 
-  SearchOptions, 
-  SearchResult, 
-  ReplaceResult, 
+import type {
+  SearchMatch,
+  SearchOptions,
+  SearchResult,
+  ReplaceResult,
   NavigationDirection,
-  SearchEngineState 
+  SearchEngineState,
 } from '../types/search.types';
 
 /**
@@ -30,15 +30,15 @@ const escapeRegex = (string: string): string => {
  */
 const createSearchRegex = (searchTerm: string, options: SearchOptions): RegExp => {
   const { caseSensitive, useRegex = false, wholeWord = false } = options;
-  
+
   let pattern = useRegex ? searchTerm : escapeRegex(searchTerm);
-  
+
   if (wholeWord) {
     pattern = `\\b${pattern}\\b`;
   }
-  
+
   const flags = caseSensitive ? 'g' : 'gi';
-  
+
   try {
     return new RegExp(pattern, flags);
   } catch {
@@ -55,8 +55,8 @@ const createSearchRegex = (searchTerm: string, options: SearchOptions): RegExp =
  * @returns Search result
  */
 const findMatches = (
-  markdown: string, 
-  searchTerm: string, 
+  markdown: string,
+  searchTerm: string,
   options: SearchOptions
 ): SearchResult => {
   if (!searchTerm.trim()) {
@@ -64,7 +64,7 @@ const findMatches = (
       matches: [],
       totalMatches: 0,
       searchTerm,
-      options
+      options,
     };
   }
 
@@ -76,7 +76,7 @@ const findMatches = (
     matches.push({
       index: match.index,
       text: match[0],
-      length: match[0].length
+      length: match[0].length,
     });
   }
 
@@ -84,7 +84,7 @@ const findMatches = (
     matches,
     totalMatches: matches.length,
     searchTerm,
-    options
+    options,
   };
 };
 
@@ -103,25 +103,28 @@ export const useSearchEngine = (markdown: string) => {
   const [isSearching, setIsSearching] = useState(false);
 
   // Search options
-  const searchOptions: SearchOptions = useMemo(() => ({
-    caseSensitive,
-    useRegex,
-    wholeWord
-  }), [caseSensitive, useRegex, wholeWord]);
+  const searchOptions: SearchOptions = useMemo(
+    () => ({
+      caseSensitive,
+      useRegex,
+      wholeWord,
+    }),
+    [caseSensitive, useRegex, wholeWord]
+  );
 
   // Find matches using memoization for performance
   const searchResult = useMemo(() => {
     setIsSearching(true);
     const result = findMatches(markdown, searchTerm, searchOptions);
     setIsSearching(false);
-    
+
     // Reset current match if no matches found
     if (result.matches.length === 0) {
       setCurrentMatch(0);
     } else if (currentMatch >= result.matches.length) {
       setCurrentMatch(0);
     }
-    
+
     return result;
   }, [markdown, searchTerm, searchOptions, currentMatch]);
 
@@ -129,26 +132,29 @@ export const useSearchEngine = (markdown: string) => {
    * Navigate to specific match
    * @param direction - Navigation direction
    */
-  const navigateMatch = useCallback((direction: NavigationDirection) => {
-    const { matches } = searchResult;
-    
-    if (matches.length === 0) return;
+  const navigateMatch = useCallback(
+    (direction: NavigationDirection) => {
+      const { matches } = searchResult;
 
-    switch (direction) {
-      case 'next':
-        setCurrentMatch((prev) => (prev + 1) % matches.length);
-        break;
-      case 'prev':
-        setCurrentMatch((prev) => (prev - 1 + matches.length) % matches.length);
-        break;
-      case 'first':
-        setCurrentMatch(0);
-        break;
-      case 'last':
-        setCurrentMatch(matches.length - 1);
-        break;
-    }
-  }, [searchResult]);
+      if (matches.length === 0) return;
+
+      switch (direction) {
+        case 'next':
+          setCurrentMatch((prev) => (prev + 1) % matches.length);
+          break;
+        case 'prev':
+          setCurrentMatch((prev) => (prev - 1 + matches.length) % matches.length);
+          break;
+        case 'first':
+          setCurrentMatch(0);
+          break;
+        case 'last':
+          setCurrentMatch(matches.length - 1);
+          break;
+      }
+    },
+    [searchResult]
+  );
 
   /**
    * Replace single occurrence
@@ -156,12 +162,12 @@ export const useSearchEngine = (markdown: string) => {
    */
   const replaceOne = useCallback((): ReplaceResult => {
     const { matches } = searchResult;
-    
+
     if (!searchTerm || matches.length === 0) {
       return {
         newMarkdown: markdown,
         replacementCount: 0,
-        success: false
+        success: false,
       };
     }
 
@@ -173,7 +179,7 @@ export const useSearchEngine = (markdown: string) => {
     return {
       newMarkdown,
       replacementCount: 1,
-      success: true
+      success: true,
     };
   }, [markdown, searchResult, currentMatch, searchTerm, replaceTerm]);
 
@@ -186,7 +192,7 @@ export const useSearchEngine = (markdown: string) => {
       return {
         newMarkdown: markdown,
         replacementCount: 0,
-        success: false
+        success: false,
       };
     }
 
@@ -197,7 +203,7 @@ export const useSearchEngine = (markdown: string) => {
     return {
       newMarkdown,
       replacementCount,
-      success: replacementCount > 0
+      success: replacementCount > 0,
     };
   }, [markdown, searchTerm, replaceTerm, searchOptions, searchResult]);
 
@@ -213,14 +219,17 @@ export const useSearchEngine = (markdown: string) => {
   /**
    * Get current search engine state
    */
-  const getState = useCallback((): SearchEngineState => ({
-    searchTerm,
-    replaceTerm,
-    options: searchOptions,
-    matches: searchResult.matches,
-    currentMatch,
-    isSearching
-  }), [searchTerm, replaceTerm, searchOptions, searchResult, currentMatch, isSearching]);
+  const getState = useCallback(
+    (): SearchEngineState => ({
+      searchTerm,
+      replaceTerm,
+      options: searchOptions,
+      matches: searchResult.matches,
+      currentMatch,
+      isSearching,
+    }),
+    [searchTerm, replaceTerm, searchOptions, searchResult, currentMatch, isSearching]
+  );
 
   return {
     // State
@@ -231,11 +240,11 @@ export const useSearchEngine = (markdown: string) => {
     wholeWord,
     currentMatch,
     isSearching,
-    
+
     // Search results
     matches: searchResult.matches,
     totalMatches: searchResult.totalMatches,
-    
+
     // Actions
     setSearchTerm,
     setReplaceTerm,
@@ -247,9 +256,9 @@ export const useSearchEngine = (markdown: string) => {
     replaceAll,
     clearSearch,
     getState,
-    
+
     // Computed
     hasMatches: searchResult.matches.length > 0,
-    currentMatchInfo: searchResult.matches[currentMatch] || null
+    currentMatchInfo: searchResult.matches[currentMatch] || null,
   };
 };

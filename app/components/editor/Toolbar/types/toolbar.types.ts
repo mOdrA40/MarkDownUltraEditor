@@ -30,13 +30,7 @@ export interface FormatButton {
 /**
  * Kategori button untuk grouping
  */
-export type ButtonCategory = 
-  | 'heading' 
-  | 'formatting' 
-  | 'code' 
-  | 'content' 
-  | 'list' 
-  | 'media';
+export type ButtonCategory = 'heading' | 'formatting' | 'code' | 'content' | 'list' | 'media';
 
 /**
  * Props untuk komponen Toolbar utama

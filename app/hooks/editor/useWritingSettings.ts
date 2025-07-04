@@ -29,18 +29,18 @@ const validateLineHeight = (height: number, config: SettingsConfig): boolean => 
   return height >= config.lineHeight.min && height <= config.lineHeight.max;
 };
 
-const formatFontSize = (size: number, withUnit: boolean = true): string => {
+const formatFontSize = (size: number, withUnit = true): string => {
   return withUnit ? `${size}px` : size.toString();
 };
 
-const formatLineHeight = (height: number, precision: number = 1): string => {
+const formatLineHeight = (height: number, precision = 1): string => {
   return height.toFixed(precision);
 };
 
 const getSettingsConfig = (config: Partial<SettingsConfig> = {}): SettingsConfig => {
   return {
     fontSize: { min: 12, max: 24, default: 16, ...config.fontSize },
-    lineHeight: { min: 1.0, max: 2.5, default: 1.5, ...config.lineHeight }
+    lineHeight: { min: 1.0, max: 2.5, default: 1.5, ...config.lineHeight },
   };
 };
 
@@ -67,22 +67,16 @@ export const useWritingSettings = (
   );
 
   // Memoized formatting functions
-  const formatFontSizeMemo = useCallback(
-    (size: number) => formatFontSize(size, true),
-    []
-  );
+  const formatFontSizeMemo = useCallback((size: number) => formatFontSize(size, true), []);
 
-  const formatLineHeightMemo = useCallback(
-    (height: number) => formatLineHeight(height, 1),
-    []
-  );
+  const formatLineHeightMemo = useCallback((height: number) => formatLineHeight(height, 1), []);
 
   return {
     config: settingsConfig,
     validateFontSize: validateFontSizeMemo,
     validateLineHeight: validateLineHeightMemo,
     formatFontSize: formatFontSizeMemo,
-    formatLineHeight: formatLineHeightMemo
+    formatLineHeight: formatLineHeightMemo,
   };
 };
 
@@ -92,5 +86,5 @@ export {
   useIsMobile,
   useIsTablet,
   useIsDesktop,
-  useDeviceType
+  useDeviceType,
 } from '../ui';

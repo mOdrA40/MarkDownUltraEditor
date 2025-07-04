@@ -2,9 +2,9 @@
  * Empty state component untuk DocumentOutline
  */
 
-import React from 'react';
-import { List } from "lucide-react";
-import { EmptyOutlineProps } from '@/types/outline';
+import type React from 'react';
+import { List } from 'lucide-react';
+import type { EmptyOutlineProps } from '@/types/outline';
 import { getHeaderStyles } from '@/utils/outlineUtils';
 
 /**
@@ -19,13 +19,10 @@ export const EmptyOutline: React.FC<EmptyOutlineProps> = ({ theme }) => {
         className="px-4 py-2 border-b backdrop-blur-md"
         style={{
           backgroundColor: headerStyles.backgroundColor,
-          borderColor: headerStyles.borderColor
+          borderColor: headerStyles.borderColor,
         }}
       >
-        <h3
-          className="text-sm font-medium flex items-center"
-          style={{ color: headerStyles.color }}
-        >
+        <h3 className="text-sm font-medium flex items-center" style={{ color: headerStyles.color }}>
           <List className="h-4 w-4 mr-2" />
           🗺️ Outline
         </h3>

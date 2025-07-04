@@ -2,11 +2,16 @@
  * Grid/List container untuk templates
  */
 
-import React from 'react';
-import { FileText } from "lucide-react";
-import { TemplateGridProps } from '@/types/templates';
+import type React from 'react';
+import { FileText } from 'lucide-react';
+import type { TemplateGridProps } from '@/types/templates';
 import { TemplateCard } from './TemplateCard';
-import { getGridClasses, getResponsivePadding, getResponsiveTextSize, getResponsiveIconSize } from '@/utils/templateUtils';
+import {
+  getGridClasses,
+  getResponsivePadding,
+  getResponsiveTextSize,
+  getResponsiveIconSize,
+} from '@/utils/templateUtils';
 
 /**
  * Container untuk menampilkan templates dalam grid atau list view
@@ -17,7 +22,7 @@ export const TemplateGrid: React.FC<TemplateGridProps> = ({
   isMobile,
   isTablet,
   onPreview,
-  onSelect
+  onSelect,
 }) => {
   const gridClasses = getGridClasses(viewMode, isMobile);
   const paddingClasses = getResponsivePadding(isMobile);
@@ -28,17 +33,16 @@ export const TemplateGrid: React.FC<TemplateGridProps> = ({
       <div className={`flex-1 overflow-auto ${paddingClasses}`}>
         <div className="flex items-center justify-center h-64">
           <div className="text-center">
-            <FileText className={`mx-auto text-muted-foreground mb-4 ${
-              getResponsiveIconSize(isMobile, 'base')
-            }`} />
-            <h3 className={`font-medium mb-2 ${
-              getResponsiveTextSize(isMobile, 'lg')
-            }`}>
+            <FileText
+              className={`mx-auto text-muted-foreground mb-4 ${getResponsiveIconSize(
+                isMobile,
+                'base'
+              )}`}
+            />
+            <h3 className={`font-medium mb-2 ${getResponsiveTextSize(isMobile, 'lg')}`}>
               No templates found
             </h3>
-            <p className={`text-muted-foreground ${
-              getResponsiveTextSize(isMobile, 'base')
-            }`}>
+            <p className={`text-muted-foreground ${getResponsiveTextSize(isMobile, 'base')}`}>
               Try adjusting your search or filter criteria.
             </p>
           </div>

@@ -3,11 +3,11 @@
  * @author Axel Modra
  */
 
-import {
+import type {
   ExportConfig,
   JsonExportData,
   ExportResult,
-  FileOperationCallbacks
+  FileOperationCallbacks,
 } from '../types/fileOperations.types';
 import { generateHtmlTemplate } from './htmlTemplateService';
 
@@ -33,25 +33,25 @@ export const exportMarkdown = async (
   callbacks: FileOperationCallbacks
 ): Promise<ExportResult> => {
   try {
-    const blob = new Blob([config.content], { 
-      type: 'text/markdown;charset=utf-8' 
+    const blob = new Blob([config.content], {
+      type: 'text/markdown;charset=utf-8',
     });
-    
+
     await safeFileSaver(blob, config.fileName);
-    
+
     callbacks.onSuccess(`${config.fileName} has been downloaded.`);
-    
+
     return {
       success: true,
-      fileName: config.fileName
+      fileName: config.fileName,
     };
   } catch {
     const errorMessage = 'Failed to export markdown file';
     callbacks.onError(errorMessage);
-    
+
     return {
       success: false,
-      error: errorMessage
+      error: errorMessage,
     };
   }
 };
@@ -67,29 +67,29 @@ export const exportHtml = async (
     const title = config.fileName.replace('.md', '');
     const htmlContent = generateHtmlTemplate({
       title,
-      content: config.content
+      content: config.content,
     });
-    
-    const blob = new Blob([htmlContent], { 
-      type: 'text/html;charset=utf-8' 
+
+    const blob = new Blob([htmlContent], {
+      type: 'text/html;charset=utf-8',
     });
-    
+
     const htmlFileName = config.fileName.replace('.md', '.html');
     await safeFileSaver(blob, htmlFileName);
-    
+
     callbacks.onSuccess('Your document has been exported as HTML.');
-    
+
     return {
       success: true,
-      fileName: htmlFileName
+      fileName: htmlFileName,
     };
   } catch {
     const errorMessage = 'Failed to export HTML file';
     callbacks.onError(errorMessage);
-    
+
     return {
       success: false,
-      error: errorMessage
+      error: errorMessage,
     };
   }
 };
@@ -115,7 +115,10 @@ export const exportJson = async (
     const trimmedContent = content.trim();
 
     // Calculate more accurate word count
-    const wordCount = trimmedContent === '' ? 0 : trimmedContent.split(/\s+/).filter(word => word.length > 0).length;
+    const wordCount =
+      trimmedContent === ''
+        ? 0
+        : trimmedContent.split(/\s+/).filter((word) => word.length > 0).length;
 
     // Calculate character count
     const characterCount = content.length;
@@ -131,13 +134,16 @@ export const exportJson = async (
 
     // Extract basic metadata from markdown content
     const lines = content.split('\n');
-    const title = lines.find(line => line.startsWith('# '))?.replace('# ', '').trim() ||
-                  config.fileName.replace('.md', '');
+    const title =
+      lines
+        .find((line) => line.startsWith('# '))
+        ?.replace('# ', '')
+        .trim() || config.fileName.replace('.md', '');
 
     // Extract headings for structure overview
     const headings = lines
-      .filter(line => line.match(/^#{1,6}\s/))
-      .map(line => {
+      .filter((line) => line.match(/^#{1,6}\s/))
+      .map((line) => {
         const level = line.match(/^(#{1,6})/)?.[1].length || 1;
         const text = line.replace(/^#{1,6}\s/, '').trim();
         return { level, text };
@@ -154,12 +160,17 @@ export const exportJson = async (
     const imageCount = (content.match(/!\[.*?\]\(.*?\)/g) || []).length;
 
     // Extract tables count
-    const tableCount = (content.match(/\|.*\|/g) || []).length > 0 ?
-      (content.split('\n').filter(line => line.includes('|')).length > 0 ? 1 : 0) : 0;
+    const tableCount =
+      (content.match(/\|.*\|/g) || []).length > 0
+        ? content.split('\n').filter((line) => line.includes('|')).length > 0
+          ? 1
+          : 0
+        : 0;
 
     // Extract list items count
-    const listItemCount = (content.match(/^[\s]*[-*+]\s/gm) || []).length +
-                         (content.match(/^[\s]*\d+\.\s/gm) || []).length;
+    const listItemCount =
+      (content.match(/^[\s]*[-*+]\s/gm) || []).length +
+      (content.match(/^[\s]*\d+\.\s/gm) || []).length;
 
     // Extract blockquotes count
     const blockquoteCount = (content.match(/^>/gm) || []).length;
@@ -183,21 +194,21 @@ export const exportJson = async (
         tableCount,
         listItemCount,
         blockquoteCount,
-        readingTimeMinutes
+        readingTimeMinutes,
       },
       structure: {
-        headings: headings
+        headings: headings,
       },
       exportInfo: {
         createdAt: new Date().toISOString(),
-        version: "2.0",
-        exportedBy: "MarkDown Ultra Remix",
-        format: "Enhanced JSON Export"
-      }
+        version: '2.0',
+        exportedBy: 'MarkDown Ultra Remix',
+        format: 'Enhanced JSON Export',
+      },
     };
 
     const blob = new Blob([JSON.stringify(jsonData, null, 2)], {
-      type: 'application/json;charset=utf-8'
+      type: 'application/json;charset=utf-8',
     });
 
     const jsonFileName = config.fileName.replace('.md', '.json');
@@ -207,7 +218,7 @@ export const exportJson = async (
 
     return {
       success: true,
-      fileName: jsonFileName
+      fileName: jsonFileName,
     };
   } catch (error) {
     console.error('JSON export error:', error);
@@ -216,7 +227,7 @@ export const exportJson = async (
 
     return {
       success: false,
-      error: errorMessage
+      error: errorMessage,
     };
   }
 };
@@ -240,7 +251,7 @@ export const exportFile = async (
       callbacks.onError(errorMessage);
       return {
         success: false,
-        error: errorMessage
+        error: errorMessage,
       };
     }
   }

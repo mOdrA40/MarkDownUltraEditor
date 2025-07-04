@@ -11,12 +11,9 @@ import {
   validateLineHeight,
   formatFontSize,
   formatLineHeight,
-  getSettingsConfig
+  getSettingsConfig,
 } from '../utils/settings.utils';
-import type {
-  SettingsConfig,
-  UseWritingSettingsReturn
-} from '../types/settings.types';
+import type { SettingsConfig, UseWritingSettingsReturn } from '../types/settings.types';
 
 /**
  * Hook untuk mengelola writing settings logic
@@ -41,22 +38,16 @@ export const useWritingSettings = (
   );
 
   // Memoized formatting functions
-  const formatFontSizeMemo = useCallback(
-    (size: number) => formatFontSize(size, true),
-    []
-  );
+  const formatFontSizeMemo = useCallback((size: number) => formatFontSize(size, true), []);
 
-  const formatLineHeightMemo = useCallback(
-    (height: number) => formatLineHeight(height, 1),
-    []
-  );
+  const formatLineHeightMemo = useCallback((height: number) => formatLineHeight(height, 1), []);
 
   return {
     config: settingsConfig,
     validateFontSize: validateFontSizeMemo,
     validateLineHeight: validateLineHeightMemo,
     formatFontSize: formatFontSizeMemo,
-    formatLineHeight: formatLineHeightMemo
+    formatLineHeight: formatLineHeightMemo,
   };
 };
 
@@ -67,5 +58,5 @@ export {
   useIsTablet,
   useIsDesktop,
   useWindowDimensions,
-  useMediaQuery
+  useMediaQuery,
 } from './useResponsiveLayout';

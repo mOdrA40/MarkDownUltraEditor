@@ -1,11 +1,11 @@
 import { useState, useCallback } from 'react';
-import { ExportOptions, UseExportReturn, SlideData } from '../types/export.types';
+import type { ExportOptions, UseExportReturn, SlideData } from '../types/export.types';
 import { downloadFile, sanitizeFilename } from '../utils/downloadFile';
 import { EXPORT_PROGRESS_STEPS, SUCCESS_MESSAGES, ERROR_MESSAGES } from '../utils/constants';
 
 /**
  * Custom hook untuk export ke Presentation
- * 
+ *
  * @param markdown - Konten markdown
  * @param fileName - Nama file default
  * @param onSuccess - Callback ketika export berhasil
@@ -13,111 +13,113 @@ import { EXPORT_PROGRESS_STEPS, SUCCESS_MESSAGES, ERROR_MESSAGES } from '../util
  * @returns Export state dan functions
  */
 export const useExportToPresentation = (
-    markdown: string,
-    fileName: string,
-    onSuccess?: (message: string) => void,
-    onError?: (error: string) => void
+  markdown: string,
+  fileName: string,
+  onSuccess?: (message: string) => void,
+  onError?: (error: string) => void
 ): UseExportReturn => {
-    const [isExporting, setIsExporting] = useState(false);
-    const [exportProgress, setExportProgress] = useState(0);
+  const [isExporting, setIsExporting] = useState(false);
+  const [exportProgress, setExportProgress] = useState(0);
 
-    const startExport = useCallback(async (options: ExportOptions) => {
-        if (!markdown?.trim()) {
-            onError?.(ERROR_MESSAGES.EMPTY_CONTENT);
-            return;
+  const startExport = useCallback(
+    async (options: ExportOptions) => {
+      if (!markdown?.trim()) {
+        onError?.(ERROR_MESSAGES.EMPTY_CONTENT);
+        return;
+      }
+
+      setIsExporting(true);
+      setExportProgress(EXPORT_PROGRESS_STEPS.INITIALIZING);
+
+      try {
+        // Parse markdown menjadi slides
+        const slides = parseMarkdownToSlides(markdown);
+        setExportProgress(EXPORT_PROGRESS_STEPS.PROCESSING);
+
+        if (slides.length === 0) {
+          throw new Error('No slides found. Make sure your markdown has headings.');
         }
 
-        setIsExporting(true);
-        setExportProgress(EXPORT_PROGRESS_STEPS.INITIALIZING);
+        // Generate presentation HTML
+        const presentationHTML = generatePresentationHTML(options, slides);
+        setExportProgress(EXPORT_PROGRESS_STEPS.GENERATING);
 
-        try {
-            // Parse markdown menjadi slides
-            const slides = parseMarkdownToSlides(markdown);
-            setExportProgress(EXPORT_PROGRESS_STEPS.PROCESSING);
+        // Create blob dan download
+        const blob = new Blob([presentationHTML], { type: 'text/html' });
+        setExportProgress(EXPORT_PROGRESS_STEPS.FINALIZING);
 
-            if (slides.length === 0) {
-                throw new Error('No slides found. Make sure your markdown has headings.');
-            }
+        const safeFileName = sanitizeFilename(`${options.title || fileName}-presentation`, '.html');
+        downloadFile(blob, safeFileName);
 
-            // Generate presentation HTML
-            const presentationHTML = generatePresentationHTML(options, slides);
-            setExportProgress(EXPORT_PROGRESS_STEPS.GENERATING);
-
-            // Create blob dan download
-            const blob = new Blob([presentationHTML], { type: 'text/html' });
-            setExportProgress(EXPORT_PROGRESS_STEPS.FINALIZING);
-
-            const safeFileName = sanitizeFilename(`${options.title || fileName}-presentation`, '.html');
-            downloadFile(blob, safeFileName);
-
-            setExportProgress(EXPORT_PROGRESS_STEPS.COMPLETE);
-            onSuccess?.(SUCCESS_MESSAGES.PRESENTATION_EXPORTED);
-
-        } catch (error) {
-            console.error('Presentation export error:', error);
-            const errorMessage = error instanceof Error ? error.message : ERROR_MESSAGES.EXPORT_FAILED;
-            onError?.(errorMessage);
-        } finally {
-            setIsExporting(false);
-            setExportProgress(0);
-        }
-    }, [markdown, fileName, onSuccess, onError]);
-
-    const resetExport = useCallback(() => {
+        setExportProgress(EXPORT_PROGRESS_STEPS.COMPLETE);
+        onSuccess?.(SUCCESS_MESSAGES.PRESENTATION_EXPORTED);
+      } catch (error) {
+        console.error('Presentation export error:', error);
+        const errorMessage = error instanceof Error ? error.message : ERROR_MESSAGES.EXPORT_FAILED;
+        onError?.(errorMessage);
+      } finally {
         setIsExporting(false);
         setExportProgress(0);
-    }, []);
+      }
+    },
+    [markdown, fileName, onSuccess, onError]
+  );
 
-    return {
-        isExporting,
-        exportProgress,
-        startExport,
-        resetExport
-    };
+  const resetExport = useCallback(() => {
+    setIsExporting(false);
+    setExportProgress(0);
+  }, []);
+
+  return {
+    isExporting,
+    exportProgress,
+    startExport,
+    resetExport,
+  };
 };
 
 /**
  * Parse markdown menjadi slides berdasarkan headings
  */
 const parseMarkdownToSlides = (markdown: string): SlideData[] => {
-    const slides: SlideData[] = [];
-    const lines = markdown.split('\n');
-    let currentSlide: SlideData = { title: '', content: [] };
+  const slides: SlideData[] = [];
+  const lines = markdown.split('\n');
+  let currentSlide: SlideData = { title: '', content: [] };
 
-    for (const line of lines) {
-        const trimmedLine = line.trim();
+  for (const line of lines) {
+    const trimmedLine = line.trim();
 
-        // Heading level 1 atau 2 membuat slide baru
-        if (trimmedLine.startsWith('# ') || trimmedLine.startsWith('## ')) {
-            // Simpan slide sebelumnya jika ada
-            if (currentSlide.title) {
-                slides.push(currentSlide);
-            }
-
-            // Mulai slide baru
-            currentSlide = {
-                title: trimmedLine.replace(/^#+\s/, ''),
-                content: []
-            };
-        } else if (trimmedLine) {
-            // Tambahkan konten ke slide saat ini
-            currentSlide.content.push(trimmedLine);
-        }
-    }
-
-    // Tambahkan slide terakhir
-    if (currentSlide.title) {
+    // Heading level 1 atau 2 membuat slide baru
+    if (trimmedLine.startsWith('# ') || trimmedLine.startsWith('## ')) {
+      // Simpan slide sebelumnya jika ada
+      if (currentSlide.title) {
         slides.push(currentSlide);
-    }
+      }
 
-    return slides;
+      // Mulai slide baru
+      currentSlide = {
+        title: trimmedLine.replace(/^#+\s/, ''),
+        content: [],
+      };
+    } else if (trimmedLine) {
+      // Tambahkan konten ke slide saat ini
+      currentSlide.content.push(trimmedLine);
+    }
+  }
+
+  // Tambahkan slide terakhir
+  if (currentSlide.title) {
+    slides.push(currentSlide);
+  }
+
+  return slides;
 };
 
 /**
  * Generate HTML presentation
  */
 const generatePresentationHTML = (options: ExportOptions, slides: SlideData[]): string => {
-    return `<!DOCTYPE html>
+  return `<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -154,7 +156,7 @@ const generatePresentationHTML = (options: ExportOptions, slides: SlideData[]): 
  * Generate presentation styles
  */
 const generatePresentationStyles = (options: ExportOptions): string => {
-    return `
+  return `
         * {
             margin: 0;
             padding: 0;
@@ -361,16 +363,17 @@ const generatePresentationStyles = (options: ExportOptions): string => {
  * Generate title slide
  */
 const generateTitleSlide = (options: ExportOptions): string => {
-    // Detect dark theme context
-    const isDark = typeof window !== 'undefined' &&
-      (document.body.classList.contains('dark') ||
-       document.body.classList.contains('theme-dark') ||
-       document.body.getAttribute('data-theme') === 'dark' ||
-       window.matchMedia('(prefers-color-scheme: dark)').matches);
+  // Detect dark theme context
+  const isDark =
+    typeof window !== 'undefined' &&
+    (document.body.classList.contains('dark') ||
+      document.body.classList.contains('theme-dark') ||
+      document.body.getAttribute('data-theme') === 'dark' ||
+      window.matchMedia('(prefers-color-scheme: dark)').matches);
 
-    const textColor = isDark ? '#ffffff' : '#333333';
+  const textColor = isDark ? '#ffffff' : '#333333';
 
-    return `
+  return `
     <div class="slide title-slide active">
         <h1>${escapeHtml(options.title)}</h1>
         ${options.description ? `<div class="subtitle">${escapeHtml(options.description)}</div>` : ''}
@@ -383,40 +386,42 @@ const generateTitleSlide = (options: ExportOptions): string => {
  * Generate single slide HTML
  */
 const generateSlideHTML = (slide: SlideData): string => {
-    const processedContent = slide.content.map(line => {
-        // Process basic markdown dalam content
-        let processed = line;
+  const processedContent = slide.content
+    .map((line) => {
+      // Process basic markdown dalam content
+      let processed = line;
 
-        // Bold
-        processed = processed.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+      // Bold
+      processed = processed.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
 
-        // Italic
-        processed = processed.replace(/\*(.*?)\*/g, '<em>$1</em>');
+      // Italic
+      processed = processed.replace(/\*(.*?)\*/g, '<em>$1</em>');
 
-        // Code
-        processed = processed.replace(/`(.*?)`/g, '<code>$1</code>');
+      // Code
+      processed = processed.replace(/`(.*?)`/g, '<code>$1</code>');
 
-        // Lists
-        if (line.startsWith('* ') || line.startsWith('- ')) {
-            return `<li>${processed.substring(2)}</li>`;
+      // Lists
+      if (line.startsWith('* ') || line.startsWith('- ')) {
+        return `<li>${processed.substring(2)}</li>`;
+      }
+
+      if (/^\d+\.\s/.test(line)) {
+        const match = line.match(/^\d+\.\s(.*)$/);
+        if (match) {
+          return `<li>${processed.replace(/^\d+\.\s/, '')}</li>`;
         }
+      }
 
-        if (/^\d+\.\s/.test(line)) {
-            const match = line.match(/^\d+\.\s(.*)$/);
-            if (match) {
-                return `<li>${processed.replace(/^\d+\.\s/, '')}</li>`;
-            }
-        }
+      // Blockquotes
+      if (line.startsWith('> ')) {
+        return `<blockquote>${processed.substring(2)}</blockquote>`;
+      }
 
-        // Blockquotes
-        if (line.startsWith('> ')) {
-            return `<blockquote>${processed.substring(2)}</blockquote>`;
-        }
+      return `<p>${processed}</p>`;
+    })
+    .join('');
 
-        return `<p>${processed}</p>`;
-    }).join('');
-
-    return `
+  return `
     <div class="slide">
         <h2>${escapeHtml(slide.title)}</h2>
         <div class="slide-content">
@@ -430,7 +435,7 @@ const generateSlideHTML = (slide: SlideData): string => {
  * Generate presentation JavaScript
  */
 const generatePresentationScript = (totalSlides: number): string => {
-    return `
+  return `
         let currentSlide = 0;
         const slides = document.querySelectorAll('.slide');
         const totalSlidesCount = ${totalSlides};
@@ -532,7 +537,7 @@ const generatePresentationScript = (totalSlides: number): string => {
  * Escape HTML characters
  */
 const escapeHtml = (text: string): string => {
-    const div = document.createElement('div');
-    div.textContent = text;
-    return div.innerHTML;
+  const div = document.createElement('div');
+  div.textContent = text;
+  return div.innerHTML;
 };

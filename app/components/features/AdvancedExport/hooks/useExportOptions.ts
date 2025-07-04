@@ -1,26 +1,29 @@
 import { useState, useCallback } from 'react';
-import { ExportOptions } from '../types/export.types';
+import type { ExportOptions } from '../types/export.types';
 import { DEFAULT_EXPORT_OPTIONS } from '../utils/constants';
 
 export const useExportOptions = (fileName: string, currentTheme?: any) => {
   const [options, setOptions] = useState<ExportOptions>({
     ...DEFAULT_EXPORT_OPTIONS,
     title: fileName.replace('.md', ''),
-    author: 'Document Author'
+    author: 'Document Author',
   });
 
   /**
    * Update single option
    */
-  const updateOption = useCallback(<K extends keyof ExportOptions>(key: K, value: ExportOptions[K]) => {
-    setOptions(prev => ({ ...prev, [key]: value }));
-  }, []);
+  const updateOption = useCallback(
+    <K extends keyof ExportOptions>(key: K, value: ExportOptions[K]) => {
+      setOptions((prev) => ({ ...prev, [key]: value }));
+    },
+    []
+  );
 
   /**
    * Update multiple options sekaligus
    */
   const updateOptions = useCallback((updates: Partial<ExportOptions>) => {
-    setOptions(prev => ({ ...prev, ...updates }));
+    setOptions((prev) => ({ ...prev, ...updates }));
   }, []);
 
   /**
@@ -30,7 +33,7 @@ export const useExportOptions = (fileName: string, currentTheme?: any) => {
     setOptions({
       ...DEFAULT_EXPORT_OPTIONS,
       title: fileName.replace('.md', ''),
-      author: 'Document Author'
+      author: 'Document Author',
     });
   }, [fileName]);
 
@@ -54,7 +57,7 @@ export const useExportOptions = (fileName: string, currentTheme?: any) => {
 
     return {
       isValid: errors.length === 0,
-      errors
+      errors,
     };
   }, [options]);
 
@@ -72,6 +75,6 @@ export const useExportOptions = (fileName: string, currentTheme?: any) => {
     updateOptions,
     resetOptions,
     validateOptions,
-    getValidatedOptions
+    getValidatedOptions,
   };
 };

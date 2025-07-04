@@ -30,7 +30,13 @@ export interface DocumentTemplate {
   popularity?: number;
 }
 
-export type TemplateCategory = 'readme' | 'blog' | 'documentation' | 'academic' | 'business' | 'personal';
+export type TemplateCategory =
+  | 'readme'
+  | 'blog'
+  | 'documentation'
+  | 'academic'
+  | 'business'
+  | 'personal';
 export type TemplateDifficulty = 'beginner' | 'intermediate' | 'advanced';
 export type ViewMode = 'grid' | 'list';
 

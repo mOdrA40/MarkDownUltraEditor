@@ -1,41 +1,33 @@
 /**
  * WritingStats Types - TypeScript Type Definitions
  * Definisi types untuk semua komponen WritingStats
- * 
+ *
  * @author Axel Modra
  */
 
-import { ReactNode } from 'react';
+import type { ReactNode } from 'react';
 
 /**
  * Tipe untuk screen size detection
  */
-export type ScreenSize = 
-  | 'mobile' 
-  | 'small-tablet' 
-  | 'tablet' 
-  | 'desktop';
+export type ScreenSize = 'mobile' | 'small-tablet' | 'tablet' | 'desktop';
 
 /**
  * Tipe untuk jenis statistik
  */
-export type StatType = 
-  | 'words' 
-  | 'characters' 
-  | 'charactersNoSpaces' 
-  | 'paragraphs' 
-  | 'sentences' 
-  | 'lines' 
+export type StatType =
+  | 'words'
+  | 'characters'
+  | 'charactersNoSpaces'
+  | 'paragraphs'
+  | 'sentences'
+  | 'lines'
   | 'readingTime';
 
 /**
  * Tipe untuk variant badge
  */
-export type BadgeVariant = 
-  | 'default' 
-  | 'secondary' 
-  | 'outline' 
-  | 'destructive';
+export type BadgeVariant = 'default' | 'secondary' | 'outline' | 'destructive';
 
 /**
  * Interface untuk statistik teks

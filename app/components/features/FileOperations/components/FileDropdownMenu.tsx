@@ -3,16 +3,16 @@
  * @author Axel Modra
  */
 
-import React from 'react';
-import { Button } from "@/components/ui/button";
-import { 
-  DropdownMenu, 
-  DropdownMenuContent, 
-  DropdownMenuItem, 
-  DropdownMenuTrigger, 
-  DropdownMenuSeparator 
-} from "@/components/ui/dropdown-menu";
-import { FileText, Download, Upload, Save, FileUp } from "lucide-react";
+import type React from 'react';
+import { Button } from '@/components/ui/button';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+  DropdownMenuSeparator,
+} from '@/components/ui/dropdown-menu';
+import { FileText, Download, Upload, Save, FileUp } from 'lucide-react';
 import type { Theme } from '@/components/features/ThemeSelector';
 import { getThemeTextColor } from '@/utils/themeUtils';
 
@@ -37,7 +37,7 @@ export const FileDropdownMenu: React.FC<FileDropdownMenuProps> = ({
   onSaveMarkdown,
   onExportHtml,
   onExportJson,
-  currentTheme
+  currentTheme,
 }) => {
   // Get theme-based styling
   const textColor = getThemeTextColor(currentTheme);
@@ -45,23 +45,23 @@ export const FileDropdownMenu: React.FC<FileDropdownMenuProps> = ({
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <Button
-          variant={isMobileNav ? "outline" : "ghost"}
+          variant={isMobileNav ? 'outline' : 'ghost'}
           size="sm"
           className={
             isMobileNav
-              ? "w-full justify-start h-10 px-3 text-sm"
-              : "h-6 sm:h-8 px-2 sm:px-3 text-xs sm:text-sm whitespace-nowrap transform-none will-change-auto"
+              ? 'w-full justify-start h-10 px-3 text-sm'
+              : 'h-6 sm:h-8 px-2 sm:px-3 text-xs sm:text-sm whitespace-nowrap transform-none will-change-auto'
           }
           style={{
             transform: 'none',
-            willChange: 'auto'
+            willChange: 'auto',
           }}
         >
-          <FileText className={isMobileNav ? "h-4 w-4 mr-2" : "h-3 w-3 sm:h-4 sm:w-4 mr-1"} />
+          <FileText className={isMobileNav ? 'h-4 w-4 mr-2' : 'h-3 w-3 sm:h-4 sm:w-4 mr-1'} />
           File
         </Button>
       </DropdownMenuTrigger>
-      
+
       <DropdownMenuContent
         align="start"
         className="w-48"
@@ -71,26 +71,26 @@ export const FileDropdownMenu: React.FC<FileDropdownMenuProps> = ({
           color: textColor,
           position: 'fixed',
           transform: 'none',
-          willChange: 'auto'
+          willChange: 'auto',
         }}
       >
         <DropdownMenuItem onClick={onLoadFile}>
           <Upload className="h-4 w-4 mr-2" />
           Open File
         </DropdownMenuItem>
-        
+
         <DropdownMenuItem onClick={onSaveMarkdown}>
           <Save className="h-4 w-4 mr-2" />
           Save as Markdown
         </DropdownMenuItem>
-        
+
         <DropdownMenuSeparator />
-        
+
         <DropdownMenuItem onClick={onExportHtml}>
           <Download className="h-4 w-4 mr-2" />
           Export as HTML
         </DropdownMenuItem>
-        
+
         <DropdownMenuItem onClick={onExportJson}>
           <FileUp className="h-4 w-4 mr-2" />
           Export as JSON

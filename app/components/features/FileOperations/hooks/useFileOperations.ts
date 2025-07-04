@@ -4,10 +4,10 @@
  */
 
 import { useRef } from 'react';
-import { useToast } from "@/hooks/core";
+import { useToast } from '@/hooks/core';
 import { exportFile } from '../services/fileExportService';
 import { handleFileInputChange } from '../services/fileImportService';
-import { ExportConfig, FileOperationCallbacks } from '../types/fileOperations.types';
+import type { ExportConfig, FileOperationCallbacks } from '../types/fileOperations.types';
 
 interface UseFileOperationsProps {
   /** Markdown content */
@@ -21,11 +21,7 @@ interface UseFileOperationsProps {
 /**
  * Custom hook for managing file operations
  */
-export const useFileOperations = ({
-  markdown,
-  fileName,
-  onLoad
-}: UseFileOperationsProps) => {
+export const useFileOperations = ({ markdown, fileName, onLoad }: UseFileOperationsProps) => {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { toast } = useToast();
 
@@ -33,17 +29,17 @@ export const useFileOperations = ({
   const callbacks: FileOperationCallbacks = {
     onSuccess: (message: string) => {
       toast({
-        title: "Success",
+        title: 'Success',
         description: message,
       });
     },
     onError: (error: string) => {
       toast({
-        title: "Error",
+        title: 'Error',
         description: error,
-        variant: "destructive"
+        variant: 'destructive',
       });
-    }
+    },
   };
 
   /**
@@ -53,17 +49,17 @@ export const useFileOperations = ({
     const config: ExportConfig = {
       content: markdown,
       fileName,
-      format: 'markdown'
+      format: 'markdown',
     };
 
     await exportFile(config, {
       onSuccess: (message) => {
         toast({
-          title: "File saved",
+          title: 'File saved',
           description: message,
         });
       },
-      onError: callbacks.onError
+      onError: callbacks.onError,
     });
   };
 
@@ -74,17 +70,17 @@ export const useFileOperations = ({
     const config: ExportConfig = {
       content: markdown,
       fileName,
-      format: 'html'
+      format: 'html',
     };
 
     await exportFile(config, {
       onSuccess: () => {
         toast({
-          title: "HTML exported",
-          description: "Your document has been exported as HTML.",
+          title: 'HTML exported',
+          description: 'Your document has been exported as HTML.',
         });
       },
-      onError: callbacks.onError
+      onError: callbacks.onError,
     });
   };
 
@@ -100,7 +96,7 @@ export const useFileOperations = ({
     }
 
     // Small delay to ensure state is updated
-    await new Promise(resolve => setTimeout(resolve, 100));
+    await new Promise((resolve) => setTimeout(resolve, 100));
 
     // Fallback: if markdown is empty, try to get from localStorage
     let contentToExport = markdown;
@@ -123,17 +119,17 @@ export const useFileOperations = ({
     const config: ExportConfig = {
       content: contentToExport,
       fileName,
-      format: 'json'
+      format: 'json',
     };
 
     await exportFile(config, {
       onSuccess: () => {
         toast({
-          title: "JSON exported",
-          description: "Your document has been exported as JSON.",
+          title: 'JSON exported',
+          description: 'Your document has been exported as JSON.',
         });
       },
-      onError: callbacks.onError
+      onError: callbacks.onError,
     });
   };
 
@@ -151,11 +147,11 @@ export const useFileOperations = ({
     await handleFileInputChange(event, onLoad, {
       onSuccess: (message) => {
         toast({
-          title: "File loaded",
+          title: 'File loaded',
           description: message,
         });
       },
-      onError: callbacks.onError
+      onError: callbacks.onError,
     });
   };
 
@@ -165,6 +161,6 @@ export const useFileOperations = ({
     handleExportHtml,
     handleExportJson,
     handleLoadFile,
-    handleFileLoad
+    handleFileLoad,
   };
 };

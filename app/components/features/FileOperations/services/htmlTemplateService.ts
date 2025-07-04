@@ -3,7 +3,7 @@
  * @author Axel Modra
  */
 
-import { HtmlTemplateConfig } from '../types/fileOperations.types';
+import type { HtmlTemplateConfig } from '../types/fileOperations.types';
 
 /**
  * Default CSS styles for HTML export
@@ -76,10 +76,10 @@ a:hover {
  */
 export const generateHtmlTemplate = (config: HtmlTemplateConfig): string => {
   const { title, content, customStyles } = config;
-  
+
   // Process markdown content for basic HTML conversion
   const processedContent = processMarkdownToHtml(content);
-  
+
   return `<!DOCTYPE html>
 <html lang="en">
 <head>

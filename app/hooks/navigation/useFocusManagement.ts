@@ -4,13 +4,13 @@
  */
 
 import { useCallback, useRef, useEffect } from 'react';
-import { 
-  focusElement, 
-  getElementByDataAttribute, 
+import {
+  focusElement,
+  getElementByDataAttribute,
   getFocusableElements,
   isElementInViewport,
   scrollElementIntoView,
-  type ScrollOptions 
+  type ScrollOptions,
 } from '@/utils/keyboardNavigationUtils';
 
 /**
@@ -21,22 +21,22 @@ export interface UseFocusManagementOptions {
    * Container element untuk focus management
    */
   container?: Element | null;
-  
+
   /**
    * Auto-scroll ketika focus berubah
    */
   autoScroll?: boolean;
-  
+
   /**
    * Scroll options
    */
   scrollOptions?: ScrollOptions;
-  
+
   /**
    * Focus trap dalam container
    */
   trapFocus?: boolean;
-  
+
   /**
    * Restore focus on unmount
    */
@@ -51,52 +51,52 @@ export interface UseFocusManagementReturn {
    * Focus element by data attribute
    */
   focusElementByData: (attribute: string, value: string) => boolean;
-  
+
   /**
    * Focus element by index dalam focusable elements
    */
   focusElementByIndex: (index: number) => boolean;
-  
+
   /**
    * Get all focusable elements dalam container
    */
   getFocusableItems: () => HTMLElement[];
-  
+
   /**
    * Get current focused element index
    */
   getCurrentFocusIndex: () => number;
-  
+
   /**
    * Focus first focusable element
    */
   focusFirst: () => boolean;
-  
+
   /**
    * Focus last focusable element
    */
   focusLast: () => boolean;
-  
+
   /**
    * Focus next focusable element
    */
   focusNext: () => boolean;
-  
+
   /**
    * Focus previous focusable element
    */
   focusPrevious: () => boolean;
-  
+
   /**
    * Check if element is currently focused
    */
   isFocused: (element: HTMLElement) => boolean;
-  
+
   /**
    * Save current focus untuk restore later
    */
   saveFocus: () => void;
-  
+
   /**
    * Restore saved focus
    */
@@ -114,7 +114,7 @@ export const useFocusManagement = (
     autoScroll = true,
     scrollOptions = {},
     trapFocus = false,
-    restoreFocus = false
+    restoreFocus = false,
   } = options;
 
   const savedFocusRef = useRef<HTMLElement | null>(null);
@@ -143,40 +143,49 @@ export const useFocusManagement = (
   /**
    * Focus element dengan auto-scroll
    */
-  const focusWithScroll = useCallback((element: HTMLElement): boolean => {
-    const success = focusElement(element);
-    
-    if (success && autoScroll) {
-      // Check if element is in viewport
-      if (!isElementInViewport(element, containerRef.current || undefined)) {
-        scrollElementIntoView(element, {
-          ...scrollOptions,
-          container: containerRef.current
-        });
+  const focusWithScroll = useCallback(
+    (element: HTMLElement): boolean => {
+      const success = focusElement(element);
+
+      if (success && autoScroll) {
+        // Check if element is in viewport
+        if (!isElementInViewport(element, containerRef.current || undefined)) {
+          scrollElementIntoView(element, {
+            ...scrollOptions,
+            container: containerRef.current,
+          });
+        }
       }
-    }
-    
-    return success;
-  }, [autoScroll, scrollOptions]);
+
+      return success;
+    },
+    [autoScroll, scrollOptions]
+  );
 
   /**
    * Focus element by data attribute
    */
-  const focusElementByData = useCallback((attribute: string, value: string): boolean => {
-    const element = getElementByDataAttribute(attribute, value, getSearchContainer());
-    return element ? focusWithScroll(element) : false;
-  }, [getSearchContainer, focusWithScroll]);
+  const focusElementByData = useCallback(
+    (attribute: string, value: string): boolean => {
+      const element = getElementByDataAttribute(attribute, value, getSearchContainer());
+      return element ? focusWithScroll(element) : false;
+    },
+    [getSearchContainer, focusWithScroll]
+  );
 
   /**
    * Focus element by index
    */
-  const focusElementByIndex = useCallback((index: number): boolean => {
-    const focusableItems = getFocusableItems();
-    
-    if (index < 0 || index >= focusableItems.length) return false;
-    
-    return focusWithScroll(focusableItems[index]);
-  }, [getFocusableItems, focusWithScroll]);
+  const focusElementByIndex = useCallback(
+    (index: number): boolean => {
+      const focusableItems = getFocusableItems();
+
+      if (index < 0 || index >= focusableItems.length) return false;
+
+      return focusWithScroll(focusableItems[index]);
+    },
+    [getFocusableItems, focusWithScroll]
+  );
 
   /**
    * Get current focused element index
@@ -184,10 +193,10 @@ export const useFocusManagement = (
   const getCurrentFocusIndex = useCallback((): number => {
     const focusableItems = getFocusableItems();
     const activeElement = document.activeElement;
-    
+
     if (!activeElement) return -1;
-    
-    return focusableItems.findIndex(item => item === activeElement);
+
+    return focusableItems.findIndex((item) => item === activeElement);
   }, [getFocusableItems]);
 
   /**
@@ -211,13 +220,13 @@ export const useFocusManagement = (
   const focusNext = useCallback((): boolean => {
     const currentIndex = getCurrentFocusIndex();
     const focusableItems = getFocusableItems();
-    
+
     if (currentIndex === -1) return focusFirst();
-    
-    const nextIndex = trapFocus 
+
+    const nextIndex = trapFocus
       ? (currentIndex + 1) % focusableItems.length
       : Math.min(currentIndex + 1, focusableItems.length - 1);
-    
+
     return focusElementByIndex(nextIndex);
   }, [getCurrentFocusIndex, getFocusableItems, focusFirst, focusElementByIndex, trapFocus]);
 
@@ -227,13 +236,15 @@ export const useFocusManagement = (
   const focusPrevious = useCallback((): boolean => {
     const currentIndex = getCurrentFocusIndex();
     const focusableItems = getFocusableItems();
-    
+
     if (currentIndex === -1) return focusLast();
-    
+
     const prevIndex = trapFocus
-      ? currentIndex === 0 ? focusableItems.length - 1 : currentIndex - 1
+      ? currentIndex === 0
+        ? focusableItems.length - 1
+        : currentIndex - 1
       : Math.max(currentIndex - 1, 0);
-    
+
     return focusElementByIndex(prevIndex);
   }, [getCurrentFocusIndex, getFocusableItems, focusLast, focusElementByIndex, trapFocus]);
 
@@ -292,6 +303,6 @@ export const useFocusManagement = (
     focusPrevious,
     isFocused,
     saveFocus,
-    restoreSavedFocus
+    restoreSavedFocus,
   };
 };

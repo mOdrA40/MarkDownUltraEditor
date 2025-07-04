@@ -1,18 +1,12 @@
-import React, { useRef, useMemo, useEffect } from 'react';
+import type React from 'react';
+import { useRef, useMemo, useEffect } from 'react';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import rehypeHighlight from 'rehype-highlight';
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import {
-  Eye,
-  Monitor,
-  Tablet,
-  Smartphone,
-  Download,
-  Loader2
-} from "lucide-react";
-import { PreviewPanelProps } from '../types/export.types';
+import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
+import { Eye, Monitor, Tablet, Smartphone, Download, Loader2 } from 'lucide-react';
+import type { PreviewPanelProps } from '../types/export.types';
 import { THEMES } from '../utils/constants';
 import { generateHeaderStyles } from '@/utils/themeUtils';
 import { createMarkdownComponents } from '../../../editor/PreviewPane/components/MarkdownComponents';
@@ -31,12 +25,14 @@ export const PreviewPanel: React.FC<PreviewPanelProps> = ({
   exportState,
   isMobile = false,
   isTablet = false,
-  currentTheme
+  currentTheme,
 }) => {
   const previewRef = useRef<HTMLDivElement>(null);
 
   // Setup highlight.js dengan theme management
-  const isDarkMode = currentTheme?.id === 'dark' || options.theme === 'dark' ||
+  const isDarkMode =
+    currentTheme?.id === 'dark' ||
+    options.theme === 'dark' ||
     (typeof window !== 'undefined' && window.matchMedia('(prefers-color-scheme: dark)').matches);
   useHighlightJs(isDarkMode, currentTheme);
 
@@ -63,10 +59,11 @@ export const PreviewPanel: React.FC<PreviewPanelProps> = ({
       const htmlTheme = html.getAttribute('data-theme');
 
       // Check classes
-      const hasDarkClass = body.classList.contains('dark') ||
-                          body.classList.contains('theme-dark') ||
-                          html.classList.contains('dark') ||
-                          html.classList.contains('theme-dark');
+      const hasDarkClass =
+        body.classList.contains('dark') ||
+        body.classList.contains('theme-dark') ||
+        html.classList.contains('dark') ||
+        html.classList.contains('theme-dark');
 
       // Check if theme is explicitly dark
       const isExplicitlyDark = bodyTheme === 'dark' || htmlTheme === 'dark';
@@ -77,16 +74,18 @@ export const PreviewPanel: React.FC<PreviewPanelProps> = ({
       const textColor = rootStyles.getPropertyValue('--foreground') || '';
 
       // Dark theme typically has dark background colors
-      const hasDarkBgColor = bgColor.includes('0f172a') ||
-                            bgColor.includes('1e293b') ||
-                            bgColor.includes('1f2937') ||
-                            bgColor.includes('111827') ||
-                            bgColor.includes('1a1a1a');
+      const hasDarkBgColor =
+        bgColor.includes('0f172a') ||
+        bgColor.includes('1e293b') ||
+        bgColor.includes('1f2937') ||
+        bgColor.includes('111827') ||
+        bgColor.includes('1a1a1a');
 
       // Light text color indicates dark theme
-      const hasLightTextColor = textColor.includes('f1f5f9') ||
-                               textColor.includes('ffffff') ||
-                               textColor.includes('e5e7eb');
+      const hasLightTextColor =
+        textColor.includes('f1f5f9') ||
+        textColor.includes('ffffff') ||
+        textColor.includes('e5e7eb');
 
       return isExplicitlyDark || hasDarkClass || hasDarkBgColor || hasLightTextColor;
     };
@@ -154,9 +153,10 @@ export const PreviewPanel: React.FC<PreviewPanelProps> = ({
     // Watch for changes in body attributes and classes
     const observer = new MutationObserver((mutations) => {
       mutations.forEach((mutation) => {
-        if (mutation.type === 'attributes' &&
-            (mutation.attributeName === 'data-theme' ||
-             mutation.attributeName === 'class')) {
+        if (
+          mutation.type === 'attributes' &&
+          (mutation.attributeName === 'data-theme' || mutation.attributeName === 'class')
+        ) {
           updatePreviewStyles();
         }
       });
@@ -165,12 +165,12 @@ export const PreviewPanel: React.FC<PreviewPanelProps> = ({
     // Observe body and html for theme changes
     observer.observe(document.body, {
       attributes: true,
-      attributeFilter: ['data-theme', 'class']
+      attributeFilter: ['data-theme', 'class'],
     });
 
     observer.observe(document.documentElement, {
       attributes: true,
-      attributeFilter: ['data-theme', 'class']
+      attributeFilter: ['data-theme', 'class'],
     });
 
     return () => {
@@ -190,19 +190,19 @@ export const PreviewPanel: React.FC<PreviewPanelProps> = ({
       id: options.theme,
       name: themeConfig.name,
       text: isThemeDark ? '#ffffff' : themeConfig.primaryColor || '#000000',
-      primary: isThemeDark ? '#60a5fa' : (themeConfig.primaryColor || '#3b82f6'),
-      secondary: isThemeDark ? '#9ca3af' : (themeConfig.accentColor || '#6b7280'),
-      accent: isThemeDark ? '#60a5fa' : (themeConfig.accentColor || '#ec4899'),
+      primary: isThemeDark ? '#60a5fa' : themeConfig.primaryColor || '#3b82f6',
+      secondary: isThemeDark ? '#9ca3af' : themeConfig.accentColor || '#6b7280',
+      accent: isThemeDark ? '#60a5fa' : themeConfig.accentColor || '#ec4899',
       surface: themeConfig.backgroundColor || '#f8fafc',
       background: themeConfig.backgroundColor || '#ffffff',
-      gradient: currentTheme?.gradient || 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)'
+      gradient: currentTheme?.gradient || 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
     };
 
     return createMarkdownComponents({
       markdown,
       theme: previewTheme,
       isMobile,
-      isTablet
+      isTablet,
     });
   }, [markdown, options.theme, currentTheme, isMobile, isTablet]);
 
@@ -220,7 +220,7 @@ export const PreviewPanel: React.FC<PreviewPanelProps> = ({
       options.title,
       options.author,
       markdown.substring(0, 50), // Include part of markdown for content changes
-      currentTheme?.id || 'default'
+      currentTheme?.id || 'default',
     ];
     return keyComponents.join('-');
   }, [
@@ -237,7 +237,7 @@ export const PreviewPanel: React.FC<PreviewPanelProps> = ({
     options.description,
     options.headerFooter,
     markdown,
-    currentTheme
+    currentTheme,
   ]);
 
   // Get header styles for consistent theming
@@ -295,20 +295,20 @@ export const PreviewPanel: React.FC<PreviewPanelProps> = ({
     return {
       fontSize: getFontSize(options.format),
       lineHeight: getLineHeight(options.format),
-      minHeight: getMinHeight(options.format)
+      minHeight: getMinHeight(options.format),
     };
   }, [options.format, options.fontSize]);
 
   // Font family helper untuk preview real-time
   const getFontFamilyForPreview = (fontFamily: string): string => {
     const fontMap: Record<string, string> = {
-      'Arial': 'Arial, "Helvetica Neue", Helvetica, sans-serif',
+      Arial: 'Arial, "Helvetica Neue", Helvetica, sans-serif',
       'Times New Roman': '"Times New Roman", Times, serif',
-      'Helvetica': '"Helvetica Neue", Helvetica, Arial, sans-serif',
-      'Georgia': 'Georgia, "Times New Roman", Times, serif',
-      'Verdana': 'Verdana, Geneva, sans-serif',
-      'Roboto': 'Roboto, "Segoe UI", Arial, sans-serif',
-      'Open Sans': '"Open Sans", "Segoe UI", Arial, sans-serif'
+      Helvetica: '"Helvetica Neue", Helvetica, Arial, sans-serif',
+      Georgia: 'Georgia, "Times New Roman", Times, serif',
+      Verdana: 'Verdana, Geneva, sans-serif',
+      Roboto: 'Roboto, "Segoe UI", Arial, sans-serif',
+      'Open Sans': '"Open Sans", "Segoe UI", Arial, sans-serif',
     };
     return fontMap[fontFamily] || `${fontFamily}, Arial, sans-serif`;
   };
@@ -346,13 +346,11 @@ export const PreviewPanel: React.FC<PreviewPanelProps> = ({
     <div className="flex flex-col min-h-0 overflow-hidden flex-1">
       {/* Preview Header */}
       <div
-        className={`advanced-export-preview-header ${
-          isMobile ? 'p-2' : 'p-2 sm:p-3'
-        }`}
+        className={`advanced-export-preview-header ${isMobile ? 'p-2' : 'p-2 sm:p-3'}`}
         style={{
           ...headerStyles,
           backdropFilter: 'blur(12px)',
-          WebkitBackdropFilter: 'blur(12px)'
+          WebkitBackdropFilter: 'blur(12px)',
         }}
       >
         {/* Format Indicator */}
@@ -363,29 +361,31 @@ export const PreviewPanel: React.FC<PreviewPanelProps> = ({
             className="text-xs font-medium"
             style={{
               backgroundColor: currentTheme?.primary || '#3b82f6',
-              color: 'white'
+              color: 'white',
             }}
           >
             {options.format.toUpperCase()} Preview
           </Badge>
           <div className="text-xs opacity-70">
-            {options.format === 'pdf' && `Print-ready document (${options.fontFamily}, ${options.fontSize}px)`}
-            {options.format === 'docx' && `Rich Text Format (${options.fontFamily}, ${options.fontSize}px)`}
-            {options.format === 'epub' && `Web Document (${options.fontFamily}, ${options.fontSize}px)`}
-            {options.format === 'presentation' && `HTML Presentation (${options.fontFamily}, ${options.fontSize}px)`}
+            {options.format === 'pdf' &&
+              `Print-ready document (${options.fontFamily}, ${options.fontSize}px)`}
+            {options.format === 'docx' &&
+              `Rich Text Format (${options.fontFamily}, ${options.fontSize}px)`}
+            {options.format === 'epub' &&
+              `Web Document (${options.fontFamily}, ${options.fontSize}px)`}
+            {options.format === 'presentation' &&
+              `HTML Presentation (${options.fontFamily}, ${options.fontSize}px)`}
           </div>
         </div>
-        <div className={`flex items-center gap-2 ${
-          isMobile ? 'flex-col space-y-2' : 'flex-row justify-between'
-        }`}>
+        <div
+          className={`flex items-center gap-2 ${
+            isMobile ? 'flex-col space-y-2' : 'flex-row justify-between'
+          }`}
+        >
           {/* Preview Title */}
           <div className="flex items-center space-x-2">
-            <Eye className={`${
-              isMobile ? 'h-3 w-3' : 'h-3 w-3 sm:h-4 sm:w-4'
-            }`} />
-            <span className={`font-medium ${
-              isMobile ? 'text-xs' : 'text-xs sm:text-sm'
-            }`}>
+            <Eye className={`${isMobile ? 'h-3 w-3' : 'h-3 w-3 sm:h-4 sm:w-4'}`} />
+            <span className={`font-medium ${isMobile ? 'text-xs' : 'text-xs sm:text-sm'}`}>
               Preview
             </span>
             <Badge variant="outline" className="text-xs">
@@ -394,9 +394,11 @@ export const PreviewPanel: React.FC<PreviewPanelProps> = ({
           </div>
 
           {/* Controls */}
-          <div className={`flex items-stretch gap-2 ${
-            isMobile ? 'w-full flex-col' : 'flex-row items-center'
-          }`}>
+          <div
+            className={`flex items-stretch gap-2 ${
+              isMobile ? 'w-full flex-col' : 'flex-row items-center'
+            }`}
+          >
             {isMobile ? (
               // Mobile: Compact layout
               <div className="w-full space-y-1">
@@ -502,9 +504,11 @@ export const PreviewPanel: React.FC<PreviewPanelProps> = ({
       </div>
 
       {/* Preview Content */}
-      <div className={`advanced-export-preview-content flex-1 overflow-y-auto min-h-0 ${
-        isMobile ? 'p-2' : isTablet ? 'p-2' : 'p-2 sm:p-3'
-      }`}>
+      <div
+        className={`advanced-export-preview-content flex-1 overflow-y-auto min-h-0 ${
+          isMobile ? 'p-2' : isTablet ? 'p-2' : 'p-2 sm:p-3'
+        }`}
+      >
         <div
           className={`
             advanced-export-preview-document mx-auto transition-all duration-300
@@ -530,42 +534,70 @@ export const PreviewPanel: React.FC<PreviewPanelProps> = ({
               position: 'relative',
               fontFamily: getFontFamilyForPreview(options.fontFamily),
               maxWidth: getPageWidthForPreview(options.pageSize, options.orientation),
-              minHeight: isMobile ? '480px' : getPageHeightForPreview(options.pageSize, options.orientation),
+              minHeight: isMobile
+                ? '480px'
+                : getPageHeightForPreview(options.pageSize, options.orientation),
               border: '2px dashed #ccc',
               margin: '0 auto',
               // Hanya set background dan color jika bukan theme dark, biarkan CSS handle dark theme
-              ...(options.theme !== 'dark' ? {
-                backgroundColor: THEMES[options.theme]?.backgroundColor || '#ffffff',
-                color: THEMES[options.theme]?.primaryColor || '#000000'
-              } : {})
+              ...(options.theme !== 'dark'
+                ? {
+                    backgroundColor: THEMES[options.theme]?.backgroundColor || '#ffffff',
+                    color: THEMES[options.theme]?.primaryColor || '#000000',
+                  }
+                : {}),
             }}
           >
             <div
               className={`
                 prose prose-lg max-w-none transition-colors duration-200
                 ${isDarkMode ? 'prose-invert' : ''}
-                ${(isMobile || isTablet) ? 'preview-pane-responsive' : ''}
+                ${isMobile || isTablet ? 'preview-pane-responsive' : ''}
                 ${options.format}-content
               `}
-              style={{
-                '--tw-prose-headings': options.theme === 'dark' ? '#ffffff' : (THEMES[options.theme]?.primaryColor || '#000000'),
-                '--tw-prose-body': options.theme === 'dark' ? '#ffffff' : (THEMES[options.theme]?.primaryColor || '#000000'),
-                '--tw-prose-links': options.theme === 'dark' ? '#60a5fa' : (THEMES[options.theme]?.accentColor || '#3b82f6'),
-                '--tw-prose-bold': options.theme === 'dark' ? '#ffffff' : (THEMES[options.theme]?.primaryColor || '#000000'),
-                '--tw-prose-code': options.theme === 'dark' ? '#60a5fa' : (THEMES[options.theme]?.accentColor || '#ec4899'),
-                '--tw-prose-pre-bg': options.theme === 'dark' ?
-                  'rgba(255, 255, 255, 0.1)' :
-                  'rgba(0, 0, 0, 0.05)',
-                '--tw-prose-th-borders': options.theme === 'dark' ? '#4b5563' : '#d1d5db',
-                '--tw-prose-td-borders': options.theme === 'dark' ? '#4b5563' : '#d1d5db',
-                '--tw-prose-quotes': options.theme === 'dark' ? '#ffffff' : (THEMES[options.theme]?.primaryColor || '#000000'),
-                '--tw-prose-quote-borders': options.theme === 'dark' ? '#60a5fa' : (THEMES[options.theme]?.accentColor || '#3b82f6'),
-                fontSize: getFontFamilyForPreview(options.fontFamily) !== 'inherit' ?
-                  `${options.fontSize}px` : 'inherit',
-                fontFamily: getFontFamilyForPreview(options.fontFamily),
-                lineHeight: options.format === 'docx' ? '1.8' :
-                           options.format === 'epub' ? '1.7' : '1.6'
-              } as React.CSSProperties}
+              style={
+                {
+                  '--tw-prose-headings':
+                    options.theme === 'dark'
+                      ? '#ffffff'
+                      : THEMES[options.theme]?.primaryColor || '#000000',
+                  '--tw-prose-body':
+                    options.theme === 'dark'
+                      ? '#ffffff'
+                      : THEMES[options.theme]?.primaryColor || '#000000',
+                  '--tw-prose-links':
+                    options.theme === 'dark'
+                      ? '#60a5fa'
+                      : THEMES[options.theme]?.accentColor || '#3b82f6',
+                  '--tw-prose-bold':
+                    options.theme === 'dark'
+                      ? '#ffffff'
+                      : THEMES[options.theme]?.primaryColor || '#000000',
+                  '--tw-prose-code':
+                    options.theme === 'dark'
+                      ? '#60a5fa'
+                      : THEMES[options.theme]?.accentColor || '#ec4899',
+                  '--tw-prose-pre-bg':
+                    options.theme === 'dark' ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.05)',
+                  '--tw-prose-th-borders': options.theme === 'dark' ? '#4b5563' : '#d1d5db',
+                  '--tw-prose-td-borders': options.theme === 'dark' ? '#4b5563' : '#d1d5db',
+                  '--tw-prose-quotes':
+                    options.theme === 'dark'
+                      ? '#ffffff'
+                      : THEMES[options.theme]?.primaryColor || '#000000',
+                  '--tw-prose-quote-borders':
+                    options.theme === 'dark'
+                      ? '#60a5fa'
+                      : THEMES[options.theme]?.accentColor || '#3b82f6',
+                  fontSize:
+                    getFontFamilyForPreview(options.fontFamily) !== 'inherit'
+                      ? `${options.fontSize}px`
+                      : 'inherit',
+                  fontFamily: getFontFamilyForPreview(options.fontFamily),
+                  lineHeight:
+                    options.format === 'docx' ? '1.8' : options.format === 'epub' ? '1.7' : '1.6',
+                } as React.CSSProperties
+              }
             >
               <ReactMarkdown
                 remarkPlugins={[remarkGfm]}
@@ -592,7 +624,7 @@ export const PreviewPanel: React.FC<PreviewPanelProps> = ({
               fontWeight: 'bold',
               zIndex: 10,
               pointerEvents: 'none',
-              backdropFilter: 'blur(4px)'
+              backdropFilter: 'blur(4px)',
             }}
           >
             {options.pageSize.toUpperCase()} {options.orientation.toUpperCase()}

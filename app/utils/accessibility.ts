@@ -6,7 +6,10 @@
 /**
  * Announce changes to screen readers
  */
-export const announceToScreenReader = (message: string, priority: 'polite' | 'assertive' = 'polite') => {
+export const announceToScreenReader = (
+  message: string,
+  priority: 'polite' | 'assertive' = 'polite'
+) => {
   const announcement = document.createElement('div');
   announcement.setAttribute('aria-live', priority);
   announcement.setAttribute('aria-atomic', 'true');
@@ -16,10 +19,10 @@ export const announceToScreenReader = (message: string, priority: 'polite' | 'as
   announcement.style.width = '1px';
   announcement.style.height = '1px';
   announcement.style.overflow = 'hidden';
-  
+
   document.body.appendChild(announcement);
   announcement.textContent = message;
-  
+
   // Remove after announcement
   setTimeout(() => {
     document.body.removeChild(announcement);
@@ -31,7 +34,7 @@ export const announceToScreenReader = (message: string, priority: 'polite' | 'as
  */
 export const isFocusable = (element: Element): boolean => {
   if (!(element instanceof HTMLElement)) return false;
-  
+
   const focusableSelectors = [
     'a[href]',
     'button:not([disabled])',
@@ -39,11 +42,13 @@ export const isFocusable = (element: Element): boolean => {
     'select:not([disabled])',
     'textarea:not([disabled])',
     '[tabindex]:not([tabindex="-1"])',
-    '[contenteditable="true"]'
+    '[contenteditable="true"]',
   ];
-  
-  return focusableSelectors.some(selector => element.matches(selector)) ||
-         (element.tabIndex >= 0 && !element.hasAttribute('disabled'));
+
+  return (
+    focusableSelectors.some((selector) => element.matches(selector)) ||
+    (element.tabIndex >= 0 && !element.hasAttribute('disabled'))
+  );
 };
 
 /**
@@ -57,16 +62,17 @@ export const getFocusableElements = (container: Element): HTMLElement[] => {
     'select:not([disabled])',
     'textarea:not([disabled])',
     '[tabindex]:not([tabindex="-1"])',
-    '[contenteditable="true"]'
+    '[contenteditable="true"]',
   ].join(', ');
-  
-  return Array.from(container.querySelectorAll(focusableSelectors))
-    .filter(element => {
-      const htmlElement = element as HTMLElement;
-      return htmlElement.offsetParent !== null && // Element is visible
-             !htmlElement.hasAttribute('disabled') &&
-             htmlElement.tabIndex >= 0;
-    }) as HTMLElement[];
+
+  return Array.from(container.querySelectorAll(focusableSelectors)).filter((element) => {
+    const htmlElement = element as HTMLElement;
+    return (
+      htmlElement.offsetParent !== null && // Element is visible
+      !htmlElement.hasAttribute('disabled') &&
+      htmlElement.tabIndex >= 0
+    );
+  }) as HTMLElement[];
 };
 
 /**
@@ -76,7 +82,7 @@ export const trapFocus = (container: Element): (() => void) => {
   const focusableElements = getFocusableElements(container);
   const firstFocusable = focusableElements[0];
   const lastFocusable = focusableElements[focusableElements.length - 1];
-  
+
   const handleKeyDown = (event: Event) => {
     const keyboardEvent = event as KeyboardEvent;
     if (keyboardEvent.key !== 'Tab') return;
@@ -110,7 +116,7 @@ export const trapFocus = (container: Element): (() => void) => {
 /**
  * Generate unique ID untuk accessibility
  */
-export const generateAccessibleId = (prefix: string = 'accessible'): string => {
+export const generateAccessibleId = (prefix = 'accessible'): string => {
   return `${prefix}-${Math.random().toString(36).substring(2, 11)}`;
 };
 
@@ -121,23 +127,23 @@ export const getContrastRatio = (foreground: string, background: string): number
   const getLuminance = (color: string): number => {
     // Convert hex to RGB
     const hex = color.replace('#', '');
-    const r = parseInt(hex.substring(0, 2), 16) / 255;
-    const g = parseInt(hex.substring(2, 4), 16) / 255;
-    const b = parseInt(hex.substring(4, 6), 16) / 255;
-    
+    const r = Number.parseInt(hex.substring(0, 2), 16) / 255;
+    const g = Number.parseInt(hex.substring(2, 4), 16) / 255;
+    const b = Number.parseInt(hex.substring(4, 6), 16) / 255;
+
     // Calculate relative luminance
-    const sRGB = [r, g, b].map(c => {
-      return c <= 0.03928 ? c / 12.92 : Math.pow((c + 0.055) / 1.055, 2.4);
+    const sRGB = [r, g, b].map((c) => {
+      return c <= 0.03928 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4;
     });
-    
+
     return 0.2126 * sRGB[0] + 0.7152 * sRGB[1] + 0.0722 * sRGB[2];
   };
-  
+
   const l1 = getLuminance(foreground);
   const l2 = getLuminance(background);
   const lighter = Math.max(l1, l2);
   const darker = Math.min(l1, l2);
-  
+
   return (lighter + 0.05) / (darker + 0.05);
 };
 
@@ -145,24 +151,23 @@ export const getContrastRatio = (foreground: string, background: string): number
  * Check if contrast ratio meets WCAG standards
  */
 export const meetsContrastRequirement = (
-  foreground: string, 
-  background: string, 
+  foreground: string,
+  background: string,
   level: 'AA' | 'AAA' = 'AA',
   size: 'normal' | 'large' = 'normal'
 ): boolean => {
   const ratio = getContrastRatio(foreground, background);
-  
+
   if (level === 'AAA') {
     return size === 'large' ? ratio >= 4.5 : ratio >= 7;
-  } else {
-    return size === 'large' ? ratio >= 3 : ratio >= 4.5;
   }
+  return size === 'large' ? ratio >= 3 : ratio >= 4.5;
 };
 
 /**
  * Add skip link untuk keyboard navigation
  */
-export const addSkipLink = (targetId: string, text: string = 'Skip to main content'): HTMLElement => {
+export const addSkipLink = (targetId: string, text = 'Skip to main content'): HTMLElement => {
   const skipLink = document.createElement('a');
   skipLink.href = `#${targetId}`;
   skipLink.textContent = text;
@@ -179,15 +184,15 @@ export const addSkipLink = (targetId: string, text: string = 'Skip to main conte
     z-index: 9999;
     transition: top 0.3s;
   `;
-  
+
   skipLink.addEventListener('focus', () => {
     skipLink.style.top = '6px';
   });
-  
+
   skipLink.addEventListener('blur', () => {
     skipLink.style.top = '-40px';
   });
-  
+
   document.body.insertBefore(skipLink, document.body.firstChild);
   return skipLink;
 };
@@ -197,17 +202,17 @@ export const addSkipLink = (targetId: string, text: string = 'Skip to main conte
  */
 export class FocusManager {
   private previousFocus: HTMLElement | null = null;
-  
+
   saveFocus(): void {
     this.previousFocus = document.activeElement as HTMLElement;
   }
-  
+
   restoreFocus(): void {
     if (this.previousFocus && typeof this.previousFocus.focus === 'function') {
       this.previousFocus.focus();
     }
   }
-  
+
   setFocus(element: HTMLElement): void {
     if (element && typeof element.focus === 'function') {
       element.focus();
@@ -229,7 +234,7 @@ export const KeyboardNavigation = {
     onIndexChange: (index: number) => void
   ) => {
     let newIndex = currentIndex;
-    
+
     switch (event.key) {
       case 'ArrowDown':
         event.preventDefault();
@@ -250,11 +255,11 @@ export const KeyboardNavigation = {
       default:
         return;
     }
-    
+
     onIndexChange(newIndex);
     items[newIndex]?.focus();
   },
-  
+
   /**
    * Handle typeahead search dalam list
    */
@@ -268,15 +273,15 @@ export const KeyboardNavigation = {
     if (char.length !== 1 || event.ctrlKey || event.metaKey || event.altKey) {
       return;
     }
-    
-    const currentIndex = items.findIndex(item => item === document.activeElement);
+
+    const currentIndex = items.findIndex((item) => item === document.activeElement);
     const startIndex = currentIndex + 1;
-    
+
     // Search from current position forward
     for (let i = 0; i < items.length; i++) {
       const index = (startIndex + i) % items.length;
       const text = getText(items[index]).toLowerCase();
-      
+
       if (text.startsWith(char)) {
         event.preventDefault();
         onMatch(index);
@@ -284,7 +289,7 @@ export const KeyboardNavigation = {
         break;
       }
     }
-  }
+  },
 };
 
 /**
@@ -295,12 +300,14 @@ export const ScreenReader = {
    * Check if screen reader is active
    */
   isActive: (): boolean => {
-    return window.navigator.userAgent.includes('NVDA') ||
-           window.navigator.userAgent.includes('JAWS') ||
-           window.speechSynthesis?.speaking ||
-           false;
+    return (
+      window.navigator.userAgent.includes('NVDA') ||
+      window.navigator.userAgent.includes('JAWS') ||
+      window.speechSynthesis?.speaking ||
+      false
+    );
   },
-  
+
   /**
    * Speak text using speech synthesis
    */
@@ -311,7 +318,7 @@ export const ScreenReader = {
       speechSynthesis.speak(utterance);
     }
   },
-  
+
   /**
    * Stop speech synthesis
    */
@@ -319,7 +326,7 @@ export const ScreenReader = {
     if ('speechSynthesis' in window) {
       speechSynthesis.cancel();
     }
-  }
+  },
 };
 
 interface SpeechSynthesisUtteranceOptions {

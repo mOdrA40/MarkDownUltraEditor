@@ -3,7 +3,7 @@
  * @author Axel Modra
  */
 
-import { Theme } from "../../../features/ThemeSelector";
+import type { Theme } from '../../../features/ThemeSelector';
 
 /**
  * Main editor state interface
@@ -194,7 +194,7 @@ export enum DeviceType {
   SMALL_TABLET = 'small_tablet',
   TABLET = 'tablet',
   DESKTOP = 'desktop',
-  LARGE_DESKTOP = 'large_desktop'
+  LARGE_DESKTOP = 'large_desktop',
 }
 
 /**
@@ -346,7 +346,7 @@ export interface EditorError {
   details?: Record<string, unknown>;
 }
 
-export type EditorErrorType = 
+export type EditorErrorType =
   | 'LOAD_ERROR'
   | 'SAVE_ERROR'
   | 'THEME_ERROR'

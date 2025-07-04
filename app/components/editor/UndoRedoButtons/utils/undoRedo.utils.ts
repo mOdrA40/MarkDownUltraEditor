@@ -5,13 +5,13 @@
  * @author Axel Modra
  */
 
-import { RotateCcw, RotateCw } from "lucide-react";
-import type { 
-  UndoRedoAction, 
-  ButtonConfig, 
+import { RotateCcw, RotateCw } from 'lucide-react';
+import type {
+  UndoRedoAction,
+  ButtonConfig,
   KeyboardShortcutConfig,
   UndoRedoStyling,
-  ButtonSize
+  ButtonSize,
 } from '../types/undoRedo.types';
 
 /**
@@ -23,15 +23,15 @@ export const DEFAULT_KEYBOARD_SHORTCUTS: KeyboardShortcutConfig = {
     ctrlKey: true,
     shiftKey: false,
     altKey: false,
-    description: 'Ctrl+Z'
+    description: 'Ctrl+Z',
   },
   redo: {
     key: 'y',
     ctrlKey: true,
     shiftKey: false,
     altKey: false,
-    description: 'Ctrl+Y'
-  }
+    description: 'Ctrl+Y',
+  },
 };
 
 /**
@@ -42,14 +42,14 @@ export const BUTTON_CONFIGS: Record<UndoRedoAction, ButtonConfig> = {
     icon: RotateCcw,
     ariaLabel: 'Undo',
     tooltip: 'Undo',
-    shortcut: DEFAULT_KEYBOARD_SHORTCUTS.undo.description
+    shortcut: DEFAULT_KEYBOARD_SHORTCUTS.undo.description,
   },
   redo: {
     icon: RotateCw,
-    ariaLabel: 'Redo', 
+    ariaLabel: 'Redo',
     tooltip: 'Redo',
-    shortcut: DEFAULT_KEYBOARD_SHORTCUTS.redo.description
-  }
+    shortcut: DEFAULT_KEYBOARD_SHORTCUTS.redo.description,
+  },
 };
 
 /**
@@ -59,25 +59,27 @@ export const BUTTON_CONFIGS: Record<UndoRedoAction, ButtonConfig> = {
 export const STYLING_CONFIGS: Record<string, UndoRedoStyling> = {
   mobile: {
     container: 'flex items-center space-x-1 flex-shrink-0',
-    button: 'h-8 w-8 p-0 rounded-md transition-colors duration-200 touch-manipulation transform-none',
+    button:
+      'h-8 w-8 p-0 rounded-md transition-colors duration-200 touch-manipulation transform-none',
     icon: 'h-3 w-3',
     spacing: 'space-x-1',
-    animation: 'transition-colors duration-200'
+    animation: 'transition-colors duration-200',
   },
   tablet: {
     container: 'flex items-center space-x-1 flex-shrink-0',
-    button: 'h-7 w-7 p-0 rounded-md transition-colors duration-200 touch-manipulation transform-none',
+    button:
+      'h-7 w-7 p-0 rounded-md transition-colors duration-200 touch-manipulation transform-none',
     icon: 'h-3 w-3',
     spacing: 'space-x-1',
-    animation: 'transition-colors duration-200'
+    animation: 'transition-colors duration-200',
   },
   desktop: {
     container: 'flex items-center space-x-1 flex-shrink-0',
     button: 'h-8 w-8 p-0 rounded-md transition-colors duration-200 transform-none',
     icon: 'h-4 w-4',
     spacing: 'space-x-1',
-    animation: 'transition-colors duration-200'
-  }
+    animation: 'transition-colors duration-200',
+  },
 };
 
 /**
@@ -105,7 +107,7 @@ export const getStylingConfig = (breakpoint: string): UndoRedoStyling => {
  * @returns True jika match, false jika tidak
  */
 export const matchesShortcut = (
-  event: KeyboardEvent, 
+  event: KeyboardEvent,
   shortcut: KeyboardShortcutConfig['undo'] | KeyboardShortcutConfig['redo']
 ): boolean => {
   return (
@@ -125,8 +127,8 @@ export const matchesShortcut = (
  */
 export const getButtonClasses = (
   canPerform: boolean,
-  breakpoint: string = 'desktop',
-  compact: boolean = false
+  breakpoint = 'desktop',
+  compact = false
 ): string => {
   const config = getStylingConfig(breakpoint);
   const baseClasses = [
@@ -136,7 +138,7 @@ export const getButtonClasses = (
     'will-change-auto',
     'transition-colors',
     'duration-200',
-    'ease-in-out'
+    'ease-in-out',
   ];
 
   // State-based classes
@@ -175,10 +177,7 @@ export const getButtonClasses = (
  * @param compact - Mode compact
  * @returns String CSS classes
  */
-export const getIconClasses = (
-  breakpoint: string = 'desktop',
-  compact: boolean = false
-): string => {
+export const getIconClasses = (breakpoint = 'desktop', compact = false): string => {
   const config = getStylingConfig(breakpoint);
   let iconClasses = config.icon;
 
@@ -196,17 +195,14 @@ export const getIconClasses = (
  * @param includeShortcut - Apakah include shortcut dalam label
  * @returns Aria label string
  */
-export const getAriaLabel = (
-  action: UndoRedoAction,
-  includeShortcut: boolean = true
-): string => {
+export const getAriaLabel = (action: UndoRedoAction, includeShortcut = true): string => {
   const config = getButtonConfig(action);
   const baseLabel = config.ariaLabel;
-  
+
   if (includeShortcut) {
     return `${baseLabel} (${config.shortcut})`;
   }
-  
+
   return baseLabel;
 };
 
@@ -216,17 +212,14 @@ export const getAriaLabel = (
  * @param includeShortcut - Apakah include shortcut dalam tooltip
  * @returns Tooltip text
  */
-export const getTooltipText = (
-  action: UndoRedoAction,
-  includeShortcut: boolean = true
-): string => {
+export const getTooltipText = (action: UndoRedoAction, includeShortcut = true): string => {
   const config = getButtonConfig(action);
   const baseTooltip = config.tooltip;
-  
+
   if (includeShortcut) {
     return `${baseTooltip} (${config.shortcut})`;
   }
-  
+
   return baseTooltip;
 };
 
@@ -236,17 +229,14 @@ export const getTooltipText = (
  * @param className - Additional CSS classes
  * @returns String CSS classes
  */
-export const getContainerClasses = (
-  breakpoint: string = 'desktop',
-  className?: string
-): string => {
+export const getContainerClasses = (breakpoint = 'desktop', className?: string): string => {
   const config = getStylingConfig(breakpoint);
   const classes = [config.container];
-  
+
   if (className) {
     classes.push(className);
   }
-  
+
   return classes.join(' ');
 };
 
@@ -275,12 +265,9 @@ export const validateProps = (props: {
  * @param compact - Mode compact
  * @returns Button size
  */
-export const getButtonSize = (
-  breakpoint: string = 'desktop',
-  compact: boolean = false
-): ButtonSize => {
+export const getButtonSize = (breakpoint = 'desktop', compact = false): ButtonSize => {
   if (compact) return 'sm';
-  
+
   switch (breakpoint) {
     case 'mobile':
       return 'sm';

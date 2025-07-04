@@ -12,5 +12,5 @@ export { useFocusManagement } from './useFocusManagement';
 // Re-export types
 export type {
   KeyboardNavigationOptions,
-  UseKeyboardNavigationReturn
+  UseKeyboardNavigationReturn,
 } from './useKeyboardNavigation';

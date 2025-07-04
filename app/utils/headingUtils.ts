@@ -22,7 +22,7 @@ export const generateHeadingId = (text: string, lineNumber: number): string => {
     .replace(/\s+/g, '-') // Replace spaces with hyphens
     .replace(/-+/g, '-') // Replace multiple hyphens with single hyphen
     .replace(/^-|-$/g, ''); // Remove leading/trailing hyphens
-  
+
   return `heading-${lineNumber}-${slug}`;
 };
 
@@ -33,23 +33,23 @@ export const generateHeadingId = (text: string, lineNumber: number): string => {
 export const parseMarkdownHeadings = (markdown: string): HeadingItem[] => {
   const lines = markdown.split('\n');
   const headings: HeadingItem[] = [];
-  
+
   lines.forEach((line, index) => {
     const match = line.match(/^(#{1,6})\s+(.+)$/);
     if (match) {
       const level = match[1].length;
       const text = match[2].trim();
       const id = generateHeadingId(text, index);
-      
+
       headings.push({
         text,
         level,
         id,
-        lineNumber: index
+        lineNumber: index,
       });
     }
   });
-  
+
   return headings;
 };
 
@@ -93,7 +93,7 @@ export const scrollToLineInEditor = (
       textarea.setSelectionRange(charPosition, charPosition + lines[lineNumber].length);
 
       // Calculate scroll position
-      const lineHeight = parseInt(getComputedStyle(textarea).lineHeight) || 20;
+      const lineHeight = Number.parseInt(getComputedStyle(textarea).lineHeight) || 20;
       const scrollTop = lineNumber * lineHeight;
       const containerHeight = textarea.clientHeight;
       const targetScrollTop = Math.max(0, scrollTop - containerHeight / 2);
@@ -101,7 +101,7 @@ export const scrollToLineInEditor = (
       // Scroll to position
       textarea.scrollTo({
         top: targetScrollTop,
-        behavior
+        behavior,
       });
 
       // Keren highlight effect if requested
@@ -109,9 +109,12 @@ export const scrollToLineInEditor = (
         createAwesomeHighlight(textarea, lineNumber, lineHeight);
       }
 
-      setTimeout(() => {
-        resolve(true);
-      }, behavior === 'smooth' ? 500 : 0);
+      setTimeout(
+        () => {
+          resolve(true);
+        },
+        behavior === 'smooth' ? 500 : 0
+      );
     });
   });
 };
@@ -132,7 +135,7 @@ export const scrollToHeading = (
     const {
       offset = 100, // Increased default offset
       behavior = 'smooth',
-      container = null
+      container = null,
     } = options;
 
     // Wait for next frame to ensure DOM is ready
@@ -178,19 +181,22 @@ export const scrollToHeading = (
       if (targetContainer === document.documentElement) {
         window.scrollTo({
           top: Math.max(0, targetPosition),
-          behavior
+          behavior,
         });
       } else {
         targetContainer.scrollTo({
           top: Math.max(0, targetPosition),
-          behavior
+          behavior,
         });
       }
 
       // Wait for scroll to complete before resolving
-      setTimeout(() => {
-        resolve(true);
-      }, behavior === 'smooth' ? 500 : 0);
+      setTimeout(
+        () => {
+          resolve(true);
+        },
+        behavior === 'smooth' ? 500 : 0
+      );
     });
   });
 };
@@ -232,7 +238,7 @@ export const scrollToHeadingGlobal = async (
     if (isEditorVisible && isPreviewVisible) {
       const [editorSuccess, previewSuccess] = await Promise.all([
         scrollToLineInEditor(lineNumber, { behavior, highlight: true }),
-        scrollToHeading(headingId, { offset, behavior, container: previewPane })
+        scrollToHeading(headingId, { offset, behavior, container: previewPane }),
       ]);
 
       console.log(`📜 Dual scroll result: Editor=${editorSuccess}, Preview=${previewSuccess}`);
@@ -248,7 +254,11 @@ export const scrollToHeadingGlobal = async (
 
     // Strategy 3: Only preview visible
     if (isPreviewVisible && !isEditorVisible) {
-      const success = await scrollToHeading(headingId, { offset, behavior, container: previewPane });
+      const success = await scrollToHeading(headingId, {
+        offset,
+        behavior,
+        container: previewPane,
+      });
       console.log(`👁️ Preview scroll result: ${success}`);
       return success;
     }
@@ -257,7 +267,7 @@ export const scrollToHeadingGlobal = async (
     console.log('🔄 Fallback: Trying both scroll methods');
     const [editorSuccess, previewSuccess] = await Promise.allSettled([
       scrollToLineInEditor(lineNumber, { behavior, highlight: true }),
-      scrollToHeading(headingId, { offset, behavior })
+      scrollToHeading(headingId, { offset, behavior }),
     ]);
 
     const editorResult = editorSuccess.status === 'fulfilled' ? editorSuccess.value : false;
@@ -265,7 +275,6 @@ export const scrollToHeadingGlobal = async (
 
     console.log(`🔄 Fallback result: Editor=${editorResult}, Preview=${previewResult}`);
     return editorResult || previewResult;
-
   } catch (error) {
     console.error('Error in global scroll:', error);
     return false;
@@ -286,7 +295,7 @@ export const createAwesomeHighlight = (
 
   // Position overlay
   const scrollTop = textarea.scrollTop;
-  const lineTop = (lineNumber * lineHeight) - scrollTop;
+  const lineTop = lineNumber * lineHeight - scrollTop;
 
   // Styling yang super keren! 🔥
   Object.assign(highlight.style, {
@@ -295,7 +304,8 @@ export const createAwesomeHighlight = (
     top: `${lineTop}px`,
     width: '100%',
     height: `${lineHeight}px`,
-    background: 'linear-gradient(135deg, rgba(59, 130, 246, 0.25) 0%, rgba(147, 51, 234, 0.2) 30%, rgba(236, 72, 153, 0.15) 60%, rgba(59, 130, 246, 0.1) 100%)',
+    background:
+      'linear-gradient(135deg, rgba(59, 130, 246, 0.25) 0%, rgba(147, 51, 234, 0.2) 30%, rgba(236, 72, 153, 0.15) 60%, rgba(59, 130, 246, 0.1) 100%)',
     borderLeft: '4px solid #3b82f6',
     borderRight: '2px solid rgba(59, 130, 246, 0.3)',
     borderRadius: '0 12px 12px 0',
@@ -310,7 +320,7 @@ export const createAwesomeHighlight = (
     animation: 'highlightPulse 2.5s cubic-bezier(0.4, 0, 0.2, 1)',
     backdropFilter: 'blur(2px) saturate(1.2)',
     transform: 'translateZ(0)', // Hardware acceleration
-    willChange: 'opacity, transform'
+    willChange: 'opacity, transform',
   });
 
   // Add CSS animation if not exists
@@ -449,16 +459,18 @@ export const createAwesomeHighlight = (
 /**
  * Parse heading ID untuk mendapatkan line number dan text
  */
-export const parseHeadingIdToInfo = (headingId: string): { lineNumber: number; text: string } | null => {
+export const parseHeadingIdToInfo = (
+  headingId: string
+): { lineNumber: number; text: string } | null => {
   // Format: heading-{lineNumber}-{slug}
   const match = headingId.match(/^heading-(\d+)-(.+)$/);
   if (!match) return null;
 
-  const lineNumber = parseInt(match[1], 10);
+  const lineNumber = Number.parseInt(match[1], 10);
   const slug = match[2];
 
   // Convert slug back to text (basic conversion)
-  const text = slug.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+  const text = slug.replace(/-/g, ' ').replace(/\b\w/g, (l) => l.toUpperCase());
 
   return { lineNumber, text };
 };
@@ -471,7 +483,7 @@ export const debounce = <T extends (...args: unknown[]) => unknown>(
   wait: number
 ): ((...args: Parameters<T>) => void) => {
   let timeout: NodeJS.Timeout;
-  
+
   return (...args: Parameters<T>) => {
     clearTimeout(timeout);
     timeout = setTimeout(() => func(...args), wait);
@@ -486,12 +498,12 @@ export const throttle = <T extends (...args: unknown[]) => unknown>(
   limit: number
 ): ((...args: Parameters<T>) => void) => {
   let inThrottle: boolean;
-  
+
   return (...args: Parameters<T>) => {
     if (!inThrottle) {
       func(...args);
       inThrottle = true;
-      setTimeout(() => inThrottle = false, limit);
+      setTimeout(() => (inThrottle = false), limit);
     }
   };
 };
@@ -511,7 +523,8 @@ export const isElementInViewport = (
   const windowHeight = window.innerHeight || document.documentElement.clientHeight;
   const windowWidth = window.innerWidth || document.documentElement.clientWidth;
 
-  const verticalInView = rect.top <= windowHeight * (1 - threshold) && rect.bottom >= windowHeight * threshold;
+  const verticalInView =
+    rect.top <= windowHeight * (1 - threshold) && rect.bottom >= windowHeight * threshold;
   const horizontalInView = rect.left <= windowWidth && rect.right >= 0;
 
   return verticalInView && horizontalInView;
@@ -522,7 +535,7 @@ export const isElementInViewport = (
  */
 export const getHeadingLevelClasses = (level: number): string => {
   const baseClasses = 'transition-all duration-200 hover:bg-muted/50 hover:text-foreground';
-  
+
   switch (level) {
     case 1:
       return `${baseClasses} font-semibold text-sm`;
@@ -545,9 +558,7 @@ export const getHeadingLevelClasses = (level: number): string => {
  * Get active heading styling classes
  */
 export const getActiveHeadingClasses = (isActive: boolean): string => {
-  return isActive
-    ? 'bg-primary/10 text-primary border-l-2 border-primary font-medium'
-    : '';
+  return isActive ? 'bg-primary/10 text-primary border-l-2 border-primary font-medium' : '';
 };
 
 /**
@@ -616,7 +627,7 @@ export const testScrollToHeading = async (headingId: string): Promise<void> => {
 
   const success = await scrollToHeading(headingId, {
     offset: 120,
-    behavior: 'smooth'
+    behavior: 'smooth',
   });
 
   console.log(`📜 Scroll result: ${success ? '✅ Success' : '❌ Failed'}`);
@@ -636,7 +647,7 @@ export const testGlobalScroll = async (headingId: string): Promise<void> => {
 
   const success = await scrollToHeadingGlobal(headingId, {
     offset: 120,
-    behavior: 'smooth'
+    behavior: 'smooth',
   });
 
   console.log(`🌍 Global scroll result: ${success ? '✅ Success' : '❌ Failed'}`);

@@ -3,13 +3,13 @@
  * @author Axel Modra
  */
 
-import React from 'react';
-import { Button } from "@/components/ui/button";
-import { PanelLeftClose, PanelLeftOpen } from "lucide-react";
-import { TableOfContents } from "../../../../navigation/TableOfContents";
-import { DocumentOutline } from "../../../../navigation/DocumentOutline";
-import { Theme } from "../../../../features/ThemeSelector";
-import { ResponsiveState, UIState } from '../../types';
+import type React from 'react';
+import { Button } from '@/components/ui/button';
+import { PanelLeftClose, PanelLeftOpen } from 'lucide-react';
+import { TableOfContents } from '../../../../navigation/TableOfContents';
+import { DocumentOutline } from '../../../../navigation/DocumentOutline';
+import type { Theme } from '../../../../features/ThemeSelector';
+import type { ResponsiveState, UIState } from '../../types';
 import { getHeaderClassName, generateHeaderStyles } from '@/utils/themeUtils';
 
 /**
@@ -18,19 +18,19 @@ import { getHeaderClassName, generateHeaderStyles } from '@/utils/themeUtils';
 export interface EditorSidebarProps {
   // Content
   markdown: string;
-  
+
   // Theme
   theme: Theme;
-  
+
   // UI state
   uiState: UIState;
   onToggleToc: () => void;
   onToggleOutline: () => void;
   onToggleSidebar: () => void;
-  
+
   // Responsive
   responsive: ResponsiveState;
-  
+
   // Zen mode
   zenMode: boolean;
 }
@@ -46,7 +46,7 @@ export const EditorSidebar: React.FC<EditorSidebarProps> = ({
   onToggleOutline,
   onToggleSidebar,
   responsive,
-  zenMode
+  zenMode,
 }) => {
   const { isMobile, isTablet } = responsive;
   const { showToc, showOutline, sidebarCollapsed } = uiState;
@@ -77,17 +77,19 @@ export const EditorSidebar: React.FC<EditorSidebarProps> = ({
           ...headerStyles,
           backdropFilter: 'blur(12px)',
           WebkitBackdropFilter: 'blur(12px)',
-          opacity: 0.9
+          opacity: 0.9,
         }}
       >
         {/* Table of Contents - Top Half */}
         {showToc && (
-          <div className={`
+          <div
+            className={`
             ${showOutline ? 'flex-1' : 'h-full'}
             min-h-0
             ${showOutline ? 'border-b border-gray-200 dark:border-gray-700' : ''}
             transition-all duration-300
-          `}>
+          `}
+          >
             <div className="p-3 border-b border-gray-200 dark:border-gray-700">
               <div className="flex items-center justify-between">
                 <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-300">
@@ -112,11 +114,13 @@ export const EditorSidebar: React.FC<EditorSidebarProps> = ({
 
         {/* Document Outline - Bottom Half */}
         {showOutline && (
-          <div className={`
+          <div
+            className={`
             ${showToc ? 'flex-1' : 'h-full'}
             min-h-0
             transition-all duration-300
-          `}>
+          `}
+          >
             <div className="p-3 border-b border-gray-200 dark:border-gray-700">
               <div className="flex items-center justify-between">
                 <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-300">
@@ -147,7 +151,7 @@ export const EditorSidebar: React.FC<EditorSidebarProps> = ({
           size="sm"
           onClick={onToggleSidebar}
           className="fixed left-2 top-1/2 z-10 h-8 w-8 p-0 bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm border shadow-md"
-          title={sidebarCollapsed ? "Show Sidebar" : "Hide Sidebar"}
+          title={sidebarCollapsed ? 'Show Sidebar' : 'Hide Sidebar'}
         >
           {sidebarCollapsed ? (
             <PanelLeftOpen className="h-4 w-4" />

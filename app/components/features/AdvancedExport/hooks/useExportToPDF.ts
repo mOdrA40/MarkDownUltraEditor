@@ -4,14 +4,14 @@
  */
 
 import { useState, useCallback } from 'react';
-import { ExportOptions, UseExportReturn } from '../types/export.types';
+import type { ExportOptions, UseExportReturn } from '../types/export.types';
 import { convertMarkdownToHTML } from '../utils/markdownConverter';
 import { generateStyledHTML } from '../utils/htmlGenerator';
 import { EXPORT_PROGRESS_STEPS, SUCCESS_MESSAGES, ERROR_MESSAGES } from '../utils/constants';
 
 /**
  * Custom hook untuk export ke PDF
- * 
+ *
  * @param markdown - Konten markdown
  * @param onSuccess - Callback ketika export berhasil
  * @param onError - Callback ketika export gagal
@@ -25,62 +25,64 @@ export const useExportToPDF = (
   const [isExporting, setIsExporting] = useState(false);
   const [exportProgress, setExportProgress] = useState(0);
 
-  const startExport = useCallback(async (options: ExportOptions) => {
-    if (!markdown?.trim()) {
-      onError?.(ERROR_MESSAGES.EMPTY_CONTENT);
-      return;
-    }
-
-    setIsExporting(true);
-    setExportProgress(EXPORT_PROGRESS_STEPS.INITIALIZING);
-
-    try {
-      // Convert markdown to HTML
-      const { html: htmlContent } = convertMarkdownToHTML(markdown);
-      setExportProgress(EXPORT_PROGRESS_STEPS.PROCESSING);
-
-      // Generate styled HTML
-      const styledHTML = generateStyledHTML({
-        ...options,
-        htmlContent,
-        themeConfig: { name: '', primaryColor: '', backgroundColor: '', accentColor: '' } // Will be set in generateStyledHTML
-      });
-      setExportProgress(EXPORT_PROGRESS_STEPS.GENERATING);
-
-      // Create new window untuk print
-      const printWindow = window.open('', '_blank');
-      if (!printWindow) {
-        throw new Error('Popup blocked. Please allow popups for this site.');
+  const startExport = useCallback(
+    async (options: ExportOptions) => {
+      if (!markdown?.trim()) {
+        onError?.(ERROR_MESSAGES.EMPTY_CONTENT);
+        return;
       }
 
-      setExportProgress(EXPORT_PROGRESS_STEPS.STYLING);
+      setIsExporting(true);
+      setExportProgress(EXPORT_PROGRESS_STEPS.INITIALIZING);
 
-      // Write content ke window
-      printWindow.document.write(styledHTML);
-      printWindow.document.close();
+      try {
+        // Convert markdown to HTML
+        const { html: htmlContent } = convertMarkdownToHTML(markdown);
+        setExportProgress(EXPORT_PROGRESS_STEPS.PROCESSING);
 
-      setExportProgress(EXPORT_PROGRESS_STEPS.FINALIZING);
+        // Generate styled HTML
+        const styledHTML = generateStyledHTML({
+          ...options,
+          htmlContent,
+          themeConfig: { name: '', primaryColor: '', backgroundColor: '', accentColor: '' }, // Will be set in generateStyledHTML
+        });
+        setExportProgress(EXPORT_PROGRESS_STEPS.GENERATING);
 
-      // Setup print handler
-      printWindow.onload = () => {
-        setTimeout(() => {
-          printWindow.print();
-          printWindow.close();
-        }, 500);
-      };
+        // Create new window untuk print
+        const printWindow = window.open('', '_blank');
+        if (!printWindow) {
+          throw new Error('Popup blocked. Please allow popups for this site.');
+        }
 
-      setExportProgress(EXPORT_PROGRESS_STEPS.COMPLETE);
-      onSuccess?.(SUCCESS_MESSAGES.PDF_EXPORTED);
+        setExportProgress(EXPORT_PROGRESS_STEPS.STYLING);
 
-    } catch (error) {
-      console.error('PDF export error:', error);
-      const errorMessage = error instanceof Error ? error.message : ERROR_MESSAGES.EXPORT_FAILED;
-      onError?.(errorMessage);
-    } finally {
-      setIsExporting(false);
-      setExportProgress(0);
-    }
-  }, [markdown, onSuccess, onError]);
+        // Write content ke window
+        printWindow.document.write(styledHTML);
+        printWindow.document.close();
+
+        setExportProgress(EXPORT_PROGRESS_STEPS.FINALIZING);
+
+        // Setup print handler
+        printWindow.onload = () => {
+          setTimeout(() => {
+            printWindow.print();
+            printWindow.close();
+          }, 500);
+        };
+
+        setExportProgress(EXPORT_PROGRESS_STEPS.COMPLETE);
+        onSuccess?.(SUCCESS_MESSAGES.PDF_EXPORTED);
+      } catch (error) {
+        console.error('PDF export error:', error);
+        const errorMessage = error instanceof Error ? error.message : ERROR_MESSAGES.EXPORT_FAILED;
+        onError?.(errorMessage);
+      } finally {
+        setIsExporting(false);
+        setExportProgress(0);
+      }
+    },
+    [markdown, onSuccess, onError]
+  );
 
   const resetExport = useCallback(() => {
     setIsExporting(false);
@@ -91,6 +93,6 @@ export const useExportToPDF = (
     isExporting,
     exportProgress,
     startExport,
-    resetExport
+    resetExport,
   };
 };

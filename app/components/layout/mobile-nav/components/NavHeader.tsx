@@ -3,11 +3,11 @@
  * Menangani menu button, file name input, dan quick actions
  */
 
-import React from 'react';
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Menu } from "lucide-react";
-import { NavHeaderProps } from '../types/navTypes';
+import type React from 'react';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Menu } from 'lucide-react';
+import type { NavHeaderProps } from '../types/navTypes';
 import { QuickActions } from './QuickActions';
 import { getHeaderClassName, generateHeaderStyles } from '@/utils/themeUtils';
 
@@ -22,7 +22,7 @@ export const NavHeader: React.FC<NavHeaderProps> = ({
   onUndo,
   onRedo,
   canUndo,
-  canRedo
+  canRedo,
 }) => {
   // Get theme-based header styling
   const headerClassName = getHeaderClassName(currentTheme);
@@ -34,13 +34,13 @@ export const NavHeader: React.FC<NavHeaderProps> = ({
       style={{
         ...headerStyles,
         backdropFilter: 'blur(12px)',
-        WebkitBackdropFilter: 'blur(12px)'
+        WebkitBackdropFilter: 'blur(12px)',
       }}
     >
       {/* Left: Menu Button */}
-      <Button 
-        variant="ghost" 
-        size="sm" 
+      <Button
+        variant="ghost"
+        size="sm"
         className="h-8 w-8 p-0 flex-shrink-0"
         onClick={onMenuToggle}
         aria-label="Open navigation menu"
@@ -56,7 +56,7 @@ export const NavHeader: React.FC<NavHeaderProps> = ({
           className="mobile-filename-input text-sm font-medium text-center border-0 bg-transparent focus:bg-white/50 dark:focus:bg-gray-800/50 h-8 px-2"
           style={{
             color: currentTheme.text,
-            borderColor: currentTheme.accent
+            borderColor: currentTheme.accent,
           }}
           placeholder="Enter file name..."
           aria-label="File name"

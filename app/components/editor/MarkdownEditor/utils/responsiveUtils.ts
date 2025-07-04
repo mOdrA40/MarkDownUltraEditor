@@ -3,8 +3,8 @@
  * @author Axel Modra
  */
 
-import { DeviceType, LayoutConfig, ComponentSizing } from '../types';
-import { Breakpoints } from '../types/responsive.types';
+import { DeviceType, type LayoutConfig, type ComponentSizing } from '../types';
+import type { Breakpoints } from '../types/responsive.types';
 import { BREAKPOINTS } from './constants';
 
 /**
@@ -47,9 +47,12 @@ export const isTouchDevice = (): boolean => {
     return false;
   }
 
-  return 'ontouchstart' in window ||
-         navigator.maxTouchPoints > 0 ||
-         ('msMaxTouchPoints' in navigator && (navigator as { msMaxTouchPoints: number }).msMaxTouchPoints > 0);
+  return (
+    'ontouchstart' in window ||
+    navigator.maxTouchPoints > 0 ||
+    ('msMaxTouchPoints' in navigator &&
+      (navigator as { msMaxTouchPoints: number }).msMaxTouchPoints > 0)
+  );
 };
 
 /**
@@ -74,7 +77,7 @@ export const getOptimalLayout = (deviceType: DeviceType): LayoutConfig => {
       autoCollapseSidebar: true,
       stackLayout: true,
       compactMode: true,
-      touchFriendly: true
+      touchFriendly: true,
     },
     [DeviceType.SMALL_TABLET]: {
       showSidebar: true,
@@ -82,7 +85,7 @@ export const getOptimalLayout = (deviceType: DeviceType): LayoutConfig => {
       autoCollapseSidebar: true,
       stackLayout: true,
       compactMode: true,
-      touchFriendly: true
+      touchFriendly: true,
     },
     [DeviceType.TABLET]: {
       showSidebar: true,
@@ -90,7 +93,7 @@ export const getOptimalLayout = (deviceType: DeviceType): LayoutConfig => {
       autoCollapseSidebar: true,
       stackLayout: false,
       compactMode: false,
-      touchFriendly: true
+      touchFriendly: true,
     },
     [DeviceType.DESKTOP]: {
       showSidebar: true,
@@ -98,7 +101,7 @@ export const getOptimalLayout = (deviceType: DeviceType): LayoutConfig => {
       autoCollapseSidebar: false,
       stackLayout: false,
       compactMode: false,
-      touchFriendly: false
+      touchFriendly: false,
     },
     [DeviceType.LARGE_DESKTOP]: {
       showSidebar: true,
@@ -106,8 +109,8 @@ export const getOptimalLayout = (deviceType: DeviceType): LayoutConfig => {
       autoCollapseSidebar: false,
       stackLayout: false,
       compactMode: false,
-      touchFriendly: false
-    }
+      touchFriendly: false,
+    },
   };
 
   return layouts[deviceType];
@@ -123,36 +126,36 @@ export const getOptimalSizing = (deviceType: DeviceType): ComponentSizing => {
       iconSize: 16,
       fontSizeMultiplier: 0.9,
       spacingMultiplier: 0.8,
-      minTouchTarget: 44
+      minTouchTarget: 44,
     },
     [DeviceType.SMALL_TABLET]: {
       buttonSize: 'sm',
       iconSize: 18,
       fontSizeMultiplier: 0.95,
       spacingMultiplier: 0.9,
-      minTouchTarget: 44
+      minTouchTarget: 44,
     },
     [DeviceType.TABLET]: {
       buttonSize: 'md',
       iconSize: 20,
       fontSizeMultiplier: 1,
       spacingMultiplier: 1,
-      minTouchTarget: 44
+      minTouchTarget: 44,
     },
     [DeviceType.DESKTOP]: {
       buttonSize: 'md',
       iconSize: 20,
       fontSizeMultiplier: 1,
       spacingMultiplier: 1,
-      minTouchTarget: 32
+      minTouchTarget: 32,
     },
     [DeviceType.LARGE_DESKTOP]: {
       buttonSize: 'lg',
       iconSize: 24,
       fontSizeMultiplier: 1.1,
       spacingMultiplier: 1.2,
-      minTouchTarget: 32
-    }
+      minTouchTarget: 32,
+    },
   };
 
   return sizings[deviceType];
@@ -163,7 +166,7 @@ export const getOptimalSizing = (deviceType: DeviceType): ComponentSizing => {
  */
 export const generateResponsiveClasses = (deviceType: DeviceType): string[] => {
   const classes = ['responsive-container'];
-  
+
   switch (deviceType) {
     case DeviceType.MOBILE:
       classes.push('mobile-device', 'touch-device', 'compact-mode', 'stack-layout');
@@ -181,11 +184,11 @@ export const generateResponsiveClasses = (deviceType: DeviceType): string[] => {
       classes.push('large-desktop-device');
       break;
   }
-  
+
   if (isTouchDevice()) {
     classes.push('touch-device');
   }
-  
+
   return classes;
 };
 
@@ -203,10 +206,7 @@ export const calculateResponsiveFontSize = (
 /**
  * Calculate responsive spacing
  */
-export const calculateResponsiveSpacing = (
-  baseSpacing: number,
-  deviceType: DeviceType
-): number => {
+export const calculateResponsiveSpacing = (baseSpacing: number, deviceType: DeviceType): number => {
   const sizing = getOptimalSizing(deviceType);
   return Math.round(baseSpacing * sizing.spacingMultiplier);
 };
@@ -223,7 +223,7 @@ export const getMediaQueries = (breakpoints: Breakpoints = BREAKPOINTS) => {
     largeDesktop: `(min-width: ${breakpoints.largeDesktop}px)`,
     touchDevice: '(pointer: coarse)',
     hoverDevice: '(hover: hover)',
-    highDensity: '(-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi)'
+    highDensity: '(-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi)',
   };
 };
 
@@ -321,7 +321,7 @@ export const debounce = <T extends (...args: unknown[]) => unknown>(
   wait: number
 ): ((...args: Parameters<T>) => void) => {
   let timeout: NodeJS.Timeout;
-  
+
   return (...args: Parameters<T>) => {
     clearTimeout(timeout);
     timeout = setTimeout(() => func(...args), wait);
@@ -336,12 +336,12 @@ export const throttle = <T extends (...args: unknown[]) => unknown>(
   limit: number
 ): ((...args: Parameters<T>) => void) => {
   let inThrottle: boolean;
-  
+
   return (...args: Parameters<T>) => {
     if (!inThrottle) {
       func(...args);
       inThrottle = true;
-      setTimeout(() => inThrottle = false, limit);
+      setTimeout(() => (inThrottle = false), limit);
     }
   };
 };
@@ -355,7 +355,7 @@ export const createResponsiveObserver = (
 ): ResizeObserver | null => {
   if (typeof window === 'undefined' || !window.ResizeObserver) return null;
 
-  const observer = new ResizeObserver(entries => {
+  const observer = new ResizeObserver((entries) => {
     for (const entry of entries) {
       const { width, height } = entry.contentRect;
       callback(width, height);

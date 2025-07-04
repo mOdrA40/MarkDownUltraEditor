@@ -4,13 +4,13 @@
  */
 
 import { useState, useEffect, useCallback, useRef } from 'react';
-import { 
-  MEDIA_QUERIES, 
-  getDeviceType, 
-  getWindowDimensions, 
+import {
+  MEDIA_QUERIES,
+  getDeviceType,
+  getWindowDimensions,
   throttle,
   type DeviceType,
-  type ResponsiveState 
+  type ResponsiveState,
 } from '@/utils/responsive';
 
 /**
@@ -22,13 +22,13 @@ interface UseResponsiveDetectionOptions {
    * @default 100
    */
   throttleDelay?: number;
-  
+
   /**
    * Enable/disable resize listener
    * @default true
    */
   enableResize?: boolean;
-  
+
   /**
    * Initial window dimensions untuk SSR
    */
@@ -55,11 +55,7 @@ interface UseResponsiveDetectionReturn extends ResponsiveState {
 export const useResponsiveDetection = (
   options: UseResponsiveDetectionOptions = {}
 ): UseResponsiveDetectionReturn => {
-  const {
-    throttleDelay = 100,
-    enableResize = true,
-    initialDimensions
-  } = options;
+  const { throttleDelay = 100, enableResize = true, initialDimensions } = options;
 
   // Get initial dimensions
   const getInitialDimensions = useCallback(() => {
@@ -71,14 +67,14 @@ export const useResponsiveDetection = (
   const [responsiveState, setResponsiveState] = useState<ResponsiveState>(() => {
     const dimensions = getInitialDimensions();
     const deviceType = getDeviceType(dimensions.width);
-    
+
     return {
       deviceType,
       isMobile: deviceType === 'mobile',
       isTablet: deviceType === 'tablet',
       isDesktop: deviceType === 'desktop',
       windowWidth: dimensions.width,
-      windowHeight: dimensions.height
+      windowHeight: dimensions.height,
     };
   });
 
@@ -91,8 +87,8 @@ export const useResponsiveDetection = (
   const updateResponsiveState = useCallback(() => {
     const dimensions = getWindowDimensions();
     const deviceType = getDeviceType(dimensions.width);
-    
-    setResponsiveState(prevState => {
+
+    setResponsiveState((prevState) => {
       // Only update if something actually changed
       if (
         prevState.windowWidth === dimensions.width &&
@@ -101,14 +97,14 @@ export const useResponsiveDetection = (
       ) {
         return prevState;
       }
-      
+
       return {
         deviceType,
         isMobile: deviceType === 'mobile',
         isTablet: deviceType === 'tablet',
         isDesktop: deviceType === 'desktop',
         windowWidth: dimensions.width,
-        windowHeight: dimensions.height
+        windowHeight: dimensions.height,
       };
     });
   }, []);
@@ -129,7 +125,7 @@ export const useResponsiveDetection = (
     const mediaQueryLists = [
       window.matchMedia(MEDIA_QUERIES.mobile),
       window.matchMedia(MEDIA_QUERIES.tablet),
-      window.matchMedia(MEDIA_QUERIES.desktop)
+      window.matchMedia(MEDIA_QUERIES.desktop),
     ];
 
     const handleMediaQueryChange = () => {
@@ -137,7 +133,7 @@ export const useResponsiveDetection = (
     };
 
     // Add listeners to all media queries
-    mediaQueryLists.forEach(mql => {
+    mediaQueryLists.forEach((mql) => {
       mql.addEventListener('change', handleMediaQueryChange);
     });
 
@@ -147,7 +143,7 @@ export const useResponsiveDetection = (
     // Cleanup function
     cleanupRef.current = () => {
       window.removeEventListener('resize', throttledUpdate);
-      mediaQueryLists.forEach(mql => {
+      mediaQueryLists.forEach((mql) => {
         mql.removeEventListener('change', handleMediaQueryChange);
       });
     };
@@ -157,7 +153,7 @@ export const useResponsiveDetection = (
 
   return {
     ...responsiveState,
-    updateResponsiveState
+    updateResponsiveState,
   };
 };
 

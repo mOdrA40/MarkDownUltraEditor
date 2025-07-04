@@ -17,17 +17,17 @@ export {
   meetsContrastRequirement,
   addSkipLink,
   KeyboardNavigation,
-  ScreenReader
+  ScreenReader,
 } from '../utils/accessibility';
 
 export {
   codeTemplates,
-  getTemplatesByCategory as getCodeTemplatesByCategory
+  getTemplatesByCategory as getCodeTemplatesByCategory,
 } from '../utils/codeTemplates';
 
 export {
   documentTemplates,
-  getTemplatesByCategory as getDocumentTemplatesByCategory
+  getTemplatesByCategory as getDocumentTemplatesByCategory,
 } from '../utils/documentTemplates';
 
 export {
@@ -36,13 +36,13 @@ export {
   scrollToHeading,
   debounce as headingDebounce,
   throttle as headingThrottle,
-  isElementInViewport as isHeadingElementInViewport
+  isElementInViewport as isHeadingElementInViewport,
 } from '../utils/headingUtils';
 
 export {
   calculateTargetIndex,
   getFocusableElements as getNavigationFocusableElements,
-  isFocusable as isNavigationFocusable
+  isFocusable as isNavigationFocusable,
 } from '../utils/keyboardNavigationUtils';
 
 export { handleOutlineItemClick } from '../utils/outlineUtils';
@@ -52,7 +52,7 @@ export {
   MEDIA_QUERIES,
   getDeviceType,
   debounce as responsiveDebounce,
-  throttle as responsiveThrottle
+  throttle as responsiveThrottle,
 } from '../utils/responsive';
 
 export {
@@ -68,7 +68,7 @@ export {
   getTruncatedTags,
   getCardClasses,
   isValidTemplate,
-  sortTemplates
+  sortTemplates,
 } from '../utils/templateUtils';
 export * from '../utils/testing';
 export * from '../utils/toastUtils';
@@ -84,5 +84,5 @@ export {
   importWritingSettings,
   debounce as writingSettingsDebounce,
   areSettingsEqual,
-  getSettingsDiff
+  getSettingsDiff,
 } from '../utils/writingSettingsUtils';

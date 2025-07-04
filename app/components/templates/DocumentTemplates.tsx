@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
-import { Badge } from "@/components/ui/badge";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { FileText } from "lucide-react";
-import { useResponsiveBreakpoint } from "@/hooks/ui";
-import { useTemplateFilters, useTemplateActions } from "@/hooks/templates";
-import { documentTemplates } from "@/utils/documentTemplates";
-import { getThemeAwareDialogClasses } from "@/utils/templateUtils";
-import { DocumentTemplatesProps, ViewMode } from '@/types/templates';
+import { Badge } from '@/components/ui/badge';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { FileText } from 'lucide-react';
+import { useResponsiveBreakpoint } from '@/hooks/ui';
+import { useTemplateFilters, useTemplateActions } from '@/hooks/templates';
+import { documentTemplates } from '@/utils/documentTemplates';
+import { getThemeAwareDialogClasses } from '@/utils/templateUtils';
+import type { DocumentTemplatesProps, ViewMode } from '@/types/templates';
 
 // Sub-components
 import { TemplateFilters } from './TemplateFilters';
@@ -20,34 +20,37 @@ import { TemplatePreview } from './TemplatePreview';
 export const DocumentTemplates: React.FC<DocumentTemplatesProps> = ({
   isOpen,
   onClose,
-  onSelectTemplate
+  onSelectTemplate,
 }) => {
   const [viewMode, setViewMode] = useState<ViewMode>('grid');
   const { isMobile, isTablet } = useResponsiveBreakpoint();
 
   // Template filtering logic
-  const {
-    searchTerm,
-    setSearchTerm,
-    selectedCategory,
-    setSelectedCategory,
-    filteredTemplates
-  } = useTemplateFilters({ templates: documentTemplates });
+  const { searchTerm, setSearchTerm, selectedCategory, setSelectedCategory, filteredTemplates } =
+    useTemplateFilters({ templates: documentTemplates });
 
   // Template actions logic dengan callback yang langsung menutup dialog
-  const handleTemplateSelect = React.useCallback((content: string, fileName: string) => {
-    console.log('DocumentTemplates: handleTemplateSelect called with fileName:', fileName, 'content length:', content.length);
-    onSelectTemplate(content, fileName);
-    console.log('DocumentTemplates: closing dialog');
-    onClose(); // Tutup dialog setelah template dipilih
-  }, [onSelectTemplate, onClose]);
+  const handleTemplateSelect = React.useCallback(
+    (content: string, fileName: string) => {
+      console.log(
+        'DocumentTemplates: handleTemplateSelect called with fileName:',
+        fileName,
+        'content length:',
+        content.length
+      );
+      onSelectTemplate(content, fileName);
+      console.log('DocumentTemplates: closing dialog');
+      onClose(); // Tutup dialog setelah template dipilih
+    },
+    [onSelectTemplate, onClose]
+  );
 
   const {
     handleSelectTemplate,
     handlePreviewTemplate,
     selectedTemplate,
     showPreview,
-    setShowPreview
+    setShowPreview,
   } = useTemplateActions({ onSelectTemplate: handleTemplateSelect, onClose });
 
   const dialogClasses = getThemeAwareDialogClasses(isMobile, isTablet);
@@ -55,16 +58,14 @@ export const DocumentTemplates: React.FC<DocumentTemplatesProps> = ({
   return (
     <>
       <Dialog open={isOpen} onOpenChange={onClose}>
-        <DialogContent className={`document-templates-dialog flex flex-col p-0 mx-auto ${dialogClasses}`}>
-          <DialogHeader className={`flex-shrink-0 ${
-            isMobile ? 'p-4 pb-2' : 'p-3 sm:p-4 pb-2'
-          }`}>
-            <DialogTitle className={`flex items-center ${
-              isMobile ? 'text-sm' : 'text-sm sm:text-base'
-            }`}>
-              <FileText className={`mr-2 ${
-                isMobile ? 'h-4 w-4' : 'h-4 w-4 sm:h-5 sm:w-5'
-              }`} />
+        <DialogContent
+          className={`document-templates-dialog flex flex-col p-0 mx-auto ${dialogClasses}`}
+        >
+          <DialogHeader className={`flex-shrink-0 ${isMobile ? 'p-4 pb-2' : 'p-3 sm:p-4 pb-2'}`}>
+            <DialogTitle
+              className={`flex items-center ${isMobile ? 'text-sm' : 'text-sm sm:text-base'}`}
+            >
+              <FileText className={`mr-2 ${isMobile ? 'h-4 w-4' : 'h-4 w-4 sm:h-5 sm:w-5'}`} />
               Document Templates
               <Badge variant="secondary" className="ml-2 text-xs">
                 {filteredTemplates.length} templates

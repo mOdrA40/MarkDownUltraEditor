@@ -18,10 +18,10 @@ export { useEditorSettings, useSettingToggle, useNumericSetting } from './useEdi
 export type { UseEditorSettingsReturn } from './useEditorSettings';
 
 export { useKeyboardShortcuts, useShortcutHelp } from './useKeyboardShortcuts';
-export type { 
-  KeyboardShortcut, 
-  KeyboardShortcutsContext, 
-  UseKeyboardShortcutsReturn 
+export type {
+  KeyboardShortcut,
+  KeyboardShortcutsContext,
+  UseKeyboardShortcutsReturn,
 } from './useKeyboardShortcuts';
 
 // Re-export types for convenience
@@ -35,5 +35,5 @@ export type {
   UseEditorStateReturn,
   UseResponsiveLayoutReturn,
   UseThemeManagerReturn,
-  UseDialogManagerReturn
+  UseDialogManagerReturn,
 } from '../types';

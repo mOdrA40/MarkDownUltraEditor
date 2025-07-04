@@ -61,27 +61,27 @@ export interface UseVimModeOptions {
    * Enable/disable vim mode
    */
   enabled: boolean;
-  
+
   /**
    * Callback ketika mode berubah
    */
   onModeChange?: (mode: VimMode) => void;
-  
+
   /**
    * Callback ketika value berubah
    */
   onValueChange?: (value: string) => void;
-  
+
   /**
    * Custom cursor configuration
    */
   cursorConfig?: Partial<VimCursorConfig>;
-  
+
   /**
    * Custom commands
    */
   customCommands?: VimCommand[];
-  
+
   /**
    * Command timeout (ms)
    */
@@ -96,42 +96,42 @@ export interface UseVimModeReturn {
    * Current vim mode
    */
   mode: VimMode;
-  
+
   /**
    * Whether vim mode is enabled
    */
   isEnabled: boolean;
-  
+
   /**
    * Key down handler untuk textarea
    */
   handleKeyDown: (e: React.KeyboardEvent<HTMLTextAreaElement>) => void;
-  
+
   /**
    * Enter insert mode
    */
   enterInsertMode: () => void;
-  
+
   /**
    * Enter normal mode
    */
   enterNormalMode: () => void;
-  
+
   /**
    * Enter visual mode
    */
   enterVisualMode: () => void;
-  
+
   /**
    * Enter command mode
    */
   enterCommandMode: () => void;
-  
+
   /**
    * Execute vim command
    */
   executeCommand: (command: string) => void;
-  
+
   /**
    * Get available commands untuk current mode
    */
@@ -167,20 +167,20 @@ export interface VimState {
 export const DEFAULT_VIM_CURSOR_CONFIG: VimCursorConfig = {
   normal: {
     caretColor: 'transparent',
-    focused: false
+    focused: false,
   },
   insert: {
     caretColor: 'auto',
-    focused: true
+    focused: true,
   },
   visual: {
     caretColor: 'auto',
-    focused: true
+    focused: true,
   },
   command: {
     caretColor: 'auto',
-    focused: true
-  }
+    focused: true,
+  },
 };
 
 /**
@@ -191,5 +191,5 @@ export const VIM_CONSTANTS = {
   MAX_COMMAND_BUFFER: 10,
   ESCAPE_KEY: 'Escape',
   ENTER_KEY: 'Enter',
-  SPACE_KEY: ' '
+  SPACE_KEY: ' ',
 } as const;

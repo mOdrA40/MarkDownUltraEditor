@@ -46,23 +46,23 @@ export const calculateTargetIndex = (
  */
 export const isFocusable = (element: Element): element is HTMLElement => {
   if (!(element instanceof HTMLElement)) return false;
-  
+
   // Check if element is disabled
   if (element.hasAttribute('disabled')) return false;
-  
+
   // Check if element is hidden
   if (element.style.display === 'none' || element.style.visibility === 'hidden') return false;
-  
+
   // Check if element has tabindex
   const tabIndex = element.getAttribute('tabindex');
-  if (tabIndex !== null && parseInt(tabIndex, 10) < 0) return false;
-  
+  if (tabIndex !== null && Number.parseInt(tabIndex, 10) < 0) return false;
+
   // Check if element is naturally focusable
   const focusableTags = ['A', 'BUTTON', 'INPUT', 'SELECT', 'TEXTAREA'];
   if (focusableTags.includes(element.tagName)) return true;
-  
+
   // Check if element has tabindex >= 0
-  return tabIndex !== null && parseInt(tabIndex, 10) >= 0;
+  return tabIndex !== null && Number.parseInt(tabIndex, 10) >= 0;
 };
 
 /**
@@ -76,7 +76,7 @@ export const getFocusableElements = (container: Element): HTMLElement[] => {
     'select:not([disabled])',
     'textarea:not([disabled])',
     '[tabindex]:not([tabindex="-1"])',
-    '[contenteditable="true"]'
+    '[contenteditable="true"]',
   ].join(', ');
 
   const elements = Array.from(container.querySelectorAll(focusableSelectors));
@@ -99,10 +99,7 @@ export const focusElement = (element: HTMLElement): boolean => {
 /**
  * Scroll element into view dengan options
  */
-export const scrollElementIntoView = (
-  element: Element,
-  options: ScrollOptions = {}
-): void => {
+export const scrollElementIntoView = (element: Element, options: ScrollOptions = {}): void => {
   const { offset = 0, behavior = 'smooth', container } = options;
 
   try {
@@ -110,22 +107,21 @@ export const scrollElementIntoView = (
       // Scroll within container
       const containerRect = container.getBoundingClientRect();
       const elementRect = element.getBoundingClientRect();
-      
-      const scrollTop = container.scrollTop + 
-        (elementRect.top - containerRect.top) - offset;
-      
+
+      const scrollTop = container.scrollTop + (elementRect.top - containerRect.top) - offset;
+
       container.scrollTo({
         top: scrollTop,
-        behavior
+        behavior,
       });
     } else {
       // Scroll in viewport
       const elementRect = element.getBoundingClientRect();
       const scrollTop = window.pageYOffset + elementRect.top - offset;
-      
+
       window.scrollTo({
         top: scrollTop,
-        behavior
+        behavior,
       });
     }
   } catch (error) {
@@ -136,12 +132,9 @@ export const scrollElementIntoView = (
 /**
  * Check if element is in viewport
  */
-export const isElementInViewport = (
-  element: Element,
-  container?: Element
-): boolean => {
+export const isElementInViewport = (element: Element, container?: Element): boolean => {
   const rect = element.getBoundingClientRect();
-  
+
   if (container) {
     const containerRect = container.getBoundingClientRect();
     return (
@@ -151,7 +144,7 @@ export const isElementInViewport = (
       rect.right <= containerRect.right
     );
   }
-  
+
   return (
     rect.top >= 0 &&
     rect.left >= 0 &&
@@ -170,7 +163,7 @@ export const getElementByDataAttribute = (
 ): HTMLElement | null => {
   const selector = `[${attribute}="${value}"]`;
   const searchRoot = container || document;
-  
+
   const element = searchRoot.querySelector(selector);
   return element instanceof HTMLElement ? element : null;
 };
@@ -183,7 +176,7 @@ export const debounceKeyboard = <T extends (...args: unknown[]) => void>(
   wait: number
 ): ((...args: Parameters<T>) => void) => {
   let timeout: NodeJS.Timeout;
-  
+
   return (...args: Parameters<T>) => {
     clearTimeout(timeout);
     timeout = setTimeout(() => func(...args), wait);
@@ -198,12 +191,12 @@ export const throttleKeyboard = <T extends (...args: unknown[]) => void>(
   limit: number
 ): ((...args: Parameters<T>) => void) => {
   let inThrottle: boolean;
-  
+
   return (...args: Parameters<T>) => {
     if (!inThrottle) {
       func(...args);
       inThrottle = true;
-      setTimeout(() => inThrottle = false, limit);
+      setTimeout(() => (inThrottle = false), limit);
     }
   };
 };
@@ -222,13 +215,13 @@ export const isKeyMatch = (
   }
 ): boolean => {
   if (event.key !== key) return false;
-  
+
   if (modifiers) {
     if (modifiers.ctrl !== undefined && event.ctrlKey !== modifiers.ctrl) return false;
     if (modifiers.alt !== undefined && event.altKey !== modifiers.alt) return false;
     if (modifiers.shift !== undefined && event.shiftKey !== modifiers.shift) return false;
     if (modifiers.meta !== undefined && event.metaKey !== modifiers.meta) return false;
   }
-  
+
   return true;
 };

@@ -4,8 +4,8 @@
  */
 
 import { useMemo } from 'react';
-import { ResponsiveConfig } from "../types/editorPane.types";
-import { calculateResponsiveConfig } from "../utils/editorStyles";
+import type { ResponsiveConfig } from '../types/editorPane.types';
+import { calculateResponsiveConfig } from '../utils/editorStyles';
 
 /**
  * Custom hook for calculating responsive editor configuration

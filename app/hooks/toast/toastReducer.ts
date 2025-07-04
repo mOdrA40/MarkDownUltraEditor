@@ -4,11 +4,11 @@
  */
 
 import {
-  ToastState,
-  ToastAction,
-  ToasterToast,
+  type ToastState,
+  type ToastAction,
+  type ToasterToast,
   TOAST_ACTION_TYPES,
-  TOAST_CONFIG
+  TOAST_CONFIG,
 } from '@/types/toast';
 import { addToRemoveQueue } from '@/utils/toastUtils';
 
@@ -16,21 +16,21 @@ import { addToRemoveQueue } from '@/utils/toastUtils';
  * Initial state untuk toast reducer
  */
 export const initialToastState: ToastState = {
-  toasts: []
+  toasts: [],
 };
 
 /**
  * Toast reducer dengan comprehensive action handling
  */
 export const toastReducer = (
-  state: ToastState, 
+  state: ToastState,
   action: ToastAction,
   dispatch?: (action: ToastAction) => void
 ): ToastState => {
   switch (action.type) {
     case TOAST_ACTION_TYPES.ADD_TOAST: {
       const newToasts = [action.toast, ...state.toasts].slice(0, TOAST_CONFIG.LIMIT);
-      
+
       return {
         ...state,
         toasts: newToasts,
@@ -44,9 +44,7 @@ export const toastReducer = (
       }
 
       const updatedToasts = state.toasts.map((toast) =>
-        toast.id === action.toast.id 
-          ? { ...toast, ...action.toast } 
-          : toast
+        toast.id === action.toast.id ? { ...toast, ...action.toast } : toast
       );
 
       return {
@@ -72,9 +70,7 @@ export const toastReducer = (
 
       // Update state to mark toasts as closed
       const dismissedToasts = state.toasts.map((toast) =>
-        toast.id === toastId || toastId === undefined
-          ? { ...toast, open: false }
-          : toast
+        toast.id === toastId || toastId === undefined ? { ...toast, open: false } : toast
       );
 
       return {

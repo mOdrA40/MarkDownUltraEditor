@@ -4,8 +4,8 @@
  */
 
 import { useState, useEffect, useCallback } from 'react';
-import { Theme , themes } from '../../../features/ThemeSelector';
-import { UseThemeManagerReturn, ThemeState } from '../types';
+import { type Theme, themes } from '../../../features/ThemeSelector';
+import type { UseThemeManagerReturn, ThemeState } from '../types';
 import { STORAGE_KEYS, THEME_CONFIG } from '../utils/constants';
 
 /**
@@ -14,9 +14,7 @@ import { STORAGE_KEYS, THEME_CONFIG } from '../utils/constants';
  */
 export const useThemeManager = (initialTheme?: Theme): UseThemeManagerReturn => {
   // Theme state
-  const [currentTheme, setCurrentTheme] = useState<Theme>(
-    initialTheme || themes[0]
-  );
+  const [currentTheme, setCurrentTheme] = useState<Theme>(initialTheme || themes[0]);
 
   /**
    * Apply theme to document root
@@ -69,7 +67,7 @@ export const useThemeManager = (initialTheme?: Theme): UseThemeManagerReturn => 
     try {
       const savedThemeId = localStorage.getItem(STORAGE_KEYS.THEME);
       if (savedThemeId) {
-        const savedTheme = themes.find(t => t.id === savedThemeId);
+        const savedTheme = themes.find((t) => t.id === savedThemeId);
         return savedTheme || null;
       }
     } catch (error) {
@@ -81,24 +79,27 @@ export const useThemeManager = (initialTheme?: Theme): UseThemeManagerReturn => 
   /**
    * Set theme with all side effects
    */
-  const handleSetTheme = useCallback((theme: Theme) => {
-    setCurrentTheme(theme);
-    applyTheme(theme);
-    saveTheme(theme);
-  }, [applyTheme, saveTheme]);
+  const handleSetTheme = useCallback(
+    (theme: Theme) => {
+      setCurrentTheme(theme);
+      applyTheme(theme);
+      saveTheme(theme);
+    },
+    [applyTheme, saveTheme]
+  );
 
   /**
    * Get theme by ID
    */
   const getThemeById = useCallback((themeId: string): Theme | null => {
-    return themes.find(theme => theme.id === themeId) || null;
+    return themes.find((theme) => theme.id === themeId) || null;
   }, []);
 
   /**
    * Get next theme in rotation
    */
   const getNextTheme = useCallback((): Theme => {
-    const currentIndex = themes.findIndex(theme => theme.id === currentTheme.id);
+    const currentIndex = themes.findIndex((theme) => theme.id === currentTheme.id);
     const nextIndex = (currentIndex + 1) % themes.length;
     return themes[nextIndex];
   }, [currentTheme.id]);
@@ -107,7 +108,7 @@ export const useThemeManager = (initialTheme?: Theme): UseThemeManagerReturn => 
    * Get previous theme in rotation
    */
   const getPreviousTheme = useCallback((): Theme => {
-    const currentIndex = themes.findIndex(theme => theme.id === currentTheme.id);
+    const currentIndex = themes.findIndex((theme) => theme.id === currentTheme.id);
     const previousIndex = currentIndex === 0 ? themes.length - 1 : currentIndex - 1;
     return themes[previousIndex];
   }, [currentTheme.id]);
@@ -141,11 +142,11 @@ export const useThemeManager = (initialTheme?: Theme): UseThemeManagerReturn => 
   const toggleDarkMode = useCallback(() => {
     if (isDarkTheme()) {
       // Switch to default light theme (ocean)
-      const lightTheme = themes.find(theme => theme.id === 'ocean') || themes[0];
+      const lightTheme = themes.find((theme) => theme.id === 'ocean') || themes[0];
       handleSetTheme(lightTheme);
     } else {
       // Switch to dark theme
-      const darkTheme = themes.find(theme => theme.id === 'dark');
+      const darkTheme = themes.find((theme) => theme.id === 'dark');
       if (darkTheme) {
         handleSetTheme(darkTheme);
       }
@@ -170,14 +171,14 @@ export const useThemeManager = (initialTheme?: Theme): UseThemeManagerReturn => 
   const getLuminance = (color: string): number => {
     // Simple luminance calculation for hex colors
     const hex = color.replace('#', '');
-    const r = parseInt(hex.substring(0, 2), 16) / 255;
-    const g = parseInt(hex.substring(2, 4), 16) / 255;
-    const b = parseInt(hex.substring(4, 6), 16) / 255;
-    
-    const sRGB = [r, g, b].map(c => {
-      return c <= 0.03928 ? c / 12.92 : Math.pow((c + 0.055) / 1.055, 2.4);
+    const r = Number.parseInt(hex.substring(0, 2), 16) / 255;
+    const g = Number.parseInt(hex.substring(2, 4), 16) / 255;
+    const b = Number.parseInt(hex.substring(4, 6), 16) / 255;
+
+    const sRGB = [r, g, b].map((c) => {
+      return c <= 0.03928 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4;
     });
-    
+
     return 0.2126 * sRGB[0] + 0.7152 * sRGB[1] + 0.0722 * sRGB[2];
   };
 
@@ -201,7 +202,7 @@ export const useThemeManager = (initialTheme?: Theme): UseThemeManagerReturn => 
 
   // Create state object
   const state: ThemeState = {
-    currentTheme
+    currentTheme,
   };
 
   // Create actions object
@@ -217,7 +218,7 @@ export const useThemeManager = (initialTheme?: Theme): UseThemeManagerReturn => 
     getNextTheme,
     getPreviousTheme,
     isDarkTheme,
-    getThemeContrastRatio
+    getThemeContrastRatio,
   };
 
   return {
@@ -227,7 +228,7 @@ export const useThemeManager = (initialTheme?: Theme): UseThemeManagerReturn => 
     utils: {
       isDark: isDarkTheme(),
       contrastRatio: getThemeContrastRatio(currentTheme),
-      availableThemes: themes
-    }
+      availableThemes: themes,
+    },
   };
 };

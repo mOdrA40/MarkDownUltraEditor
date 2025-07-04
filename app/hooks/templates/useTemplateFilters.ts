@@ -1,13 +1,13 @@
 /**
  * useTemplateFilters Hook (Simplified)
- * 
+ *
  * Hook untuk template filtering dengan implementasi sederhana
- * 
+ *
  * @author Axel Modra
  */
 
 import { useState, useMemo } from 'react';
-import { DocumentTemplate } from '@/types/templates';
+import type { DocumentTemplate } from '@/types/templates';
 
 // Simple filter interface
 interface TemplateFilterOptions {
@@ -26,9 +26,7 @@ interface UseTemplateFiltersReturn {
 /**
  * Hook untuk template filters dengan backward compatibility
  */
-export const useTemplateFilters = (
-  options: TemplateFilterOptions
-): UseTemplateFiltersReturn => {
+export const useTemplateFilters = (options: TemplateFilterOptions): UseTemplateFiltersReturn => {
   const { templates } = options;
 
   const [searchTerm, setSearchTerm] = useState<string>('');
@@ -37,9 +35,9 @@ export const useTemplateFilters = (
   // Get unique categories dari templates
   const categories = useMemo(() => {
     const uniqueCategories = Array.from(
-      new Set(templates.map(template => template.category))
+      new Set(templates.map((template) => template.category))
     ).sort();
-    
+
     return ['all', ...uniqueCategories];
   }, [templates]);
 
@@ -49,15 +47,16 @@ export const useTemplateFilters = (
 
     // Filter by search term
     if (searchTerm) {
-      filtered = filtered.filter(template =>
-        template.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        template.description.toLowerCase().includes(searchTerm.toLowerCase())
+      filtered = filtered.filter(
+        (template) =>
+          template.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          template.description.toLowerCase().includes(searchTerm.toLowerCase())
       );
     }
 
     // Filter by category
     if (selectedCategory !== 'all') {
-      filtered = filtered.filter(template => template.category === selectedCategory);
+      filtered = filtered.filter((template) => template.category === selectedCategory);
     }
 
     return filtered;
@@ -69,6 +68,6 @@ export const useTemplateFilters = (
     setSearchTerm,
     selectedCategory,
     setSelectedCategory,
-    categories
+    categories,
   };
 };

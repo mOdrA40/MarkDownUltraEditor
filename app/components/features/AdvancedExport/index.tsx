@@ -1,18 +1,16 @@
-import React, { useState } from 'react';
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Badge } from "@/components/ui/badge";
-import { useToast } from "@/hooks/core";
-import { useResponsiveBreakpoint } from "@/hooks/ui";
-import { Download } from "lucide-react";
+import type React from 'react';
+import { useState } from 'react';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Badge } from '@/components/ui/badge';
+import { useToast } from '@/hooks/core';
+import { useResponsiveBreakpoint } from '@/hooks/ui';
+import { Download } from 'lucide-react';
 import './styles.css';
 import { generateHeaderStyles, getThemeTextColor } from '@/utils/themeUtils';
 
 // Import types
-import {
-  AdvancedExportProps,
-  PreviewMode
-} from './types/export.types';
+import type { AdvancedExportProps, PreviewMode } from './types/export.types';
 
 // Import hooks
 import { useExportOptions } from './hooks/useExportOptions';
@@ -29,7 +27,7 @@ import { PreviewPanel } from './components/PreviewPanel';
 
 /**
  * Advanced Export Component - Main Component
- * 
+ *
  * Komponen utama yang sudah direfactor dengan arsitektur yang lebih baik:
  * - Menggunakan custom hooks untuk state management dan business logic
  * - Memisahkan UI components untuk better maintainability
@@ -41,7 +39,7 @@ export const AdvancedExport: React.FC<AdvancedExportProps> = ({
   fileName,
   isOpen,
   onClose,
-  currentTheme
+  currentTheme,
 }) => {
   // Responsive breakpoints
   const { isMobile, isTablet } = useResponsiveBreakpoint();
@@ -53,26 +51,22 @@ export const AdvancedExport: React.FC<AdvancedExportProps> = ({
   const [previewMode, setPreviewMode] = useState<PreviewMode>('desktop');
 
   // Export options management
-  const {
-    options,
-    updateOption,
-    validateOptions,
-    getValidatedOptions
-  } = useExportOptions(fileName);
+  const { options, updateOption, validateOptions, getValidatedOptions } =
+    useExportOptions(fileName);
 
   // Success and error handlers
   const handleExportSuccess = (message: string) => {
     toast({
-      title: "Export berhasil",
+      title: 'Export berhasil',
       description: message,
     });
   };
 
   const handleExportError = (error: string) => {
     toast({
-      title: "Export gagal",
+      title: 'Export gagal',
       description: error,
-      variant: "destructive"
+      variant: 'destructive',
     });
   };
 
@@ -80,7 +74,12 @@ export const AdvancedExport: React.FC<AdvancedExportProps> = ({
   const pdfExport = useExportToPDF(markdown, handleExportSuccess, handleExportError);
   const docxExport = useExportToDocx(markdown, fileName, handleExportSuccess, handleExportError);
   const epubExport = useExportToEpub(markdown, fileName, handleExportSuccess, handleExportError);
-  const presentationExport = useExportToPresentation(markdown, fileName, handleExportSuccess, handleExportError);
+  const presentationExport = useExportToPresentation(
+    markdown,
+    fileName,
+    handleExportSuccess,
+    handleExportError
+  );
 
   // Get current export state based on selected format
   const getCurrentExportState = () => {
@@ -103,9 +102,9 @@ export const AdvancedExport: React.FC<AdvancedExportProps> = ({
     const validation = validateOptions();
     if (!validation.isValid) {
       toast({
-        title: "Validasi gagal",
+        title: 'Validasi gagal',
         description: validation.errors.join(', '),
-        variant: "destructive"
+        variant: 'destructive',
       });
       return;
     }
@@ -142,16 +141,17 @@ export const AdvancedExport: React.FC<AdvancedExportProps> = ({
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent
-        className={`flex flex-col p-0 mx-auto ${isMobile
-          ? 'w-[92vw] h-[94vh] max-w-none'
-          : isTablet
-            ? 'w-[95vw] h-[92vh] max-w-5xl'
-            : 'w-[95vw] max-w-7xl h-[90vh]'
-          }`}
+        className={`flex flex-col p-0 mx-auto ${
+          isMobile
+            ? 'w-[92vw] h-[94vh] max-w-none'
+            : isTablet
+              ? 'w-[95vw] h-[92vh] max-w-5xl'
+              : 'w-[95vw] max-w-7xl h-[90vh]'
+        }`}
         style={{
           backgroundColor: currentTheme?.background || undefined,
           borderColor: currentTheme?.accent || undefined,
-          color: textColor
+          color: textColor,
         }}
       >
         {/* Dialog Header */}
@@ -159,15 +159,14 @@ export const AdvancedExport: React.FC<AdvancedExportProps> = ({
           className={`flex-shrink-0 ${isMobile ? 'p-4 pb-2' : 'p-3 sm:p-4 pb-2'}`}
           style={{
             backgroundColor: currentTheme?.surface ? `${currentTheme.surface}80` : undefined,
-            borderColor: currentTheme?.accent || undefined
+            borderColor: currentTheme?.accent || undefined,
           }}
         >
           <DialogTitle
             className={`flex items-center ${isMobile ? 'text-sm' : 'text-sm sm:text-base'}`}
             style={{ color: textColor }}
           >
-            <Download className={`mr-2 ${isMobile ? 'h-4 w-4' : 'h-4 w-4 sm:h-5 sm:w-5'
-              }`} />
+            <Download className={`mr-2 ${isMobile ? 'h-4 w-4' : 'h-4 w-4 sm:h-5 sm:w-5'}`} />
             Advanced Export
             <Badge variant="secondary" className="ml-2 text-xs">
               {options.format.toUpperCase()}
@@ -176,36 +175,50 @@ export const AdvancedExport: React.FC<AdvancedExportProps> = ({
         </DialogHeader>
 
         {/* Main Content */}
-        <div className={`flex-1 flex overflow-hidden min-h-0 ${isMobile || isTablet ? 'flex-col' : 'flex-col lg:flex-row'
-          }`}>
+        <div
+          className={`flex-1 flex overflow-hidden min-h-0 ${
+            isMobile || isTablet ? 'flex-col' : 'flex-col lg:flex-row'
+          }`}
+        >
           {/* Export Options Panel */}
-          <div className={`bg-muted/20 flex flex-col advanced-export-options-panel ${isMobile || isTablet
-            ? 'w-full border-b flex-shrink-0'
-            : 'w-full lg:w-80 xl:w-96 border-b lg:border-b-0 lg:border-r flex-shrink-0'
-            } ${isMobile ? 'max-h-[45vh]' : isTablet ? 'max-h-[50vh]' : ''
-            }`}>
-            <Tabs defaultValue="format" className={`h-full flex flex-col ${isMobile || isTablet ? 'advanced-export-tabs-container' : ''
-              }`}>
+          <div
+            className={`bg-muted/20 flex flex-col advanced-export-options-panel ${
+              isMobile || isTablet
+                ? 'w-full border-b flex-shrink-0'
+                : 'w-full lg:w-80 xl:w-96 border-b lg:border-b-0 lg:border-r flex-shrink-0'
+            } ${isMobile ? 'max-h-[45vh]' : isTablet ? 'max-h-[50vh]' : ''}`}
+          >
+            <Tabs
+              defaultValue="format"
+              className={`h-full flex flex-col ${
+                isMobile || isTablet ? 'advanced-export-tabs-container' : ''
+              }`}
+            >
               {/* Tabs Navigation */}
-              <TabsList className={`grid z-20 flex-shrink-0 ${isMobile || isTablet
-                ? 'advanced-export-mobile-tabs grid-cols-1'
-                : 'advanced-export-tabs-list grid-cols-3'
-                }`}>
+              <TabsList
+                className={`grid z-20 flex-shrink-0 ${
+                  isMobile || isTablet
+                    ? 'advanced-export-mobile-tabs grid-cols-1'
+                    : 'advanced-export-tabs-list grid-cols-3'
+                }`}
+              >
                 {isMobile || isTablet ? (
                   // Mobile/Tablet: Vertical layout
                   <>
                     <div className="grid grid-cols-2 gap-2">
                       <TabsTrigger
                         value="format"
-                        className={`advanced-export-mobile-tab-trigger ${isMobile ? 'text-xs px-3 py-2' : 'text-sm px-4 py-2'
-                          }`}
+                        className={`advanced-export-mobile-tab-trigger ${
+                          isMobile ? 'text-xs px-3 py-2' : 'text-sm px-4 py-2'
+                        }`}
                       >
                         Format
                       </TabsTrigger>
                       <TabsTrigger
                         value="style"
-                        className={`advanced-export-mobile-tab-trigger ${isMobile ? 'text-xs px-3 py-2' : 'text-sm px-4 py-2'
-                          }`}
+                        className={`advanced-export-mobile-tab-trigger ${
+                          isMobile ? 'text-xs px-3 py-2' : 'text-sm px-4 py-2'
+                        }`}
                       >
                         Style
                       </TabsTrigger>
@@ -213,8 +226,9 @@ export const AdvancedExport: React.FC<AdvancedExportProps> = ({
                     <div className="grid grid-cols-1 mt-2">
                       <TabsTrigger
                         value="advanced"
-                        className={`advanced-export-mobile-tab-trigger ${isMobile ? 'text-xs px-3 py-2' : 'text-sm px-4 py-2'
-                          }`}
+                        className={`advanced-export-mobile-tab-trigger ${
+                          isMobile ? 'text-xs px-3 py-2' : 'text-sm px-4 py-2'
+                        }`}
                       >
                         Advanced
                       </TabsTrigger>

@@ -1,10 +1,10 @@
-
-import React, { useMemo } from 'react';
-import { ScrollArea } from "@/components/ui/scroll-area";
+import type React from 'react';
+import { useMemo } from 'react';
+import { ScrollArea } from '@/components/ui/scroll-area';
 import { parseMarkdownHeadings } from '@/utils/headingUtils';
 import { useScrollSpy, useKeyboardNavigation, useOutlineNavigation } from '@/hooks/navigation';
 import { isOutlineEmpty } from '@/utils/outlineUtils';
-import { DocumentOutlineProps } from '@/types/outline';
+import type { DocumentOutlineProps } from '@/types/outline';
 
 // Sub-components
 import { OutlineHeader } from './outline/OutlineHeader';
@@ -20,13 +20,13 @@ export const DocumentOutline: React.FC<DocumentOutlineProps> = ({ markdown, them
   const outline = useMemo(() => parseMarkdownHeadings(markdown), [markdown]);
 
   // Extract heading IDs untuk scroll spy
-  const headingIds = useMemo(() => outline.map(item => item.id), [outline]);
+  const headingIds = useMemo(() => outline.map((item) => item.id), [outline]);
 
   // Setup scroll spy untuk mendeteksi active heading
   const { activeId, isActive, setActiveHeading } = useScrollSpy(headingIds, {
     offset: 100,
     threshold: 0.6,
-    rootMargin: '-20% 0px -35% 0px'
+    rootMargin: '-20% 0px -35% 0px',
   });
 
   // Setup keyboard navigation
@@ -35,7 +35,7 @@ export const DocumentOutline: React.FC<DocumentOutlineProps> = ({ markdown, them
     activeId,
     onActiveChange: setActiveHeading,
     enabled: true,
-    offset: 100
+    offset: 100,
   });
 
   // Setup outline navigation logic
@@ -44,7 +44,7 @@ export const DocumentOutline: React.FC<DocumentOutlineProps> = ({ markdown, them
     activeId,
     onActiveChange: setActiveHeading,
     enabled: true,
-    offset: 120
+    offset: 120,
   });
 
   // Early return untuk empty state
@@ -63,10 +63,7 @@ export const DocumentOutline: React.FC<DocumentOutlineProps> = ({ markdown, them
           aria-labelledby="outline-heading"
           aria-label="Document Outline Navigation"
         >
-          <div
-            role="list"
-            aria-label="Document structure"
-          >
+          <div role="list" aria-label="Document structure">
             {outline.map((item, index) => {
               const isItemActive = isActive(item.id);
 

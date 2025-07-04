@@ -3,11 +3,11 @@
  * Mengintegrasikan header dan sidebar dengan state management yang clean
  */
 
-import React from 'react';
+import type React from 'react';
 import { NavHeader } from './components/NavHeader';
 import { NavSidebar } from './components/NavSidebar';
 import { useMobileNav } from './hooks/useMobileNav';
-import { MobileNavProps } from './types/navTypes';
+import type { MobileNavProps } from './types/navTypes';
 
 export const MobileNav: React.FC<MobileNavProps> = ({
   currentTheme,
@@ -41,7 +41,7 @@ export const MobileNav: React.FC<MobileNavProps> = ({
   canUndo,
   canRedo,
   onShowAdvancedExport,
-  onShowTemplates
+  onShowTemplates,
 }) => {
   const { isOpen, toggleSidebar, closeSidebar } = useMobileNav();
 

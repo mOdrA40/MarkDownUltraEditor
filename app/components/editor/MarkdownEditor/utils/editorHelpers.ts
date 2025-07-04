@@ -3,7 +3,7 @@
  * @author Axel Modra
  */
 
-import { ImageData, TemplateData, ValidationResult } from '../types';
+import type { ImageData, TemplateData, ValidationResult } from '../types';
 
 /**
  * Text manipulation utilities
@@ -13,7 +13,10 @@ export const textUtils = {
    * Count words in text
    */
   countWords: (text: string): number => {
-    return text.trim().split(/\s+/).filter(word => word.length > 0).length;
+    return text
+      .trim()
+      .split(/\s+/)
+      .filter((word) => word.length > 0).length;
   },
 
   /**
@@ -41,13 +44,13 @@ export const textUtils = {
    * Count paragraphs in text
    */
   countParagraphs: (text: string): number => {
-    return text.split(/\n\s*\n/).filter(p => p.trim().length > 0).length;
+    return text.split(/\n\s*\n/).filter((p) => p.trim().length > 0).length;
   },
 
   /**
    * Estimate reading time in minutes
    */
-  estimateReadingTime: (text: string, wordsPerMinute: number = 200): number => {
+  estimateReadingTime: (text: string, wordsPerMinute = 200): number => {
     const wordCount = textUtils.countWords(text);
     return Math.ceil(wordCount / wordsPerMinute);
   },
@@ -62,9 +65,9 @@ export const textUtils = {
       charactersNoSpaces: textUtils.countCharactersNoSpaces(text),
       lines: textUtils.countLines(text),
       paragraphs: textUtils.countParagraphs(text),
-      readingTime: textUtils.estimateReadingTime(text)
+      readingTime: textUtils.estimateReadingTime(text),
     };
-  }
+  },
 };
 
 /**
@@ -82,7 +85,10 @@ export const markdownUtils = {
     while ((match = headingRegex.exec(markdown)) !== null) {
       const level = match[1].length;
       const text = match[2].trim();
-      const id = text.toLowerCase().replace(/[^\w\s-]/g, '').replace(/\s+/g, '-');
+      const id = text
+        .toLowerCase()
+        .replace(/[^\w\s-]/g, '')
+        .replace(/\s+/g, '-');
       headings.push({ level, text, id });
     }
 
@@ -101,7 +107,7 @@ export const markdownUtils = {
       links.push({
         text: match[1],
         url: match[2],
-        title: match[3] || undefined
+        title: match[3] || undefined,
       });
     }
 
@@ -120,7 +126,7 @@ export const markdownUtils = {
       images.push({
         alt: match[1] || '',
         url: match[2],
-        title: match[3] || undefined
+        title: match[3] || undefined,
       });
     }
 
@@ -138,7 +144,7 @@ export const markdownUtils = {
     while ((match = codeBlockRegex.exec(markdown)) !== null) {
       codeBlocks.push({
         language: match[1] || 'text',
-        code: match[2].trim()
+        code: match[2].trim(),
       });
     }
 
@@ -152,7 +158,7 @@ export const markdownUtils = {
     const headings = markdownUtils.extractHeadings(markdown);
     let toc = '';
 
-    headings.forEach(heading => {
+    headings.forEach((heading) => {
       const indent = '  '.repeat(heading.level - 1);
       toc += `${indent}- [${heading.text}](#${heading.id})\n`;
     });
@@ -196,9 +202,9 @@ export const markdownUtils = {
     return {
       isValid: errors.length === 0,
       errors,
-      warnings
+      warnings,
     };
-  }
+  },
 };
 
 /**
@@ -220,7 +226,7 @@ export const fileUtils = {
   /**
    * Download text as file
    */
-  downloadTextAsFile: (content: string, filename: string, mimeType: string = 'text/plain') => {
+  downloadTextAsFile: (content: string, filename: string, mimeType = 'text/plain') => {
     const blob = new Blob([content], { type: mimeType });
     const url = URL.createObjectURL(blob);
     const link = document.createElement('a');
@@ -269,8 +275,8 @@ export const fileUtils = {
     const k = 1024;
     const sizes = ['Bytes', 'KB', 'MB', 'GB'];
     const i = Math.floor(Math.log(bytes) / Math.log(k));
-    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
-  }
+    return Number.parseFloat((bytes / k ** i).toFixed(2)) + ' ' + sizes[i];
+  },
 };
 
 /**
@@ -317,12 +323,11 @@ export const urlUtils = {
    */
   sanitizeUrl: (url: string): string => {
     // Remove javascript: and data: protocols for security
-    if (url.toLowerCase().startsWith('javascript:') || 
-        url.toLowerCase().startsWith('data:')) {
+    if (url.toLowerCase().startsWith('javascript:') || url.toLowerCase().startsWith('data:')) {
       return '#';
     }
     return url;
-  }
+  },
 };
 
 /**
@@ -335,8 +340,8 @@ export const templateUtils = {
   createTemplate: (
     name: string,
     content: string,
-    description: string = '',
-    category: string = 'Custom',
+    description = '',
+    category = 'Custom',
     tags: string[] = []
   ): TemplateData => {
     return {
@@ -346,7 +351,7 @@ export const templateUtils = {
       content,
       category,
       tags,
-      preview: content.substring(0, 200) + (content.length > 200 ? '...' : '')
+      preview: content.substring(0, 200) + (content.length > 200 ? '...' : ''),
     };
   },
 
@@ -354,16 +359,14 @@ export const templateUtils = {
    * Filter templates by category
    */
   filterByCategory: (templates: TemplateData[], category: string): TemplateData[] => {
-    return templates.filter(template => template.category === category);
+    return templates.filter((template) => template.category === category);
   },
 
   /**
    * Filter templates by tags
    */
   filterByTags: (templates: TemplateData[], tags: string[]): TemplateData[] => {
-    return templates.filter(template => 
-      tags.some(tag => template.tags.includes(tag))
-    );
+    return templates.filter((template) => tags.some((tag) => template.tags.includes(tag)));
   },
 
   /**
@@ -371,11 +374,12 @@ export const templateUtils = {
    */
   searchTemplates: (templates: TemplateData[], query: string): TemplateData[] => {
     const lowerQuery = query.toLowerCase();
-    return templates.filter(template =>
-      template.name.toLowerCase().includes(lowerQuery) ||
-      template.description.toLowerCase().includes(lowerQuery)
+    return templates.filter(
+      (template) =>
+        template.name.toLowerCase().includes(lowerQuery) ||
+        template.description.toLowerCase().includes(lowerQuery)
     );
-  }
+  },
 };
 
 /**
@@ -408,7 +412,7 @@ export const performanceUtils = {
       if (!inThrottle) {
         func(...args);
         inThrottle = true;
-        setTimeout(() => inThrottle = false, limit);
+        setTimeout(() => (inThrottle = false), limit);
       }
     };
   },
@@ -421,5 +425,5 @@ export const performanceUtils = {
     const result = func();
     const time = performance.now() - start;
     return { result, time };
-  }
+  },
 };

@@ -55,22 +55,22 @@ export interface UseWritingSettingsOptions {
    * Storage key untuk localStorage
    */
   storageKey?: string;
-  
+
   /**
    * Auto-save delay (ms)
    */
   autoSaveDelay?: number;
-  
+
   /**
    * Enable validation
    */
   enableValidation?: boolean;
-  
+
   /**
    * Custom validation rules
    */
   validationRules?: Partial<WritingSettingsValidation>;
-  
+
   /**
    * Callback ketika settings berubah
    */
@@ -91,7 +91,7 @@ export interface UseWritingSettingsReturn extends WritingSettings {
   toggleZenMode: () => void;
   resetSettings: () => void;
   batchUpdate: (updates: Partial<WritingSettings>) => void;
-  
+
   // Utility methods
   isValidFontSize: (size: number) => boolean;
   isValidLineHeight: (height: number) => boolean;
@@ -119,13 +119,13 @@ export const DEFAULT_VALIDATION_RULES: WritingSettingsValidation = {
   fontSize: {
     min: 8,
     max: 32,
-    step: 1
+    step: 1,
   },
   lineHeight: {
     min: 1.0,
     max: 3.0,
-    step: 0.1
-  }
+    step: 0.1,
+  },
 };
 
 /**
@@ -134,5 +134,5 @@ export const DEFAULT_VALIDATION_RULES: WritingSettingsValidation = {
 export const WRITING_SETTINGS_CONSTANTS = {
   DEFAULT_STORAGE_KEY: 'markdownEditor_settings',
   DEFAULT_AUTO_SAVE_DELAY: 500,
-  EXPORT_VERSION: '1.0'
+  EXPORT_VERSION: '1.0',
 } as const;

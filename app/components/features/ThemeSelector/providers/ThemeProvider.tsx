@@ -1,11 +1,18 @@
 /**
  * Global Theme Provider
  * Provider global untuk mengelola theme state di seluruh aplikasi
- * 
+ *
  * @author Axel Modra
  */
 
-import React, { createContext, useContext, useEffect, useState, useCallback, ReactNode } from 'react';
+import React, {
+  createContext,
+  useContext,
+  useEffect,
+  useState,
+  useCallback,
+  type ReactNode,
+} from 'react';
 import { themes } from '../constants/themes.constants';
 import type { Theme } from '../types/theme.types';
 
@@ -40,9 +47,9 @@ const THEME_STORAGE_KEY = 'markdownEditor_theme';
 /**
  * Global Theme Provider Component
  */
-export const ThemeProvider: React.FC<ThemeProviderProps> = ({ 
-  children, 
-  defaultTheme = themes[0] 
+export const ThemeProvider: React.FC<ThemeProviderProps> = ({
+  children,
+  defaultTheme = themes[0],
 }) => {
   const [currentTheme, setCurrentTheme] = useState<Theme>(defaultTheme);
   const [isLoading, setIsLoading] = useState(true);
@@ -69,12 +76,12 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({
     // Set CSS custom properties for button colors to prevent JavaScript override
     const root = document.documentElement;
     const buttonColorMap: Record<string, string> = {
-      'ocean': '#1e3a8a',
-      'forest': '#14532d',
-      'sunset': '#c2410c',
-      'purple': '#6b21a8',
-      'rose': '#be185d',
-      'dark': 'hsl(210 40% 98%)'
+      ocean: '#1e3a8a',
+      forest: '#14532d',
+      sunset: '#c2410c',
+      purple: '#6b21a8',
+      rose: '#be185d',
+      dark: 'hsl(210 40% 98%)',
     };
 
     const buttonColor = buttonColorMap[theme.id] || theme.text;
@@ -82,7 +89,9 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({
 
     // Force immediate application with high priority
     setTimeout(() => {
-      const buttons = document.querySelectorAll('button[data-theme-button="true"], .editor-header button, .toolbar button');
+      const buttons = document.querySelectorAll(
+        'button[data-theme-button="true"], .editor-header button, .toolbar button'
+      );
       buttons.forEach((button) => {
         if (button instanceof HTMLElement) {
           button.style.setProperty('color', buttonColor, 'important');
@@ -90,7 +99,9 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({
       });
     }, 0);
 
-    console.log(`🎨 Global Theme applied: ${theme.id}, button color: ${buttonColor}, classes: ${document.documentElement.className}`);
+    console.log(
+      `🎨 Global Theme applied: ${theme.id}, button color: ${buttonColor}, classes: ${document.documentElement.className}`
+    );
   }, []);
 
   /**
@@ -100,17 +111,19 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({
     if (typeof document === 'undefined') return;
 
     const buttonColorMap: Record<string, string> = {
-      'ocean': '#1e3a8a',
-      'forest': '#14532d',
-      'sunset': '#c2410c',
-      'purple': '#6b21a8',
-      'rose': '#be185d',
-      'dark': 'hsl(210 40% 98%)'
+      ocean: '#1e3a8a',
+      forest: '#14532d',
+      sunset: '#c2410c',
+      purple: '#6b21a8',
+      rose: '#be185d',
+      dark: 'hsl(210 40% 98%)',
     };
 
     const applyButtonColors = () => {
       const buttonColor = buttonColorMap[currentTheme.id] || currentTheme.text;
-      const buttons = document.querySelectorAll('button[data-theme-button="true"], .editor-header button, .toolbar button');
+      const buttons = document.querySelectorAll(
+        'button[data-theme-button="true"], .editor-header button, .toolbar button'
+      );
       buttons.forEach((button) => {
         if (button instanceof HTMLElement) {
           button.style.setProperty('color', buttonColor, 'important');
@@ -143,7 +156,7 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({
 
     observer.observe(document.body, {
       childList: true,
-      subtree: true
+      subtree: true,
     });
 
     return () => {
@@ -169,7 +182,7 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({
     try {
       const savedThemeId = localStorage.getItem(THEME_STORAGE_KEY);
       if (savedThemeId) {
-        const savedTheme = themes.find(t => t.id === savedThemeId);
+        const savedTheme = themes.find((t) => t.id === savedThemeId);
         return savedTheme || null;
       }
     } catch (error) {
@@ -181,11 +194,14 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({
   /**
    * Set theme with all side effects
    */
-  const setTheme = useCallback((theme: Theme) => {
-    setCurrentTheme(theme);
-    applyTheme(theme);
-    saveTheme(theme);
-  }, [applyTheme, saveTheme]);
+  const setTheme = useCallback(
+    (theme: Theme) => {
+      setCurrentTheme(theme);
+      applyTheme(theme);
+      saveTheme(theme);
+    },
+    [applyTheme, saveTheme]
+  );
 
   /**
    * Load saved theme on mount
@@ -206,14 +222,10 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({
     currentTheme,
     setTheme,
     availableThemes: themes,
-    isLoading
+    isLoading,
   };
 
-  return (
-    <ThemeContext.Provider value={contextValue}>
-      {children}
-    </ThemeContext.Provider>
-  );
+  return <ThemeContext.Provider value={contextValue}>{children}</ThemeContext.Provider>;
 };
 
 /**

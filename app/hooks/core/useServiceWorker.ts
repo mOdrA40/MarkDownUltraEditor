@@ -48,8 +48,8 @@ export const useServiceWorker = (): UseServiceWorkerReturn => {
   // Check if Service Worker is supported
   useEffect(() => {
     const isSupported = 'serviceWorker' in navigator;
-    setState(prev => ({ ...prev, isSupported }));
-    
+    setState((prev) => ({ ...prev, isSupported }));
+
     if (isSupported) {
       console.log('Service Worker: Supported');
     } else {
@@ -66,15 +66,15 @@ export const useServiceWorker = (): UseServiceWorkerReturn => {
 
     try {
       console.log('Service Worker: Registering...');
-      setState(prev => ({ ...prev, isInstalling: true, error: null }));
+      setState((prev) => ({ ...prev, isInstalling: true, error: null }));
 
       const reg = await navigator.serviceWorker.register('/sw.js', {
         scope: '/',
       });
 
       setRegistration(reg);
-      
-      setState(prev => ({
+
+      setState((prev) => ({
         ...prev,
         isRegistered: true,
         isInstalling: false,
@@ -87,13 +87,13 @@ export const useServiceWorker = (): UseServiceWorkerReturn => {
       // Listen for updates
       reg.addEventListener('updatefound', () => {
         console.log('Service Worker: Update found');
-        setState(prev => ({ ...prev, isInstalling: true }));
+        setState((prev) => ({ ...prev, isInstalling: true }));
 
         const newWorker = reg.installing;
         if (newWorker) {
           newWorker.addEventListener('statechange', () => {
             if (newWorker.state === 'installed') {
-              setState(prev => ({
+              setState((prev) => ({
                 ...prev,
                 isInstalling: false,
                 isWaiting: true,
@@ -104,10 +104,9 @@ export const useServiceWorker = (): UseServiceWorkerReturn => {
           });
         }
       });
-
     } catch (error) {
       console.error('Service Worker: Registration failed', error);
-      setState(prev => ({
+      setState((prev) => ({
         ...prev,
         isInstalling: false,
         error: error instanceof Error ? error.message : 'Registration failed',
@@ -127,7 +126,7 @@ export const useServiceWorker = (): UseServiceWorkerReturn => {
       await registration.update();
     } catch (error) {
       console.error('Service Worker: Update failed', error);
-      setState(prev => ({
+      setState((prev) => ({
         ...prev,
         error: error instanceof Error ? error.message : 'Update failed',
       }));
@@ -152,32 +151,38 @@ export const useServiceWorker = (): UseServiceWorkerReturn => {
   }, [registration]);
 
   // Cache a file for offline access
-  const cacheFile = useCallback((url: string, content: string): void => {
-    if (!registration?.active) {
-      console.warn('Service Worker: No active worker found');
-      return;
-    }
+  const cacheFile = useCallback(
+    (url: string, content: string): void => {
+      if (!registration?.active) {
+        console.warn('Service Worker: No active worker found');
+        return;
+      }
 
-    console.log('Service Worker: Caching file', url);
-    registration.active.postMessage({
-      type: 'CACHE_FILE',
-      data: { url, content },
-    });
-  }, [registration]);
+      console.log('Service Worker: Caching file', url);
+      registration.active.postMessage({
+        type: 'CACHE_FILE',
+        data: { url, content },
+      });
+    },
+    [registration]
+  );
 
   // Clear cache
-  const clearCache = useCallback((cacheName?: string): void => {
-    if (!registration?.active) {
-      console.warn('Service Worker: No active worker found');
-      return;
-    }
+  const clearCache = useCallback(
+    (cacheName?: string): void => {
+      if (!registration?.active) {
+        console.warn('Service Worker: No active worker found');
+        return;
+      }
 
-    console.log('Service Worker: Clearing cache', cacheName || 'all');
-    registration.active.postMessage({
-      type: 'CLEAR_CACHE',
-      data: { cacheName },
-    });
-  }, [registration]);
+      console.log('Service Worker: Clearing cache', cacheName || 'all');
+      registration.active.postMessage({
+        type: 'CLEAR_CACHE',
+        data: { cacheName },
+      });
+    },
+    [registration]
+  );
 
   // Listen for messages from Service Worker
   useEffect(() => {

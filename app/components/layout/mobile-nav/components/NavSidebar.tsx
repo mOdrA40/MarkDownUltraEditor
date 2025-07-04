@@ -3,26 +3,21 @@
  * Menangani slide-out menu dengan semua navigation sections
  */
 
-import React from 'react';
-import { Sheet, SheetContent } from "@/components/ui/sheet";
-import { Separator } from "@/components/ui/separator";
-import { Button } from "@/components/ui/button";
-import {
-  Palette,
-  FileText,
-  BookOpen,
-  Download
-} from "lucide-react";
+import type React from 'react';
+import { Sheet, SheetContent } from '@/components/ui/sheet';
+import { Separator } from '@/components/ui/separator';
+import { Button } from '@/components/ui/button';
+import { Palette, FileText, BookOpen, Download } from 'lucide-react';
 
 // Import components
 import { NavSection } from './NavSection';
-import { ThemeSelector } from "../../../features/ThemeSelector";
-import { FileOperations } from "../../../features/FileOperations";
-import { Toolbar } from "../../../editor/Toolbar";
-import { WritingSettings } from "../../../features/WritingSettings";
+import { ThemeSelector } from '../../../features/ThemeSelector';
+import { FileOperations } from '../../../features/FileOperations';
+import { Toolbar } from '../../../editor/Toolbar';
+import { WritingSettings } from '../../../features/WritingSettings';
 
 // Import types
-import { NavSidebarProps } from '../types/navTypes';
+import type { NavSidebarProps } from '../types/navTypes';
 
 export const NavSidebar: React.FC<NavSidebarProps> = ({
   isOpen,
@@ -52,7 +47,7 @@ export const NavSidebar: React.FC<NavSidebarProps> = ({
   onTogglePreview,
   onToggleZen,
   onShowAdvancedExport,
-  onShowTemplates
+  onShowTemplates,
 }) => {
   /**
    * Execute action and close sidebar
@@ -67,29 +62,18 @@ export const NavSidebar: React.FC<NavSidebarProps> = ({
       <SheetContent side="left" className="w-80 overflow-y-auto">
         <div className="space-y-6 pt-6">
           {/* Theme Section */}
-          <NavSection
-            title="Theme"
-            icon={Palette}
-            collapsible={false}
-          >
-            <ThemeSelector 
-              currentTheme={currentTheme}
-              onThemeChange={onThemeChange}
-            />
+          <NavSection title="Theme" icon={Palette} collapsible={false}>
+            <ThemeSelector currentTheme={currentTheme} onThemeChange={onThemeChange} />
           </NavSection>
-          
+
           <Separator />
-          
+
           {/* File Operations Section */}
-          <NavSection
-            title="File Operations"
-            icon={FileText}
-            collapsible={false}
-          >
+          <NavSection title="File Operations" icon={FileText} collapsible={false}>
             <div className="space-y-2">
               {/* New File Button */}
-              <Button 
-                variant="outline" 
+              <Button
+                variant="outline"
                 className="w-full justify-start"
                 onClick={() => executeAction(onNewFile)}
               >
@@ -119,8 +103,6 @@ export const NavSidebar: React.FC<NavSidebarProps> = ({
                 Document Templates
               </Button>
 
-
-
               {/* Advanced Export */}
               <Button
                 variant="outline"
@@ -143,9 +125,7 @@ export const NavSidebar: React.FC<NavSidebarProps> = ({
             defaultCollapsed={false}
           >
             <div className="space-y-3">
-              <Toolbar 
-                onInsertText={(text) => executeAction(() => onInsertText(text))} 
-              />
+              <Toolbar onInsertText={(text) => executeAction(() => onInsertText(text))} />
             </div>
           </NavSection>
 
@@ -179,14 +159,10 @@ export const NavSidebar: React.FC<NavSidebarProps> = ({
           <Separator />
 
           {/* View Options Section */}
-          <NavSection
-            title="View Options"
-            icon={FileText}
-            collapsible={false}
-          >
+          <NavSection title="View Options" icon={FileText} collapsible={false}>
             <div className="space-y-2">
-              <Button 
-                variant="outline" 
+              <Button
+                variant="outline"
                 className="w-full justify-start"
                 onClick={() => executeAction(onTogglePreview)}
               >
@@ -202,9 +178,9 @@ export const NavSidebar: React.FC<NavSidebarProps> = ({
                   </>
                 )}
               </Button>
-              
-              <Button 
-                variant="outline" 
+
+              <Button
+                variant="outline"
                 className="w-full justify-start"
                 onClick={() => executeAction(onToggleZen)}
               >

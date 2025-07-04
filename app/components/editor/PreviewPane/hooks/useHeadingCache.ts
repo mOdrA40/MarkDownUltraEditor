@@ -5,7 +5,7 @@
 
 import { useEffect, useCallback } from 'react';
 import { generateHeadingId } from '@/utils/headingUtils';
-import { HeadingCacheEntry } from '../types/preview.types';
+import type { HeadingCacheEntry } from '../types/preview.types';
 
 // Global cache untuk heading mappings
 const headingCache = new Map<string, HeadingCacheEntry>();
@@ -68,10 +68,11 @@ export const useHeadingCache = (markdown: string) => {
             }
           }
           return null;
-        }
+        },
       };
 
-      (window as unknown as { headingCacheUtils: typeof debugUtils }).headingCacheUtils = debugUtils;
+      (window as unknown as { headingCacheUtils: typeof debugUtils }).headingCacheUtils =
+        debugUtils;
 
       console.log('🔧 Heading Cache Debug tools available:');
       console.log('  - headingCache - View cache Map');
@@ -87,38 +88,44 @@ export const useHeadingCache = (markdown: string) => {
    * @param headingText - Text heading
    * @returns Generated heading ID
    */
-  const getOrCreateHeadingId = useCallback((headingText: string): string => {
-    const cacheKey = `${markdown.length}-${headingText}`;
+  const getOrCreateHeadingId = useCallback(
+    (headingText: string): string => {
+      const cacheKey = `${markdown.length}-${headingText}`;
 
-    // Check cache first
-    if (headingCache.has(cacheKey)) {
-      return headingCache.get(cacheKey)!.id;
-    }
+      // Check cache first
+      if (headingCache.has(cacheKey)) {
+        return headingCache.get(cacheKey)!.id;
+      }
 
-    // Generate new ID
-    const lineNumber = getHeadingLineNumber(markdown, headingText);
-    const id = generateHeadingId(headingText, lineNumber);
+      // Generate new ID
+      const lineNumber = getHeadingLineNumber(markdown, headingText);
+      const id = generateHeadingId(headingText, lineNumber);
 
-    // Store in cache
-    const cacheEntry: HeadingCacheEntry = {
-      text: headingText,
-      lineNumber,
-      id
-    };
-    
-    headingCache.set(cacheKey, cacheEntry);
-    return id;
-  }, [markdown]);
+      // Store in cache
+      const cacheEntry: HeadingCacheEntry = {
+        text: headingText,
+        lineNumber,
+        id,
+      };
+
+      headingCache.set(cacheKey, cacheEntry);
+      return id;
+    },
+    [markdown]
+  );
 
   /**
    * Mendapatkan cache entry untuk heading tertentu
    * @param headingText - Text heading
    * @returns Cache entry atau null
    */
-  const getCacheEntry = useCallback((headingText: string): HeadingCacheEntry | null => {
-    const cacheKey = `${markdown.length}-${headingText}`;
-    return headingCache.get(cacheKey) || null;
-  }, [markdown]);
+  const getCacheEntry = useCallback(
+    (headingText: string): HeadingCacheEntry | null => {
+      const cacheKey = `${markdown.length}-${headingText}`;
+      return headingCache.get(cacheKey) || null;
+    },
+    [markdown]
+  );
 
   /**
    * Mendapatkan semua cache entries
@@ -142,7 +149,7 @@ export const useHeadingCache = (markdown: string) => {
     return {
       size: headingCache.size,
       entries: Array.from(headingCache.keys()),
-      isEmpty: headingCache.size === 0
+      isEmpty: headingCache.size === 0,
     };
   }, []);
 
@@ -153,6 +160,6 @@ export const useHeadingCache = (markdown: string) => {
     clearCache,
     getCacheStats,
     // Expose cache untuk advanced usage
-    cache: headingCache
+    cache: headingCache,
   };
 };

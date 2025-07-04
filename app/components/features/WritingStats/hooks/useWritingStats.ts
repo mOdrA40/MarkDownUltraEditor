@@ -11,7 +11,7 @@ import {
   formatStatValue,
   getStatLabel,
   getStatsConfig,
-  compareStats
+  compareStats,
 } from '../utils/stats.utils';
 import { READING_SPEED } from '../constants/stats.constants';
 import type {
@@ -19,7 +19,7 @@ import type {
   StatsConfig,
   StatType,
   ScreenSize,
-  UseWritingStatsReturn
+  UseWritingStatsReturn,
 } from '../types/stats.types';
 
 // Re-export responsive hooks untuk convenience
@@ -30,7 +30,7 @@ export {
   useIsDesktop,
   useWindowDimensions,
   useMediaQuery,
-  useOrientation
+  useOrientation,
 } from './useResponsiveDetection';
 
 /**
@@ -60,8 +60,7 @@ export const useWritingStats = (
 
   // Memoized label function
   const getStatLabelMemo = useCallback(
-    (type: StatType, format: 'short' | 'long' = 'long') =>
-      getStatLabel(type, format),
+    (type: StatType, format: 'short' | 'long' = 'long') => getStatLabel(type, format),
     []
   );
 
@@ -69,7 +68,7 @@ export const useWritingStats = (
     stats,
     formatStat,
     getStatLabel: getStatLabelMemo,
-    isCalculating: false // Always false for simple stats calculation
+    isCalculating: false, // Always false for simple stats calculation
   };
 };
 
@@ -82,7 +81,7 @@ export const useWritingStats = (
  */
 export const useDebouncedWritingStats = (
   markdown: string,
-  debounceMs: number = 300,
+  debounceMs = 300,
   config: Partial<StatsConfig> = {}
 ): UseWritingStatsReturn => {
   const [debouncedMarkdown, setDebouncedMarkdown] = useState(markdown);
@@ -104,7 +103,7 @@ export const useDebouncedWritingStats = (
 
   return {
     ...result,
-    isCalculating: isCalculating || result.isCalculating
+    isCalculating: isCalculating || result.isCalculating,
   };
 };
 
@@ -114,12 +113,9 @@ export const useDebouncedWritingStats = (
  * @param config - Konfigurasi untuk perhitungan (optional)
  * @returns Object dengan statistik, perbandingan, dan utility functions
  */
-export const useWritingStatsComparison = (
-  markdown: string,
-  config: Partial<StatsConfig> = {}
-) => {
+export const useWritingStatsComparison = (markdown: string, config: Partial<StatsConfig> = {}) => {
   const [previousStats, setPreviousStats] = useState<TextStatistics | null>(null);
-  
+
   const { stats, formatStat, getStatLabel, isCalculating } = useWritingStats(markdown, config);
 
   // Update previous stats when current stats change
@@ -142,7 +138,7 @@ export const useWritingStatsComparison = (
       paragraphs: stats.paragraphs - previousStats.paragraphs,
       sentences: stats.sentences - previousStats.sentences,
       lines: stats.lines - previousStats.lines,
-      readingTime: stats.readingTime - previousStats.readingTime
+      readingTime: stats.readingTime - previousStats.readingTime,
     };
   }, [stats, previousStats]);
 
@@ -153,7 +149,7 @@ export const useWritingStatsComparison = (
     formatStat,
     getStatLabel,
     isCalculating,
-    hasChanges: statsDiff !== null && Object.values(statsDiff).some(diff => diff !== 0)
+    hasChanges: statsDiff !== null && Object.values(statsDiff).some((diff) => diff !== 0),
   };
 };
 

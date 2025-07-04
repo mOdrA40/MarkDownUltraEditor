@@ -1,16 +1,13 @@
 /**
  * Responsive Detection Hook - Custom Hook untuk Screen Size Detection
  * Hook untuk mendeteksi ukuran layar dan responsive behavior
- * 
+ *
  * @author Axel Modra
  */
 
 import { useState, useEffect, useCallback, useMemo } from 'react';
 import { BREAKPOINTS_STATS } from '../constants/stats.constants';
-import type { 
-  ScreenSize, 
-  UseResponsiveDetectionReturn 
-} from '../types/stats.types';
+import type { ScreenSize, UseResponsiveDetectionReturn } from '../types/stats.types';
 
 /**
  * Mendapatkan screen size berdasarkan window width
@@ -20,13 +17,14 @@ import type {
 const getScreenSizeFromWidth = (width: number): ScreenSize => {
   if (width < BREAKPOINTS_STATS.mobile.max) {
     return 'mobile';
-  } else if (width <= BREAKPOINTS_STATS.smallTablet.max) {
-    return 'small-tablet';
-  } else if (width <= BREAKPOINTS_STATS.tablet.max) {
-    return 'tablet';
-  } else {
-    return 'desktop';
   }
+  if (width <= BREAKPOINTS_STATS.smallTablet.max) {
+    return 'small-tablet';
+  }
+  if (width <= BREAKPOINTS_STATS.tablet.max) {
+    return 'tablet';
+  }
+  return 'desktop';
 };
 
 /**
@@ -37,7 +35,7 @@ const debounce = <T extends (...args: unknown[]) => unknown>(
   wait: number
 ): ((...args: Parameters<T>) => void) => {
   let timeout: NodeJS.Timeout;
-  
+
   return (...args: Parameters<T>) => {
     clearTimeout(timeout);
     timeout = setTimeout(() => func(...args), wait);
@@ -49,9 +47,7 @@ const debounce = <T extends (...args: unknown[]) => unknown>(
  * @param debounceMs - Delay untuk debounce resize events (default: 150ms)
  * @returns Object dengan screen size info dan utilities
  */
-export const useResponsiveDetection = (
-  debounceMs: number = 150
-): UseResponsiveDetectionReturn => {
+export const useResponsiveDetection = (debounceMs = 150): UseResponsiveDetectionReturn => {
   // State untuk menyimpan screen size dan dimensions
   const [screenSize, setScreenSize] = useState<ScreenSize>(() => {
     // Initial value - safe untuk SSR
@@ -92,14 +88,14 @@ export const useResponsiveDetection = (
     const width = window.innerWidth;
     const height = window.innerHeight;
     const initialScreenSize = getScreenSizeFromWidth(width);
-    
+
     setWindowWidth(width);
     setWindowHeight(height);
     setScreenSize(initialScreenSize);
 
     // Add resize listener
     window.addEventListener('resize', handleResize);
-    
+
     // Cleanup
     return () => {
       window.removeEventListener('resize', handleResize);
@@ -107,17 +103,20 @@ export const useResponsiveDetection = (
   }, [handleResize]);
 
   // Memoized computed values
-  const computedValues = useMemo(() => ({
-    isMobile: screenSize === 'mobile',
-    isTablet: screenSize === 'small-tablet' || screenSize === 'tablet',
-    isDesktop: screenSize === 'desktop'
-  }), [screenSize]);
+  const computedValues = useMemo(
+    () => ({
+      isMobile: screenSize === 'mobile',
+      isTablet: screenSize === 'small-tablet' || screenSize === 'tablet',
+      isDesktop: screenSize === 'desktop',
+    }),
+    [screenSize]
+  );
 
   return {
     screenSize,
     windowWidth,
     windowHeight,
-    ...computedValues
+    ...computedValues,
   };
 };
 
@@ -153,7 +152,7 @@ export const useIsDesktop = (): boolean => {
  * @param debounceMs - Delay untuk debounce resize events
  * @returns Object dengan width dan height
  */
-export const useWindowDimensions = (debounceMs: number = 150) => {
+export const useWindowDimensions = (debounceMs = 150) => {
   const [dimensions, setDimensions] = useState(() => {
     if (typeof window === 'undefined') {
       return { width: 1024, height: 768 };
@@ -165,7 +164,7 @@ export const useWindowDimensions = (debounceMs: number = 150) => {
     const debouncedFn = debounce(() => {
       setDimensions({
         width: window.innerWidth,
-        height: window.innerHeight
+        height: window.innerHeight,
       });
     }, debounceMs);
 
@@ -174,14 +173,14 @@ export const useWindowDimensions = (debounceMs: number = 150) => {
 
   useEffect(() => {
     // Initial setup
-    setDimensions({ 
-      width: window.innerWidth, 
-      height: window.innerHeight 
+    setDimensions({
+      width: window.innerWidth,
+      height: window.innerHeight,
     });
 
     // Add resize listener
     window.addEventListener('resize', handleResize);
-    
+
     // Cleanup
     return () => {
       window.removeEventListener('resize', handleResize);

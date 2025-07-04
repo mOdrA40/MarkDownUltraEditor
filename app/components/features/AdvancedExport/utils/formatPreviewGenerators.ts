@@ -3,243 +3,279 @@
  * @author Axel Modra
  */
 
-import { HTMLGeneratorOptions, ThemeConfig } from '../types/export.types';
+import type { HTMLGeneratorOptions, ThemeConfig } from '../types/export.types';
 import { THEMES } from './constants';
 
 /**
  * Get appropriate text color based on current theme context
  */
 const getTextColorForTheme = (isDarkTheme: boolean): string => {
-    return isDarkTheme ? '#ffffff' : '#1f2937';
+  return isDarkTheme ? '#ffffff' : '#1f2937';
 };
 
 /**
  * Get description text color with better contrast
  */
 const getDescriptionTextColor = (isDarkTheme: boolean): string => {
-    return isDarkTheme ? '#d1d5db' : '#6b7280';
+  return isDarkTheme ? '#d1d5db' : '#6b7280';
 };
 
 /**
  * Get content text color for readability
  */
 const getContentTextColor = (isDarkTheme: boolean): string => {
-    return isDarkTheme ? '#f9fafb' : '#111827';
+  return isDarkTheme ? '#f9fafb' : '#111827';
 };
 
 /**
  * Get table header text color for better visibility
  */
 const getTableHeaderTextColor = (isDarkTheme: boolean, accentColor: string): string => {
-    // Untuk theme dark, gunakan warna yang kontras dengan background dark
-    if (isDarkTheme) {
-        // Jika accent color adalah warna terang, gunakan warna gelap untuk teks
-        if (accentColor === '#60a5fa' || accentColor === '#3b82f6' || accentColor.includes('blue')) {
-            return '#1e3a8a'; // Navy blue untuk kontras yang baik
-        }
-        // Untuk accent color gelap, gunakan putih
-        return '#ffffff';
+  // Untuk theme dark, gunakan warna yang kontras dengan background dark
+  if (isDarkTheme) {
+    // Jika accent color adalah warna terang, gunakan warna gelap untuk teks
+    if (accentColor === '#60a5fa' || accentColor === '#3b82f6' || accentColor.includes('blue')) {
+      return '#1e3a8a'; // Navy blue untuk kontras yang baik
     }
-    // Untuk theme light, selalu gunakan putih di atas accent color
+    // Untuk accent color gelap, gunakan putih
     return '#ffffff';
+  }
+  // Untuk theme light, selalu gunakan putih di atas accent color
+  return '#ffffff';
 };
 
 /**
  * Get table header background color for better visibility
  */
 const getTableHeaderBackgroundColor = (isDarkTheme: boolean, accentColor: string): string => {
-    if (isDarkTheme) {
-        // Untuk theme dark, pastikan background header terlihat dengan baik
-        if (accentColor === '#60a5fa') {
-            return '#3b82f6'; // Darker blue untuk kontras
-        }
-        return accentColor; // Gunakan accent color sebagai background
+  if (isDarkTheme) {
+    // Untuk theme dark, pastikan background header terlihat dengan baik
+    if (accentColor === '#60a5fa') {
+      return '#3b82f6'; // Darker blue untuk kontras
     }
-    return accentColor; // Untuk theme light, gunakan accent color normal
+    return accentColor; // Gunakan accent color sebagai background
+  }
+  return accentColor; // Untuk theme light, gunakan accent color normal
 };
 
 /**
  * Force check if current app theme is dark by checking multiple sources
  */
 const isCurrentAppThemeDark = (): boolean => {
-    if (typeof window === 'undefined') return false;
+  if (typeof window === 'undefined') return false;
 
-    // Check multiple possible sources for theme information
-    const body = document.body;
-    const html = document.documentElement;
+  // Check multiple possible sources for theme information
+  const body = document.body;
+  const html = document.documentElement;
 
-    // Check data attributes
-    const bodyTheme = body.getAttribute('data-theme');
-    const htmlTheme = html.getAttribute('data-theme');
+  // Check data attributes
+  const bodyTheme = body.getAttribute('data-theme');
+  const htmlTheme = html.getAttribute('data-theme');
 
-    // Check classes
-    const hasDarkClass = body.classList.contains('dark') ||
-        body.classList.contains('theme-dark') ||
-        html.classList.contains('dark') ||
-        html.classList.contains('theme-dark');
+  // Check classes
+  const hasDarkClass =
+    body.classList.contains('dark') ||
+    body.classList.contains('theme-dark') ||
+    html.classList.contains('dark') ||
+    html.classList.contains('theme-dark');
 
-    // Check if theme is explicitly dark
-    const isExplicitlyDark = bodyTheme === 'dark' || htmlTheme === 'dark';
+  // Check if theme is explicitly dark
+  const isExplicitlyDark = bodyTheme === 'dark' || htmlTheme === 'dark';
 
-    // Check CSS custom properties
-    const rootStyles = getComputedStyle(html);
-    const bgColor = rootStyles.getPropertyValue('--background') || '';
-    const textColor = rootStyles.getPropertyValue('--foreground') || '';
+  // Check CSS custom properties
+  const rootStyles = getComputedStyle(html);
+  const bgColor = rootStyles.getPropertyValue('--background') || '';
+  const textColor = rootStyles.getPropertyValue('--foreground') || '';
 
-    // Dark theme typically has dark background colors
-    const hasDarkBgColor = bgColor.includes('0f172a') ||
-        bgColor.includes('1e293b') ||
-        bgColor.includes('1f2937') ||
-        bgColor.includes('111827') ||
-        bgColor.includes('1a1a1a');
+  // Dark theme typically has dark background colors
+  const hasDarkBgColor =
+    bgColor.includes('0f172a') ||
+    bgColor.includes('1e293b') ||
+    bgColor.includes('1f2937') ||
+    bgColor.includes('111827') ||
+    bgColor.includes('1a1a1a');
 
-    // Light text color indicates dark theme
-    const hasLightTextColor = textColor.includes('f1f5f9') ||
-        textColor.includes('ffffff') ||
-        textColor.includes('e5e7eb');
+  // Light text color indicates dark theme
+  const hasLightTextColor =
+    textColor.includes('f1f5f9') || textColor.includes('ffffff') || textColor.includes('e5e7eb');
 
-    // Additional check for theme selector state
-    const themeSelector = document.querySelector('[data-theme-selector]') as HTMLElement;
-    const selectedTheme = themeSelector?.getAttribute('data-current-theme') || '';
-    const isSelectedDark = selectedTheme === 'dark';
+  // Additional check for theme selector state
+  const themeSelector = document.querySelector('[data-theme-selector]') as HTMLElement;
+  const selectedTheme = themeSelector?.getAttribute('data-current-theme') || '';
+  const isSelectedDark = selectedTheme === 'dark';
 
-    // Check for dark theme in localStorage
-    let storedTheme = '';
-    try {
-        storedTheme = localStorage.getItem('theme') || localStorage.getItem('selectedTheme') || '';
-    } catch {
-        // Ignore localStorage errors
-    }
-    const isStoredDark = storedTheme === 'dark';
+  // Check for dark theme in localStorage
+  let storedTheme = '';
+  try {
+    storedTheme = localStorage.getItem('theme') || localStorage.getItem('selectedTheme') || '';
+  } catch {
+    // Ignore localStorage errors
+  }
+  const isStoredDark = storedTheme === 'dark';
 
-    const result = isExplicitlyDark || hasDarkClass || hasDarkBgColor || hasLightTextColor || isSelectedDark || isStoredDark;
+  const result =
+    isExplicitlyDark ||
+    hasDarkClass ||
+    hasDarkBgColor ||
+    hasLightTextColor ||
+    isSelectedDark ||
+    isStoredDark;
 
-    // Debug logging in development
-    if (process.env.NODE_ENV === 'development') {
-        console.log('Dark theme detection:', {
-            isExplicitlyDark,
-            hasDarkClass,
-            hasDarkBgColor,
-            hasLightTextColor,
-            isSelectedDark,
-            isStoredDark,
-            result,
-            bodyTheme,
-            htmlTheme,
-            bgColor,
-            textColor,
-            selectedTheme,
-            storedTheme
-        });
-    }
+  // Debug logging in development
+  if (process.env.NODE_ENV === 'development') {
+    console.log('Dark theme detection:', {
+      isExplicitlyDark,
+      hasDarkClass,
+      hasDarkBgColor,
+      hasLightTextColor,
+      isSelectedDark,
+      isStoredDark,
+      result,
+      bodyTheme,
+      htmlTheme,
+      bgColor,
+      textColor,
+      selectedTheme,
+      storedTheme,
+    });
+  }
 
-    return result;
+  return result;
 };
 
 /**
  * Detect if current context is dark theme
  */
 const isDarkThemeContext = (options?: HTMLGeneratorOptions): boolean => {
-    // Check if theme is explicitly dark
-    if (options?.theme === 'dark') {
+  // Check if theme is explicitly dark
+  if (options?.theme === 'dark') {
+    return true;
+  }
+
+  // Check theme config
+  if (options?.themeConfig) {
+    const theme = options.themeConfig;
+    // Consider dark if background is dark
+    const bgColor = theme.backgroundColor.toLowerCase();
+    if (
+      bgColor.includes('#1') ||
+      bgColor.includes('#2') ||
+      bgColor.includes('#0') ||
+      bgColor.includes('black') ||
+      bgColor.includes('dark')
+    ) {
+      return true;
+    }
+  }
+
+  // Use comprehensive dark theme detection
+  if (typeof window !== 'undefined') {
+    const isDark = isCurrentAppThemeDark();
+
+    // Additional fallback: check if body background is dark
+    if (!isDark) {
+      const body = document.body;
+      const computedStyle = getComputedStyle(body);
+      const backgroundColor = computedStyle.backgroundColor;
+      const color = computedStyle.color;
+
+      // If background is dark or text is light, assume dark theme
+      const isDarkBg =
+        backgroundColor.includes('rgb(15, 23, 42)') || // slate-900
+        backgroundColor.includes('rgb(30, 41, 59)') || // slate-800
+        backgroundColor.includes('rgb(31, 41, 55)') || // gray-800
+        backgroundColor.includes('rgb(17, 24, 39)'); // gray-900
+
+      const isLightText =
+        color.includes('rgb(241, 245, 249)') || // slate-100
+        color.includes('rgb(255, 255, 255)') || // white
+        color.includes('rgb(229, 231, 235)'); // gray-200
+
+      if (isDarkBg || isLightText) {
         return true;
+      }
     }
 
-    // Check theme config
-    if (options?.themeConfig) {
-        const theme = options.themeConfig;
-        // Consider dark if background is dark
-        const bgColor = theme.backgroundColor.toLowerCase();
-        if (bgColor.includes('#1') || bgColor.includes('#2') || bgColor.includes('#0') ||
-            bgColor.includes('black') || bgColor.includes('dark')) {
-            return true;
-        }
-    }
+    return isDark;
+  }
 
-    // Use comprehensive dark theme detection
-    if (typeof window !== 'undefined') {
-        const isDark = isCurrentAppThemeDark();
-
-        // Additional fallback: check if body background is dark
-        if (!isDark) {
-            const body = document.body;
-            const computedStyle = getComputedStyle(body);
-            const backgroundColor = computedStyle.backgroundColor;
-            const color = computedStyle.color;
-
-            // If background is dark or text is light, assume dark theme
-            const isDarkBg = backgroundColor.includes('rgb(15, 23, 42)') || // slate-900
-                backgroundColor.includes('rgb(30, 41, 59)') || // slate-800
-                backgroundColor.includes('rgb(31, 41, 55)') || // gray-800
-                backgroundColor.includes('rgb(17, 24, 39)');   // gray-900
-
-            const isLightText = color.includes('rgb(241, 245, 249)') || // slate-100
-                color.includes('rgb(255, 255, 255)') ||   // white
-                color.includes('rgb(229, 231, 235)');     // gray-200
-
-            if (isDarkBg || isLightText) {
-                return true;
-            }
-        }
-
-        return isDark;
-    }
-
-    return false;
+  return false;
 };
 
 /**
  * Escape HTML characters untuk security
  */
 const escapeHtml = (text: string): string => {
-    const div = document.createElement('div');
-    div.textContent = text;
-    return div.innerHTML;
+  const div = document.createElement('div');
+  div.textContent = text;
+  return div.innerHTML;
 };
 
 /**
  * Get font family with appropriate fallbacks
  */
 const getFontFamilyWithFallback = (fontFamily: string): string => {
-    const fontMap: Record<string, string> = {
-        'Arial': '"Arial", "Helvetica Neue", Helvetica, sans-serif',
-        'Times New Roman': '"Times New Roman", Times, serif',
-        'Helvetica': '"Helvetica Neue", Helvetica, Arial, sans-serif',
-        'Georgia': 'Georgia, "Times New Roman", Times, serif',
-        'Verdana': 'Verdana, Geneva, sans-serif',
-        'Roboto': '"Roboto", "Segoe UI", Arial, sans-serif',
-        'Open Sans': '"Open Sans", "Segoe UI", Arial, sans-serif'
-    };
+  const fontMap: Record<string, string> = {
+    Arial: '"Arial", "Helvetica Neue", Helvetica, sans-serif',
+    'Times New Roman': '"Times New Roman", Times, serif',
+    Helvetica: '"Helvetica Neue", Helvetica, Arial, sans-serif',
+    Georgia: 'Georgia, "Times New Roman", Times, serif',
+    Verdana: 'Verdana, Geneva, sans-serif',
+    Roboto: '"Roboto", "Segoe UI", Arial, sans-serif',
+    'Open Sans': '"Open Sans", "Segoe UI", Arial, sans-serif',
+  };
 
-    return fontMap[fontFamily] || `"${fontFamily}", Arial, sans-serif`;
+  return fontMap[fontFamily] || `"${fontFamily}", Arial, sans-serif`;
 };
 
 /**
  * Generate page size specific styles
  */
 const generatePageSizeStyles = (pageSize: string, orientation: string): string => {
-    const pageSizes = {
-        'a4': { width: '210mm', height: '297mm' },
-        'letter': { width: '8.5in', height: '11in' },
-        'legal': { width: '8.5in', height: '14in' }
-    };
+  const pageSizes = {
+    a4: { width: '210mm', height: '297mm' },
+    letter: { width: '8.5in', height: '11in' },
+    legal: { width: '8.5in', height: '14in' },
+  };
 
-    const size = pageSizes[pageSize as keyof typeof pageSizes] || pageSizes.a4;
-    const isLandscape = orientation === 'landscape';
+  const size = pageSizes[pageSize as keyof typeof pageSizes] || pageSizes.a4;
+  const isLandscape = orientation === 'landscape';
 
-    const width = isLandscape ? size.height : size.width;
-    const height = isLandscape ? size.width : size.height;
+  const width = isLandscape ? size.height : size.width;
+  const height = isLandscape ? size.width : size.height;
 
-    // Convert to approximate pixel values for preview
-    const widthPx = pageSize === 'a4' ? (isLandscape ? '842px' : '595px') :
-        pageSize === 'letter' ? (isLandscape ? '792px' : '612px') :
-            pageSize === 'legal' ? (isLandscape ? '1008px' : '612px') : '595px';
+  // Convert to approximate pixel values for preview
+  const widthPx =
+    pageSize === 'a4'
+      ? isLandscape
+        ? '842px'
+        : '595px'
+      : pageSize === 'letter'
+        ? isLandscape
+          ? '792px'
+          : '612px'
+        : pageSize === 'legal'
+          ? isLandscape
+            ? '1008px'
+            : '612px'
+          : '595px';
 
-    const heightPx = pageSize === 'a4' ? (isLandscape ? '595px' : '842px') :
-        pageSize === 'letter' ? (isLandscape ? '612px' : '792px') :
-            pageSize === 'legal' ? (isLandscape ? '612px' : '1008px') : '842px';
+  const heightPx =
+    pageSize === 'a4'
+      ? isLandscape
+        ? '595px'
+        : '842px'
+      : pageSize === 'letter'
+        ? isLandscape
+          ? '612px'
+          : '792px'
+        : pageSize === 'legal'
+          ? isLandscape
+            ? '612px'
+            : '1008px'
+          : '842px';
 
-    return `
+  return `
         .content {
             max-width: ${widthPx} !important;
             min-height: ${heightPx} !important;
@@ -277,11 +313,11 @@ const generatePageSizeStyles = (pageSize: string, orientation: string): string =
  * Generate RTF-style preview HTML
  */
 export const generateRTFPreviewHTML = (options: HTMLGeneratorOptions): string => {
-    const theme = THEMES[options.theme] || THEMES.default;
-    const isDark = isDarkThemeContext(options);
-    const textColor = getTextColorForTheme(isDark);
+  const theme = THEMES[options.theme] || THEMES.default;
+  const isDark = isDarkThemeContext(options);
+  const textColor = getTextColorForTheme(isDark);
 
-    return `<!DOCTYPE html>
+  return `<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -307,11 +343,11 @@ export const generateRTFPreviewHTML = (options: HTMLGeneratorOptions): string =>
  * Generate EPUB/HTML-style preview HTML
  */
 export const generateEpubPreviewHTML = (options: HTMLGeneratorOptions): string => {
-    const theme = THEMES[options.theme] || THEMES.default;
-    const isDark = isDarkThemeContext(options);
-    const textColor = getTextColorForTheme(isDark);
+  const theme = THEMES[options.theme] || THEMES.default;
+  const isDark = isDarkThemeContext(options);
+  const textColor = getTextColorForTheme(isDark);
 
-    return `<!DOCTYPE html>
+  return `<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -337,11 +373,11 @@ export const generateEpubPreviewHTML = (options: HTMLGeneratorOptions): string =
  * Generate Slides/Presentation-style preview HTML
  */
 export const generateSlidesPreviewHTML = (options: HTMLGeneratorOptions): string => {
-    const theme = THEMES[options.theme] || THEMES.default;
-    const isDark = isDarkThemeContext(options);
-    const textColor = getTextColorForTheme(isDark);
+  const theme = THEMES[options.theme] || THEMES.default;
+  const isDark = isDarkThemeContext(options);
+  const textColor = getTextColorForTheme(isDark);
 
-    return `<!DOCTYPE html>
+  return `<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -367,13 +403,13 @@ export const generateSlidesPreviewHTML = (options: HTMLGeneratorOptions): string
  * Generate RTF-specific styles
  */
 const generateRTFStyles = (theme: ThemeConfig, options: HTMLGeneratorOptions): string => {
-    // Detect dark theme context
-    const isDark = isDarkThemeContext(options);
-    const contentTextColor = getContentTextColor(isDark);
-    const tableHeaderTextColor = getTableHeaderTextColor(isDark, theme.accentColor);
-    const tableHeaderBgColor = getTableHeaderBackgroundColor(isDark, theme.accentColor);
+  // Detect dark theme context
+  const isDark = isDarkThemeContext(options);
+  const contentTextColor = getContentTextColor(isDark);
+  const tableHeaderTextColor = getTableHeaderTextColor(isDark, theme.accentColor);
+  const tableHeaderBgColor = getTableHeaderBackgroundColor(isDark, theme.accentColor);
 
-    return `
+  return `
         * {
             margin: 0;
             padding: 0;
@@ -546,13 +582,13 @@ const generateRTFStyles = (theme: ThemeConfig, options: HTMLGeneratorOptions): s
  * Generate EPUB/HTML-specific styles
  */
 const generateEpubStyles = (theme: ThemeConfig, options: HTMLGeneratorOptions): string => {
-    // Detect dark theme context
-    const isDark = isDarkThemeContext(options);
-    const contentTextColor = getContentTextColor(isDark);
-    const tableHeaderTextColor = getTableHeaderTextColor(isDark, theme.accentColor);
-    const tableHeaderBgColor = getTableHeaderBackgroundColor(isDark, theme.accentColor);
+  // Detect dark theme context
+  const isDark = isDarkThemeContext(options);
+  const contentTextColor = getContentTextColor(isDark);
+  const tableHeaderTextColor = getTableHeaderTextColor(isDark, theme.accentColor);
+  const tableHeaderBgColor = getTableHeaderBackgroundColor(isDark, theme.accentColor);
 
-    return `
+  return `
         * {
             margin: 0;
             padding: 0;
@@ -738,13 +774,13 @@ const generateEpubStyles = (theme: ThemeConfig, options: HTMLGeneratorOptions): 
  * Generate Slides/Presentation-specific styles
  */
 const generateSlidesStyles = (theme: ThemeConfig, options: HTMLGeneratorOptions): string => {
-    // Detect dark theme context
-    const isDark = isDarkThemeContext(options);
-    const contentTextColor = getContentTextColor(isDark);
-    const tableHeaderTextColor = getTableHeaderTextColor(isDark, theme.accentColor);
-    const tableHeaderBgColor = getTableHeaderBackgroundColor(isDark, theme.accentColor);
+  // Detect dark theme context
+  const isDark = isDarkThemeContext(options);
+  const contentTextColor = getContentTextColor(isDark);
+  const tableHeaderTextColor = getTableHeaderTextColor(isDark, theme.accentColor);
+  const tableHeaderBgColor = getTableHeaderBackgroundColor(isDark, theme.accentColor);
 
-    return `
+  return `
         * {
             margin: 0;
             padding: 0;
@@ -978,28 +1014,29 @@ const generateSlidesStyles = (theme: ThemeConfig, options: HTMLGeneratorOptions)
  * Generate RTF header section
  */
 const generateRTFHeader = (options: HTMLGeneratorOptions, textColor?: string): string => {
-    if (!options.headerFooter) return '';
+  if (!options.headerFooter) return '';
 
-    const isDark = isDarkThemeContext(options);
-    const theme = THEMES[options.theme];
+  const isDark = isDarkThemeContext(options);
+  const theme = THEMES[options.theme];
 
-    let authorColor = textColor;
-    if (!authorColor) {
-        const isDarkTheme = options.theme === 'dark' ||
-            (theme && theme.backgroundColor !== '#ffffff' && theme.backgroundColor !== '#fafafa');
+  let authorColor = textColor;
+  if (!authorColor) {
+    const isDarkTheme =
+      options.theme === 'dark' ||
+      (theme && theme.backgroundColor !== '#ffffff' && theme.backgroundColor !== '#fafafa');
 
-        if (isDark || isDarkTheme) {
-            authorColor = '#e5e7eb';
-        } else {
-            authorColor = theme?.primaryColor || '#374151';
-        }
+    if (isDark || isDarkTheme) {
+      authorColor = '#e5e7eb';
+    } else {
+      authorColor = theme?.primaryColor || '#374151';
     }
+  }
 
-    const titleColor = theme.accentColor || (isDark ? '#60a5fa' : '#2563eb');
-    const borderColor = theme.accentColor || (isDark ? '#4b5563' : '#d1d5db');
-    const descriptionColor = getDescriptionTextColor(isDark);
+  const titleColor = theme.accentColor || (isDark ? '#60a5fa' : '#2563eb');
+  const borderColor = theme.accentColor || (isDark ? '#4b5563' : '#d1d5db');
+  const descriptionColor = getDescriptionTextColor(isDark);
 
-    return `
+  return `
     <div class="rtf-preview-badge">RTF Preview</div>
     <div class="header" style="
         text-align: center;
@@ -1020,7 +1057,9 @@ const generateRTFHeader = (options: HTMLGeneratorOptions, textColor?: string): s
             opacity: 0.9;
             font-weight: normal;
         ">by ${escapeHtml(options.author)}</div>
-        ${options.description ? `
+        ${
+          options.description
+            ? `
         <div class="description" style="
             font-size: 1em;
             color: ${descriptionColor};
@@ -1028,7 +1067,9 @@ const generateRTFHeader = (options: HTMLGeneratorOptions, textColor?: string): s
             margin-top: 0.5em;
             font-style: italic;
         ">${escapeHtml(options.description)}</div>
-        ` : ''}
+        `
+            : ''
+        }
     </div>`;
 };
 
@@ -1036,28 +1077,29 @@ const generateRTFHeader = (options: HTMLGeneratorOptions, textColor?: string): s
  * Generate EPUB header section
  */
 const generateEpubHeader = (options: HTMLGeneratorOptions, textColor?: string): string => {
-    if (!options.headerFooter) return '';
+  if (!options.headerFooter) return '';
 
-    const isDark = isDarkThemeContext(options);
-    const theme = THEMES[options.theme];
+  const isDark = isDarkThemeContext(options);
+  const theme = THEMES[options.theme];
 
-    let authorColor = textColor;
-    if (!authorColor) {
-        const isDarkTheme = options.theme === 'dark' ||
-            (theme && theme.backgroundColor !== '#ffffff' && theme.backgroundColor !== '#fafafa');
+  let authorColor = textColor;
+  if (!authorColor) {
+    const isDarkTheme =
+      options.theme === 'dark' ||
+      (theme && theme.backgroundColor !== '#ffffff' && theme.backgroundColor !== '#fafafa');
 
-        if (isDark || isDarkTheme) {
-            authorColor = '#e5e7eb';
-        } else {
-            authorColor = theme?.primaryColor || '#374151';
-        }
+    if (isDark || isDarkTheme) {
+      authorColor = '#e5e7eb';
+    } else {
+      authorColor = theme?.primaryColor || '#374151';
     }
+  }
 
-    const titleColor = theme.accentColor || (isDark ? '#60a5fa' : '#2563eb');
-    const borderColor = theme.accentColor || (isDark ? '#4b5563' : '#d1d5db');
-    const descriptionColor = getDescriptionTextColor(isDark);
+  const titleColor = theme.accentColor || (isDark ? '#60a5fa' : '#2563eb');
+  const borderColor = theme.accentColor || (isDark ? '#4b5563' : '#d1d5db');
+  const descriptionColor = getDescriptionTextColor(isDark);
 
-    return `
+  return `
     <div class="html-preview-badge">HTML Preview</div>
     <div class="header" style="
         text-align: center;
@@ -1078,14 +1120,18 @@ const generateEpubHeader = (options: HTMLGeneratorOptions, textColor?: string): 
             opacity: 0.9;
             font-weight: 500;
         ">by ${escapeHtml(options.author)}</div>
-        ${options.description ? `
+        ${
+          options.description
+            ? `
         <div class="description" style="
             font-size: 1.1em;
             color: ${descriptionColor};
             opacity: 0.8;
             margin-top: 0.5em;
         ">${escapeHtml(options.description)}</div>
-        ` : ''}
+        `
+            : ''
+        }
     </div>`;
 };
 
@@ -1093,27 +1139,28 @@ const generateEpubHeader = (options: HTMLGeneratorOptions, textColor?: string): 
  * Generate Slides header section
  */
 const generateSlidesHeader = (options: HTMLGeneratorOptions, textColor?: string): string => {
-    if (!options.headerFooter) return '';
+  if (!options.headerFooter) return '';
 
-    const isDark = isDarkThemeContext(options);
-    const theme = THEMES[options.theme];
+  const isDark = isDarkThemeContext(options);
+  const theme = THEMES[options.theme];
 
-    let authorColor = textColor;
-    if (!authorColor) {
-        const isDarkTheme = options.theme === 'dark' ||
-            (theme && theme.backgroundColor !== '#ffffff' && theme.backgroundColor !== '#fafafa');
+  let authorColor = textColor;
+  if (!authorColor) {
+    const isDarkTheme =
+      options.theme === 'dark' ||
+      (theme && theme.backgroundColor !== '#ffffff' && theme.backgroundColor !== '#fafafa');
 
-        if (isDark || isDarkTheme) {
-            authorColor = '#e5e7eb';
-        } else {
-            authorColor = theme?.primaryColor || '#374151';
-        }
+    if (isDark || isDarkTheme) {
+      authorColor = '#e5e7eb';
+    } else {
+      authorColor = theme?.primaryColor || '#374151';
     }
+  }
 
-    const titleColor = theme.accentColor || (isDark ? '#60a5fa' : '#2563eb');
-    const descriptionColor = getDescriptionTextColor(isDark);
+  const titleColor = theme.accentColor || (isDark ? '#60a5fa' : '#2563eb');
+  const descriptionColor = getDescriptionTextColor(isDark);
 
-    return `
+  return `
     <div class="slides-preview-badge">Slides Preview</div>
     <div class="slide title-slide" style="text-align: center;">
         <div class="slide-number">1</div>
@@ -1130,14 +1177,18 @@ const generateSlidesHeader = (options: HTMLGeneratorOptions, textColor?: string)
             opacity: 0.9;
             font-weight: 500;
         ">by ${escapeHtml(options.author)}</div>
-        ${options.description ? `
+        ${
+          options.description
+            ? `
         <div class="description" style="
             font-size: 1.3em;
             color: ${descriptionColor};
             opacity: 0.8;
             margin-top: 1em;
         ">${escapeHtml(options.description)}</div>
-        ` : ''}
+        `
+            : ''
+        }
     </div>`;
 };
 
@@ -1145,9 +1196,9 @@ const generateSlidesHeader = (options: HTMLGeneratorOptions, textColor?: string)
  * Generate RTF footer section
  */
 const generateRTFFooter = (options: HTMLGeneratorOptions): string => {
-    if (!options.headerFooter) return '';
+  if (!options.headerFooter) return '';
 
-    return `
+  return `
     <div class="footer" style="
         margin-top: 3em;
         padding-top: 2em;
@@ -1165,9 +1216,9 @@ const generateRTFFooter = (options: HTMLGeneratorOptions): string => {
  * Generate EPUB footer section
  */
 const generateEpubFooter = (options: HTMLGeneratorOptions): string => {
-    if (!options.headerFooter) return '';
+  if (!options.headerFooter) return '';
 
-    return `
+  return `
     <div class="footer" style="
         margin-top: 3em;
         padding-top: 2em;
@@ -1185,9 +1236,9 @@ const generateEpubFooter = (options: HTMLGeneratorOptions): string => {
  * Generate Slides footer section
  */
 const generateSlidesFooter = (options: HTMLGeneratorOptions): string => {
-    if (!options.headerFooter) return '';
+  if (!options.headerFooter) return '';
 
-    return `
+  return `
     <div class="slide footer-slide" style="text-align: center;">
         <div class="slide-number">End</div>
         <div style="
@@ -1208,82 +1259,84 @@ const generateSlidesFooter = (options: HTMLGeneratorOptions): string => {
  * Convert HTML content to slides format
  */
 const convertContentToSlides = (htmlContent: string): string => {
-    // Split content by headings to create slides
-    const slides: string[] = [];
-    let currentSlide = '';
-    let slideNumber = 2; // Start from 2 since title slide is 1
+  // Split content by headings to create slides
+  const slides: string[] = [];
+  let currentSlide = '';
+  let slideNumber = 2; // Start from 2 since title slide is 1
 
-    // Split by h1, h2 tags to create new slides
-    const parts = htmlContent.split(/(<h[12][^>]*>.*?<\/h[12]>)/gi);
+  // Split by h1, h2 tags to create new slides
+  const parts = htmlContent.split(/(<h[12][^>]*>.*?<\/h[12]>)/gi);
 
-    for (let i = 0; i < parts.length; i++) {
-        const part = parts[i].trim();
-        if (!part) continue;
+  for (let i = 0; i < parts.length; i++) {
+    const part = parts[i].trim();
+    if (!part) continue;
 
-        // Check if this is a heading
-        if (part.match(/^<h[12][^>]*>/i)) {
-            // If we have content in current slide, save it
-            if (currentSlide.trim()) {
-                slides.push(`
+    // Check if this is a heading
+    if (part.match(/^<h[12][^>]*>/i)) {
+      // If we have content in current slide, save it
+      if (currentSlide.trim()) {
+        slides.push(`
                 <div class="slide">
                     <div class="slide-number">${slideNumber}</div>
                     ${currentSlide}
                 </div>`);
-                slideNumber++;
-            }
-            // Start new slide with this heading
-            currentSlide = part;
-        } else {
-            // Add content to current slide
-            currentSlide += part;
-        }
+        slideNumber++;
+      }
+      // Start new slide with this heading
+      currentSlide = part;
+    } else {
+      // Add content to current slide
+      currentSlide += part;
     }
+  }
 
-    // Add the last slide if there's content
-    if (currentSlide.trim()) {
-        slides.push(`
+  // Add the last slide if there's content
+  if (currentSlide.trim()) {
+    slides.push(`
         <div class="slide">
             <div class="slide-number">${slideNumber}</div>
             ${currentSlide}
         </div>`);
-    }
+  }
 
-    // If no slides were created, create one with all content
-    if (slides.length === 0) {
-        slides.push(`
+  // If no slides were created, create one with all content
+  if (slides.length === 0) {
+    slides.push(`
         <div class="slide">
             <div class="slide-number">2</div>
             ${htmlContent}
         </div>`);
-    }
+  }
 
-    return slides.join('\n');
+  return slides.join('\n');
 };
 
 /**
  * Generate enhanced watermark dengan multiple layers untuk keamanan tinggi
  */
 const generateEnhancedWatermark = (options: HTMLGeneratorOptions): string => {
-    if (!options.watermark) return '';
+  if (!options.watermark) return '';
 
-    const theme = THEMES[options.theme];
-    const watermarkText = escapeHtml(options.watermark);
-    const timestamp = new Date().toISOString();
-    const uniqueId = Math.random().toString(36).substring(2, 15);
-    const checksum = btoa(watermarkText + timestamp).substring(0, 16);
+  const theme = THEMES[options.theme];
+  const watermarkText = escapeHtml(options.watermark);
+  const timestamp = new Date().toISOString();
+  const uniqueId = Math.random().toString(36).substring(2, 15);
+  const checksum = btoa(watermarkText + timestamp).substring(0, 16);
 
-    // Generate multiple watermark positions untuk coverage yang lebih baik
-    const positions = [
-        { top: '20%', left: '20%', rotation: '-45deg', size: '3em', opacity: '0.06' },
-        { top: '50%', left: '50%', rotation: '-45deg', size: '4em', opacity: '0.08' },
-        { top: '80%', left: '80%', rotation: '-45deg', size: '2.5em', opacity: '0.05' },
-        { top: '30%', left: '70%', rotation: '45deg', size: '2em', opacity: '0.04' },
-        { top: '70%', left: '30%', rotation: '30deg', size: '1.8em', opacity: '0.04' },
-        { top: '10%', left: '60%', rotation: '-30deg', size: '1.5em', opacity: '0.03' },
-        { top: '90%', left: '40%', rotation: '60deg', size: '1.5em', opacity: '0.03' }
-    ];
+  // Generate multiple watermark positions untuk coverage yang lebih baik
+  const positions = [
+    { top: '20%', left: '20%', rotation: '-45deg', size: '3em', opacity: '0.06' },
+    { top: '50%', left: '50%', rotation: '-45deg', size: '4em', opacity: '0.08' },
+    { top: '80%', left: '80%', rotation: '-45deg', size: '2.5em', opacity: '0.05' },
+    { top: '30%', left: '70%', rotation: '45deg', size: '2em', opacity: '0.04' },
+    { top: '70%', left: '30%', rotation: '30deg', size: '1.8em', opacity: '0.04' },
+    { top: '10%', left: '60%', rotation: '-30deg', size: '1.5em', opacity: '0.03' },
+    { top: '90%', left: '40%', rotation: '60deg', size: '1.5em', opacity: '0.03' },
+  ];
 
-    const watermarkLayers = positions.map((pos, index) => `
+  const watermarkLayers = positions
+    .map(
+      (pos, index) => `
     <div class="watermark-layer-${index + 1}" style="
         position: fixed;
         top: ${pos.top};
@@ -1302,9 +1355,11 @@ const generateEnhancedWatermark = (options: HTMLGeneratorOptions): string => {
         text-transform: uppercase;
         white-space: nowrap;
         overflow: hidden;
-    " data-layer="${index + 1}" data-checksum="${checksum}">${watermarkText}</div>`).join('');
+    " data-layer="${index + 1}" data-checksum="${checksum}">${watermarkText}</div>`
+    )
+    .join('');
 
-    return `
+  return `
     <!-- Multi-layer security watermark system -->
     ${watermarkLayers}
 

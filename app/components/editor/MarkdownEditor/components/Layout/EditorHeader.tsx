@@ -4,19 +4,19 @@
  */
 import React from 'react';
 import { useNavigate } from 'react-router';
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Separator } from "@/components/ui/separator";
-import { Badge } from "@/components/ui/badge";
-import { FileText, Eye, EyeOff, Search, Maximize2, Minimize2, Keyboard } from "lucide-react";
-import { Theme, ThemeSelector } from "../../../../features/ThemeSelector";
-import { FileOperations } from "../../../../features/FileOperations";
-import { Toolbar } from "../../../Toolbar";
-import { WritingSettings } from "../../../../features/WritingSettings";
-import { UndoRedoButtons } from "../../../UndoRedoButtons";
-import { AuthButtons } from "../../../../auth/AuthButtons";
-import { StorageStatus } from "../../../../features/StorageStatus/StorageStatus";
-import { EditorSettings, ResponsiveState } from '../../types';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Separator } from '@/components/ui/separator';
+import { Badge } from '@/components/ui/badge';
+import { FileText, Eye, EyeOff, Search, Maximize2, Minimize2, Keyboard } from 'lucide-react';
+import { type Theme, ThemeSelector } from '../../../../features/ThemeSelector';
+import { FileOperations } from '../../../../features/FileOperations';
+import { Toolbar } from '../../../Toolbar';
+import { WritingSettings } from '../../../../features/WritingSettings';
+import { UndoRedoButtons } from '../../../UndoRedoButtons';
+import { AuthButtons } from '../../../../auth/AuthButtons';
+import { StorageStatus } from '../../../../features/StorageStatus/StorageStatus';
+import type { EditorSettings, ResponsiveState } from '../../types';
 import { getHeaderClassName, generateHeaderStyles } from '@/utils/themeUtils';
 /**
  * Props for EditorHeader component
@@ -91,7 +91,7 @@ export const EditorHeader: React.FC<EditorHeaderProps> = ({
   canUndo,
   canRedo,
   responsive,
-  zenMode
+  zenMode,
 }) => {
   const navigate = useNavigate();
   const { isMobile, isTablet, isSmallTablet } = responsive;
@@ -129,7 +129,7 @@ export const EditorHeader: React.FC<EditorHeaderProps> = ({
       style={{
         ...headerStyles,
         backdropFilter: 'blur(12px)',
-        WebkitBackdropFilter: 'blur(12px)'
+        WebkitBackdropFilter: 'blur(12px)',
       }}
     >
       <div className="flex flex-col lg:flex-row lg:items-center justify-between px-2 sm:px-4 py-2 gap-2">
@@ -146,7 +146,7 @@ export const EditorHeader: React.FC<EditorHeaderProps> = ({
               className="w-24 sm:w-32 md:w-48 h-6 sm:h-8 text-xs sm:text-sm font-medium border-0 bg-transparent"
               style={{
                 borderColor: currentTheme.accent,
-                color: currentTheme.text
+                color: currentTheme.text,
               }}
             />
             {isModified && (
@@ -157,17 +157,16 @@ export const EditorHeader: React.FC<EditorHeaderProps> = ({
           </div>
         </div>
         {/* Controls Row - Responsive Layout */}
-        <div className={`
+        <div
+          className={`
           ${isTablet ? 'flex flex-col gap-2' : 'flex items-center justify-between gap-1 sm:gap-2'}
           overflow-x-auto
-        `}>
+        `}
+        >
           {/* First Row - File Operations & Theme */}
           <div className="flex items-center justify-between gap-1 sm:gap-2">
             <div className="flex items-center space-x-1 flex-shrink-0">
-              <ThemeSelector
-                currentTheme={currentTheme}
-                onThemeChange={onThemeChange}
-              />
+              <ThemeSelector currentTheme={currentTheme} onThemeChange={onThemeChange} />
               {!isTablet && <Separator orientation="vertical" className="h-4 sm:h-6" />}
               <div className="flex items-center space-x-1">
                 <FileOperations
@@ -185,7 +184,7 @@ export const EditorHeader: React.FC<EditorHeaderProps> = ({
                   style={{
                     transform: 'none',
                     willChange: 'auto',
-                    color: currentTheme.text
+                    color: currentTheme.text,
                   }}
                   data-theme-button="true"
                 >
@@ -208,10 +207,12 @@ export const EditorHeader: React.FC<EditorHeaderProps> = ({
             </div>
           </div>
           {/* Second Row - Action Buttons */}
-          <div className={`
+          <div
+            className={`
             flex items-center ${isTablet ? 'justify-center' : 'justify-end'}
             space-x-1 flex-wrap gap-1
-          `}>
+          `}
+          >
             <Button
               variant="ghost"
               size="sm"
@@ -233,7 +234,11 @@ export const EditorHeader: React.FC<EditorHeaderProps> = ({
               style={{ color: currentTheme.text }}
               data-theme-button="true"
             >
-              {showPreview ? <EyeOff className="h-3 w-3 sm:h-4 sm:w-4" /> : <Eye className="h-3 w-3 sm:h-4 sm:w-4" />}
+              {showPreview ? (
+                <EyeOff className="h-3 w-3 sm:h-4 sm:w-4" />
+              ) : (
+                <Eye className="h-3 w-3 sm:h-4 sm:w-4" />
+              )}
             </Button>
             <Button
               variant="ghost"
@@ -251,7 +256,7 @@ export const EditorHeader: React.FC<EditorHeaderProps> = ({
               size="sm"
               onClick={toggleFullscreen}
               className="h-6 w-6 sm:h-8 sm:w-8 p-0 sm:p-2 hidden lg:flex"
-              title={isFullscreen ? "Exit Fullscreen" : "Enter Fullscreen"}
+              title={isFullscreen ? 'Exit Fullscreen' : 'Enter Fullscreen'}
               style={{ color: currentTheme.text }}
               data-theme-button="true"
             >
@@ -304,12 +309,16 @@ export const EditorHeader: React.FC<EditorHeaderProps> = ({
         </div>
       </div>
       {/* Toolbar - Only on desktop/tablet */}
-      <div className={`${isSmallTablet ? 'overflow-x-auto toolbar-small-tablet' : 'overflow-x-hidden'}`}>
+      <div
+        className={`${isSmallTablet ? 'overflow-x-auto toolbar-small-tablet' : 'overflow-x-hidden'}`}
+      >
         <Toolbar onInsertText={onInsertText} currentTheme={currentTheme} />
       </div>
 
       {/* Writing Settings - Only on desktop/tablet */}
-      <div className={`${isSmallTablet ? 'overflow-x-auto writing-settings-compact' : 'overflow-x-hidden'}`}>
+      <div
+        className={`${isSmallTablet ? 'overflow-x-auto writing-settings-compact' : 'overflow-x-hidden'}`}
+      >
         <WritingSettings
           fontSize={settings.fontSize}
           onFontSizeChange={(size) => onSettingsChange({ fontSize: size })}
@@ -318,7 +327,9 @@ export const EditorHeader: React.FC<EditorHeaderProps> = ({
           focusMode={settings.focusMode}
           onFocusModeToggle={() => onSettingsChange({ focusMode: !settings.focusMode })}
           typewriterMode={settings.typewriterMode}
-          onTypewriterModeToggle={() => onSettingsChange({ typewriterMode: !settings.typewriterMode })}
+          onTypewriterModeToggle={() =>
+            onSettingsChange({ typewriterMode: !settings.typewriterMode })
+          }
           wordWrap={settings.wordWrap}
           onWordWrapToggle={() => onSettingsChange({ wordWrap: !settings.wordWrap })}
           vimMode={settings.vimMode}

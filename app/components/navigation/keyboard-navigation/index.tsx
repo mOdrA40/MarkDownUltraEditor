@@ -10,12 +10,12 @@ export { useFocusManagement } from '@/hooks/navigation';
 // Re-export types
 export type {
   KeyboardNavigationOptions,
-  UseKeyboardNavigationReturn
+  UseKeyboardNavigationReturn,
 } from '@/hooks/navigation';
 
 export type {
   UseFocusManagementOptions,
-  UseFocusManagementReturn
+  UseFocusManagementReturn,
 } from '@/hooks/navigation/useFocusManagement';
 
 // Re-export utilities
@@ -31,18 +31,15 @@ export {
   throttleKeyboard,
   isKeyMatch,
   type NavigationDirection,
-  type ScrollOptions
+  type ScrollOptions,
 } from '@/utils/keyboardNavigationUtils';
 
 /**
  * Keyboard navigation provider component
  */
-import React, { createContext, useContext, ReactNode, useCallback } from 'react';
+import React, { createContext, useContext, type ReactNode, useCallback } from 'react';
 import { useKeyboardNavigation } from '@/hooks/navigation';
-import type { 
-  KeyboardNavigationOptions, 
-  UseKeyboardNavigationReturn 
-} from '@/hooks/navigation';
+import type { KeyboardNavigationOptions, UseKeyboardNavigationReturn } from '@/hooks/navigation';
 
 const KeyboardNavigationContext = createContext<UseKeyboardNavigationReturn | null>(null);
 
@@ -51,9 +48,9 @@ interface KeyboardNavigationProviderProps {
   options: KeyboardNavigationOptions;
 }
 
-export const KeyboardNavigationProvider: React.FC<KeyboardNavigationProviderProps> = ({ 
-  children, 
-  options 
+export const KeyboardNavigationProvider: React.FC<KeyboardNavigationProviderProps> = ({
+  children,
+  options,
 }) => {
   const navigationApi = useKeyboardNavigation(options);
 
@@ -70,7 +67,9 @@ export const KeyboardNavigationProvider: React.FC<KeyboardNavigationProviderProp
 export const useKeyboardNavigationContext = (): UseKeyboardNavigationReturn => {
   const context = useContext(KeyboardNavigationContext);
   if (!context) {
-    throw new Error('useKeyboardNavigationContext must be used within a KeyboardNavigationProvider');
+    throw new Error(
+      'useKeyboardNavigationContext must be used within a KeyboardNavigationProvider'
+    );
   }
   return context;
 };
@@ -97,16 +96,16 @@ export const NavigableList: React.FC<NavigableListProps> = ({
   onActiveChange,
   onItemClick,
   className = '',
-  itemClassName = ''
+  itemClassName = '',
 }) => {
   const containerRef = React.useRef<HTMLDivElement>(null);
-  
+
   const { handleKeyDown } = useKeyboardNavigation({
-    headingIds: items.map(item => item.id),
+    headingIds: items.map((item) => item.id),
     activeId: activeId || '',
     onActiveChange,
     enabled: true,
-    container: containerRef.current
+    container: containerRef.current,
   });
 
   React.useEffect(() => {
@@ -143,9 +142,7 @@ export const NavigableList: React.FC<NavigableListProps> = ({
         >
           <div className="font-medium">{item.label}</div>
           {item.content && (
-            <div className="text-sm text-gray-600 dark:text-gray-400 mt-1">
-              {item.content}
-            </div>
+            <div className="text-sm text-gray-600 dark:text-gray-400 mt-1">{item.content}</div>
           )}
         </button>
       ))}
@@ -170,9 +167,9 @@ export const KeyboardShortcutsHelp: React.FC<KeyboardShortcutsHelpProps> = ({
     { keys: ['Home'], description: 'Go to first item' },
     { keys: ['End'], description: 'Go to last item' },
     { keys: ['Enter', 'Space'], description: 'Activate item' },
-    { keys: ['Escape'], description: 'Exit navigation' }
+    { keys: ['Escape'], description: 'Exit navigation' },
   ],
-  className = ''
+  className = '',
 }) => {
   return (
     <div className={`keyboard-shortcuts-help ${className}`}>
@@ -182,7 +179,7 @@ export const KeyboardShortcutsHelp: React.FC<KeyboardShortcutsHelpProps> = ({
           <div key={index} className="flex items-center justify-between text-xs">
             <div className="flex space-x-1">
               {shortcut.keys.map((key, keyIndex) => (
-                <kbd 
+                <kbd
                   key={keyIndex}
                   className="
                     px-1 py-0.5 bg-gray-200 dark:bg-gray-700 
@@ -193,9 +190,7 @@ export const KeyboardShortcutsHelp: React.FC<KeyboardShortcutsHelpProps> = ({
                 </kbd>
               ))}
             </div>
-            <span className="text-gray-600 dark:text-gray-400">
-              {shortcut.description}
-            </span>
+            <span className="text-gray-600 dark:text-gray-400">{shortcut.description}</span>
           </div>
         ))}
       </div>
@@ -216,17 +211,21 @@ interface FocusTrapProps {
 export const FocusTrap: React.FC<FocusTrapProps> = ({
   children,
   enabled = true,
-  className = ''
+  className = '',
 }) => {
   const containerRef = React.useRef<HTMLDivElement>(null);
-  
+
   // Simple focus management without external dependency
   const focusNext = useCallback(() => {
     const container = containerRef.current;
     if (!container) return;
 
-    const focusableElements = container.querySelectorAll('[tabindex]:not([tabindex="-1"]), button, input, select, textarea, a[href]');
-    const currentIndex = Array.from(focusableElements).findIndex(el => el === document.activeElement);
+    const focusableElements = container.querySelectorAll(
+      '[tabindex]:not([tabindex="-1"]), button, input, select, textarea, a[href]'
+    );
+    const currentIndex = Array.from(focusableElements).findIndex(
+      (el) => el === document.activeElement
+    );
     const nextIndex = (currentIndex + 1) % focusableElements.length;
 
     if (focusableElements[nextIndex] instanceof HTMLElement) {
@@ -238,8 +237,12 @@ export const FocusTrap: React.FC<FocusTrapProps> = ({
     const container = containerRef.current;
     if (!container) return;
 
-    const focusableElements = container.querySelectorAll('[tabindex]:not([tabindex="-1"]), button, input, select, textarea, a[href]');
-    const currentIndex = Array.from(focusableElements).findIndex(el => el === document.activeElement);
+    const focusableElements = container.querySelectorAll(
+      '[tabindex]:not([tabindex="-1"]), button, input, select, textarea, a[href]'
+    );
+    const currentIndex = Array.from(focusableElements).findIndex(
+      (el) => el === document.activeElement
+    );
     const prevIndex = currentIndex <= 0 ? focusableElements.length - 1 : currentIndex - 1;
 
     if (focusableElements[prevIndex] instanceof HTMLElement) {

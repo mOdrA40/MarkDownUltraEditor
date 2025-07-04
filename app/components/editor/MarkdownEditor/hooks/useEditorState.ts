@@ -4,8 +4,8 @@
  */
 
 import { useState, useCallback, useEffect } from 'react';
-import { useUndoRedo , useToast } from '@/hooks/core';
-import { EditorState, UseEditorStateReturn } from '../types';
+import { useUndoRedo, useToast } from '@/hooks/core';
+import type { EditorState, UseEditorStateReturn } from '../types';
 import { DEFAULT_FILE, STORAGE_KEYS, SUCCESS_MESSAGES } from '../utils/constants';
 import { getStorageInfo, cleanupStorage, formatBytes } from '@/utils/storageUtils';
 
@@ -51,10 +51,10 @@ export const useEditorState = (
     redo,
     canUndo,
     canRedo,
-    clearHistory
+    clearHistory,
   } = useUndoRedo(getInitialContent(), {
     maxHistorySize: 50,
-    debounceMs: 500
+    debounceMs: 500,
   });
 
   // File state management
@@ -62,15 +62,16 @@ export const useEditorState = (
   const [isModified, setIsModified] = useState(false);
   const [autoSave] = useState(true);
 
-
-
   /**
    * Handle markdown content changes
    */
-  const handleMarkdownChange = useCallback((value: string) => {
-    setMarkdown(value);
-    setIsModified(true);
-  }, [setMarkdown]);
+  const handleMarkdownChange = useCallback(
+    (value: string) => {
+      setMarkdown(value);
+      setIsModified(true);
+    },
+    [setMarkdown]
+  );
 
   /**
    * Handle file name changes
@@ -129,8 +130,8 @@ export const useEditorState = (
     }
 
     toast({
-      title: "New file created",
-      description: "Ready to start writing!",
+      title: 'New file created',
+      description: 'Ready to start writing!',
     });
 
     console.log('New file created successfully');
@@ -139,45 +140,48 @@ export const useEditorState = (
   /**
    * Load file content
    */
-  const handleLoadFile = useCallback((content: string, name: string) => {
-    if (isModified) {
-      const confirmed = window.confirm(
-        'You have unsaved changes. Are you sure you want to load a new file?'
-      );
-      if (!confirmed) return;
-    }
-
-    // Debug logging (development only)
-    if (process.env.NODE_ENV === 'development') {
-      console.log('Loading file:', name, 'with content length:', content.length);
-    }
-
-    // Clear history first with the new content to prevent conflicts
-    clearHistory(content);
-
-    // Update state - setMarkdown will handle the content update
-    setMarkdown(content);
-    setFileName(name);
-    setIsModified(false);
-
-    // Immediately update localStorage to prevent race conditions
-    if (typeof localStorage !== 'undefined') {
-      try {
-        localStorage.setItem(STORAGE_KEYS.CONTENT, content);
-        localStorage.setItem(STORAGE_KEYS.FILE_NAME, name);
-        console.log('Saved to localStorage:', name);
-      } catch (error) {
-        console.warn('Failed to save to localStorage:', error);
+  const handleLoadFile = useCallback(
+    (content: string, name: string) => {
+      if (isModified) {
+        const confirmed = window.confirm(
+          'You have unsaved changes. Are you sure you want to load a new file?'
+        );
+        if (!confirmed) return;
       }
-    }
 
-    toast({
-      title: SUCCESS_MESSAGES.FILE_LOADED,
-      description: `${name} has been loaded successfully.`,
-    });
+      // Debug logging (development only)
+      if (process.env.NODE_ENV === 'development') {
+        console.log('Loading file:', name, 'with content length:', content.length);
+      }
 
-    console.log('File loaded successfully:', name);
-  }, [isModified, setMarkdown, clearHistory, toast]);
+      // Clear history first with the new content to prevent conflicts
+      clearHistory(content);
+
+      // Update state - setMarkdown will handle the content update
+      setMarkdown(content);
+      setFileName(name);
+      setIsModified(false);
+
+      // Immediately update localStorage to prevent race conditions
+      if (typeof localStorage !== 'undefined') {
+        try {
+          localStorage.setItem(STORAGE_KEYS.CONTENT, content);
+          localStorage.setItem(STORAGE_KEYS.FILE_NAME, name);
+          console.log('Saved to localStorage:', name);
+        } catch (error) {
+          console.warn('Failed to save to localStorage:', error);
+        }
+      }
+
+      toast({
+        title: SUCCESS_MESSAGES.FILE_LOADED,
+        description: `${name} has been loaded successfully.`,
+      });
+
+      console.log('File loaded successfully:', name);
+    },
+    [isModified, setMarkdown, clearHistory, toast]
+  );
 
   /**
    * Auto-save functionality with memory leak prevention
@@ -195,14 +199,14 @@ export const useEditorState = (
 
           // Check if we have enough space (leave 1MB buffer)
           const storageInfo = getStorageInfo();
-          if (storageInfo.available < totalSize + (1024 * 1024)) {
+          if (storageInfo.available < totalSize + 1024 * 1024) {
             // Clean up old data if needed
             cleanupStorage([
               STORAGE_KEYS.CONTENT,
               STORAGE_KEYS.FILE_NAME,
               STORAGE_KEYS.THEME,
               STORAGE_KEYS.SETTINGS,
-              STORAGE_KEYS.UI_STATE
+              STORAGE_KEYS.UI_STATE,
             ]);
           }
 
@@ -219,9 +223,9 @@ export const useEditorState = (
         } catch (error) {
           console.warn('Auto-save failed:', error);
           toast({
-            title: "Auto-save Warning",
-            description: "Storage limit reached. Consider exporting your work.",
-            variant: "destructive",
+            title: 'Auto-save Warning',
+            description: 'Storage limit reached. Consider exporting your work.',
+            variant: 'destructive',
             duration: 5000,
           });
         }
@@ -231,14 +235,12 @@ export const useEditorState = (
     }
   }, [markdown, fileName, autoSave, isModified, toast]);
 
-
-
   // Create state object
   const state: EditorState = {
     markdown,
     fileName,
     isModified,
-    autoSave
+    autoSave,
   };
 
   // Create actions object
@@ -247,7 +249,7 @@ export const useEditorState = (
     setFileName: handleFileNameChange,
     setModified: handleSetModified,
     newFile: handleNewFile,
-    loadFile: handleLoadFile
+    loadFile: handleLoadFile,
   };
 
   // Return undo/redo functionality as well
@@ -259,8 +261,8 @@ export const useEditorState = (
       redo,
       canUndo,
       canRedo,
-      clearHistory
-    }
+      clearHistory,
+    },
   };
 };
 

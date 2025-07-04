@@ -3,7 +3,7 @@
  * @author Axel Modra
  */
 
-import { KeyboardHandlerConfig } from "../types/editorPane.types";
+import type { KeyboardHandlerConfig } from '../types/editorPane.types';
 
 /**
  * Handle tab key for indentation
@@ -83,7 +83,8 @@ export const handleEditorShortcuts = (
         e.preventDefault();
         callbacks.onUndo();
         return true;
-      } else if (callbacks.onRedo && e.shiftKey) {
+      }
+      if (callbacks.onRedo && e.shiftKey) {
         e.preventDefault();
         callbacks.onRedo();
         return true;

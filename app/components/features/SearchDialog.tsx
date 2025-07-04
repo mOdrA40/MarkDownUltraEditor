@@ -1,13 +1,13 @@
-
 /**
  * @fileoverview SearchDialog - Komponen dialog untuk search dan replace functionality
  * @author Axel Modra
  * @refactored Memisahkan concerns dan menggunakan composition pattern
  */
 
-import React, { useCallback } from 'react';
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { Search } from "lucide-react";
+import type React from 'react';
+import { useCallback } from 'react';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { Search } from 'lucide-react';
 
 // Custom hooks dan components
 import { useSearchEngine } from './SearchDialog/hooks/useSearchEngine';
@@ -16,17 +16,13 @@ import { SearchActions } from './SearchDialog/components/SearchActions';
 import { SearchResults } from './SearchDialog/components/SearchResults';
 
 // Types
-import { SearchDialogProps } from './SearchDialog/types/search.types';
+import type { SearchDialogProps } from './SearchDialog/types/search.types';
 
 /**
  * Dialog component for search and replace with clean architecture
  * Uses composition pattern and separation of concerns
  */
-export const SearchDialog: React.FC<SearchDialogProps> = ({
-  markdown,
-  onReplace,
-  onClose
-}) => {
+export const SearchDialog: React.FC<SearchDialogProps> = ({ markdown, onReplace, onClose }) => {
   // Setup search engine with custom hook
   const {
     searchTerm,
@@ -41,7 +37,7 @@ export const SearchDialog: React.FC<SearchDialogProps> = ({
     navigateMatch,
     replaceOne,
     replaceAll,
-    clearSearch
+    clearSearch,
   } = useSearchEngine(markdown);
 
   /**
@@ -89,12 +85,7 @@ export const SearchDialog: React.FC<SearchDialogProps> = ({
           />
 
           {/* Search Results Info */}
-          {searchTerm && (
-            <SearchResults
-              matches={matches}
-              currentMatch={currentMatch}
-            />
-          )}
+          {searchTerm && <SearchResults matches={matches} currentMatch={currentMatch} />}
 
           {/* Search Actions */}
           <SearchActions

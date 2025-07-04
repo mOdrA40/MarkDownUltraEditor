@@ -3,14 +3,17 @@
  * @author Axel Modra
  */
 
-import { EditorSettings, UIState } from '../types';
+import type { EditorSettings, UIState } from '../types';
 import { STORAGE_KEYS, DEFAULT_EDITOR_CONFIG } from './constants';
 
 /**
  * Storage error types
  */
 export class StorageError extends Error {
-  constructor(message: string, public readonly operation: string) {
+  constructor(
+    message: string,
+    public readonly operation: string
+  ) {
     super(message);
     this.name = 'StorageError';
   }
@@ -105,13 +108,13 @@ export const clearEditorStorage = (): boolean => {
   try {
     const keys = Object.values(STORAGE_KEYS);
     let success = true;
-    
-    keys.forEach(key => {
+
+    keys.forEach((key) => {
       if (!removeStorageItem(key)) {
         success = false;
       }
     });
-    
+
     return success;
   } catch (error) {
     console.warn('Failed to clear editor storage', error);
@@ -174,11 +177,11 @@ export const saveEditorSettings = (settings: EditorSettings): boolean => {
 export const loadEditorSettings = (): EditorSettings | null => {
   const settings = getStorageJSON<EditorSettings>(STORAGE_KEYS.SETTINGS);
   if (!settings) return null;
-  
+
   // Merge with defaults to ensure all properties exist
   return {
     ...DEFAULT_EDITOR_CONFIG.defaultSettings,
-    ...settings
+    ...settings,
   };
 };
 
@@ -238,7 +241,7 @@ export const getStorageUsage = (): {
 
     let used = 0;
     for (const key in localStorage) {
-      if (Object.prototype.hasOwnProperty.call(localStorage, key)) {
+      if (Object.hasOwn(localStorage, key)) {
         used += localStorage[key].length + key.length;
       }
     }
@@ -258,7 +261,7 @@ export const getStorageUsage = (): {
 /**
  * Check if storage is nearly full
  */
-export const isStorageNearlyFull = (threshold: number = 80): boolean => {
+export const isStorageNearlyFull = (threshold = 80): boolean => {
   const usage = getStorageUsage();
   return usage.percentage > threshold;
 };
@@ -280,7 +283,7 @@ export const exportEditorData = (): {
     theme: loadThemeId() || undefined,
     settings: loadEditorSettings() || undefined,
     uiState: loadUIState() || undefined,
-    timestamp: Date.now()
+    timestamp: Date.now(),
   };
 };
 

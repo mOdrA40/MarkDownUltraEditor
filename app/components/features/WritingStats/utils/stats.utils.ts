@@ -1,22 +1,17 @@
 /**
  * WritingStats Utilities - Helper Functions
  * Utility functions untuk WritingStats module
- * 
+ *
  * @author Axel Modra
  */
 
-import { 
-  DEFAULT_STATS_CONFIG, 
-  READING_SPEED, 
+import {
+  DEFAULT_STATS_CONFIG,
+  READING_SPEED,
   FORMAT_PATTERNS,
-  STAT_TYPES
+  STAT_TYPES,
 } from '../constants/stats.constants';
-import type { 
-  TextStatistics, 
-  StatsConfig, 
-  StatType,
-  ScreenSize
-} from '../types/stats.types';
+import type { TextStatistics, StatsConfig, StatType, ScreenSize } from '../types/stats.types';
 
 /**
  * Membersihkan teks markdown dari markup characters
@@ -24,16 +19,13 @@ import type {
  * @param config - Konfigurasi untuk cleaning (optional)
  * @returns Clean text tanpa markdown markup
  */
-export const cleanMarkdownText = (
-  markdown: string, 
-  config: Partial<StatsConfig> = {}
-): string => {
+export const cleanMarkdownText = (markdown: string, config: Partial<StatsConfig> = {}): string => {
   const { markdownCleanRegex = DEFAULT_STATS_CONFIG.markdownCleanRegex } = config;
-  
+
   if (!markdown || typeof markdown !== 'string') {
     return '';
   }
-  
+
   return markdown.replace(markdownCleanRegex, '').trim();
 };
 
@@ -43,17 +35,14 @@ export const cleanMarkdownText = (
  * @param config - Konfigurasi untuk word splitting (optional)
  * @returns Jumlah kata
  */
-export const countWords = (
-  text: string, 
-  config: Partial<StatsConfig> = {}
-): number => {
+export const countWords = (text: string, config: Partial<StatsConfig> = {}): number => {
   const { wordSplitRegex = DEFAULT_STATS_CONFIG.wordSplitRegex } = config;
-  
+
   if (!text || typeof text !== 'string') {
     return 0;
   }
-  
-  const words = text.split(wordSplitRegex).filter(word => word.length > 0);
+
+  const words = text.split(wordSplitRegex).filter((word) => word.length > 0);
   return words.length;
 };
 
@@ -63,17 +52,14 @@ export const countWords = (
  * @param config - Konfigurasi untuk sentence splitting (optional)
  * @returns Jumlah kalimat
  */
-export const countSentences = (
-  text: string, 
-  config: Partial<StatsConfig> = {}
-): number => {
+export const countSentences = (text: string, config: Partial<StatsConfig> = {}): number => {
   const { sentenceSplitRegex = DEFAULT_STATS_CONFIG.sentenceSplitRegex } = config;
-  
+
   if (!text || typeof text !== 'string') {
     return 0;
   }
-  
-  const sentences = text.split(sentenceSplitRegex).filter(s => s.trim().length > 0);
+
+  const sentences = text.split(sentenceSplitRegex).filter((s) => s.trim().length > 0);
   return sentences.length;
 };
 
@@ -83,17 +69,14 @@ export const countSentences = (
  * @param config - Konfigurasi untuk paragraph splitting (optional)
  * @returns Jumlah paragraf
  */
-export const countParagraphs = (
-  markdown: string, 
-  config: Partial<StatsConfig> = {}
-): number => {
+export const countParagraphs = (markdown: string, config: Partial<StatsConfig> = {}): number => {
   const { paragraphSplitRegex = DEFAULT_STATS_CONFIG.paragraphSplitRegex } = config;
-  
+
   if (!markdown || typeof markdown !== 'string') {
     return 0;
   }
-  
-  const paragraphs = markdown.split(paragraphSplitRegex).filter(p => p.trim().length > 0);
+
+  const paragraphs = markdown.split(paragraphSplitRegex).filter((p) => p.trim().length > 0);
   return paragraphs.length;
 };
 
@@ -104,13 +87,13 @@ export const countParagraphs = (
  * @returns Estimasi waktu baca dalam menit
  */
 export const getReadingTime = (
-  wordCount: number, 
+  wordCount: number,
   readingSpeed: number = READING_SPEED.DEFAULT
 ): number => {
   if (wordCount <= 0 || readingSpeed <= 0) {
     return 0;
   }
-  
+
   return Math.ceil(wordCount / readingSpeed);
 };
 
@@ -121,7 +104,7 @@ export const getReadingTime = (
  * @returns Object dengan semua statistik
  */
 export const calculateTextStats = (
-  markdown: string, 
+  markdown: string,
   config: Partial<StatsConfig> = {}
 ): TextStatistics => {
   if (!markdown || typeof markdown !== 'string') {
@@ -132,15 +115,15 @@ export const calculateTextStats = (
       paragraphs: 0,
       sentences: 0,
       lines: 0,
-      readingTime: 0
+      readingTime: 0,
     };
   }
-  
+
   const { readingSpeed = READING_SPEED.DEFAULT } = config;
-  
+
   // Clean text untuk word/sentence counting
   const cleanText = cleanMarkdownText(markdown, config);
-  
+
   // Hitung statistik
   const words = countWords(cleanText, config);
   const characters = cleanText.length;
@@ -149,7 +132,7 @@ export const calculateTextStats = (
   const sentences = countSentences(cleanText, config);
   const lines = markdown.split('\n').length;
   const readingTime = getReadingTime(words, readingSpeed);
-  
+
   return {
     words,
     characters,
@@ -157,7 +140,7 @@ export const calculateTextStats = (
     paragraphs,
     sentences,
     lines,
-    readingTime
+    readingTime,
   };
 };
 
@@ -169,27 +152,25 @@ export const calculateTextStats = (
  * @returns String yang diformat
  */
 export const formatStatValue = (
-  type: StatType, 
-  value: number, 
+  type: StatType,
+  value: number,
   screenSize: ScreenSize = 'desktop'
 ): string => {
   const statConfig = STAT_TYPES[type];
-  
+
   // Gunakan custom formatter jika ada
   if (statConfig.formatter) {
     return statConfig.formatter(value);
   }
-  
+
   // Gunakan format pattern berdasarkan screen size
-  const formatPattern = screenSize === 'mobile' 
-    ? FORMAT_PATTERNS.mobile 
-    : FORMAT_PATTERNS.desktop;
-  
+  const formatPattern = screenSize === 'mobile' ? FORMAT_PATTERNS.mobile : FORMAT_PATTERNS.desktop;
+
   const formatter = formatPattern[type];
   if (formatter) {
     return formatter(value);
   }
-  
+
   // Fallback ke format default
   return `${value}`;
 };
@@ -200,10 +181,7 @@ export const formatStatValue = (
  * @param format - Format label ('short' atau 'long')
  * @returns Label string
  */
-export const getStatLabel = (
-  type: StatType, 
-  format: 'short' | 'long' = 'long'
-): string => {
+export const getStatLabel = (type: StatType, format: 'short' | 'long' = 'long'): string => {
   const statConfig = STAT_TYPES[type];
   return format === 'short' ? statConfig.shortLabel : statConfig.longLabel;
 };
@@ -225,7 +203,7 @@ export const validateMarkdown = (markdown: string): boolean => {
 export const getStatsConfig = (config: Partial<StatsConfig> = {}): StatsConfig => {
   return {
     ...DEFAULT_STATS_CONFIG,
-    ...config
+    ...config,
   };
 };
 
@@ -244,7 +222,7 @@ export const isEmptyDocument = (stats: TextStatistics): boolean => {
  * @param threshold - Threshold untuk kata (default: 100)
  * @returns True jika dokumen pendek
  */
-export const isShortDocument = (stats: TextStatistics, threshold: number = 100): boolean => {
+export const isShortDocument = (stats: TextStatistics, threshold = 100): boolean => {
   return stats.words > 0 && stats.words < threshold;
 };
 
@@ -254,7 +232,7 @@ export const isShortDocument = (stats: TextStatistics, threshold: number = 100):
  * @param threshold - Threshold untuk kata (default: 1000)
  * @returns True jika dokumen panjang
  */
-export const isLongDocument = (stats: TextStatistics, threshold: number = 1000): boolean => {
+export const isLongDocument = (stats: TextStatistics, threshold = 1000): boolean => {
   return stats.words >= threshold;
 };
 
@@ -266,13 +244,14 @@ export const isLongDocument = (stats: TextStatistics, threshold: number = 1000):
 export const getDocumentStatus = (stats: TextStatistics): string => {
   if (isEmptyDocument(stats)) {
     return 'Empty';
-  } else if (isShortDocument(stats)) {
-    return 'Draft';
-  } else if (isLongDocument(stats)) {
-    return 'Complete';
-  } else {
-    return 'Ready';
   }
+  if (isShortDocument(stats)) {
+    return 'Draft';
+  }
+  if (isLongDocument(stats)) {
+    return 'Complete';
+  }
+  return 'Ready';
 };
 
 /**

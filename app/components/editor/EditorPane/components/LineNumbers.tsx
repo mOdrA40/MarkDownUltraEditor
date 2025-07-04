@@ -1,6 +1,6 @@
-import React from 'react';
-import { LineNumbersConfig } from "../types/editorPane.types";
-import { generateLineNumberStyles } from "../utils/editorStyles";
+import type React from 'react';
+import type { LineNumbersConfig } from '../types/editorPane.types';
+import { generateLineNumberStyles } from '../utils/editorStyles';
 
 /**
  * Line numbers overlay component
@@ -10,7 +10,7 @@ export const LineNumbers: React.FC<LineNumbersConfig> = ({
   markdown,
   fontSize,
   lineHeight,
-  theme
+  theme,
 }) => {
   // Don't render if not shown
   if (!show) return null;

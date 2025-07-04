@@ -9,15 +9,11 @@ import { RefreshCw } from 'lucide-react';
 /**
  * Loading spinner component
  */
-export const LoadingSpinner: React.FC<{ 
+export const LoadingSpinner: React.FC<{
   size?: 'sm' | 'md' | 'lg';
   text?: string;
   className?: string;
-}> = ({ 
-  size = 'md', 
-  text = 'Loading...', 
-  className = '' 
-}) => {
+}> = ({ size = 'md', text = 'Loading...', className = '' }) => {
   const sizeClasses = {
     sm: 'w-4 h-4',
     md: 'w-6 h-6',
@@ -44,7 +40,11 @@ class LazyErrorBoundary extends React.Component<
   React.PropsWithChildren<{ fallback?: React.ComponentType<{ error?: Error; retry: () => void }> }>,
   LazyErrorBoundaryState
 > {
-  constructor(props: React.PropsWithChildren<{ fallback?: React.ComponentType<{ error?: Error; retry: () => void }> }>) {
+  constructor(
+    props: React.PropsWithChildren<{
+      fallback?: React.ComponentType<{ error?: Error; retry: () => void }>;
+    }>
+  ) {
     super(props);
     this.state = { hasError: false };
   }
@@ -79,9 +79,7 @@ const DefaultErrorFallback: React.FC<{ error?: Error; retry: () => void }> = ({ 
     <div className="w-12 h-12 bg-red-100 rounded-full flex items-center justify-center mb-4">
       <span className="text-red-600 text-xl">⚠</span>
     </div>
-    <h3 className="text-lg font-medium text-gray-900 mb-2">
-      Failed to load component
-    </h3>
+    <h3 className="text-lg font-medium text-gray-900 mb-2">Failed to load component</h3>
     <p className="text-sm text-gray-600 mb-4">
       {error?.message || 'Something went wrong while loading this component.'}
     </p>
@@ -102,18 +100,11 @@ export const LazyLoader: React.FC<{
   fallback?: React.ReactNode;
   errorFallback?: React.ComponentType<{ error?: Error; retry: () => void }>;
   className?: string;
-}> = ({ 
-  children, 
-  fallback = <LoadingSpinner />, 
-  errorFallback,
-  className = '' 
-}) => {
+}> = ({ children, fallback = <LoadingSpinner />, errorFallback, className = '' }) => {
   return (
     <div className={className}>
       <LazyErrorBoundary fallback={errorFallback}>
-        <Suspense fallback={fallback}>
-          {children}
-        </Suspense>
+        <Suspense fallback={fallback}>{children}</Suspense>
       </LazyErrorBoundary>
     </div>
   );
@@ -130,16 +121,13 @@ export function withLazyLoading<P extends object>(
   }
 ) {
   const LazyComponent = React.forwardRef<any, P>((props, ref) => (
-    <LazyLoader
-      fallback={loadingProps?.fallback}
-      errorFallback={loadingProps?.errorFallback}
-    >
+    <LazyLoader fallback={loadingProps?.fallback} errorFallback={loadingProps?.errorFallback}>
       <Component {...(props as any)} ref={ref} />
     </LazyLoader>
   ));
 
   LazyComponent.displayName = `withLazyLoading(${Component.displayName || Component.name})`;
-  
+
   return LazyComponent;
 }
 
@@ -155,7 +143,7 @@ export const usePreloadComponent = () => {
     }
 
     preloadedComponents.current.add(key);
-    
+
     // Preload on idle or after a delay
     if ('requestIdleCallback' in window) {
       requestIdleCallback(() => {
@@ -180,12 +168,12 @@ export const LazyOnVisible: React.FC<{
   rootMargin?: string;
   threshold?: number;
   className?: string;
-}> = ({ 
-  children, 
-  fallback = <LoadingSpinner />, 
+}> = ({
+  children,
+  fallback = <LoadingSpinner />,
   rootMargin = '50px',
   threshold = 0.1,
-  className = ''
+  className = '',
 }) => {
   const [isVisible, setIsVisible] = React.useState(false);
   const ref = React.useRef<HTMLDivElement>(null);
@@ -225,13 +213,13 @@ export const LazyImage: React.FC<{
   className?: string;
   onLoad?: () => void;
   onError?: () => void;
-}> = ({ 
-  src, 
-  alt, 
+}> = ({
+  src,
+  alt,
   placeholder = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZGRkIi8+PC9zdmc+',
   className = '',
   onLoad,
-  onError
+  onError,
 }) => {
   const [isLoaded, setIsLoaded] = React.useState(false);
   const [hasError, setHasError] = React.useState(false);

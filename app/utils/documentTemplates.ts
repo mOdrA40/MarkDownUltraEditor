@@ -3,7 +3,7 @@
  * Sistem template yang canggih dengan kategori dan metadata
  */
 
-import { DocumentTemplate } from '@/types/templates';
+import type { DocumentTemplate } from '@/types/templates';
 
 export const documentTemplates: DocumentTemplate[] = [
   // Programming & Development Templates
@@ -109,7 +109,7 @@ All errors return JSON with the following structure:
 - [PHP SDK](https://github.com/example/php-sdk)
 
 ## Support
-For API support, contact: api-support@example.com`
+For API support, contact: api-support@example.com`,
   },
 
   {
@@ -204,7 +204,7 @@ Summary of why this project should be approved and its expected impact.
 ## Appendices
 - Appendix A: Technical specifications
 - Appendix B: Market research
-- Appendix C: Competitive analysis`
+- Appendix C: Competitive analysis`,
   },
 
   {
@@ -432,7 +432,7 @@ jobs:
 - Payment processing: Stripe
 - Email service: SendGrid
 - File storage: AWS S3
-- Monitoring: DataDog`
+- Monitoring: DataDog`,
   },
 
   // README Templates
@@ -445,7 +445,8 @@ jobs:
     icon: '📄',
     difficulty: 'beginner',
     estimatedTime: '5 minutes',
-    preview: 'A comprehensive README with project description, installation, and usage instructions.',
+    preview:
+      'A comprehensive README with project description, installation, and usage instructions.',
     content: `# Project Name
 
 > Brief description of your project
@@ -504,7 +505,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 - Hat tip to anyone whose code was used
 - Inspiration
 - etc
-`
+`,
   },
 
   {
@@ -516,7 +517,8 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
     icon: '📝',
     difficulty: 'intermediate',
     estimatedTime: '25 minutes',
-    preview: 'Comprehensive tutorial template with introduction, prerequisites, and detailed steps.',
+    preview:
+      'Comprehensive tutorial template with introduction, prerequisites, and detailed steps.',
     content: `# How to [Tutorial Topic]: A Complete Guide
 
 *Published on [Date] • [Reading Time] min read*
@@ -851,7 +853,7 @@ The skills you've learned here will help you [benefit statement]. Keep practicin
 
 **Found this tutorial helpful?** Share it with others and let me know in the comments what you'd like to learn next!
 
-**Tags:** #tutorial #[topic] #development #programming`
+**Tags:** #tutorial #[topic] #development #programming`,
   },
 
   {
@@ -1146,7 +1148,7 @@ The authors declare no conflicts of interest.
 
 ### Appendix C: Additional Data
 
-[Include supplementary data tables or figures]`
+[Include supplementary data tables or figures]`,
   },
 
   {
@@ -1543,7 +1545,7 @@ We are seeking $[amount] in [type of funding] to [purpose of funding].
 [Customer letters of intent or pre-orders]
 
 ### Appendix E: Team Resumes
-[Detailed resumes of key team members]`
+[Detailed resumes of key team members]`,
   },
 
   {
@@ -1741,7 +1743,7 @@ We are seeking $[amount] in [type of funding] to [purpose of funding].
 
 **Journal Entry Complete** ✨
 
-*Remember: This journal is a safe space for honest self-reflection. Be kind to yourself and celebrate both big and small victories.*`
+*Remember: This journal is a safe space for honest self-reflection. Be kind to yourself and celebrate both big and small victories.*`,
   },
 
   {
@@ -1968,7 +1970,7 @@ We are seeking $[amount] in [type of funding] to [purpose of funding].
 
 ---
 
-*Note: These meeting notes should be distributed within 24 hours of the meeting. Please review and provide any corrections or additions.*`
+*Note: These meeting notes should be distributed within 24 hours of the meeting. Please review and provide any corrections or additions.*`,
   },
 
   {
@@ -1980,7 +1982,8 @@ We are seeking $[amount] in [type of funding] to [purpose of funding].
     icon: '💻',
     difficulty: 'intermediate',
     estimatedTime: '30 minutes',
-    preview: 'Complete coding interview prep guide with algorithms, data structures, and practice problems.',
+    preview:
+      'Complete coding interview prep guide with algorithms, data structures, and practice problems.',
     content: `# Coding Interview Preparation Guide
 
 ## 📋 Table of Contents
@@ -2421,7 +2424,7 @@ function fibTab(n) {
 
 **Remember:** Consistency is key. Practice a little every day rather than cramming before interviews.
 
-Good luck with your coding interviews! 🚀`
+Good luck with your coding interviews! 🚀`,
   },
 
   {
@@ -2694,7 +2697,7 @@ This project follows [Semantic Versioning](https://semver.org/):
 [1.2.0]: https://github.com/username/project/compare/v1.1.0...v1.2.0
 [1.1.0]: https://github.com/username/project/compare/v1.0.1...v1.1.0
 [1.0.1]: https://github.com/username/project/compare/v1.0.0...v1.0.1
-[1.0.0]: https://github.com/username/project/releases/tag/v1.0.0`
+[1.0.0]: https://github.com/username/project/releases/tag/v1.0.0`,
   },
   {
     id: 'readme-advanced',
@@ -2705,7 +2708,8 @@ This project follows [Semantic Versioning](https://semver.org/):
     icon: '🏆',
     difficulty: 'advanced',
     estimatedTime: '15 minutes',
-    preview: 'Professional README with CI/CD badges, detailed API docs, and contribution guidelines.',
+    preview:
+      'Professional README with CI/CD badges, detailed API docs, and contribution guidelines.',
     content: `# 🚀 Project Name
 
 [![Build Status](https://travis-ci.org/username/project.svg?branch=main)](https://travis-ci.org/username/project)
@@ -2994,7 +2998,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 <p align="center">
   Made with ❤️ by the Project Team
 </p>
-`
+`,
   },
   // Blog Post Templates
   {
@@ -3294,7 +3298,7 @@ Remember that the best technology stack is the one that fits your specific needs
 ---
 
 *Follow me on [Twitter](https://twitter.com/yourhandle) for more web development tips and tutorials!*
-`
+`,
   },
   // Documentation Templates
   {
@@ -3624,7 +3628,7 @@ Configure webhooks to receive real-time notifications about events.
 - User management endpoints
 - Post management endpoints
 - Authentication system
-`
+`,
   },
   // Business Templates
   {
@@ -3834,33 +3838,34 @@ Project deliverables will be considered complete when:
 ---
 
 *This proposal is valid for 30 days from the date above. We look forward to partnering with you on this exciting project!*
-`
-  }
+`,
+  },
 ];
 
 // Helper functions for template management
 export const getTemplatesByCategory = (category: DocumentTemplate['category']) => {
-  return documentTemplates.filter(template => template.category === category);
+  return documentTemplates.filter((template) => template.category === category);
 };
 
 export const getTemplateById = (id: string) => {
-  return documentTemplates.find(template => template.id === id);
+  return documentTemplates.find((template) => template.id === id);
 };
 
 export const searchTemplates = (query: string) => {
   const lowercaseQuery = query.toLowerCase();
-  return documentTemplates.filter(template => 
-    template.name.toLowerCase().includes(lowercaseQuery) ||
-    template.description.toLowerCase().includes(lowercaseQuery) ||
-    template.tags.some(tag => tag.toLowerCase().includes(lowercaseQuery))
+  return documentTemplates.filter(
+    (template) =>
+      template.name.toLowerCase().includes(lowercaseQuery) ||
+      template.description.toLowerCase().includes(lowercaseQuery) ||
+      template.tags.some((tag) => tag.toLowerCase().includes(lowercaseQuery))
   );
 };
 
 export const getTemplateCategories = () => {
-  const categories = Array.from(new Set(documentTemplates.map(t => t.category)));
-  return categories.map(category => ({
+  const categories = Array.from(new Set(documentTemplates.map((t) => t.category)));
+  return categories.map((category) => ({
     id: category,
     name: category.charAt(0).toUpperCase() + category.slice(1),
-    count: documentTemplates.filter(t => t.category === category).length
+    count: documentTemplates.filter((t) => t.category === category).length,
   }));
 };

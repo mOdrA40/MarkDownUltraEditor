@@ -17,7 +17,7 @@ export const usePerformanceOptimization = () => {
   const timeoutRef = useRef<NodeJS.Timeout>();
   const frameRef = useRef<number>();
 
-  const debounce = useCallback((fn: (...args: unknown[]) => void, delay: number = 300) => {
+  const debounce = useCallback((fn: (...args: unknown[]) => void, delay = 300) => {
     return (...args: unknown[]) => {
       if (timeoutRef.current) {
         clearTimeout(timeoutRef.current);
@@ -26,7 +26,7 @@ export const usePerformanceOptimization = () => {
     };
   }, []);
 
-  const throttle = useCallback((fn: (...args: unknown[]) => void, delay: number = 100) => {
+  const throttle = useCallback((fn: (...args: unknown[]) => void, delay = 100) => {
     let lastCall = 0;
     return (...args: unknown[]) => {
       const now = Date.now();

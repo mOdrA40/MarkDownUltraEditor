@@ -15,15 +15,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import {
-  User,
-  LogIn,
-  UserPlus,
-  Files,
-  Cloud,
-  HardDrive,
-  Settings
-} from 'lucide-react';
+import { User, LogIn, UserPlus, Files, Cloud, HardDrive, Settings } from 'lucide-react';
 
 /**
  * Props for AuthButtons component
@@ -73,10 +65,7 @@ export const AuthButtons: React.FC<AuthButtonsProps> = ({
     return (
       <div className={`flex items-center gap-2 ${className}`}>
         {/* Storage indicator */}
-        <Badge
-          variant="secondary"
-          className="hidden sm:flex items-center gap-1 text-xs"
-        >
+        <Badge variant="secondary" className="hidden sm:flex items-center gap-1 text-xs">
           <Cloud className="w-3 h-3" />
           Cloud
         </Badge>
@@ -131,9 +120,7 @@ export const AuthButtons: React.FC<AuthButtonsProps> = ({
             >
               <DropdownMenuLabel className="font-normal">
                 <div className="flex flex-col space-y-1">
-                  <p className="text-sm font-medium leading-none">
-                    {user.fullName || 'User'}
-                  </p>
+                  <p className="text-sm font-medium leading-none">{user.fullName || 'User'}</p>
                   <p className="text-xs leading-none text-muted-foreground">
                     {user.primaryEmailAddress?.emailAddress}
                   </p>
@@ -174,9 +161,9 @@ export const AuthButtons: React.FC<AuthButtonsProps> = ({
                   afterSignOutUrl="/"
                   appearance={{
                     elements: {
-                      userButtonAvatarBox: "w-0 h-0 hidden",
-                      userButtonTrigger: "w-full justify-start p-2 hover:bg-gray-100 rounded-sm",
-                    }
+                      userButtonAvatarBox: 'w-0 h-0 hidden',
+                      userButtonTrigger: 'w-full justify-start p-2 hover:bg-gray-100 rounded-sm',
+                    },
                   }}
                 />
               </div>
@@ -191,10 +178,7 @@ export const AuthButtons: React.FC<AuthButtonsProps> = ({
   return (
     <div className={`flex items-center gap-2 ${className}`}>
       {/* Storage indicator for local storage */}
-      <Badge
-        variant="outline"
-        className="hidden sm:flex items-center gap-1 text-xs"
-      >
+      <Badge variant="outline" className="hidden sm:flex items-center gap-1 text-xs">
         <HardDrive className="w-3 h-3" />
         Local
       </Badge>

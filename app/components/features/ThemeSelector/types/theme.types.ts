@@ -1,7 +1,7 @@
 /**
  * Theme Types & Interfaces
  * Definisi TypeScript untuk sistem tema aplikasi
- * 
+ *
  * @author Axel Modra
  */
 
@@ -68,7 +68,13 @@ export type ThemeId = 'ocean' | 'forest' | 'sunset' | 'purple' | 'rose' | 'dark'
 /**
  * Type untuk kategori warna tema
  */
-export type ThemeColorCategory = 'primary' | 'secondary' | 'background' | 'surface' | 'text' | 'accent';
+export type ThemeColorCategory =
+  | 'primary'
+  | 'secondary'
+  | 'background'
+  | 'surface'
+  | 'text'
+  | 'accent';
 
 /**
  * Interface untuk konfigurasi tema

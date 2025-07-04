@@ -4,7 +4,13 @@
  */
 
 // Export performance monitoring
-export { PerformanceMonitor, usePerformanceMeasure, useRenderTime, useMemoryUsage, performanceUtils } from './PerformanceMonitor';
+export {
+  PerformanceMonitor,
+  usePerformanceMeasure,
+  useRenderTime,
+  useMemoryUsage,
+  performanceUtils,
+} from './PerformanceMonitor';
 
 // Export memoized components
 export {
@@ -18,11 +24,15 @@ export {
   useStableArray,
   useDebouncedValue,
   useThrottledValue,
-  withPerformanceOptimization
+  withPerformanceOptimization,
 } from './MemoizedComponents';
 
 // Export error boundary
-export { EditorErrorBoundary, useErrorHandler, withErrorBoundary } from '../ErrorBoundary/EditorErrorBoundary';
+export {
+  EditorErrorBoundary,
+  useErrorHandler,
+  withErrorBoundary,
+} from '../ErrorBoundary/EditorErrorBoundary';
 
 // Re-export types
 export type { PerformanceMetrics, ErrorBoundaryState } from '../../types';

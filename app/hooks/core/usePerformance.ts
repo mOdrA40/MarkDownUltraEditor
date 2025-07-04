@@ -4,7 +4,11 @@
  */
 
 import { useState, useEffect, useCallback, useRef } from 'react';
-import { getPerformanceMonitor, PerformanceMetrics, performanceUtils } from '@/utils/performance';
+import {
+  getPerformanceMonitor,
+  type PerformanceMetrics,
+  performanceUtils,
+} from '@/utils/performance';
 
 /**
  * Performance hook return interface
@@ -17,7 +21,10 @@ export interface UsePerformanceReturn {
     start: () => void;
     end: () => number | null;
   };
-  measureAsync: <T>(operation: () => Promise<T>, name: string) => Promise<{ result: T; duration: number }>;
+  measureAsync: <T>(
+    operation: () => Promise<T>,
+    name: string
+  ) => Promise<{ result: T; duration: number }>;
   recordCustomMetric: (key: keyof PerformanceMetrics, value: number) => void;
   getMemoryUsage: () => any;
 }
@@ -60,12 +67,15 @@ export const usePerformance = (): UsePerformanceReturn => {
     return performanceUtils.measureRender(componentName);
   }, []);
 
-  const measureAsync = useCallback(async <T>(
-    operation: () => Promise<T>,
-    name: string
-  ): Promise<{ result: T; duration: number }> => {
-    return performanceUtils.measureAsync(operation, name);
-  }, []);
+  const measureAsync = useCallback(
+    async <T>(
+      operation: () => Promise<T>,
+      name: string
+    ): Promise<{ result: T; duration: number }> => {
+      return performanceUtils.measureAsync(operation, name);
+    },
+    []
+  );
 
   const recordCustomMetric = useCallback((key: keyof PerformanceMetrics, value: number) => {
     monitorRef.current.recordCustomMetric(key, value);
@@ -113,20 +123,19 @@ export const useRenderPerformance = (componentName: string) => {
  */
 export const useAsyncPerformance = () => {
   const { measureAsync } = usePerformance();
-  
-  const measure = useCallback(async <T>(
-    operation: () => Promise<T>,
-    name: string,
-    logResult = true
-  ): Promise<T> => {
-    const { result, duration } = await measureAsync(operation, name);
-    
-    if (logResult && process.env.NODE_ENV === 'development') {
-      console.log(`${name} completed in ${duration.toFixed(2)}ms`);
-    }
-    
-    return result;
-  }, [measureAsync]);
+
+  const measure = useCallback(
+    async <T>(operation: () => Promise<T>, name: string, logResult = true): Promise<T> => {
+      const { result, duration } = await measureAsync(operation, name);
+
+      if (logResult && process.env.NODE_ENV === 'development') {
+        console.log(`${name} completed in ${duration.toFixed(2)}ms`);
+      }
+
+      return result;
+    },
+    [measureAsync]
+  );
 
   return { measure };
 };
@@ -136,27 +145,39 @@ export const useAsyncPerformance = () => {
  */
 export const useWebVitals = () => {
   const { metrics, score } = usePerformance();
-  
+
   const getVitalsStatus = useCallback(() => {
     const { fcp, lcp, fid, cls } = metrics;
-    
+
     return {
       fcp: {
         value: fcp,
-        status: !fcp ? 'unknown' : fcp <= 1800 ? 'good' : fcp <= 3000 ? 'needs-improvement' : 'poor'
+        status: !fcp
+          ? 'unknown'
+          : fcp <= 1800
+            ? 'good'
+            : fcp <= 3000
+              ? 'needs-improvement'
+              : 'poor',
       },
       lcp: {
         value: lcp,
-        status: !lcp ? 'unknown' : lcp <= 2500 ? 'good' : lcp <= 4000 ? 'needs-improvement' : 'poor'
+        status: !lcp
+          ? 'unknown'
+          : lcp <= 2500
+            ? 'good'
+            : lcp <= 4000
+              ? 'needs-improvement'
+              : 'poor',
       },
       fid: {
         value: fid,
-        status: !fid ? 'unknown' : fid <= 100 ? 'good' : fid <= 300 ? 'needs-improvement' : 'poor'
+        status: !fid ? 'unknown' : fid <= 100 ? 'good' : fid <= 300 ? 'needs-improvement' : 'poor',
       },
       cls: {
         value: cls,
-        status: !cls ? 'unknown' : cls <= 0.1 ? 'good' : cls <= 0.25 ? 'needs-improvement' : 'poor'
-      }
+        status: !cls ? 'unknown' : cls <= 0.1 ? 'good' : cls <= 0.25 ? 'needs-improvement' : 'poor',
+      },
     };
   }, [metrics]);
 

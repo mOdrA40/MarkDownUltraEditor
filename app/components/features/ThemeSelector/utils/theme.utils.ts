@@ -1,7 +1,7 @@
 /**
  * Theme Utilities
  * Fungsi-fungsi utility untuk operasi tema
- * 
+ *
  * @author Axel Modra
  */
 
@@ -52,7 +52,7 @@ export const getThemeColor = (theme: Theme, category: ThemeColorCategory): strin
  * @param direction - Arah gradient (default: 135deg)
  * @returns String CSS gradient
  */
-export const createThemeGradient = (theme: Theme, direction: string = '135deg'): string => {
+export const createThemeGradient = (theme: Theme, direction = '135deg'): string => {
   return `linear-gradient(${direction}, ${theme.primary}, ${theme.secondary})`;
 };
 
@@ -81,11 +81,13 @@ export const getContrastTextColor = (theme: Theme): string => {
  */
 export const hexToRgb = (hex: string): { r: number; g: number; b: number } | null => {
   const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
-  return result ? {
-    r: parseInt(result[1], 16),
-    g: parseInt(result[2], 16),
-    b: parseInt(result[3], 16)
-  } : null;
+  return result
+    ? {
+        r: Number.parseInt(result[1], 16),
+        g: Number.parseInt(result[2], 16),
+        b: Number.parseInt(result[3], 16),
+      }
+    : null;
 };
 
 /**
@@ -98,9 +100,9 @@ export const calculateLuminance = (hex: string): number => {
   if (!rgb) return 0;
 
   const { r, g, b } = rgb;
-  const [rs, gs, bs] = [r, g, b].map(c => {
+  const [rs, gs, bs] = [r, g, b].map((c) => {
     c = c / 255;
-    return c <= 0.03928 ? c / 12.92 : Math.pow((c + 0.055) / 1.055, 2.4);
+    return c <= 0.03928 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4;
   });
 
   return 0.2126 * rs + 0.7152 * gs + 0.0722 * bs;
@@ -117,7 +119,7 @@ export const calculateContrastRatio = (color1: string, color2: string): number =
   const lum2 = calculateLuminance(color2);
   const brightest = Math.max(lum1, lum2);
   const darkest = Math.min(lum1, lum2);
-  
+
   return (brightest + 0.05) / (darkest + 0.05);
 };
 
@@ -137,7 +139,7 @@ export const meetsWCAGAA = (foreground: string, background: string): boolean => 
  * @returns Tema berikutnya
  */
 export const getNextTheme = (currentTheme: Theme): Theme => {
-  const currentIndex = themes.findIndex(theme => theme.id === currentTheme.id);
+  const currentIndex = themes.findIndex((theme) => theme.id === currentTheme.id);
   const nextIndex = (currentIndex + 1) % themes.length;
   return themes[nextIndex];
 };
@@ -148,7 +150,7 @@ export const getNextTheme = (currentTheme: Theme): Theme => {
  * @returns Tema sebelumnya
  */
 export const getPreviousTheme = (currentTheme: Theme): Theme => {
-  const currentIndex = themes.findIndex(theme => theme.id === currentTheme.id);
+  const currentIndex = themes.findIndex((theme) => theme.id === currentTheme.id);
   const prevIndex = currentIndex === 0 ? themes.length - 1 : currentIndex - 1;
   return themes[prevIndex];
 };

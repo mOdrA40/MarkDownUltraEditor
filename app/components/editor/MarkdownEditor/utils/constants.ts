@@ -3,8 +3,8 @@
  * @author Axel Modra
  */
 
-import { EditorConfig } from '../types';
-import { Breakpoints, MediaQueries } from '../types/responsive.types';
+import type { EditorConfig } from '../types';
+import type { Breakpoints, MediaQueries } from '../types/responsive.types';
 
 /**
  * Application metadata
@@ -13,7 +13,7 @@ export const APP_INFO = {
   NAME: 'Advanced Markdown Editor',
   VERSION: '1.0.0',
   AUTHOR: 'Axel Modra',
-  DESCRIPTION: 'A beautiful markdown editor with live preview and amazing features'
+  DESCRIPTION: 'A beautiful markdown editor with live preview and amazing features',
 } as const;
 
 /**
@@ -27,21 +27,21 @@ export const DEFAULT_EDITOR_CONFIG: EditorConfig = {
     typewriterMode: false,
     wordWrap: true,
     vimMode: false,
-    zenMode: false
+    zenMode: false,
   },
   breakpoints: {
     mobile: 499,
     tablet: 1023,
-    desktop: 1440
+    desktop: 1440,
   },
   autoSave: {
     enabled: true,
-    debounceMs: 2000
+    debounceMs: 2000,
   },
   undoRedo: {
     maxHistorySize: 50,
-    debounceMs: 500
-  }
+    debounceMs: 500,
+  },
 };
 
 /**
@@ -52,7 +52,7 @@ export const BREAKPOINTS: Breakpoints = {
   smallTablet: 767,
   tablet: 1023,
   desktop: 1439,
-  largeDesktop: 1440
+  largeDesktop: 1440,
 };
 
 /**
@@ -66,7 +66,7 @@ export const MEDIA_QUERIES: MediaQueries = {
   largeDesktop: '(min-width: 1440px)',
   touchDevice: '(pointer: coarse)',
   hoverDevice: '(hover: hover)',
-  highDensity: '(-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi)'
+  highDensity: '(-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi)',
 };
 
 /**
@@ -78,7 +78,7 @@ export const STORAGE_KEYS = {
   THEME: 'markdownEditor_theme',
   SETTINGS: 'markdownEditor_settings',
   UI_STATE: 'markdownEditor_uiState',
-  WINDOW_STATE: 'markdownEditor_windowState'
+  WINDOW_STATE: 'markdownEditor_windowState',
 } as const;
 
 /**
@@ -199,7 +199,7 @@ function hello() {
  */
 export const DEFAULT_FILE = {
   NAME: 'welcome-to-advanced-editor.md',
-  CONTENT: WELCOME_TEMPLATE
+  CONTENT: WELCOME_TEMPLATE,
 } as const;
 
 /**
@@ -219,7 +219,7 @@ export const KEYBOARD_SHORTCUTS = {
   FULLSCREEN: { key: 'F11' },
   SAVE: { key: 's', ctrlKey: true },
   NEW_FILE: { key: 'n', ctrlKey: true },
-  OPEN_FILE: { key: 'o', ctrlKey: true }
+  OPEN_FILE: { key: 'o', ctrlKey: true },
 } as const;
 
 /**
@@ -232,7 +232,7 @@ export const UI_ELEMENTS = {
   TOOLBAR: 'markdown-toolbar',
   SIDEBAR: 'markdown-sidebar',
   HEADER: 'markdown-header',
-  FOOTER: 'markdown-footer'
+  FOOTER: 'markdown-footer',
 } as const;
 
 /**
@@ -250,7 +250,7 @@ export const CSS_CLASSES = {
   DARK_THEME: 'dark-theme',
   LIGHT_THEME: 'light-theme',
   SIDEBAR_COLLAPSED: 'sidebar-collapsed',
-  PREVIEW_HIDDEN: 'preview-hidden'
+  PREVIEW_HIDDEN: 'preview-hidden',
 } as const;
 
 /**
@@ -260,7 +260,7 @@ export const ANIMATION_DURATION = {
   FAST: 150,
   NORMAL: 300,
   SLOW: 500,
-  VERY_SLOW: 1000
+  VERY_SLOW: 1000,
 } as const;
 
 /**
@@ -271,7 +271,7 @@ export const DEBOUNCE_DELAY = {
   AUTO_SAVE: 2000,
   RESIZE: 100,
   SCROLL: 50,
-  INPUT: 500
+  INPUT: 500,
 } as const;
 
 /**
@@ -279,9 +279,9 @@ export const DEBOUNCE_DELAY = {
  */
 export const FILE_LIMITS = {
   MAX_FILE_SIZE: 10 * 1024 * 1024, // 10MB
-  MAX_IMAGE_SIZE: 5 * 1024 * 1024,  // 5MB
+  MAX_IMAGE_SIZE: 5 * 1024 * 1024, // 5MB
   MAX_HISTORY_SIZE: 50,
-  MAX_UNDO_STEPS: 100
+  MAX_UNDO_STEPS: 100,
 } as const;
 
 /**
@@ -290,7 +290,7 @@ export const FILE_LIMITS = {
 export const SUPPORTED_FILE_TYPES = {
   MARKDOWN: ['.md', '.markdown', '.mdown', '.mkd'],
   TEXT: ['.txt'],
-  ALL: ['.md', '.markdown', '.mdown', '.mkd', '.txt']
+  ALL: ['.md', '.markdown', '.mdown', '.mkd', '.txt'],
 } as const;
 
 /**
@@ -301,7 +301,7 @@ export const EXPORT_FORMATS = {
   PDF: 'pdf',
   DOCX: 'docx',
   MARKDOWN: 'md',
-  TEXT: 'txt'
+  TEXT: 'txt',
 } as const;
 
 /**
@@ -310,7 +310,7 @@ export const EXPORT_FORMATS = {
 export const THEME_CONFIG = {
   DEFAULT_THEME_ID: 'ocean',
   THEME_TRANSITION_DURATION: 300,
-  CSS_VARIABLE_PREFIX: '--theme-'
+  CSS_VARIABLE_PREFIX: '--theme-',
 } as const;
 
 /**
@@ -319,7 +319,7 @@ export const THEME_CONFIG = {
 export const PERFORMANCE_CONFIG = {
   ENABLE_MONITORING: process.env.NODE_ENV === 'development',
   SAMPLE_RATE: 0.1,
-  MAX_METRICS_HISTORY: 100
+  MAX_METRICS_HISTORY: 100,
 } as const;
 
 /**
@@ -332,7 +332,7 @@ export const ERROR_MESSAGES = {
   SAVE_ERROR: 'Failed to save the file',
   THEME_ERROR: 'Failed to apply theme',
   NETWORK_ERROR: 'Network connection error',
-  UNKNOWN_ERROR: 'An unknown error occurred'
+  UNKNOWN_ERROR: 'An unknown error occurred',
 } as const;
 
 /**
@@ -344,7 +344,7 @@ export const SUCCESS_MESSAGES = {
   AUTO_SAVED: 'Auto-saved',
   THEME_APPLIED: 'Theme applied successfully',
   TEMPLATE_LOADED: 'Template loaded successfully',
-  IMAGE_INSERTED: 'Image inserted successfully'
+  IMAGE_INSERTED: 'Image inserted successfully',
 } as const;
 
 /**
@@ -354,7 +354,7 @@ export const A11Y_CONFIG = {
   MIN_TOUCH_TARGET: 44, // pixels
   MIN_CONTRAST_RATIO: 4.5,
   FOCUS_OUTLINE_WIDTH: 2, // pixels
-  SCREEN_READER_DELAY: 100 // milliseconds
+  SCREEN_READER_DELAY: 100, // milliseconds
 } as const;
 
 /**
@@ -363,5 +363,5 @@ export const A11Y_CONFIG = {
 export const DEV_CONFIG = {
   ENABLE_LOGGING: process.env.NODE_ENV === 'development',
   ENABLE_DEBUG_MODE: process.env.NODE_ENV === 'development',
-  SHOW_PERFORMANCE_METRICS: process.env.NODE_ENV === 'development'
+  SHOW_PERFORMANCE_METRICS: process.env.NODE_ENV === 'development',
 } as const;

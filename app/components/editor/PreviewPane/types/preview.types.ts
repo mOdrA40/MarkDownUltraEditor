@@ -3,7 +3,7 @@
  * @author Axel Modra
  */
 
-import { Theme } from "../../../features/ThemeSelector";
+import type { Theme } from '../../../features/ThemeSelector';
 
 /**
  * Props untuk komponen PreviewPane utama

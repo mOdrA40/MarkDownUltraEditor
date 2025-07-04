@@ -1,7 +1,7 @@
 /**
  * Keyboard Shortcuts Hook
  * Custom hook untuk mengelola keyboard shortcuts undo/redo
- * 
+ *
  * @author Axel Modra
  */
 
@@ -44,7 +44,7 @@ interface UseKeyboardShortcutsReturn {
 /**
  * Custom hook untuk mengelola keyboard shortcuts undo/redo
  * Hanya aktif pada desktop untuk menghindari konflik dengan mobile/tablet
- * 
+ *
  * @param props - Props untuk hook
  * @returns Object dengan shortcut configuration dan status
  */
@@ -56,48 +56,45 @@ export const useKeyboardShortcuts = ({
   isMobile = false,
   isTablet = false,
   enabled = true,
-  shortcuts = DEFAULT_KEYBOARD_SHORTCUTS
+  shortcuts = DEFAULT_KEYBOARD_SHORTCUTS,
 }: UseKeyboardShortcutsProps): UseKeyboardShortcutsReturn => {
-  
   // Shortcuts hanya aktif pada desktop
   const isEnabled = enabled && !isMobile && !isTablet;
 
   /**
    * Handler untuk keyboard events
    */
-  const handleKeyDown = useCallback((event: KeyboardEvent) => {
-    // Cek undo shortcut
-    if (matchesShortcut(event, shortcuts.undo)) {
-      event.preventDefault();
-      if (canUndo) {
-        onUndo();
+  const handleKeyDown = useCallback(
+    (event: KeyboardEvent) => {
+      // Cek undo shortcut
+      if (matchesShortcut(event, shortcuts.undo)) {
+        event.preventDefault();
+        if (canUndo) {
+          onUndo();
+        }
+        return;
       }
-      return;
-    }
 
-    // Cek redo shortcut
-    if (matchesShortcut(event, shortcuts.redo)) {
-      event.preventDefault();
-      if (canRedo) {
-        onRedo();
+      // Cek redo shortcut
+      if (matchesShortcut(event, shortcuts.redo)) {
+        event.preventDefault();
+        if (canRedo) {
+          onRedo();
+        }
+        return;
       }
-      return;
-    }
 
-    // Cek alternative redo shortcut (Ctrl+Shift+Z)
-    if (
-      event.key.toLowerCase() === 'z' &&
-      event.ctrlKey &&
-      event.shiftKey &&
-      !event.altKey
-    ) {
-      event.preventDefault();
-      if (canRedo) {
-        onRedo();
+      // Cek alternative redo shortcut (Ctrl+Shift+Z)
+      if (event.key.toLowerCase() === 'z' && event.ctrlKey && event.shiftKey && !event.altKey) {
+        event.preventDefault();
+        if (canRedo) {
+          onRedo();
+        }
+        return;
       }
-      return;
-    }
-  }, [onUndo, onRedo, canUndo, canRedo, shortcuts]);
+    },
+    [onUndo, onRedo, canUndo, canRedo, shortcuts]
+  );
 
   /**
    * Effect untuk menambah/menghapus event listener
@@ -106,7 +103,7 @@ export const useKeyboardShortcuts = ({
     if (!isEnabled) return;
 
     document.addEventListener('keydown', handleKeyDown);
-    
+
     return () => {
       document.removeEventListener('keydown', handleKeyDown);
     };
@@ -114,7 +111,7 @@ export const useKeyboardShortcuts = ({
 
   return {
     shortcuts,
-    isEnabled
+    isEnabled,
   };
 };
 
@@ -151,7 +148,7 @@ interface UseUndoRedoStateReturn {
 /**
  * Custom hook untuk mengelola state dan handlers undo/redo
  * Menambahkan validation dan error handling
- * 
+ *
  * @param props - Props untuk hook
  * @returns Object dengan handlers dan state
  */
@@ -160,9 +157,8 @@ export const useUndoRedoState = ({
   onRedo,
   canUndo,
   canRedo,
-  disabled = false
+  disabled = false,
 }: UseUndoRedoStateProps): UseUndoRedoStateReturn => {
-  
   /**
    * Handler untuk undo dengan validation
    */
@@ -197,7 +193,7 @@ export const useUndoRedoState = ({
     handleUndo,
     handleRedo,
     canPerformUndo,
-    canPerformRedo
+    canPerformRedo,
   };
 };
 
@@ -225,14 +221,13 @@ interface UseResponsiveUndoRedoReturn {
 
 /**
  * Custom hook untuk mendeteksi responsive breakpoints
- * 
+ *
  * @param props - Props untuk hook
  * @returns Object dengan responsive state
  */
 export const useResponsiveUndoRedo = ({
-  windowWidth = typeof window !== 'undefined' ? window.innerWidth : 1280
+  windowWidth = typeof window !== 'undefined' ? window.innerWidth : 1280,
 }: UseResponsiveUndoRedoProps = {}): UseResponsiveUndoRedoReturn => {
-  
   // Tentukan breakpoint berdasarkan window width
   const isMobile = windowWidth <= 499;
   const isTablet = windowWidth >= 500 && windowWidth <= 1023;
@@ -250,6 +245,6 @@ export const useResponsiveUndoRedo = ({
     isMobile,
     isTablet,
     isDesktop,
-    breakpoint
+    breakpoint,
   };
 };

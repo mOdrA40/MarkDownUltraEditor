@@ -10,16 +10,16 @@
 export const BREAKPOINTS = {
   mobile: {
     min: 320,
-    max: 767
+    max: 767,
   },
   tablet: {
     min: 768,
-    max: 1023
+    max: 1023,
   },
   desktop: {
     min: 1024,
-    max: Infinity
-  }
+    max: Number.POSITIVE_INFINITY,
+  },
 } as const;
 
 /**
@@ -32,7 +32,7 @@ export const MEDIA_QUERIES = {
   mobileAndTablet: `(max-width: ${BREAKPOINTS.tablet.max}px)`,
   tabletAndDesktop: `(min-width: ${BREAKPOINTS.tablet.min}px)`,
   prefersReducedMotion: '(prefers-reduced-motion: reduce)',
-  prefersDarkMode: '(prefers-color-scheme: dark)'
+  prefersDarkMode: '(prefers-color-scheme: dark)',
 } as const;
 
 /**
@@ -94,10 +94,10 @@ export const getWindowDimensions = () => {
   if (typeof window === 'undefined') {
     return { width: BREAKPOINTS.desktop.min, height: 800 };
   }
-  
+
   return {
     width: window.innerWidth,
-    height: window.innerHeight
+    height: window.innerHeight,
   };
 };
 
@@ -109,7 +109,7 @@ export const debounce = <T extends (...args: unknown[]) => void>(
   wait: number
 ): ((...args: Parameters<T>) => void) => {
   let timeout: NodeJS.Timeout;
-  
+
   return (...args: Parameters<T>) => {
     clearTimeout(timeout);
     timeout = setTimeout(() => func(...args), wait);
@@ -124,12 +124,12 @@ export const throttle = <T extends (...args: unknown[]) => void>(
   limit: number
 ): ((...args: Parameters<T>) => void) => {
   let inThrottle: boolean;
-  
+
   return (...args: Parameters<T>) => {
     if (!inThrottle) {
       func(...args);
       inThrottle = true;
-      setTimeout(() => inThrottle = false, limit);
+      setTimeout(() => (inThrottle = false), limit);
     }
   };
 };

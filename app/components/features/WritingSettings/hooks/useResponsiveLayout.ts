@@ -1,30 +1,25 @@
 /**
  * Responsive Layout Hook - Custom Hook untuk Responsive Detection
  * Hook untuk mendeteksi dan mengelola responsive breakpoints
- * 
+ *
  * @author Axel Modra
  */
 
 import { useState, useEffect, useCallback, useMemo } from 'react';
-import { 
-  getBreakpointFromWidth, 
-  getCurrentBreakpoint, 
+import {
+  getBreakpointFromWidth,
+  getCurrentBreakpoint,
   getViewportDimensions,
-  debounce
+  debounce,
 } from '../utils/responsive.utils';
-import type { 
-  BreakpointType, 
-  UseResponsiveLayoutReturn 
-} from '../types/settings.types';
+import type { BreakpointType, UseResponsiveLayoutReturn } from '../types/settings.types';
 
 /**
  * Hook untuk mendeteksi dan mengelola responsive layout
  * @param debounceMs - Delay untuk debounce resize events (default: 150ms)
  * @returns Object dengan breakpoint info dan utilities
  */
-export const useResponsiveLayout = (
-  debounceMs: number = 150
-): UseResponsiveLayoutReturn => {
+export const useResponsiveLayout = (debounceMs = 150): UseResponsiveLayoutReturn => {
   // State untuk menyimpan breakpoint dan window width
   const [breakpoint, setBreakpoint] = useState<BreakpointType>(() => {
     // Initial value - safe untuk SSR
@@ -56,13 +51,13 @@ export const useResponsiveLayout = (
     // Initial setup
     const { width } = getViewportDimensions();
     const initialBreakpoint = getBreakpointFromWidth(width);
-    
+
     setWindowWidth(width);
     setBreakpoint(initialBreakpoint);
 
     // Add resize listener
     window.addEventListener('resize', handleResize);
-    
+
     // Cleanup
     return () => {
       window.removeEventListener('resize', handleResize);
@@ -70,16 +65,19 @@ export const useResponsiveLayout = (
   }, [handleResize]);
 
   // Memoized computed values
-  const computedValues = useMemo(() => ({
-    isMobile: breakpoint === 'mobile',
-    isTablet: breakpoint === 'small-tablet' || breakpoint === 'tablet',
-    isDesktop: breakpoint === 'desktop'
-  }), [breakpoint]);
+  const computedValues = useMemo(
+    () => ({
+      isMobile: breakpoint === 'mobile',
+      isTablet: breakpoint === 'small-tablet' || breakpoint === 'tablet',
+      isDesktop: breakpoint === 'desktop',
+    }),
+    [breakpoint]
+  );
 
   return {
     breakpoint,
     windowWidth,
-    ...computedValues
+    ...computedValues,
   };
 };
 
@@ -115,7 +113,7 @@ export const useIsDesktop = (): boolean => {
  * @param debounceMs - Delay untuk debounce resize events
  * @returns Object dengan width dan height
  */
-export const useWindowDimensions = (debounceMs: number = 150) => {
+export const useWindowDimensions = (debounceMs = 150) => {
   const [dimensions, setDimensions] = useState(() => {
     if (typeof window === 'undefined') {
       return { width: 1024, height: 768 };
@@ -137,7 +135,7 @@ export const useWindowDimensions = (debounceMs: number = 150) => {
 
     // Add resize listener
     window.addEventListener('resize', handleResize);
-    
+
     // Cleanup
     return () => {
       window.removeEventListener('resize', handleResize);

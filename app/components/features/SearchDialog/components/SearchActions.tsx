@@ -3,10 +3,10 @@
  * @author Axel Modra
  */
 
-import React from 'react';
-import { Button } from "@/components/ui/button";
-import { Replace } from "lucide-react";
-import { SearchActionsProps } from '../types/search.types';
+import type React from 'react';
+import { Button } from '@/components/ui/button';
+import { Replace } from 'lucide-react';
+import type { SearchActionsProps } from '../types/search.types';
 
 /**
  * Komponen untuk action buttons search dan replace
@@ -15,7 +15,7 @@ export const SearchActions: React.FC<SearchActionsProps> = ({
   matches,
   onNavigateMatch,
   onReplaceOne,
-  onReplaceAll
+  onReplaceAll,
 }) => {
   const hasMatches = matches.length > 0;
 
@@ -31,7 +31,7 @@ export const SearchActions: React.FC<SearchActionsProps> = ({
       >
         ← Prev
       </Button>
-      
+
       <Button
         variant="outline"
         size="sm"
@@ -41,7 +41,7 @@ export const SearchActions: React.FC<SearchActionsProps> = ({
       >
         Next →
       </Button>
-      
+
       {/* Replace Buttons */}
       <Button
         variant="outline"
@@ -53,7 +53,7 @@ export const SearchActions: React.FC<SearchActionsProps> = ({
         <Replace className="h-4 w-4 mr-1" />
         Replace
       </Button>
-      
+
       <Button
         variant="default"
         size="sm"

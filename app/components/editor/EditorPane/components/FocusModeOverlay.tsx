@@ -1,14 +1,11 @@
-import React from 'react';
-import { FocusModeConfig } from "../types/editorPane.types";
-import { generateFocusModeGradient } from "../utils/editorStyles";
+import type React from 'react';
+import type { FocusModeConfig } from '../types/editorPane.types';
+import { generateFocusModeGradient } from '../utils/editorStyles';
 
 /**
  * Focus mode overlay component that creates a gradient effect
  */
-export const FocusModeOverlay: React.FC<FocusModeConfig> = ({
-  enabled,
-  theme
-}) => {
+export const FocusModeOverlay: React.FC<FocusModeConfig> = ({ enabled, theme }) => {
   // Don't render if not enabled
   if (!enabled) return null;
 
@@ -19,7 +16,7 @@ export const FocusModeOverlay: React.FC<FocusModeConfig> = ({
       <div
         className="absolute inset-0 transition-all duration-300"
         style={{
-          background: gradientBackground
+          background: gradientBackground,
         }}
       />
     </div>

@@ -3,8 +3,9 @@
  * @author Axel Modra
  */
 
-import React, { useEffect, useRef, useState, useCallback } from 'react';
-import { PerformanceMetrics } from '../../types';
+import type React from 'react';
+import { useEffect, useRef, useState, useCallback } from 'react';
+import type { PerformanceMetrics } from '../../types';
 
 /**
  * Performance monitor props
@@ -23,13 +24,13 @@ export const PerformanceMonitor: React.FC<PerformanceMonitorProps> = ({
   enabled = process.env.NODE_ENV === 'development',
   sampleRate = 0.1,
   onMetricsUpdate,
-  children
+  children,
 }) => {
   const [metrics, setMetrics] = useState<PerformanceMetrics>({
     renderTime: 0,
     memoryUsage: 0,
     bundleSize: 0,
-    loadTime: 0
+    loadTime: 0,
   });
 
   const renderStartTime = useRef<number>(0);
@@ -53,15 +54,15 @@ export const PerformanceMonitor: React.FC<PerformanceMonitorProps> = ({
     // This is an approximation based on script tags
     const scripts = document.querySelectorAll('script[src]');
     let totalSize = 0;
-    
-    scripts.forEach(script => {
+
+    scripts.forEach((script) => {
       // This is a rough estimate - in production you'd want more accurate measurements
       const src = script.getAttribute('src');
       if (src && !src.startsWith('http')) {
         totalSize += 1024; // Rough estimate per script
       }
     });
-    
+
     return totalSize;
   }, []);
 
@@ -75,7 +76,7 @@ export const PerformanceMonitor: React.FC<PerformanceMonitorProps> = ({
       renderTime: performance.now() - renderStartTime.current,
       memoryUsage: measureMemoryUsage(),
       bundleSize: measureBundleSize(),
-      loadTime: performance.now() - componentMountTime.current
+      loadTime: performance.now() - componentMountTime.current,
     };
 
     setMetrics(newMetrics);
@@ -151,7 +152,7 @@ export const PerformanceMonitor: React.FC<PerformanceMonitorProps> = ({
 /**
  * Hook for performance measurement
  */
-export const usePerformanceMeasure = (name: string, enabled: boolean = true) => {
+export const usePerformanceMeasure = (name: string, enabled = true) => {
   const startMeasure = useCallback(() => {
     if (!enabled || typeof window === 'undefined') return;
     performance.mark(`${name}-start`);
@@ -229,17 +230,17 @@ export const performanceUtils = {
   debounce: <T extends (...args: unknown[]) => unknown>(
     func: T,
     wait: number,
-    trackPerformance: boolean = false
+    trackPerformance = false
   ): ((...args: Parameters<T>) => void) => {
     let timeout: NodeJS.Timeout;
-    
+
     return (...args: Parameters<T>) => {
       const start = trackPerformance ? performance.now() : 0;
-      
+
       clearTimeout(timeout);
       timeout = setTimeout(() => {
         func(...args);
-        
+
         if (trackPerformance) {
           const duration = performance.now() - start;
           console.log(`Debounced function execution time: ${duration.toFixed(2)}ms`);
@@ -254,20 +255,20 @@ export const performanceUtils = {
   throttle: <T extends (...args: unknown[]) => unknown>(
     func: T,
     limit: number,
-    trackPerformance: boolean = false
+    trackPerformance = false
   ): ((...args: Parameters<T>) => void) => {
     let inThrottle: boolean;
-    
+
     return (...args: Parameters<T>) => {
       if (!inThrottle) {
         const start = trackPerformance ? performance.now() : 0;
-        
+
         func(...args);
         inThrottle = true;
-        
+
         setTimeout(() => {
           inThrottle = false;
-          
+
           if (trackPerformance) {
             const duration = performance.now() - start;
             console.log(`Throttled function execution time: ${duration.toFixed(2)}ms`);
@@ -293,5 +294,5 @@ export const performanceUtils = {
 
       return result;
     };
-  }
+  },
 };

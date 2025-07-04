@@ -1,7 +1,7 @@
 /**
  * Theme Selector Hooks
  * Custom hooks untuk mengelola state dan logic theme selector
- * 
+ *
  * @author Axel Modra
  */
 import { useCallback, useMemo } from 'react';
@@ -10,7 +10,7 @@ import {
   getNextTheme,
   getPreviousTheme,
   createThemeGradient,
-  getContrastTextColor
+  getContrastTextColor,
 } from '../utils/theme.utils';
 import { themes } from '../constants/themes.constants';
 /**
@@ -46,15 +46,14 @@ interface UseThemeSelectorReturn {
 /**
  * Custom hook untuk mengelola theme selector
  * Menyediakan semua functionality yang dibutuhkan untuk theme selection
- * 
+ *
  * @param props - Props untuk hook
  * @returns Object dengan state dan functions untuk theme management
  */
 export const useThemeSelector = ({
   currentTheme,
-  onThemeChange
+  onThemeChange,
 }: UseThemeSelectorProps): UseThemeSelectorReturn => {
-  
   /**
    * Memoized list of available themes
    * Mencegah re-render yang tidak perlu
@@ -64,11 +63,14 @@ export const useThemeSelector = ({
    * Fungsi untuk mengubah tema
    * Menggunakan useCallback untuk optimasi performa
    */
-  const changeTheme = useCallback((theme: Theme) => {
-    if (theme.id !== currentTheme.id) {
-      onThemeChange(theme);
-    }
-  }, [currentTheme.id, onThemeChange]);
+  const changeTheme = useCallback(
+    (theme: Theme) => {
+      if (theme.id !== currentTheme.id) {
+        onThemeChange(theme);
+      }
+    },
+    [currentTheme.id, onThemeChange]
+  );
   /**
    * Fungsi untuk beralih ke tema berikutnya
    */
@@ -86,9 +88,12 @@ export const useThemeSelector = ({
   /**
    * Fungsi untuk mengecek apakah tema sedang aktif
    */
-  const isThemeActive = useCallback((theme: Theme) => {
-    return theme.id === currentTheme.id;
-  }, [currentTheme.id]);
+  const isThemeActive = useCallback(
+    (theme: Theme) => {
+      return theme.id === currentTheme.id;
+    },
+    [currentTheme.id]
+  );
   /**
    * Fungsi untuk mendapatkan gradient CSS tema
    */
@@ -109,7 +114,7 @@ export const useThemeSelector = ({
     previousTheme,
     isThemeActive,
     getThemeGradient,
-    getTextColor
+    getTextColor,
   };
 };
 /**
@@ -143,7 +148,7 @@ interface UseThemeButtonReturn {
 /**
  * Custom hook untuk individual theme button
  * Mengelola state dan behavior untuk satu theme button
- * 
+ *
  * @param props - Props untuk hook
  * @returns Object dengan state dan functions untuk theme button
  */
@@ -151,9 +156,8 @@ export const useThemeButton = ({
   theme,
   currentTheme,
   onClick,
-  compact = false
+  compact = false,
 }: UseThemeButtonProps): UseThemeButtonReturn => {
-  
   /**
    * Mengecek apakah button ini aktif
    */
@@ -163,9 +167,12 @@ export const useThemeButton = ({
   /**
    * Style CSS untuk button background
    */
-  const buttonStyle = useMemo((): React.CSSProperties => ({
-    background: createThemeGradient(theme)
-  }), [theme]);
+  const buttonStyle = useMemo(
+    (): React.CSSProperties => ({
+      background: createThemeGradient(theme),
+    }),
+    [theme]
+  );
   /**
    * Class CSS untuk button
    * Clean styling tanpa border circle, hanya checkmark sebagai indikator
@@ -179,7 +186,7 @@ export const useThemeButton = ({
       'theme-button-fix', // Menggunakan CSS fix untuk mencegah scroll
       'focus:outline-none', // Hilangkan outline
       'focus:ring-0', // Hilangkan ring
-      'focus-fix' // Tambahan fix untuk focus state
+      'focus-fix', // Tambahan fix untuk focus state
     ];
     // Tambahkan ukuran berdasarkan mode compact
     if (compact) {
@@ -206,6 +213,6 @@ export const useThemeButton = ({
     buttonStyle,
     buttonClassName,
     handleClick,
-    ariaLabel
+    ariaLabel,
   };
 };

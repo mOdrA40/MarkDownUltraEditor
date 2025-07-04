@@ -1,7 +1,7 @@
 /**
  * UndoRedoButtons Module - Main Export
  * Entry point untuk semua exports dari UndoRedoButtons module
- * 
+ *
  * @author Axel Modra
  */
 
@@ -25,7 +25,7 @@ export type {
   ButtonConfig,
   ButtonSize,
   ButtonVariant,
-  UndoRedoStyling
+  UndoRedoStyling,
 } from './types/undoRedo.types';
 
 // Export utilities
@@ -43,12 +43,12 @@ export {
   getContainerClasses,
   validateProps,
   getButtonSize,
-  getTestId
+  getTestId,
 } from './utils/undoRedo.utils';
 
 // Export hooks
 export {
   useKeyboardShortcuts,
   useUndoRedoState,
-  useResponsiveUndoRedo
+  useResponsiveUndoRedo,
 } from './hooks/useKeyboardShortcuts';

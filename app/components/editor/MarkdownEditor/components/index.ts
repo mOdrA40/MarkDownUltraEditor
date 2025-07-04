@@ -15,5 +15,5 @@ export type {
   EditorSettings,
   UIState,
   ResponsiveState,
-  ThemeState
+  ThemeState,
 } from '../types';

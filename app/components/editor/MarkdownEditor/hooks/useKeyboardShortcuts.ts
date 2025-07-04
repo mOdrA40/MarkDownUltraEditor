@@ -53,7 +53,7 @@ export interface UseKeyboardShortcutsReturn {
  */
 export const useKeyboardShortcuts = (
   context: KeyboardShortcutsContext,
-  enabled: boolean = true
+  enabled = true
 ): UseKeyboardShortcutsReturn => {
   const shortcutsRef = useRef<Map<string, KeyboardShortcut>>(new Map());
   const enabledRef = useRef(enabled);
@@ -85,15 +85,18 @@ export const useKeyboardShortcuts = (
   /**
    * Register a keyboard shortcut
    */
-  const registerShortcut = useCallback((shortcut: KeyboardShortcut): (() => void) => {
-    const key = getConfigKey(shortcut);
-    shortcutsRef.current.set(key, shortcut);
+  const registerShortcut = useCallback(
+    (shortcut: KeyboardShortcut): (() => void) => {
+      const key = getConfigKey(shortcut);
+      shortcutsRef.current.set(key, shortcut);
 
-    // Return unregister function
-    return () => {
-      shortcutsRef.current.delete(key);
-    };
-  }, [getConfigKey]);
+      // Return unregister function
+      return () => {
+        shortcutsRef.current.delete(key);
+      };
+    },
+    [getConfigKey]
+  );
 
   /**
    * Unregister a keyboard shortcut
@@ -133,27 +136,31 @@ export const useKeyboardShortcuts = (
   /**
    * Handle keyboard events
    */
-  const handleKeyDown = useCallback((event: KeyboardEvent) => {
-    if (!enabledRef.current) return;
+  const handleKeyDown = useCallback(
+    (event: KeyboardEvent) => {
+      if (!enabledRef.current) return;
 
-    // Don't handle shortcuts when typing in input fields (except textarea for editor)
-    const target = event.target as HTMLElement;
-    const isInputField = target.tagName === 'INPUT' || 
-                        target.tagName === 'SELECT' || 
-                        (target.tagName === 'TEXTAREA' && !target.classList.contains('markdown-editor-textarea')) ||
-                        target.contentEditable === 'true';
+      // Don't handle shortcuts when typing in input fields (except textarea for editor)
+      const target = event.target as HTMLElement;
+      const isInputField =
+        target.tagName === 'INPUT' ||
+        target.tagName === 'SELECT' ||
+        (target.tagName === 'TEXTAREA' && !target.classList.contains('markdown-editor-textarea')) ||
+        target.contentEditable === 'true';
 
-    if (isInputField) return;
+      if (isInputField) return;
 
-    const shortcutKey = getShortcutKey(event);
-    const shortcut = shortcutsRef.current.get(shortcutKey);
+      const shortcutKey = getShortcutKey(event);
+      const shortcut = shortcutsRef.current.get(shortcutKey);
 
-    if (shortcut) {
-      event.preventDefault();
-      event.stopPropagation();
-      shortcut.action();
-    }
-  }, [getShortcutKey]);
+      if (shortcut) {
+        event.preventDefault();
+        event.stopPropagation();
+        shortcut.action();
+      }
+    },
+    [getShortcutKey]
+  );
 
   /**
    * Register default shortcuts
@@ -165,42 +172,42 @@ export const useKeyboardShortcuts = (
         ctrlKey: true,
         action: () => context.insertText('**Bold Text**'),
         description: 'Bold text',
-        category: 'Formatting'
+        category: 'Formatting',
       },
       {
         key: 'i',
         ctrlKey: true,
         action: () => context.insertText('*Italic Text*'),
         description: 'Italic text',
-        category: 'Formatting'
+        category: 'Formatting',
       },
       {
         key: 'k',
         ctrlKey: true,
         action: () => context.insertText('[Link Text](https://example.com)'),
         description: 'Insert link',
-        category: 'Formatting'
+        category: 'Formatting',
       },
       {
         key: '`',
         ctrlKey: true,
         action: () => context.insertText('`code`'),
         description: 'Inline code',
-        category: 'Formatting'
+        category: 'Formatting',
       },
       {
         key: 'z',
         ctrlKey: true,
         action: context.undo,
         description: 'Undo',
-        category: 'Edit'
+        category: 'Edit',
       },
       {
         key: 'y',
         ctrlKey: true,
         action: context.redo,
         description: 'Redo',
-        category: 'Edit'
+        category: 'Edit',
       },
       {
         key: 'z',
@@ -208,49 +215,49 @@ export const useKeyboardShortcuts = (
         shiftKey: true,
         action: context.redo,
         description: 'Redo (alternative)',
-        category: 'Edit'
+        category: 'Edit',
       },
       {
         key: '/',
         ctrlKey: true,
         action: context.togglePreview,
         description: 'Toggle preview',
-        category: 'View'
+        category: 'View',
       },
       {
         key: '.',
         ctrlKey: true,
         action: context.toggleZenMode,
         description: 'Toggle zen mode',
-        category: 'View'
+        category: 'View',
       },
       {
         key: '?',
         ctrlKey: true,
         action: context.showShortcuts,
         description: 'Show keyboard shortcuts',
-        category: 'Help'
+        category: 'Help',
       },
       {
         key: 'n',
         ctrlKey: true,
         action: context.newFile,
         description: 'New file',
-        category: 'File'
+        category: 'File',
       },
       {
         key: 's',
         ctrlKey: true,
         action: context.saveFile,
         description: 'Save file',
-        category: 'File'
+        category: 'File',
       },
       {
         key: 'o',
         ctrlKey: true,
         action: context.openFile,
         description: 'Open file',
-        category: 'File'
+        category: 'File',
       },
       {
         key: 'f11',
@@ -264,18 +271,16 @@ export const useKeyboardShortcuts = (
           }
         },
         description: 'Toggle fullscreen',
-        category: 'View'
-      }
+        category: 'View',
+      },
     ];
 
     // Register all default shortcuts
-    const unregisterFunctions = defaultShortcuts.map(shortcut => 
-      registerShortcut(shortcut)
-    );
+    const unregisterFunctions = defaultShortcuts.map((shortcut) => registerShortcut(shortcut));
 
     // Cleanup function
     return () => {
-      unregisterFunctions.forEach(unregister => unregister());
+      unregisterFunctions.forEach((unregister) => unregister());
     };
   }, [context, registerShortcut]);
 
@@ -305,7 +310,7 @@ export const useKeyboardShortcuts = (
     isShortcutActive,
     getActiveShortcuts,
     enableShortcuts,
-    disableShortcuts
+    disableShortcuts,
   };
 };
 
@@ -315,8 +320,8 @@ export const useKeyboardShortcuts = (
 export const useShortcutHelp = () => {
   const getShortcutsByCategory = useCallback((shortcuts: KeyboardShortcut[]) => {
     const categories: Record<string, KeyboardShortcut[]> = {};
-    
-    shortcuts.forEach(shortcut => {
+
+    shortcuts.forEach((shortcut) => {
       const category = shortcut.category || 'Other';
       if (!categories[category]) {
         categories[category] = [];
@@ -330,19 +335,20 @@ export const useShortcutHelp = () => {
   const formatShortcut = useCallback((shortcut: KeyboardShortcut): string => {
     const parts = [];
     if (shortcut.ctrlKey || shortcut.metaKey) {
-      const isMac = typeof navigator !== 'undefined' &&
-                   (navigator.userAgent.includes('Mac') || navigator.userAgent.includes('iPhone'));
+      const isMac =
+        typeof navigator !== 'undefined' &&
+        (navigator.userAgent.includes('Mac') || navigator.userAgent.includes('iPhone'));
       parts.push(isMac ? '⌘' : 'Ctrl');
     }
     if (shortcut.shiftKey) parts.push('Shift');
     if (shortcut.altKey) parts.push('Alt');
     parts.push(shortcut.key.toUpperCase());
-    
+
     return parts.join(' + ');
   }, []);
 
   return {
     getShortcutsByCategory,
-    formatShortcut
+    formatShortcut,
   };
 };

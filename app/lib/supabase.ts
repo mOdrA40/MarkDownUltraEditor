@@ -3,7 +3,7 @@
  * @author Axel Modra
  */
 
-import { createClient, SupabaseClient } from '@supabase/supabase-js';
+import { createClient, type SupabaseClient } from '@supabase/supabase-js';
 import { useAuth } from '@clerk/react-router';
 
 // Environment variables validation
@@ -168,7 +168,9 @@ export const useSupabase = (): SupabaseClient<Database> | null => {
  * Get authenticated Supabase client with token
  * This function should be called from components with Clerk context
  */
-export const getAuthenticatedSupabaseClient = async (getToken: () => Promise<string | null>): Promise<SupabaseClient<Database> | null> => {
+export const getAuthenticatedSupabaseClient = async (
+  getToken: () => Promise<string | null>
+): Promise<SupabaseClient<Database> | null> => {
   try {
     console.log('Getting authenticated Supabase client with Third Party Auth');
 
@@ -192,10 +194,7 @@ export const getAuthenticatedSupabaseClient = async (getToken: () => Promise<str
  */
 export const testSupabaseConnection = async (): Promise<boolean> => {
   try {
-    const { error } = await supabaseClient
-      .from('user_files')
-      .select('count')
-      .limit(1);
+    const { error } = await supabaseClient.from('user_files').select('count').limit(1);
 
     if (error) {
       console.error('Supabase connection test failed:', error);
@@ -244,7 +243,9 @@ export interface FileData {
 /**
  * Convert database row to FileData interface
  */
-export const dbRowToFileData = (row: Database['public']['Tables']['user_files']['Row']): FileData => {
+export const dbRowToFileData = (
+  row: Database['public']['Tables']['user_files']['Row']
+): FileData => {
   return {
     id: row.id,
     title: row.title,

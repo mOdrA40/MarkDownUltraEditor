@@ -3,19 +3,21 @@
  * @author Axel Modra
  */
 
-import React from 'react';
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Badge } from "@/components/ui/badge";
-import { SearchControlsProps } from '../types/search.types';
+import type React from 'react';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Badge } from '@/components/ui/badge';
+import type { SearchControlsProps } from '../types/search.types';
 
 /**
  * Component for search and replace input controls
  */
-export const SearchControls: React.FC<SearchControlsProps & {
-  matchCount?: number;
-  currentMatch?: number;
-}> = ({
+export const SearchControls: React.FC<
+  SearchControlsProps & {
+    matchCount?: number;
+    currentMatch?: number;
+  }
+> = ({
   searchTerm,
   replaceTerm,
   caseSensitive,
@@ -23,7 +25,7 @@ export const SearchControls: React.FC<SearchControlsProps & {
   onReplaceTermChange,
   onCaseSensitiveChange,
   matchCount = 0,
-  currentMatch = 0
+  currentMatch = 0,
 }) => {
   return (
     <div className="space-y-4">
@@ -47,7 +49,7 @@ export const SearchControls: React.FC<SearchControlsProps & {
           )}
         </div>
       </div>
-      
+
       {/* Replace Input */}
       <div className="space-y-2">
         <Label htmlFor="replace" className="text-sm font-medium">
@@ -60,7 +62,7 @@ export const SearchControls: React.FC<SearchControlsProps & {
           placeholder="Enter replacement..."
         />
       </div>
-      
+
       {/* Options */}
       <div className="flex items-center space-x-2">
         <input

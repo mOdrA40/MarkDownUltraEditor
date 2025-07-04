@@ -5,7 +5,6 @@
 
 import { useState, useCallback, useEffect } from 'react';
 
-
 export const useMobileNav = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [collapsedSections, setCollapsedSections] = useState<Set<string>>(new Set());
@@ -14,7 +13,7 @@ export const useMobileNav = () => {
    * Toggle sidebar open/close
    */
   const toggleSidebar = useCallback(() => {
-    setIsOpen(prev => !prev);
+    setIsOpen((prev) => !prev);
   }, []);
 
   /**
@@ -35,7 +34,7 @@ export const useMobileNav = () => {
    * Toggle section collapsed state
    */
   const toggleSection = useCallback((sectionId: string) => {
-    setCollapsedSections(prev => {
+    setCollapsedSections((prev) => {
       const newSet = new Set(prev);
       if (newSet.has(sectionId)) {
         newSet.delete(sectionId);
@@ -49,17 +48,23 @@ export const useMobileNav = () => {
   /**
    * Check if section is collapsed
    */
-  const isSectionCollapsed = useCallback((sectionId: string) => {
-    return collapsedSections.has(sectionId);
-  }, [collapsedSections]);
+  const isSectionCollapsed = useCallback(
+    (sectionId: string) => {
+      return collapsedSections.has(sectionId);
+    },
+    [collapsedSections]
+  );
 
   /**
    * Execute action and close sidebar
    */
-  const executeAction = useCallback((action: () => void) => {
-    action();
-    closeSidebar();
-  }, [closeSidebar]);
+  const executeAction = useCallback(
+    (action: () => void) => {
+      action();
+      closeSidebar();
+    },
+    [closeSidebar]
+  );
 
   /**
    * Handle escape key to close sidebar
@@ -86,7 +91,7 @@ export const useMobileNav = () => {
     // State
     isOpen,
     collapsedSections,
-    
+
     // Actions
     toggleSidebar,
     closeSidebar,
@@ -94,6 +99,6 @@ export const useMobileNav = () => {
     toggleSection,
     isSectionCollapsed,
     executeAction,
-    handleOutsideClick
+    handleOutsideClick,
   };
 };

@@ -4,14 +4,14 @@
  */
 
 import { useState, useCallback } from 'react';
-import { ExportOptions, UseExportReturn } from '../types/export.types';
+import type { ExportOptions, UseExportReturn } from '../types/export.types';
 import { convertMarkdownToHTML } from '../utils/markdownConverter';
 import { downloadFile, sanitizeFilename } from '../utils/downloadFile';
 import { EXPORT_PROGRESS_STEPS, SUCCESS_MESSAGES, ERROR_MESSAGES } from '../utils/constants';
 
 /**
  * Custom hook untuk export ke EPUB (HTML format)
- * 
+ *
  * @param markdown - Konten markdown
  * @param fileName - Nama file default
  * @param onSuccess - Callback ketika export berhasil
@@ -27,43 +27,45 @@ export const useExportToEpub = (
   const [isExporting, setIsExporting] = useState(false);
   const [exportProgress, setExportProgress] = useState(0);
 
-  const startExport = useCallback(async (options: ExportOptions) => {
-    if (!markdown?.trim()) {
-      onError?.(ERROR_MESSAGES.EMPTY_CONTENT);
-      return;
-    }
+  const startExport = useCallback(
+    async (options: ExportOptions) => {
+      if (!markdown?.trim()) {
+        onError?.(ERROR_MESSAGES.EMPTY_CONTENT);
+        return;
+      }
 
-    setIsExporting(true);
-    setExportProgress(EXPORT_PROGRESS_STEPS.INITIALIZING);
+      setIsExporting(true);
+      setExportProgress(EXPORT_PROGRESS_STEPS.INITIALIZING);
 
-    try {
-      // Convert markdown to HTML
-      const { html: htmlContent } = convertMarkdownToHTML(markdown);
-      setExportProgress(EXPORT_PROGRESS_STEPS.PROCESSING);
+      try {
+        // Convert markdown to HTML
+        const { html: htmlContent } = convertMarkdownToHTML(markdown);
+        setExportProgress(EXPORT_PROGRESS_STEPS.PROCESSING);
 
-      // Generate EPUB-like HTML structure
-      const epubContent = generateEpubHTML(options, htmlContent);
-      setExportProgress(EXPORT_PROGRESS_STEPS.GENERATING);
+        // Generate EPUB-like HTML structure
+        const epubContent = generateEpubHTML(options, htmlContent);
+        setExportProgress(EXPORT_PROGRESS_STEPS.GENERATING);
 
-      // Create blob dan download
-      const blob = new Blob([epubContent], { type: 'text/html' });
-      setExportProgress(EXPORT_PROGRESS_STEPS.FINALIZING);
+        // Create blob dan download
+        const blob = new Blob([epubContent], { type: 'text/html' });
+        setExportProgress(EXPORT_PROGRESS_STEPS.FINALIZING);
 
-      const safeFileName = sanitizeFilename(options.title || fileName, '.html');
-      downloadFile(blob, safeFileName);
+        const safeFileName = sanitizeFilename(options.title || fileName, '.html');
+        downloadFile(blob, safeFileName);
 
-      setExportProgress(EXPORT_PROGRESS_STEPS.COMPLETE);
-      onSuccess?.(SUCCESS_MESSAGES.HTML_EXPORTED);
-
-    } catch (error) {
-      console.error('HTML export error:', error);
-      const errorMessage = error instanceof Error ? error.message : ERROR_MESSAGES.EXPORT_FAILED;
-      onError?.(errorMessage);
-    } finally {
-      setIsExporting(false);
-      setExportProgress(0);
-    }
-  }, [markdown, fileName, onSuccess, onError]);
+        setExportProgress(EXPORT_PROGRESS_STEPS.COMPLETE);
+        onSuccess?.(SUCCESS_MESSAGES.HTML_EXPORTED);
+      } catch (error) {
+        console.error('HTML export error:', error);
+        const errorMessage = error instanceof Error ? error.message : ERROR_MESSAGES.EXPORT_FAILED;
+        onError?.(errorMessage);
+      } finally {
+        setIsExporting(false);
+        setExportProgress(0);
+      }
+    },
+    [markdown, fileName, onSuccess, onError]
+  );
 
   const resetExport = useCallback(() => {
     setIsExporting(false);
@@ -74,7 +76,7 @@ export const useExportToEpub = (
     isExporting,
     exportProgress,
     startExport,
-    resetExport
+    resetExport,
   };
 };
 
@@ -294,11 +296,12 @@ const generateEpubStyles = (options: ExportOptions): string => {
  */
 const generateEpubHeader = (options: ExportOptions): string => {
   // Detect dark theme context
-  const isDark = typeof window !== 'undefined' &&
+  const isDark =
+    typeof window !== 'undefined' &&
     (document.body.classList.contains('dark') ||
-     document.body.classList.contains('theme-dark') ||
-     document.body.getAttribute('data-theme') === 'dark' ||
-     window.matchMedia('(prefers-color-scheme: dark)').matches);
+      document.body.classList.contains('theme-dark') ||
+      document.body.getAttribute('data-theme') === 'dark' ||
+      window.matchMedia('(prefers-color-scheme: dark)').matches);
 
   const textColor = isDark ? '#ffffff' : '#333333';
 

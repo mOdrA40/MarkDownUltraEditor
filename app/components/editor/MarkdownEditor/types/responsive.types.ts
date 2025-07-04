@@ -11,7 +11,7 @@ export enum DeviceType {
   SMALL_TABLET = 'small_tablet',
   TABLET = 'tablet',
   DESKTOP = 'desktop',
-  LARGE_DESKTOP = 'large_desktop'
+  LARGE_DESKTOP = 'large_desktop',
 }
 
 /**
@@ -169,7 +169,7 @@ export const DEFAULT_BREAKPOINTS: Breakpoints = {
   smallTablet: 767,
   tablet: 1023,
   desktop: 1439,
-  largeDesktop: 1440
+  largeDesktop: 1440,
 };
 
 export const DEFAULT_MEDIA_QUERIES: MediaQueries = {
@@ -180,19 +180,21 @@ export const DEFAULT_MEDIA_QUERIES: MediaQueries = {
   largeDesktop: '(min-width: 1440px)',
   touchDevice: '(pointer: coarse)',
   hoverDevice: '(hover: hover)',
-  highDensity: '(-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi)'
+  highDensity: '(-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi)',
 };
 
 /**
  * Responsive utility types
  */
-export type ResponsiveValue<T> = T | {
-  mobile?: T;
-  smallTablet?: T;
-  tablet?: T;
-  desktop?: T;
-  largeDesktop?: T;
-};
+export type ResponsiveValue<T> =
+  | T
+  | {
+      mobile?: T;
+      smallTablet?: T;
+      tablet?: T;
+      desktop?: T;
+      largeDesktop?: T;
+    };
 
 export type ResponsiveProperty<T> = {
   [K in keyof Breakpoints]?: T;

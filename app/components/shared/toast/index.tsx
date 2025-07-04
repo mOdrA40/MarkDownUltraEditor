@@ -7,12 +7,12 @@
 export { useToast, toast } from '@/hooks/core';
 
 // Re-export types
-export type { 
-  ToasterToast, 
-  ToastInput, 
-  ToastReturn, 
-  UseToastOptions, 
-  UseToastReturn 
+export type {
+  ToasterToast,
+  ToastInput,
+  ToastReturn,
+  UseToastOptions,
+  UseToastReturn,
 } from '@/types/toast';
 
 // Re-export utilities
@@ -25,20 +25,20 @@ export {
   clearToastTimeout,
   getToastDuration,
   formatToastForA11y,
-  shouldAutoDismiss
+  shouldAutoDismiss,
 } from '@/utils/toastUtils';
 
 // Re-export reducer dan action creators
-export { 
-  toastReducer, 
+export {
+  toastReducer,
   toastActionCreators,
-  initialToastState 
+  initialToastState,
 } from '@/hooks/toast/toastReducer';
 
 /**
  * Toast provider component untuk global toast management
  */
-import React, { createContext, useContext, ReactNode } from 'react';
+import React, { createContext, useContext, type ReactNode } from 'react';
 import { useToast } from '@/hooks/core';
 import type { UseToastReturn } from '@/types/toast';
 import type { ToastActionElement } from '@/components/ui/toast';
@@ -52,11 +52,7 @@ interface ToastProviderProps {
 export const ToastProvider: React.FC<ToastProviderProps> = ({ children }) => {
   const toastApi = useToast();
 
-  return (
-    <ToastContext.Provider value={toastApi}>
-      {children}
-    </ToastContext.Provider>
-  );
+  return <ToastContext.Provider value={toastApi}>{children}</ToastContext.Provider>;
 };
 
 /**
@@ -88,7 +84,7 @@ export const ToastNotification: React.FC<ToastNotificationProps> = ({
   variant = 'default',
   duration,
   action,
-  onClose
+  onClose,
 }) => {
   const { toast } = useToastContext();
 
@@ -101,7 +97,7 @@ export const ToastNotification: React.FC<ToastNotificationProps> = ({
       action,
       onOpenChange: (open) => {
         if (!open) onClose?.();
-      }
+      },
     });
 
     return () => {

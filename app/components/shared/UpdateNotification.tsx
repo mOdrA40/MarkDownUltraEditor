@@ -3,7 +3,7 @@
  * @author Axel Modra
  */
 
-import React from 'react';
+import type React from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { RefreshCw, X } from 'lucide-react';
@@ -28,15 +28,14 @@ export const UpdateNotification: React.FC = () => {
             <div className="flex-shrink-0">
               <RefreshCw className="w-5 h-5 text-blue-600" />
             </div>
-            
+
             <div className="flex-1 min-w-0">
-              <h3 className="text-sm font-medium text-blue-900">
-                Update Available
-              </h3>
+              <h3 className="text-sm font-medium text-blue-900">Update Available</h3>
               <p className="text-sm text-blue-700 mt-1">
-                A new version of the app is ready. Refresh to get the latest features and improvements.
+                A new version of the app is ready. Refresh to get the latest features and
+                improvements.
               </p>
-              
+
               <div className="flex gap-2 mt-3">
                 <Button
                   size="sm"
@@ -46,7 +45,7 @@ export const UpdateNotification: React.FC = () => {
                   <RefreshCw className="w-3 h-3 mr-1" />
                   Update
                 </Button>
-                
+
                 <Button
                   size="sm"
                   variant="ghost"
@@ -57,7 +56,7 @@ export const UpdateNotification: React.FC = () => {
                 </Button>
               </div>
             </div>
-            
+
             <Button
               size="sm"
               variant="ghost"

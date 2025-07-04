@@ -1,20 +1,20 @@
 /**
  * Toolbar Hooks
  * Custom hooks untuk mengelola state dan logic toolbar
- * 
+ *
  * @author Axel Modra
  */
 
 import { useState, useEffect, useCallback, useMemo } from 'react';
 import type { FormatButton, ButtonCategory } from '../types/toolbar.types';
-import { 
-  createFormatButtons, 
+import {
+  createFormatButtons,
   createCodeBlockAction,
   filterButtonsByCategory,
   groupButtonsByCategory,
   getBreakpoint,
   getBreakpointConfig,
-  matchesShortcut
+  matchesShortcut,
 } from '../utils/toolbar.utils';
 
 /**
@@ -55,16 +55,15 @@ interface UseToolbarReturn {
 
 /**
  * Custom hook untuk mengelola toolbar state dan logic
- * 
+ *
  * @param props - Props untuk hook
  * @returns Object dengan state dan functions untuk toolbar
  */
 export const useToolbar = ({
   onInsertText,
   enabledCategories = ['heading', 'formatting', 'code', 'content', 'list', 'media'],
-  customButtons = []
+  customButtons = [],
 }: UseToolbarProps): UseToolbarReturn => {
-  
   // State untuk window width
   const [windowWidth, setWindowWidth] = useState<number>(
     typeof window !== 'undefined' ? window.innerWidth : 1280
@@ -127,7 +126,7 @@ export const useToolbar = ({
     breakpointConfig,
     isMobile,
     isTablet,
-    isDesktop
+    isDesktop,
   };
 };
 
@@ -143,21 +142,20 @@ interface UseKeyboardShortcutsProps {
 
 /**
  * Custom hook untuk mengelola keyboard shortcuts toolbar
- * 
+ *
  * @param props - Props untuk hook
  */
 export const useKeyboardShortcuts = ({
   buttons,
-  enabled = true
+  enabled = true,
 }: UseKeyboardShortcutsProps): void => {
-  
   useEffect(() => {
     if (!enabled) return;
 
     const handleKeyDown = (event: KeyboardEvent) => {
       // Cari button yang match dengan shortcut
-      const matchingButton = buttons.find(button => 
-        button.shortcut && matchesShortcut(event, button.shortcut)
+      const matchingButton = buttons.find(
+        (button) => button.shortcut && matchesShortcut(event, button.shortcut)
       );
 
       if (matchingButton) {
@@ -199,17 +197,16 @@ interface UseResponsiveLayoutReturn {
 
 /**
  * Custom hook untuk mengelola responsive layout
- * 
+ *
  * @param props - Props untuk hook
  * @returns Object dengan layout configuration
  */
 export const useResponsiveLayout = ({
   breakpoint,
-  buttons
+  buttons,
 }: UseResponsiveLayoutProps): UseResponsiveLayoutReturn => {
-  
   const config = getBreakpointConfig(breakpoint);
-  
+
   // Tentukan layout berdasarkan breakpoint
   const layout = useMemo(() => {
     if (breakpoint === 'mobile') return 'grid';
@@ -223,7 +220,7 @@ export const useResponsiveLayout = ({
   // Button chunks untuk grid layout
   const buttonChunks = useMemo(() => {
     if (layout !== 'grid') return [buttons];
-    
+
     const chunks: FormatButton[][] = [];
     for (let i = 0; i < buttons.length; i += gridColumns) {
       chunks.push(buttons.slice(i, i + gridColumns));
@@ -234,28 +231,49 @@ export const useResponsiveLayout = ({
   // Container classes
   const containerClasses = useMemo(() => {
     const baseClasses = ['w-full'];
-    
+
     if (breakpoint === 'mobile') {
       baseClasses.push('block', 'sm:hidden');
     } else if (breakpoint === 'smallTablet') {
-      baseClasses.push('hidden', 'sm:block', 'md:hidden', 'px-2', 'py-2', 'border-b', 'bg-background/50', 'backdrop-blur');
+      baseClasses.push(
+        'hidden',
+        'sm:block',
+        'md:hidden',
+        'px-2',
+        'py-2',
+        'border-b',
+        'bg-background/50',
+        'backdrop-blur'
+      );
     } else if (breakpoint === 'tablet') {
-      baseClasses.push('hidden', 'md:block', 'xl:hidden', 'px-3', 'py-2', 'border-b', 'bg-background/50', 'backdrop-blur');
+      baseClasses.push(
+        'hidden',
+        'md:block',
+        'xl:hidden',
+        'px-3',
+        'py-2',
+        'border-b',
+        'bg-background/50',
+        'backdrop-blur'
+      );
     } else {
-      baseClasses.push('hidden', 'xl:block', 'px-4', 'py-2', 'border-b', 'bg-background/50', 'backdrop-blur');
+      baseClasses.push(
+        'hidden',
+        'xl:block',
+        'px-4',
+        'py-2',
+        'border-b',
+        'bg-background/50',
+        'backdrop-blur'
+      );
     }
-    
+
     return baseClasses.join(' ');
   }, [breakpoint]);
 
   // Button classes
   const buttonClasses = useMemo(() => {
-    const baseClasses = [
-      'transition-all',
-      'duration-200',
-      'hover:scale-105',
-      'active:scale-95'
-    ];
+    const baseClasses = ['transition-all', 'duration-200', 'hover:scale-105', 'active:scale-95'];
 
     if (breakpoint === 'mobile') {
       baseClasses.push('h-9', 'text-xs', 'font-medium');
@@ -275,6 +293,6 @@ export const useResponsiveLayout = ({
     gridColumns,
     buttonChunks,
     containerClasses,
-    buttonClasses
+    buttonClasses,
   };
 };

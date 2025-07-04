@@ -2,23 +2,15 @@
  * Individual outline item component
  */
 
-import React from 'react';
-import { Hash } from "lucide-react";
-import { OutlineItemProps } from '@/types/outline';
-import {
-  getOutlineItemStyles,
-  getOutlineItemA11yProps
-} from '@/utils/outlineUtils';
+import type React from 'react';
+import { Hash } from 'lucide-react';
+import type { OutlineItemProps } from '@/types/outline';
+import { getOutlineItemStyles, getOutlineItemA11yProps } from '@/utils/outlineUtils';
 
 /**
  * Individual outline item dengan styling dan interactions
  */
-export const OutlineItem: React.FC<OutlineItemProps> = ({ 
-  item, 
-  isActive, 
-  theme, 
-  onClick 
-}) => {
+export const OutlineItem: React.FC<OutlineItemProps> = ({ item, isActive, theme, onClick }) => {
   const { className, style } = getOutlineItemStyles(item, isActive, theme);
   const a11yProps = getOutlineItemA11yProps(item, isActive);
 
@@ -53,7 +45,7 @@ export const OutlineItem: React.FC<OutlineItemProps> = ({
           wordBreak: 'break-word',
           overflowWrap: 'break-word',
           hyphens: 'auto',
-          lineHeight: '1.3'
+          lineHeight: '1.3',
         }}
       >
         {item.text}

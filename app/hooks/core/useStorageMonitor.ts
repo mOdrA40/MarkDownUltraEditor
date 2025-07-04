@@ -1,12 +1,17 @@
 /**
  * Storage Monitor Hook
  * Monitors localStorage usage and prevents memory leaks
- * 
+ *
  * @author Axel Modra
  */
 
 import { useState, useEffect, useCallback } from 'react';
-import { getStorageInfo, cleanupStorage, formatBytes, type StorageInfo } from '@/utils/storageUtils';
+import {
+  getStorageInfo,
+  cleanupStorage,
+  formatBytes,
+  type StorageInfo,
+} from '@/utils/storageUtils';
 
 interface UseStorageMonitorOptions {
   /** Threshold percentage to trigger cleanup (default: 80%) */
@@ -45,12 +50,12 @@ export const useStorageMonitor = (
     checkInterval = 30000, // 30 seconds
     preserveKeys = [
       'markdownEditor_content',
-      'markdownEditor_fileName', 
+      'markdownEditor_fileName',
       'markdownEditor_theme',
       'markdownEditor_settings',
-      'markdownEditor_uiState'
+      'markdownEditor_uiState',
     ],
-    autoCleanup = true
+    autoCleanup = true,
   } = options;
 
   const [storageInfo, setStorageInfo] = useState<StorageInfo>(() => getStorageInfo());
@@ -78,7 +83,7 @@ export const useStorageMonitor = (
     try {
       const cleanedBytes = cleanupStorage(preserveKeys);
       refreshInfo();
-      
+
       console.log(`🧹 Storage cleanup completed: ${formatBytes(cleanedBytes)} freed`);
       return cleanedBytes;
     } catch (error) {
@@ -95,7 +100,9 @@ export const useStorageMonitor = (
 
     const info = getStorageInfo();
     if (info.usedPercentage >= cleanupThreshold) {
-      console.log(`⚠️ Storage threshold reached (${info.usedPercentage.toFixed(1)}%), triggering cleanup...`);
+      console.log(
+        `⚠️ Storage threshold reached (${info.usedPercentage.toFixed(1)}%), triggering cleanup...`
+      );
       await triggerCleanup();
     }
   }, [autoCleanup, cleanupThreshold, triggerCleanup]);
@@ -129,7 +136,7 @@ export const useStorageMonitor = (
     isCritical,
     triggerCleanup,
     refreshInfo,
-    hasSpaceFor
+    hasSpaceFor,
   };
 };
 
@@ -163,6 +170,6 @@ export const useStorageStatus = () => {
     isCritical,
     statusColor: getStatusColor(),
     statusText: getStatusText(),
-    progressBarColor: getProgressBarColor()
+    progressBarColor: getProgressBarColor(),
   };
 };

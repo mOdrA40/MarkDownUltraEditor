@@ -1,7 +1,7 @@
 /**
  * WritingSettings Constants - Konfigurasi dan Konstanta
  * Definisi konstanta untuk WritingSettings module
- * 
+ *
  * @author Axel Modra
  */
 
@@ -9,7 +9,7 @@ import type {
   SettingsConfig,
   WritingModeConfig,
   BreakpointType,
-  ControlSize
+  ControlSize,
 } from '../types/settings.types';
 
 /**
@@ -23,7 +23,7 @@ export const FONT_SIZE_CONSTRAINTS = {
   /** Step perubahan font size */
   STEP: 1,
   /** Default font size */
-  DEFAULT: 16
+  DEFAULT: 16,
 } as const;
 
 /**
@@ -37,7 +37,7 @@ export const LINE_HEIGHT_CONSTRAINTS = {
   /** Step perubahan line height */
   STEP: 0.1,
   /** Default line height */
-  DEFAULT: 1.5
+  DEFAULT: 1.5,
 } as const;
 
 /**
@@ -49,7 +49,7 @@ export const DEFAULT_SETTINGS: SettingsConfig = {
   minLineHeight: LINE_HEIGHT_CONSTRAINTS.MIN,
   maxLineHeight: LINE_HEIGHT_CONSTRAINTS.MAX,
   fontSizeStep: FONT_SIZE_CONSTRAINTS.STEP,
-  lineHeightStep: LINE_HEIGHT_CONSTRAINTS.STEP
+  lineHeightStep: LINE_HEIGHT_CONSTRAINTS.STEP,
 };
 
 /**
@@ -61,36 +61,36 @@ export const WRITING_MODES: Record<string, WritingModeConfig> = {
     label: 'Focus',
     iconName: 'Focus',
     description: 'Highlight current paragraph for better focus',
-    defaultActive: false
+    defaultActive: false,
   },
   typewriter: {
     id: 'typewriter',
     label: 'Writer',
     iconName: 'Type',
     description: 'Typewriter mode for distraction-free writing',
-    defaultActive: false
+    defaultActive: false,
   },
   wordWrap: {
     id: 'wordWrap',
     label: 'Wrap',
     iconName: 'AlignLeft',
     description: 'Enable word wrapping for long lines',
-    defaultActive: true
+    defaultActive: true,
   },
   vim: {
     id: 'vim',
     label: 'Vim',
     iconName: 'Keyboard',
     description: 'Enable Vim keybindings for power users',
-    defaultActive: false
+    defaultActive: false,
   },
   zen: {
     id: 'zen',
     label: 'Zen',
     iconName: 'Eye',
     description: 'Zen mode for distraction-free writing',
-    defaultActive: false
-  }
+    defaultActive: false,
+  },
 } as const;
 
 /**
@@ -101,55 +101,58 @@ export const BREAKPOINTS = {
   mobile: {
     min: 320,
     max: 499,
-    type: 'mobile' as BreakpointType
+    type: 'mobile' as BreakpointType,
   },
   /** Small tablet breakpoint (500px - 767px) */
   smallTablet: {
     min: 500,
     max: 767,
-    type: 'small-tablet' as BreakpointType
+    type: 'small-tablet' as BreakpointType,
   },
   /** Tablet breakpoint (768px - 1023px) */
   tablet: {
     min: 768,
     max: 1023,
-    type: 'tablet' as BreakpointType
+    type: 'tablet' as BreakpointType,
   },
   /** Desktop breakpoint (1024px+) */
   desktop: {
     min: 1024,
-    max: Infinity,
-    type: 'desktop' as BreakpointType
-  }
+    max: Number.POSITIVE_INFINITY,
+    type: 'desktop' as BreakpointType,
+  },
 } as const;
 
 /**
  * Ukuran control yang tersedia
  */
-export const CONTROL_SIZES: Record<ControlSize, {
-  button: string;
-  icon: string;
-  text: string;
-  spacing: string;
-}> = {
+export const CONTROL_SIZES: Record<
+  ControlSize,
+  {
+    button: string;
+    icon: string;
+    text: string;
+    spacing: string;
+  }
+> = {
   sm: {
     button: 'h-5 w-5 p-0',
     icon: 'h-2 w-2',
     text: 'text-xs',
-    spacing: 'space-x-1'
+    spacing: 'space-x-1',
   },
   md: {
     button: 'h-6 w-6 p-0',
     icon: 'h-3 w-3',
     text: 'text-xs',
-    spacing: 'space-x-1'
+    spacing: 'space-x-1',
   },
   lg: {
     button: 'h-7 w-7 p-0',
     icon: 'h-3 w-3',
     text: 'text-sm',
-    spacing: 'space-x-2'
-  }
+    spacing: 'space-x-2',
+  },
 } as const;
 
 /**
@@ -161,26 +164,29 @@ export const RESPONSIVE_CLASSES = {
     fontControl: 'flex items-center justify-between',
     lineControl: 'flex items-center justify-between',
     modeButtons: 'grid grid-cols-2 gap-2',
-    zenButton: 'w-full h-9 text-xs'
+    zenButton: 'w-full h-9 text-xs',
   },
   'small-tablet': {
-    container: 'hidden sm:flex md:hidden items-center space-x-1 px-2 py-2 bg-background/50 backdrop-blur border-b overflow-x-auto',
+    container:
+      'hidden sm:flex md:hidden items-center space-x-1 px-2 py-2 bg-background/50 backdrop-blur border-b overflow-x-auto',
     control: 'flex items-center space-x-1 flex-shrink-0',
     button: 'h-6 px-2 text-xs flex-shrink-0',
-    separator: 'h-3'
+    separator: 'h-3',
   },
   tablet: {
-    container: 'hidden md:flex lg:hidden items-center space-x-2 px-3 py-2 bg-background/50 backdrop-blur border-b',
+    container:
+      'hidden md:flex lg:hidden items-center space-x-2 px-3 py-2 bg-background/50 backdrop-blur border-b',
     control: 'flex items-center space-x-1',
     button: 'h-7 text-xs',
-    separator: 'h-4'
+    separator: 'h-4',
   },
   desktop: {
-    container: 'hidden lg:flex items-center space-x-2 px-4 py-2 bg-background/50 backdrop-blur border-b',
+    container:
+      'hidden lg:flex items-center space-x-2 px-4 py-2 bg-background/50 backdrop-blur border-b',
     control: 'flex items-center space-x-1',
     button: 'h-7 text-xs',
-    separator: 'h-4'
-  }
+    separator: 'h-4',
+  },
 } as const;
 
 /**
@@ -194,7 +200,7 @@ export const ANIMATIONS = {
   /** Hover scale */
   hoverScale: 'scale-105',
   /** Active scale */
-  activeScale: 'scale-95'
+  activeScale: 'scale-95',
 } as const;
 
 /**
@@ -213,8 +219,8 @@ export const A11Y = {
     toggleTypewriter: 'Toggle typewriter mode',
     toggleWordWrap: 'Toggle word wrap',
     toggleVim: 'Toggle Vim mode',
-    toggleZen: 'Toggle zen mode'
-  }
+    toggleZen: 'Toggle zen mode',
+  },
 } as const;
 
 /**
@@ -227,5 +233,5 @@ export const KEYBOARD_SHORTCUTS = {
   toggleTypewriter: 'Ctrl+Shift+T',
   toggleWordWrap: 'Ctrl+Shift+W',
   toggleVim: 'Ctrl+Shift+V',
-  toggleZen: 'Ctrl+Shift+Z'
+  toggleZen: 'Ctrl+Shift+Z',
 } as const;

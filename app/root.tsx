@@ -1,18 +1,12 @@
-import React from "react";
-import {
-  Links,
-  Meta,
-  Outlet,
-  Scripts,
-  ScrollRestoration,
-} from "react-router";
-import type { LinksFunction, HeadersFunction } from "react-router";
-import { ClerkProvider } from "@clerk/react-router";
-import { rootAuthLoader } from "@clerk/react-router/ssr.server";
-import type { Route } from "./+types/root";
-import { ThemeProvider } from "@/components/features/ThemeSelector";
+import type React from 'react';
+import { Links, Meta, Outlet, Scripts, ScrollRestoration } from 'react-router';
+import type { LinksFunction, HeadersFunction } from 'react-router';
+import { ClerkProvider } from '@clerk/react-router';
+import { rootAuthLoader } from '@clerk/react-router/ssr.server';
+import type { Route } from './+types/root';
+import { ThemeProvider } from '@/components/features/ThemeSelector';
 
-import "./tailwind.css";
+import './tailwind.css';
 
 // Add the loader function for Clerk authentication
 export async function loader(args: Route.LoaderArgs) {
@@ -21,37 +15,38 @@ export async function loader(args: Route.LoaderArgs) {
 
 export const links: LinksFunction = () => [
   // 🎨 Custom favicon - dengan cache busting
-  { rel: "icon", href: "/markdownlogo.svg?v=2024", type: "image/svg+xml" },
-  { rel: "apple-touch-icon", href: "/markdownlogo.svg?v=2024" },
-  { rel: "manifest", href: "/site.webmanifest" },
+  { rel: 'icon', href: '/markdownlogo.svg?v=2024', type: 'image/svg+xml' },
+  { rel: 'apple-touch-icon', href: '/markdownlogo.svg?v=2024' },
+  { rel: 'manifest', href: '/site.webmanifest' },
 
   // Fonts
-  { rel: "preconnect", href: "https://fonts.googleapis.com" },
+  { rel: 'preconnect', href: 'https://fonts.googleapis.com' },
   {
-    rel: "preconnect",
-    href: "https://fonts.gstatic.com",
-    crossOrigin: "anonymous",
+    rel: 'preconnect',
+    href: 'https://fonts.gstatic.com',
+    crossOrigin: 'anonymous',
   },
   {
-    rel: "stylesheet",
-    href: "https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap",
+    rel: 'stylesheet',
+    href: 'https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap',
   },
 ];
 
 // Security headers untuk HSTS dan lainnya
 export const headers: HeadersFunction = () => ({
   // HSTS - HTTP Strict Transport Security
-  "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
+  'Strict-Transport-Security': 'max-age=31536000; includeSubDomains; preload',
   // Prevent MIME type sniffing
-  "X-Content-Type-Options": "nosniff",
+  'X-Content-Type-Options': 'nosniff',
   // Prevent clickjacking
-  "X-Frame-Options": "DENY",
+  'X-Frame-Options': 'DENY',
   // XSS Protection
-  "X-XSS-Protection": "1; mode=block",
+  'X-XSS-Protection': '1; mode=block',
   // Referrer Policy
-  "Referrer-Policy": "strict-origin-when-cross-origin",
+  'Referrer-Policy': 'strict-origin-when-cross-origin',
   // Content Security Policy - Enhanced for Clerk and Supabase
-  "Content-Security-Policy": "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://clerk.com https://*.clerk.accounts.dev https://*.clerk.com https://challenges.cloudflare.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://clerk.com https://*.clerk.accounts.dev; img-src 'self' data: blob: https://*.clerk.com https://*.clerk.accounts.dev https://img.clerk.com; font-src 'self' data: https://fonts.googleapis.com https://fonts.gstatic.com; connect-src 'self' https://*.supabase.co https://clerk.com https://*.clerk.accounts.dev https://*.clerk.com wss://*.supabase.co wss://*.clerk.com; media-src 'self'; object-src 'none'; child-src 'none'; worker-src 'self' blob:; frame-src 'self' https://clerk.com https://*.clerk.accounts.dev https://*.clerk.com https://challenges.cloudflare.com; frame-ancestors 'none'; form-action 'self' https://clerk.com https://*.clerk.accounts.dev; base-uri 'self';"
+  'Content-Security-Policy':
+    "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://clerk.com https://*.clerk.accounts.dev https://*.clerk.com https://challenges.cloudflare.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://clerk.com https://*.clerk.accounts.dev; img-src 'self' data: blob: https://*.clerk.com https://*.clerk.accounts.dev https://img.clerk.com; font-src 'self' data: https://fonts.googleapis.com https://fonts.gstatic.com; connect-src 'self' https://*.supabase.co https://clerk.com https://*.clerk.accounts.dev https://*.clerk.com wss://*.supabase.co wss://*.clerk.com; media-src 'self'; object-src 'none'; child-src 'none'; worker-src 'self' blob:; frame-src 'self' https://clerk.com https://*.clerk.accounts.dev https://*.clerk.com https://challenges.cloudflare.com; frame-ancestors 'none'; form-action 'self' https://clerk.com https://*.clerk.accounts.dev; base-uri 'self';",
 });
 
 export function Layout({ children }: { children: React.ReactNode }) {
@@ -73,14 +68,16 @@ export function Layout({ children }: { children: React.ReactNode }) {
         <Meta />
         <Links />
       </head>
-      <body style={{
-        margin: 0,
-        padding: 0,
-        overflowX: 'hidden',
-        position: 'relative',
-        width: '100%',
-        minHeight: '100vh'
-      }}>
+      <body
+        style={{
+          margin: 0,
+          padding: 0,
+          overflowX: 'hidden',
+          position: 'relative',
+          width: '100%',
+          minHeight: '100vh',
+        }}
+      >
         {children}
         <ScrollRestoration />
         <Scripts />
@@ -112,7 +109,7 @@ export default function App({ loaderData }: Route.ComponentProps) {
   const publishableKey = process.env.VITE_CLERK_PUBLISHABLE_KEY;
 
   if (!publishableKey) {
-    throw new Error("Missing Clerk Publishable Key");
+    throw new Error('Missing Clerk Publishable Key');
   }
 
   return (
@@ -125,8 +122,8 @@ export default function App({ loaderData }: Route.ComponentProps) {
       signUpFallbackRedirectUrl="/"
       appearance={{
         elements: {
-          formButtonPrimary: "normal-case",
-        }
+          formButtonPrimary: 'normal-case',
+        },
       }}
     >
       <ThemeProvider>

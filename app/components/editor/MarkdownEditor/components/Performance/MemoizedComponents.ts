@@ -4,10 +4,10 @@
  */
 
 import React, { memo, useMemo, useCallback } from 'react';
-import { EditorHeader, EditorHeaderProps } from '../Layout/EditorHeader';
-import { EditorSidebar, EditorSidebarProps } from '../Layout/EditorSidebar';
-import { EditorMainContent, EditorMainContentProps } from '../Layout/EditorMainContent';
-import { EditorFooter, EditorFooterProps } from '../Layout/EditorFooter';
+import { EditorHeader, type EditorHeaderProps } from '../Layout/EditorHeader';
+import { EditorSidebar, type EditorSidebarProps } from '../Layout/EditorSidebar';
+import { EditorMainContent, type EditorMainContentProps } from '../Layout/EditorMainContent';
+import { EditorFooter, type EditorFooterProps } from '../Layout/EditorFooter';
 
 /**
  * Memoized editor header component
@@ -130,10 +130,7 @@ export function useStableCallback<T extends (...args: unknown[]) => unknown>(
 /**
  * Memoized value hook with deep comparison
  */
-export function useStableValue<T>(
-  factory: () => T,
-  deps: React.DependencyList
-): T {
+export function useStableValue<T>(factory: () => T, deps: React.DependencyList): T {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   return useMemo(factory, deps);
 }
@@ -141,9 +138,7 @@ export function useStableValue<T>(
 /**
  * Memoized object hook to prevent unnecessary re-renders
  */
-export function useStableObject<T extends Record<string, unknown>>(
-  obj: T
-): T {
+export function useStableObject<T extends Record<string, unknown>>(obj: T): T {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   return useMemo(() => obj, Object.values(obj));
 }
@@ -151,9 +146,7 @@ export function useStableObject<T extends Record<string, unknown>>(
 /**
  * Memoized array hook to prevent unnecessary re-renders
  */
-export function useStableArray<T>(
-  arr: T[]
-): T[] {
+export function useStableArray<T>(arr: T[]): T[] {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   return useMemo(() => arr, arr);
 }
@@ -164,7 +157,7 @@ export function useStableArray<T>(
 export function useStableComputation<T>(
   computation: () => T,
   _deps: React.DependencyList,
-  shouldCompute: boolean = true
+  shouldCompute = true
 ): T | undefined {
   return useMemo(() => {
     if (!shouldCompute) return undefined;
@@ -184,10 +177,7 @@ export function useStableComputation<T>(
 /**
  * Hook for debounced values
  */
-export function useDebouncedValue<T>(
-  value: T,
-  delay: number
-): T {
+export function useDebouncedValue<T>(value: T, delay: number): T {
   const [debouncedValue, setDebouncedValue] = React.useState<T>(value);
 
   React.useEffect(() => {
@@ -206,20 +196,20 @@ export function useDebouncedValue<T>(
 /**
  * Hook for throttled values
  */
-export function useThrottledValue<T>(
-  value: T,
-  limit: number
-): T {
+export function useThrottledValue<T>(value: T, limit: number): T {
   const [throttledValue, setThrottledValue] = React.useState<T>(value);
   const lastRan = React.useRef<number>(Date.now());
 
   React.useEffect(() => {
-    const handler = setTimeout(() => {
-      if (Date.now() - lastRan.current >= limit) {
-        setThrottledValue(value);
-        lastRan.current = Date.now();
-      }
-    }, limit - (Date.now() - lastRan.current));
+    const handler = setTimeout(
+      () => {
+        if (Date.now() - lastRan.current >= limit) {
+          setThrottledValue(value);
+          lastRan.current = Date.now();
+        }
+      },
+      limit - (Date.now() - lastRan.current)
+    );
 
     return () => {
       clearTimeout(handler);
@@ -246,7 +236,9 @@ export function withPerformanceOptimization<P extends Record<string, unknown>>(
       renderCount.current += 1;
 
       if (process.env.NODE_ENV === 'development') {
-        console.log(`${Component.displayName || Component.name} rendered ${renderCount.current} times`);
+        console.log(
+          `${Component.displayName || Component.name} rendered ${renderCount.current} times`
+        );
       }
     });
 

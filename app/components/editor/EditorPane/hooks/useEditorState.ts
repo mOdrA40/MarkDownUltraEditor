@@ -1,6 +1,6 @@
 import { useRef, useState } from 'react';
-import { useVimMode } from "@/hooks/editor";
-import { EditorState } from "../types/editorPane.types";
+import { useVimMode } from '@/hooks/editor';
+import type { EditorState } from '../types/editorPane.types';
 
 /**
  * Custom hook for managing editor state and vim integration
@@ -8,13 +8,15 @@ import { EditorState } from "../types/editorPane.types";
 export const useEditorState = (
   markdown: string,
   onChange: (value: string) => void,
-  vimMode: boolean = false
+  vimMode = false
 ): EditorState & {
   vim: ReturnType<typeof useVimMode>;
   setVimModeState: React.Dispatch<React.SetStateAction<'normal' | 'insert' | 'visual' | 'command'>>;
 } => {
   const textareaRef = useRef<HTMLTextAreaElement>(null);
-  const [vimModeState, setVimModeState] = useState<'normal' | 'insert' | 'visual' | 'command'>('insert');
+  const [vimModeState, setVimModeState] = useState<'normal' | 'insert' | 'visual' | 'command'>(
+    'insert'
+  );
 
   // Vim mode integration
   const vim = useVimMode(textareaRef, markdown, onChange, {
@@ -26,6 +28,6 @@ export const useEditorState = (
     vimModeState,
     textareaRef,
     vim,
-    setVimModeState
+    setVimModeState,
   };
 };

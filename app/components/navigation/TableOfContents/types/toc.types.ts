@@ -3,7 +3,7 @@
  * @author Axel Modra
  */
 
-import { HeadingItem } from '@/utils/headingUtils';
+import type { HeadingItem } from '@/utils/headingUtils';
 
 /**
  * Props untuk komponen TableOfContents utama

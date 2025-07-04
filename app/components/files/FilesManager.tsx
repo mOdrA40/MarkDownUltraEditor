@@ -9,13 +9,7 @@ import { useAuth } from '@clerk/react-router';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle
-} from '@/components/ui/card';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -42,10 +36,10 @@ import {
   Filter,
   SortAsc,
   SortDesc,
-  RefreshCw
+  RefreshCw,
 } from 'lucide-react';
 import { useFileStorage } from '@/hooks/useFileStorage';
-import { FileData } from '@/lib/supabase';
+import type { FileData } from '@/lib/supabase';
 import { AuthButtons } from '@/components/auth/AuthButtons';
 import { useResponsiveDetection } from '@/hooks/ui/useResponsive';
 import { formatDistanceToNow } from 'date-fns';
@@ -75,7 +69,7 @@ export const FilesManager: React.FC = () => {
     deleteFile,
     exportAllFiles,
     refreshFiles,
-    isAuthenticated
+    isAuthenticated,
   } = useFileStorage();
 
   // UI state
@@ -87,9 +81,11 @@ export const FilesManager: React.FC = () => {
 
   // Filter and sort files
   const filteredAndSortedFiles = React.useMemo(() => {
-    const filtered = files.filter(file =>
-      file.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      (file.tags && file.tags.some(tag => tag.toLowerCase().includes(searchQuery.toLowerCase())))
+    const filtered = files.filter(
+      (file) =>
+        file.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        (file.tags &&
+          file.tags.some((tag) => tag.toLowerCase().includes(searchQuery.toLowerCase())))
     );
 
     // Sort files
@@ -100,11 +96,12 @@ export const FilesManager: React.FC = () => {
         case 'name':
           comparison = a.title.localeCompare(b.title);
           break;
-        case 'date':
+        case 'date': {
           const dateA = new Date(a.updatedAt || a.createdAt || 0);
           const dateB = new Date(b.updatedAt || b.createdAt || 0);
           comparison = dateA.getTime() - dateB.getTime();
           break;
+        }
         case 'size':
           comparison = (a.fileSize || 0) - (b.fileSize || 0);
           break;
@@ -173,7 +170,7 @@ export const FilesManager: React.FC = () => {
     const k = 1024;
     const sizes = ['B', 'KB', 'MB'];
     const i = Math.floor(Math.log(bytes) / Math.log(k));
-    return parseFloat((bytes / Math.pow(k, i)).toFixed(1)) + ' ' + sizes[i];
+    return Number.parseFloat((bytes / k ** i).toFixed(1)) + ' ' + sizes[i];
   };
 
   // Format date
@@ -207,7 +204,8 @@ export const FilesManager: React.FC = () => {
                 <p className="text-sm text-muted-foreground">
                   {storageInfo && (
                     <>
-                      {storageInfo.totalFiles} files • {storageInfo.storageType === 'cloud' ? 'Cloud' : 'Local'} storage
+                      {storageInfo.totalFiles} files •{' '}
+                      {storageInfo.storageType === 'cloud' ? 'Cloud' : 'Local'} storage
                     </>
                   )}
                 </p>
@@ -220,7 +218,7 @@ export const FilesManager: React.FC = () => {
                 isTablet: responsive.isTablet,
                 isSmallTablet: responsive.windowWidth <= 640, // sm breakpoint
               }}
-              onViewFiles={() => { }} // Already on files page
+              onViewFiles={() => {}} // Already on files page
               onSettings={() => navigate('/settings')}
             />
           </div>
@@ -268,7 +266,11 @@ export const FilesManager: React.FC = () => {
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button variant="outline" size="sm">
-                  {sortDirection === 'asc' ? <SortAsc className="w-4 h-4" /> : <SortDesc className="w-4 h-4" />}
+                  {sortDirection === 'asc' ? (
+                    <SortAsc className="w-4 h-4" />
+                  ) : (
+                    <SortDesc className="w-4 h-4" />
+                  )}
                   Sort
                 </Button>
               </DropdownMenuTrigger>
@@ -283,28 +285,21 @@ export const FilesManager: React.FC = () => {
                   Size {sortBy === 'size' && '✓'}
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem onClick={() => setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc')}>
+                <DropdownMenuItem
+                  onClick={() => setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc')}
+                >
                   {sortDirection === 'asc' ? 'Descending' : 'Ascending'}
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
 
             {/* Refresh */}
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={refreshFiles}
-              disabled={isLoadingFiles}
-            >
+            <Button variant="outline" size="sm" onClick={refreshFiles} disabled={isLoadingFiles}>
               <RefreshCw className={`w-4 h-4 ${isLoadingFiles ? 'animate-spin' : ''}`} />
             </Button>
 
             {/* New file */}
-            <Button
-              size="sm"
-              onClick={() => navigate('/')}
-              className="flex items-center gap-2"
-            >
+            <Button size="sm" onClick={() => navigate('/')} className="flex items-center gap-2">
               <Plus className="w-4 h-4" />
               New File
             </Button>
@@ -365,8 +360,7 @@ export const FilesManager: React.FC = () => {
             <p className="text-muted-foreground mb-4">
               {searchQuery
                 ? 'Try adjusting your search terms'
-                : 'Create your first markdown file to get started'
-              }
+                : 'Create your first markdown file to get started'}
             </p>
             <Button onClick={() => navigate('/')}>
               <Plus className="w-4 h-4 mr-2" />
@@ -374,11 +368,13 @@ export const FilesManager: React.FC = () => {
             </Button>
           </div>
         ) : (
-          <div className={
-            viewMode === 'grid'
-              ? 'grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4'
-              : 'space-y-2'
-          }>
+          <div
+            className={
+              viewMode === 'grid'
+                ? 'grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4'
+                : 'space-y-2'
+            }
+          >
             {filteredAndSortedFiles.map((file) => (
               <FileCard
                 key={file.id || file.title}
@@ -440,7 +436,7 @@ const FileCard: React.FC<FileCardProps> = ({
                   <span>{formatFileSize(file.fileSize || 0)}</span>
                   {file.tags && file.tags.length > 0 && (
                     <div className="flex gap-1">
-                      {file.tags.slice(0, 2).map(tag => (
+                      {file.tags.slice(0, 2).map((tag) => (
                         <Badge key={tag} variant="secondary" className="text-xs">
                           {tag}
                         </Badge>
@@ -500,21 +496,39 @@ const FileCard: React.FC<FileCardProps> = ({
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
-              <DropdownMenuItem onClick={(e) => { e.stopPropagation(); onOpen(); }}>
+              <DropdownMenuItem
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onOpen();
+                }}
+              >
                 <Edit className="mr-2 h-4 w-4" />
                 Open
               </DropdownMenuItem>
-              <DropdownMenuItem onClick={(e) => { e.stopPropagation(); onDuplicate(); }}>
+              <DropdownMenuItem
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onDuplicate();
+                }}
+              >
                 <Copy className="mr-2 h-4 w-4" />
                 Duplicate
               </DropdownMenuItem>
-              <DropdownMenuItem onClick={(e) => { e.stopPropagation(); onExport(); }}>
+              <DropdownMenuItem
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onExport();
+                }}
+              >
                 <Download className="mr-2 h-4 w-4" />
                 Export
               </DropdownMenuItem>
               <DropdownMenuSeparator />
               <DropdownMenuItem
-                onClick={(e) => { e.stopPropagation(); onDelete(); }}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onDelete();
+                }}
                 className="text-red-600"
               >
                 <Trash2 className="mr-2 h-4 w-4" />
@@ -533,7 +547,7 @@ const FileCard: React.FC<FileCardProps> = ({
 
           {file.tags && file.tags.length > 0 && (
             <div className="flex flex-wrap gap-1">
-              {file.tags.slice(0, 3).map(tag => (
+              {file.tags.slice(0, 3).map((tag) => (
                 <Badge key={tag} variant="secondary" className="text-xs">
                   {tag}
                 </Badge>

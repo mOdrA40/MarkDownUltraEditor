@@ -6,12 +6,12 @@
 import { useState, useEffect, useCallback, useMemo } from 'react';
 import { useAuth } from '@clerk/react-router';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { 
-  FileStorageService, 
-  createFileStorageService, 
-  StorageInfo 
+import {
+  type FileStorageService,
+  createFileStorageService,
+  type StorageInfo,
 } from '@/services/fileStorage';
-import { FileData, createAuthenticatedSupabaseClient } from '@/lib/supabase';
+import { type FileData, createAuthenticatedSupabaseClient } from '@/lib/supabase';
 import { useToast } from '@/hooks/core/useToast';
 
 // Query keys for React Query
@@ -27,22 +27,22 @@ const QUERY_KEYS = {
 export interface UseFileStorageReturn {
   // Storage service
   storageService: FileStorageService | null;
-  
+
   // File operations
   files: FileData[];
   isLoadingFiles: boolean;
   saveFile: (file: FileData) => Promise<FileData>;
   loadFile: (identifier: string) => Promise<FileData | null>;
   deleteFile: (identifier: string) => Promise<void>;
-  
+
   // Storage info
   storageInfo: StorageInfo | null;
   isLoadingStorageInfo: boolean;
-  
+
   // Utility operations
   exportAllFiles: () => Promise<void>;
   refreshFiles: () => void;
-  
+
   // State
   isAuthenticated: boolean;
   isInitialized: boolean;
@@ -56,7 +56,7 @@ export const useFileStorage = (): UseFileStorageReturn => {
   const { isSignedIn, userId, getToken } = useAuth();
   const { toast } = useToast();
   const queryClient = useQueryClient();
-  
+
   const [storageService, setStorageService] = useState<FileStorageService | null>(null);
   const [isInitialized, setIsInitialized] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -67,7 +67,7 @@ export const useFileStorage = (): UseFileStorageReturn => {
       try {
         console.log('Initializing file storage service...');
         setError(null);
-        
+
         let supabaseClient = null;
         let currentUserId = null;
 
@@ -91,12 +91,12 @@ export const useFileStorage = (): UseFileStorageReturn => {
         const service = createFileStorageService(supabaseClient, currentUserId);
         setStorageService(service);
         setIsInitialized(true);
-        
+
         console.log('File storage service initialized successfully');
       } catch (initError) {
         console.error('Error initializing storage service:', initError);
         setError('Failed to initialize storage service');
-        
+
         // Fallback to local storage
         const fallbackService = createFileStorageService(null, null);
         setStorageService(fallbackService);
@@ -119,7 +119,7 @@ export const useFileStorage = (): UseFileStorageReturn => {
         console.log('Storage service not initialized, returning empty files list');
         return [];
       }
-      
+
       try {
         console.log('Fetching files list...');
         const filesList = await storageService.list();
@@ -141,14 +141,11 @@ export const useFileStorage = (): UseFileStorageReturn => {
   });
 
   // Storage info query
-  const {
-    data: storageInfo = null,
-    isLoading: isLoadingStorageInfo,
-  } = useQuery({
+  const { data: storageInfo = null, isLoading: isLoadingStorageInfo } = useQuery({
     queryKey: [QUERY_KEYS.STORAGE_INFO, userId],
     queryFn: () => {
       if (!storageService) return null;
-      
+
       try {
         console.log('Fetching storage info...');
         const info = storageService.getStorageInfo();
@@ -169,17 +166,17 @@ export const useFileStorage = (): UseFileStorageReturn => {
       if (!storageService) {
         throw new Error('Storage service not initialized');
       }
-      
+
       console.log('Saving file:', file.title);
       return await storageService.save(file);
     },
     onSuccess: (savedFile) => {
       console.log('File saved successfully:', savedFile.title);
-      
+
       // Invalidate and refetch files list
       queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.FILES_LIST] });
       queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.STORAGE_INFO] });
-      
+
       toast({
         title: 'File Saved',
         description: `${savedFile.title} has been saved successfully.`,
@@ -201,17 +198,17 @@ export const useFileStorage = (): UseFileStorageReturn => {
       if (!storageService) {
         throw new Error('Storage service not initialized');
       }
-      
+
       console.log('Deleting file:', identifier);
       await storageService.delete(identifier);
     },
     onSuccess: (_, identifier) => {
       console.log('File deleted successfully:', identifier);
-      
+
       // Invalidate and refetch files list
       queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.FILES_LIST] });
       queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.STORAGE_INFO] });
-      
+
       toast({
         title: 'File Deleted',
         description: 'File has been deleted successfully.',
@@ -228,33 +225,36 @@ export const useFileStorage = (): UseFileStorageReturn => {
   });
 
   // Load file function
-  const loadFile = useCallback(async (identifier: string): Promise<FileData | null> => {
-    if (!storageService) {
-      console.error('Storage service not initialized');
-      return null;
-    }
-
-    try {
-      console.log('Loading file:', identifier);
-      const file = await storageService.load(identifier);
-      
-      if (file) {
-        console.log('File loaded successfully:', file.title);
-      } else {
-        console.log('File not found:', identifier);
+  const loadFile = useCallback(
+    async (identifier: string): Promise<FileData | null> => {
+      if (!storageService) {
+        console.error('Storage service not initialized');
+        return null;
       }
-      
-      return file;
-    } catch (error) {
-      console.error('Error loading file:', error);
-      toast({
-        title: 'Load Failed',
-        description: 'Failed to load file. Please try again.',
-        variant: 'destructive',
-      });
-      return null;
-    }
-  }, [storageService, toast]);
+
+      try {
+        console.log('Loading file:', identifier);
+        const file = await storageService.load(identifier);
+
+        if (file) {
+          console.log('File loaded successfully:', file.title);
+        } else {
+          console.log('File not found:', identifier);
+        }
+
+        return file;
+      } catch (error) {
+        console.error('Error loading file:', error);
+        toast({
+          title: 'Load Failed',
+          description: 'Failed to load file. Please try again.',
+          variant: 'destructive',
+        });
+        return null;
+      }
+    },
+    [storageService, toast]
+  );
 
   // Export all files function
   const exportAllFiles = useCallback(async (): Promise<void> => {
@@ -270,7 +270,7 @@ export const useFileStorage = (): UseFileStorageReturn => {
     try {
       console.log('Exporting all files...');
       const blob = await storageService.exportAllFiles();
-      
+
       // Create download link
       const url = URL.createObjectURL(blob);
       const link = document.createElement('a');
@@ -280,7 +280,7 @@ export const useFileStorage = (): UseFileStorageReturn => {
       link.click();
       document.body.removeChild(link);
       URL.revokeObjectURL(url);
-      
+
       console.log('Files exported successfully');
       toast({
         title: 'Export Complete',
@@ -297,35 +297,38 @@ export const useFileStorage = (): UseFileStorageReturn => {
   }, [storageService, toast]);
 
   // Memoized return value
-  const returnValue = useMemo((): UseFileStorageReturn => ({
-    storageService,
-    files,
-    isLoadingFiles,
-    saveFile: saveFileMutation.mutateAsync,
-    loadFile,
-    deleteFile: deleteFileMutation.mutateAsync,
-    storageInfo,
-    isLoadingStorageInfo,
-    exportAllFiles,
-    refreshFiles,
-    isAuthenticated: isSignedIn || false,
-    isInitialized,
-    error,
-  }), [
-    storageService,
-    files,
-    isLoadingFiles,
-    saveFileMutation.mutateAsync,
-    loadFile,
-    deleteFileMutation.mutateAsync,
-    storageInfo,
-    isLoadingStorageInfo,
-    exportAllFiles,
-    refreshFiles,
-    isSignedIn,
-    isInitialized,
-    error,
-  ]);
+  const returnValue = useMemo(
+    (): UseFileStorageReturn => ({
+      storageService,
+      files,
+      isLoadingFiles,
+      saveFile: saveFileMutation.mutateAsync,
+      loadFile,
+      deleteFile: deleteFileMutation.mutateAsync,
+      storageInfo,
+      isLoadingStorageInfo,
+      exportAllFiles,
+      refreshFiles,
+      isAuthenticated: isSignedIn || false,
+      isInitialized,
+      error,
+    }),
+    [
+      storageService,
+      files,
+      isLoadingFiles,
+      saveFileMutation.mutateAsync,
+      loadFile,
+      deleteFileMutation.mutateAsync,
+      storageInfo,
+      isLoadingStorageInfo,
+      exportAllFiles,
+      refreshFiles,
+      isSignedIn,
+      isInitialized,
+      error,
+    ]
+  );
 
   return returnValue;
 };

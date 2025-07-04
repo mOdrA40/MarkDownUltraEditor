@@ -1,7 +1,7 @@
-import React from 'react';
-import { Textarea } from "@/components/ui/textarea";
-import { EditorStyles } from "../types/editorPane.types";
-import { generatePaddingStyles } from "../utils/editorStyles";
+import type React from 'react';
+import { Textarea } from '@/components/ui/textarea';
+import type { EditorStyles } from '../types/editorPane.types';
+import { generatePaddingStyles } from '../utils/editorStyles';
 
 interface EditorTextareaProps {
   /** Textarea reference */
@@ -33,7 +33,7 @@ export const EditorTextarea: React.FC<EditorTextareaProps> = ({
   focusMode,
   typewriterMode,
   wordWrap,
-  editorStyles
+  editorStyles,
 }) => {
   const paddingStyles = generatePaddingStyles(focusMode);
 
@@ -50,13 +50,15 @@ export const EditorTextarea: React.FC<EditorTextareaProps> = ({
         ${typewriterMode ? 'scroll-smooth' : ''}
         transition-all duration-200
       `}
-      style={{
-        minHeight: '100%',
-        padding: paddingStyles,
-        ...editorStyles,
-        wordWrap: wordWrap ? 'break-word' : 'normal',
-        overflowWrap: wordWrap ? 'break-word' : 'normal',
-      } as React.CSSProperties}
+      style={
+        {
+          minHeight: '100%',
+          padding: paddingStyles,
+          ...editorStyles,
+          wordWrap: wordWrap ? 'break-word' : 'normal',
+          overflowWrap: wordWrap ? 'break-word' : 'normal',
+        } as React.CSSProperties
+      }
     />
   );
 };
