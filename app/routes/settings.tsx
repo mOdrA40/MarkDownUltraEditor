@@ -1,5 +1,5 @@
 import { useAuth, useUser } from '@clerk/react-router';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { QueryClientProvider } from '@tanstack/react-query';
 import {
   ArrowLeft,
   Database,
@@ -25,14 +25,14 @@ import { Separator } from '@/components/ui/separator';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useToast } from '@/hooks/core/useToast';
 import { useResponsiveDetection } from '@/hooks/ui/useResponsive';
+import { queryClient } from '@/lib/queryClient';
 import {
   DEFAULT_WRITING_SETTINGS,
   type WritingSettings as WritingSettingsType,
 } from '@/types/writingSettings';
 import { loadSettingsFromStorage, saveSettingsToStorage } from '@/utils/writingSettingsUtils';
 
-// Create QueryClient instance
-const queryClient = new QueryClient();
+// Using global optimized QueryClient from lib/queryClient.ts
 
 export interface AppPreferences {
   theme: Theme;

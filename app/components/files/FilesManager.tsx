@@ -41,11 +41,14 @@ import { Input } from '@/components/ui/input';
 import { useResponsiveDetection } from '@/hooks/ui/useResponsive';
 import { useFileStorage } from '@/hooks/useFileStorage';
 import type { FileData } from '@/lib/supabase';
+import { FilesTable } from './FilesTable';
+import { FilesTableToolbar } from './FilesTableToolbar';
+import { VirtualizedFileList } from './VirtualizedFileList';
 
 /**
- * View mode type
+ * View mode type - Enhanced with table view
  */
-type ViewMode = 'grid' | 'list';
+type ViewMode = 'grid' | 'list' | 'table';
 
 /**
  * Sort options
@@ -71,7 +74,7 @@ export const FilesManager: React.FC = () => {
   } = useFileStorage();
 
   // UI state
-  const [viewMode, setViewMode] = useState<ViewMode>('grid');
+  const [viewMode, setViewMode] = useState<ViewMode>('table'); // Default to table for better performance
   const [searchQuery, setSearchQuery] = useState('');
   const [sortBy, setSortBy] = useState<SortOption>('date');
   const [sortDirection, setSortDirection] = useState<SortDirection>('desc');
@@ -109,6 +112,9 @@ export const FilesManager: React.FC = () => {
 
     return filtered;
   }, [files, searchQuery, sortBy, sortDirection]);
+
+  // Performance optimization: Use virtualization for large datasets
+  const shouldUseVirtualization = filteredAndSortedFiles.length > 100;
 
   // Handle file operations
   const handleOpenFile = (file: FileData) => {
@@ -366,6 +372,43 @@ export const FilesManager: React.FC = () => {
               Create New File
             </Button>
           </div>
+        ) : viewMode === 'table' ? (
+          <div className="space-y-4">
+            <FilesTableToolbar
+              searchQuery={searchQuery}
+              onSearchChange={setSearchQuery}
+              viewMode={viewMode}
+              onViewModeChange={setViewMode}
+              sortBy={sortBy}
+              onSortByChange={setSortBy}
+              sortDirection={sortDirection}
+              onSortDirectionChange={setSortDirection}
+              onNewFile={() => navigate('/')}
+              onExportAll={exportAllFiles}
+              isLoading={isLoadingFiles}
+              totalFiles={filteredAndSortedFiles.length}
+            />
+            <FilesTable
+              files={filteredAndSortedFiles}
+              onOpen={handleOpenFile}
+              onDelete={handleDeleteFile}
+              onDuplicate={handleDuplicateFile}
+              onExport={handleExportFile}
+              formatDate={formatDate}
+              formatFileSize={formatFileSize}
+              isLoading={isLoadingFiles}
+            />
+          </div>
+        ) : shouldUseVirtualization && viewMode === 'list' ? (
+          <VirtualizedFileList
+            files={filteredAndSortedFiles}
+            onOpen={handleOpenFile}
+            onDelete={handleDeleteFile}
+            onDuplicate={handleDuplicateFile}
+            onExport={handleExportFile}
+            formatDate={formatDate}
+            formatFileSize={formatFileSize}
+          />
         ) : (
           <div
             className={

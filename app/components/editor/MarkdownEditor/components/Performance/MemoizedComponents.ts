@@ -4,6 +4,8 @@
  */
 
 import React, { memo, useCallback, useMemo } from 'react';
+import { useDeepMemo, useMemoizedObject } from '@/hooks/performance/useMemoization';
+import { useTOCItems, VirtualizedTableOfContents } from '../../../VirtualizedTableOfContents';
 import { EditorFooter, type EditorFooterProps } from '../Layout/EditorFooter';
 import { EditorHeader, type EditorHeaderProps } from '../Layout/EditorHeader';
 import { EditorMainContent, type EditorMainContentProps } from '../Layout/EditorMainContent';
@@ -249,3 +251,64 @@ export function withPerformanceOptimization<P extends Record<string, unknown>>(
   WrappedComponent.displayName = `withPerformanceOptimization(${Component.displayName || Component.name})`;
   return WrappedComponent;
 }
+
+/**
+ * VirtualizedEditorSidebar - Enhanced sidebar with virtualized TOC for large documents
+ */
+export const VirtualizedEditorSidebar = memo<EditorSidebarProps & { enableVirtualization?: boolean }>(
+  ({ markdown, enableVirtualization = false, ...props }) => {
+    // Extract TOC items from markdown
+    const tocItems = useTOCItems(markdown);
+
+    // Use virtualization for large documents (>100 headings)
+    const shouldVirtualize = enableVirtualization && tocItems.length > 100;
+
+    // Memoized TOC component selection
+    const TOCComponent = useDeepMemo(() => {
+      return shouldVirtualize ? VirtualizedTableOfContents : null;
+    }, [shouldVirtualize]);
+
+    // Memoized props for performance
+    const memoizedProps = useMemoizedObject({
+      ...props,
+      markdown,
+      tocItems,
+      shouldVirtualize,
+    });
+
+    if (shouldVirtualize && TOCComponent) {
+      // Render with virtualized TOC using React.createElement
+      return React.createElement(
+        'div',
+        { className: 'editor-sidebar-virtualized' },
+        React.createElement(EditorSidebar, memoizedProps),
+        React.createElement(TOCComponent, {
+          items: tocItems,
+          onItemClick: (item: { id: string; text: string; level: number; line: number }) => {
+            // Scroll to heading logic would go here
+            console.log('Navigate to:', item.text);
+          },
+          className: 'virtualized-toc',
+        })
+      );
+    }
+
+    // Render normal sidebar
+    return React.createElement(EditorSidebar, memoizedProps);
+  },
+  (prevProps, nextProps) => {
+    // Enhanced comparison including virtualization flag
+    return (
+      prevProps.markdown === nextProps.markdown &&
+      prevProps.enableVirtualization === nextProps.enableVirtualization &&
+      prevProps.theme?.id === nextProps.theme?.id &&
+      prevProps.uiState?.showToc === nextProps.uiState?.showToc &&
+      prevProps.uiState?.showOutline === nextProps.uiState?.showOutline &&
+      prevProps.responsive?.isMobile === nextProps.responsive?.isMobile &&
+      prevProps.responsive?.isTablet === nextProps.responsive?.isTablet &&
+      prevProps.zenMode === nextProps.zenMode
+    );
+  }
+);
+
+VirtualizedEditorSidebar.displayName = 'VirtualizedEditorSidebar';

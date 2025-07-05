@@ -23,6 +23,7 @@ export {
   useStableObject,
   useStableValue,
   useThrottledValue,
+  VirtualizedEditorSidebar,
   withPerformanceOptimization,
 } from './MemoizedComponents';
 // Export performance monitoring

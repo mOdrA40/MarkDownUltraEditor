@@ -4,22 +4,16 @@
  */
 
 import { useAuth } from '@clerk/react-router';
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQuery } from '@tanstack/react-query';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useToast } from '@/hooks/core/useToast';
+import { invalidateQueries, queryKeys } from '@/lib/queryClient';
 import { createAuthenticatedSupabaseClient, type FileData } from '@/lib/supabase';
 import {
   createFileStorageService,
   type FileStorageService,
   type StorageInfo,
 } from '@/services/fileStorage';
-
-// Query keys for React Query
-const QUERY_KEYS = {
-  FILES_LIST: 'files-list',
-  FILE_DETAIL: 'file-detail',
-  STORAGE_INFO: 'storage-info',
-} as const;
 
 /**
  * Hook return interface
@@ -55,7 +49,7 @@ export interface UseFileStorageReturn {
 export const useFileStorage = (): UseFileStorageReturn => {
   const { isSignedIn, userId, getToken } = useAuth();
   const { toast } = useToast();
-  const queryClient = useQueryClient();
+  // Using global queryClient from invalidateQueries helper functions
 
   const [storageService, setStorageService] = useState<FileStorageService | null>(null);
   const [isInitialized, setIsInitialized] = useState(false);
@@ -107,13 +101,13 @@ export const useFileStorage = (): UseFileStorageReturn => {
     initializeStorageService();
   }, [isSignedIn, userId, getToken]);
 
-  // Files list query
+  // Files list query with optimized keys
   const {
     data: files = [],
     isLoading: isLoadingFiles,
     refetch: refreshFiles,
   } = useQuery<FileData[]>({
-    queryKey: [QUERY_KEYS.FILES_LIST, userId],
+    queryKey: queryKeys.files.list(userId || 'anonymous'),
     queryFn: async () => {
       if (!storageService) {
         console.log('Storage service not initialized, returning empty files list');
@@ -140,9 +134,9 @@ export const useFileStorage = (): UseFileStorageReturn => {
     gcTime: 10 * 60 * 1000, // 10 minutes (renamed from cacheTime in React Query v5)
   });
 
-  // Storage info query
+  // Storage info query with optimized keys
   const { data: storageInfo = null, isLoading: isLoadingStorageInfo } = useQuery({
-    queryKey: [QUERY_KEYS.STORAGE_INFO, userId],
+    queryKey: queryKeys.storage.info(userId || 'anonymous'),
     queryFn: () => {
       if (!storageService) return null;
 
@@ -173,9 +167,9 @@ export const useFileStorage = (): UseFileStorageReturn => {
     onSuccess: (savedFile) => {
       console.log('File saved successfully:', savedFile.title);
 
-      // Invalidate and refetch files list
-      queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.FILES_LIST] });
-      queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.STORAGE_INFO] });
+      // Optimized invalidation using helper functions
+      invalidateQueries.files.all();
+      invalidateQueries.storage.all();
 
       toast({
         title: 'File Saved',
@@ -206,9 +200,9 @@ export const useFileStorage = (): UseFileStorageReturn => {
     onSuccess: (_, identifier) => {
       console.log('File deleted successfully:', identifier);
 
-      // Invalidate and refetch files list
-      queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.FILES_LIST] });
-      queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.STORAGE_INFO] });
+      // Optimized invalidation using helper functions
+      invalidateQueries.files.all();
+      invalidateQueries.storage.all();
 
       toast({
         title: 'File Deleted',
