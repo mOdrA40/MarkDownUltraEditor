@@ -28,6 +28,7 @@ export const QuickActions: React.FC<QuickActionsProps> = ({
         canRedo={canRedo}
         isMobile={true}
         isTablet={false}
+        className="mobile-nav-undo-redo"
       />
 
       {/* Search Button */}

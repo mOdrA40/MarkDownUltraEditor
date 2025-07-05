@@ -46,7 +46,7 @@ export const MobileNav: React.FC<MobileNavProps> = ({
   const { isOpen, toggleSidebar, closeSidebar } = useMobileNav();
 
   return (
-    <div className="flex flex-col w-full">
+    <div className="mobile-nav-container flex flex-col w-full">
       {/* Navigation Header */}
       <NavHeader
         currentTheme={currentTheme}

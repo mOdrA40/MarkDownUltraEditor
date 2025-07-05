@@ -239,8 +239,8 @@ export const MarkdownEditor: React.FC<MarkdownEditorProps> = ({
           className={className}
           style={style}
         >
-          {/* Mobile Navigation */}
-          {responsive.isMobile && !settings.zenMode && (
+          {/* Mobile Navigation - Show on mobile and small tablet */}
+          {(responsive.isMobile || responsive.isSmallTablet) && !settings.zenMode && (
             <MobileNav
               currentTheme={currentTheme}
               onThemeChange={handleThemeChange}

@@ -3,8 +3,8 @@
  * @author Axel Modra
  */
 
-import { SignInButton, SignUpButton, UserButton, useAuth, useUser } from '@clerk/react-router';
-import { Cloud, Files, HardDrive, LogIn, Settings, User, UserPlus } from 'lucide-react';
+import { SignInButton, UserButton, useAuth, useUser } from '@clerk/react-router';
+import { Cloud, Files, HardDrive, Settings, User } from 'lucide-react';
 import React from 'react';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -183,31 +183,18 @@ export const AuthButtons: React.FC<AuthButtonsProps> = ({
         Local
       </Badge>
 
-      {/* Sign in button */}
+      {/* Single Auth Button - defaults to Sign In with Sign Up option */}
       <SignInButton mode="redirect">
-        <Button
-          variant="ghost"
-          size="sm"
-          className="flex items-center gap-2"
-          onClick={() => console.log('Sign In button clicked')}
-        >
-          <LogIn className="w-4 h-4" />
-          {!isSmallTablet && <span>Sign In</span>}
-        </Button>
-      </SignInButton>
-
-      {/* Sign up button */}
-      <SignUpButton mode="redirect">
         <Button
           variant="default"
           size="sm"
           className="flex items-center gap-2"
-          onClick={() => console.log('Sign Up button clicked')}
+          onClick={() => console.log('Auth button clicked')}
         >
-          <UserPlus className="w-4 h-4" />
-          {!isSmallTablet && <span>Sign Up</span>}
+          <User className="w-4 h-4" />
+          {!isSmallTablet && <span>Sign In</span>}
         </Button>
-      </SignUpButton>
+      </SignInButton>
     </div>
   );
 };

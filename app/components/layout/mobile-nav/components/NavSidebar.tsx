@@ -3,8 +3,9 @@
  * Menangani slide-out menu dengan semua navigation sections
  */
 
-import { BookOpen, Download, FileText, Palette } from 'lucide-react';
+import { BookOpen, Download, FileText, Palette, User } from 'lucide-react';
 import type React from 'react';
+import { AuthButtons } from '@/components/auth/AuthButtons';
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
 import { Sheet, SheetContent } from '@/components/ui/sheet';
@@ -57,8 +58,24 @@ export const NavSidebar: React.FC<NavSidebarProps> = ({
 
   return (
     <Sheet open={isOpen} onOpenChange={onClose}>
-      <SheetContent side="left" className="w-80 overflow-y-auto">
+      <SheetContent side="left" className="mobile-nav-sidebar w-80 overflow-y-auto">
         <div className="space-y-6 pt-6">
+          {/* Authentication Section */}
+          <NavSection title="Account" icon={User} collapsible={false}>
+            <div className="flex justify-center">
+              <AuthButtons
+                responsive={{
+                  isMobile: true,
+                  isTablet: false,
+                  isSmallTablet: true,
+                }}
+                className="w-full"
+              />
+            </div>
+          </NavSection>
+
+          <Separator />
+
           {/* Theme Section */}
           <NavSection title="Theme" icon={Palette} collapsible={false}>
             <ThemeSelector currentTheme={currentTheme} onThemeChange={onThemeChange} />

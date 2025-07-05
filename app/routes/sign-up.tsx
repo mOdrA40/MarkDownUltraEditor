@@ -8,10 +8,13 @@ export default function SignUpPage() {
           elements: {
             rootBox: 'mx-auto',
             card: 'shadow-xl',
+            footerActionLink: 'text-blue-600 hover:text-blue-800 font-medium',
           },
         }}
         signInUrl="/sign-in"
         afterSignUpUrl="/"
+        routing="path"
+        path="/sign-up"
       />
     </div>
   );

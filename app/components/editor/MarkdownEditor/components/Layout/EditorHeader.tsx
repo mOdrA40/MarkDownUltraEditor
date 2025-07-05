@@ -108,8 +108,8 @@ export const EditorHeader: React.FC<EditorHeaderProps> = ({
     return () => document.removeEventListener('fullscreenchange', handleFullscreenChange);
   }, []);
 
-  // Don't render header in zen mode
-  if (zenMode) return null;
+  
+  if (zenMode || isMobile || isSmallTablet) return null;
 
   /**
    * Toggle fullscreen mode

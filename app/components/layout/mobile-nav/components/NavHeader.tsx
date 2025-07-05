@@ -30,7 +30,7 @@ export const NavHeader: React.FC<NavHeaderProps> = ({
 
   return (
     <div
-      className={`flex items-center justify-between p-3 border-b backdrop-blur-md ${headerClassName}`}
+      className={`mobile-nav-header flex items-center justify-between p-3 border-b backdrop-blur-md ${headerClassName}`}
       style={{
         ...headerStyles,
         backdropFilter: 'blur(12px)',

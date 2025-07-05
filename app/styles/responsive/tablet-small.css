@@ -5,8 +5,42 @@
  * @author Axel Modra
  */
 
-/* ===== SMALL TABLET FIXES (500px - 767px) ===== */
-@media (min-width: 500px) and (max-width: 767px) {
+/* ===== SMALL TABLET FIXES (500px - 768px) ===== */
+@media (min-width: 500px) and (max-width: 768px) {
+  /* ===== MOBILE NAVIGATION ===== */
+
+  /* Show mobile navigation on small tablet */
+  .mobile-nav-container {
+    display: block !important;
+  }
+
+  /* Hide desktop editor header on small tablet */
+  .editor-header {
+    display: none !important;
+  }
+
+  /* Mobile nav header adjustments for small tablet */
+  .mobile-nav-header {
+    padding: 0.75rem 1rem;
+    min-height: 3.5rem;
+  }
+
+  /* Mobile nav sidebar width for small tablet */
+  .mobile-nav-sidebar {
+    width: 20rem !important; /* 320px - wider for tablet */
+  }
+
+  /* Undo/Redo buttons in mobile nav header for small tablet */
+  .mobile-nav-undo-redo {
+    gap: 0.25rem !important;
+  }
+
+  .mobile-nav-undo-redo button {
+    width: 2rem !important;
+    height: 2rem !important;
+    padding: 0 !important;
+  }
+
   /* ===== TOOLBAR STYLES ===== */
   
   /* Toolbar - compact layout dengan scroll horizontal */
