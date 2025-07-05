@@ -89,7 +89,7 @@ export const TemplateFilters: React.FC<TemplateFiltersProps> = ({
         </Select>
 
         {/* View Mode Toggle */}
-        <div className="flex items-center border rounded-md overflow-hidden">
+        <div className="flex items-center border rounded-md overflow-hidden view-mode-toggle">
           <Button
             variant={viewMode === 'grid' ? 'default' : 'ghost'}
             size="sm"

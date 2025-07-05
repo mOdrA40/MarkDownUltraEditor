@@ -7,6 +7,7 @@ import { useResponsiveBreakpoint } from '@/hooks/ui';
 import type { DocumentTemplatesProps, ViewMode } from '@/types/templates';
 import { documentTemplates } from '@/utils/documentTemplates';
 import { getThemeAwareDialogClasses } from '@/utils/templateUtils';
+import './styles.css';
 
 // Sub-components
 import { TemplateFilters } from './TemplateFilters';
@@ -60,6 +61,7 @@ export const DocumentTemplates: React.FC<DocumentTemplatesProps> = ({
       <Dialog open={isOpen} onOpenChange={onClose}>
         <DialogContent
           className={`document-templates-dialog flex flex-col p-0 mx-auto ${dialogClasses}`}
+          data-document-templates
         >
           <DialogHeader className={`flex-shrink-0 ${isMobile ? 'p-4 pb-2' : 'p-3 sm:p-4 pb-2'}`}>
             <DialogTitle

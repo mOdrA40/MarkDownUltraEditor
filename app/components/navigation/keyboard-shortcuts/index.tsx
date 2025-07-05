@@ -10,6 +10,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
+import './styles.css';
 import { getThemeTextColor } from '@/utils/themeUtils';
 // Import components
 import { ShortcutCategory } from './components/ShortcutCategory';
@@ -107,7 +108,8 @@ export const KeyboardShortcuts: React.FC<KeyboardShortcutsProps> = ({
   return (
     <Dialog open={true} onOpenChange={onClose}>
       <DialogContent
-        className="max-w-4xl max-h-[90vh] flex flex-col p-0"
+        className="max-w-4xl max-h-[90vh] flex flex-col p-0 keyboard-shortcuts-modal"
+        data-keyboard-shortcuts
         style={{
           backgroundColor: currentTheme?.background || undefined,
           borderColor: currentTheme?.accent || undefined,
@@ -135,7 +137,7 @@ export const KeyboardShortcuts: React.FC<KeyboardShortcutsProps> = ({
             </div>
 
             {/* Platform Selector */}
-            <div className="flex items-center space-x-1">
+            <div className="flex items-center space-x-1 platform-selector">
               <Button
                 variant={selectedPlatform === 'auto' ? 'default' : 'outline'}
                 size="sm"

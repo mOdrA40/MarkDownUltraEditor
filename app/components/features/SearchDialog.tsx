@@ -8,6 +8,7 @@ import { Search } from 'lucide-react';
 import type React from 'react';
 import { useCallback } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import './SearchDialog/styles.css';
 import { SearchActions } from './SearchDialog/components/SearchActions';
 import { SearchControls } from './SearchDialog/components/SearchControls';
 import { SearchResults } from './SearchDialog/components/SearchResults';
@@ -62,7 +63,7 @@ export const SearchDialog: React.FC<SearchDialogProps> = ({ markdown, onReplace,
 
   return (
     <Dialog open={true} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-md">
+      <DialogContent className="sm:max-w-md search-dialog" data-search-dialog>
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <Search className="h-4 w-4" />

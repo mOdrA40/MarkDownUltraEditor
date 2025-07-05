@@ -158,16 +158,378 @@ div.header-default,
 /* ===== BUTTON AND INTERACTIVE ELEMENT STYLES ===== */
 
 /* Ensure proper contrast for buttons in all themes */
-.theme-ocean button:not(.btn-ghost):not(.btn-outline),
-.theme-forest button:not(.btn-ghost):not(.btn-outline),
-.theme-sunset button:not(.btn-ghost):not(.btn-outline),
-.theme-purple button:not(.btn-ghost):not(.btn-outline),
-.theme-rose button:not(.btn-ghost):not(.btn-outline) {
+/* REMOVED: This was causing white text issues in dialogs and modals */
+/* Only apply white text to primary buttons with specific background colors */
+.theme-ocean button[variant="default"]:not(.btn-ghost):not(.btn-outline),
+.theme-forest button[variant="default"]:not(.btn-ghost):not(.btn-outline),
+.theme-sunset button[variant="default"]:not(.btn-ghost):not(.btn-outline),
+.theme-purple button[variant="default"]:not(.btn-ghost):not(.btn-outline),
+.theme-rose button[variant="default"]:not(.btn-ghost):not(.btn-outline) {
   color: white !important;
 }
 
-.dark button:not(.btn-ghost):not(.btn-outline) {
+.dark button[variant="default"]:not(.btn-ghost):not(.btn-outline) {
   color: hsl(210 40% 98%) !important;
+}
+
+/* ===== DIALOG CLOSE BUTTON FIXES ===== */
+
+/* Fix close button colors for all themes */
+[data-theme="ocean"] [data-radix-dialog-close],
+[data-theme="ocean"] button[data-radix-dialog-close] {
+  color: #0c4a6e !important;
+}
+
+[data-theme="forest"] [data-radix-dialog-close],
+[data-theme="forest"] button[data-radix-dialog-close] {
+  color: #14532d !important;
+}
+
+[data-theme="sunset"] [data-radix-dialog-close],
+[data-theme="sunset"] button[data-radix-dialog-close] {
+  color: #9a3412 !important;
+}
+
+[data-theme="purple"] [data-radix-dialog-close],
+[data-theme="purple"] button[data-radix-dialog-close] {
+  color: #581c87 !important;
+}
+
+[data-theme="rose"] [data-radix-dialog-close],
+[data-theme="rose"] button[data-radix-dialog-close] {
+  color: #881337 !important;
+}
+
+/* ===== DIALOG BUTTON FIXES ===== */
+
+/* Fix all dialog buttons to use theme colors instead of white */
+[data-theme="ocean"] [data-radix-dialog-content] button:not([variant="default"]),
+[data-theme="ocean"] .dialog button:not([variant="default"]) {
+  color: #0c4a6e !important;
+}
+
+[data-theme="forest"] [data-radix-dialog-content] button:not([variant="default"]),
+[data-theme="forest"] .dialog button:not([variant="default"]) {
+  color: #14532d !important;
+}
+
+[data-theme="sunset"] [data-radix-dialog-content] button:not([variant="default"]),
+[data-theme="sunset"] .dialog button:not([variant="default"]) {
+  color: #9a3412 !important;
+}
+
+[data-theme="purple"] [data-radix-dialog-content] button:not([variant="default"]),
+[data-theme="purple"] .dialog button:not([variant="default"]) {
+  color: #581c87 !important;
+}
+
+[data-theme="rose"] [data-radix-dialog-content] button:not([variant="default"]),
+[data-theme="rose"] .dialog button:not([variant="default"]) {
+  color: #881337 !important;
+}
+
+/* ===== BUTTON VARIANT SPECIFIC FIXES ===== */
+
+/* Outline buttons */
+[data-theme="ocean"] button[variant="outline"] {
+  color: #0c4a6e !important;
+  border-color: rgba(14, 165, 233, 0.3) !important;
+}
+
+[data-theme="forest"] button[variant="outline"] {
+  color: #14532d !important;
+  border-color: rgba(16, 185, 129, 0.3) !important;
+}
+
+[data-theme="sunset"] button[variant="outline"] {
+  color: #9a3412 !important;
+  border-color: rgba(249, 115, 22, 0.3) !important;
+}
+
+[data-theme="purple"] button[variant="outline"] {
+  color: #581c87 !important;
+  border-color: rgba(168, 85, 247, 0.3) !important;
+}
+
+[data-theme="rose"] button[variant="outline"] {
+  color: #881337 !important;
+  border-color: rgba(244, 63, 94, 0.3) !important;
+}
+
+/* Ghost buttons */
+[data-theme="ocean"] button[variant="ghost"] {
+  color: #0c4a6e !important;
+}
+
+[data-theme="forest"] button[variant="ghost"] {
+  color: #14532d !important;
+}
+
+[data-theme="sunset"] button[variant="ghost"] {
+  color: #9a3412 !important;
+}
+
+[data-theme="purple"] button[variant="ghost"] {
+  color: #581c87 !important;
+}
+
+[data-theme="rose"] button[variant="ghost"] {
+  color: #881337 !important;
+}
+
+/* ===== OVERRIDE TAILWIND BUTTON CLASSES ===== */
+
+/* Override text-primary-foreground and other Tailwind classes */
+[data-theme="ocean"] button.text-primary-foreground,
+[data-theme="ocean"] button[class*="text-primary-foreground"] {
+  color: #ffffff !important; /* Keep white for primary buttons */
+}
+
+[data-theme="forest"] button.text-primary-foreground,
+[data-theme="forest"] button[class*="text-primary-foreground"] {
+  color: #ffffff !important; /* Keep white for primary buttons */
+}
+
+[data-theme="sunset"] button.text-primary-foreground,
+[data-theme="sunset"] button[class*="text-primary-foreground"] {
+  color: #ffffff !important; /* Keep white for primary buttons */
+}
+
+[data-theme="purple"] button.text-primary-foreground,
+[data-theme="purple"] button[class*="text-primary-foreground"] {
+  color: #ffffff !important; /* Keep white for primary buttons */
+}
+
+[data-theme="rose"] button.text-primary-foreground,
+[data-theme="rose"] button[class*="text-primary-foreground"] {
+  color: #ffffff !important; /* Keep white for primary buttons */
+}
+
+/* Override hover states for accent-foreground */
+[data-theme="ocean"] button:hover.text-accent-foreground,
+[data-theme="ocean"] button[class*="hover:text-accent-foreground"]:hover {
+  color: #0c4a6e !important;
+}
+
+[data-theme="forest"] button:hover.text-accent-foreground,
+[data-theme="forest"] button[class*="hover:text-accent-foreground"]:hover {
+  color: #14532d !important;
+}
+
+[data-theme="sunset"] button:hover.text-accent-foreground,
+[data-theme="sunset"] button[class*="hover:text-accent-foreground"]:hover {
+  color: #9a3412 !important;
+}
+
+[data-theme="purple"] button:hover.text-accent-foreground,
+[data-theme="purple"] button[class*="hover:text-accent-foreground"]:hover {
+  color: #581c87 !important;
+}
+
+[data-theme="rose"] button:hover.text-accent-foreground,
+[data-theme="rose"] button[class*="hover:text-accent-foreground"]:hover {
+  color: #881337 !important;
+}
+
+/* ===== AGGRESSIVE BUTTON TEXT FIXES ===== */
+
+/* Target all possible button classes that might cause white text */
+[data-theme="ocean"] button:not([class*="bg-primary"]):not([variant="default"]),
+[data-theme="ocean"] button[variant="outline"],
+[data-theme="ocean"] button[variant="ghost"],
+[data-theme="ocean"] button[variant="secondary"] {
+  color: #0c4a6e !important;
+}
+
+[data-theme="forest"] button:not([class*="bg-primary"]):not([variant="default"]),
+[data-theme="forest"] button[variant="outline"],
+[data-theme="forest"] button[variant="ghost"],
+[data-theme="forest"] button[variant="secondary"] {
+  color: #14532d !important;
+}
+
+[data-theme="sunset"] button:not([class*="bg-primary"]):not([variant="default"]),
+[data-theme="sunset"] button[variant="outline"],
+[data-theme="sunset"] button[variant="ghost"],
+[data-theme="sunset"] button[variant="secondary"] {
+  color: #9a3412 !important;
+}
+
+[data-theme="purple"] button:not([class*="bg-primary"]):not([variant="default"]),
+[data-theme="purple"] button[variant="outline"],
+[data-theme="purple"] button[variant="ghost"],
+[data-theme="purple"] button[variant="secondary"] {
+  color: #581c87 !important;
+}
+
+[data-theme="rose"] button:not([class*="bg-primary"]):not([variant="default"]),
+[data-theme="rose"] button[variant="outline"],
+[data-theme="rose"] button[variant="ghost"],
+[data-theme="rose"] button[variant="secondary"] {
+  color: #881337 !important;
+}
+
+/* ===== GLOBAL SELECT COMPONENT FIXES ===== */
+
+/* Fix Select trigger text colors globally */
+[data-theme="ocean"] [data-radix-select-trigger] {
+  color: #0c4a6e !important;
+}
+
+[data-theme="forest"] [data-radix-select-trigger] {
+  color: #14532d !important;
+}
+
+[data-theme="sunset"] [data-radix-select-trigger] {
+  color: #9a3412 !important;
+}
+
+[data-theme="purple"] [data-radix-select-trigger] {
+  color: #581c87 !important;
+}
+
+[data-theme="rose"] [data-radix-select-trigger] {
+  color: #881337 !important;
+}
+
+/* Fix Select content and items globally */
+[data-theme="ocean"] [data-radix-select-content] {
+  background-color: #f0f9ff !important;
+  color: #0c4a6e !important;
+}
+
+[data-theme="ocean"] [data-radix-select-item] {
+  color: #0c4a6e !important;
+}
+
+[data-theme="forest"] [data-radix-select-content] {
+  background-color: #f0fdf4 !important;
+  color: #14532d !important;
+}
+
+[data-theme="forest"] [data-radix-select-item] {
+  color: #14532d !important;
+}
+
+[data-theme="sunset"] [data-radix-select-content] {
+  background-color: #fff7ed !important;
+  color: #9a3412 !important;
+}
+
+[data-theme="sunset"] [data-radix-select-item] {
+  color: #9a3412 !important;
+}
+
+[data-theme="purple"] [data-radix-select-content] {
+  background-color: #faf5ff !important;
+  color: #581c87 !important;
+}
+
+[data-theme="purple"] [data-radix-select-item] {
+  color: #581c87 !important;
+}
+
+[data-theme="rose"] [data-radix-select-content] {
+  background-color: #fff1f2 !important;
+  color: #881337 !important;
+}
+
+[data-theme="rose"] [data-radix-select-item] {
+  color: #881337 !important;
+}
+
+/* ===== GLOBAL TABS COMPONENT FIXES ===== */
+
+/* Fix Tabs trigger text colors globally */
+[data-theme="ocean"] [data-radix-tabs-trigger] {
+  color: #0c4a6e !important;
+}
+
+[data-theme="forest"] [data-radix-tabs-trigger] {
+  color: #14532d !important;
+}
+
+[data-theme="sunset"] [data-radix-tabs-trigger] {
+  color: #9a3412 !important;
+}
+
+[data-theme="purple"] [data-radix-tabs-trigger] {
+  color: #581c87 !important;
+}
+
+[data-theme="rose"] [data-radix-tabs-trigger] {
+  color: #881337 !important;
+}
+
+/* ===== GLOBAL TOGGLE COMPONENT FIXES ===== */
+
+/* Fix Toggle text colors globally */
+[data-theme="ocean"] [data-radix-toggle-root] {
+  color: #0c4a6e !important;
+}
+
+[data-theme="forest"] [data-radix-toggle-root] {
+  color: #14532d !important;
+}
+
+[data-theme="sunset"] [data-radix-toggle-root] {
+  color: #9a3412 !important;
+}
+
+[data-theme="purple"] [data-radix-toggle-root] {
+  color: #581c87 !important;
+}
+
+[data-theme="rose"] [data-radix-toggle-root] {
+  color: #881337 !important;
+}
+
+/* ===== ULTRA AGGRESSIVE BUTTON TEXT FIXES ===== */
+
+/* Override any possible white text classes */
+[data-theme="ocean"] button.text-white,
+[data-theme="ocean"] button[class*="text-white"],
+[data-theme="ocean"] button.text-gray-50,
+[data-theme="ocean"] button[class*="text-gray-50"],
+[data-theme="ocean"] button.text-slate-50,
+[data-theme="ocean"] button[class*="text-slate-50"] {
+  color: #0c4a6e !important;
+}
+
+[data-theme="forest"] button.text-white,
+[data-theme="forest"] button[class*="text-white"],
+[data-theme="forest"] button.text-gray-50,
+[data-theme="forest"] button[class*="text-gray-50"],
+[data-theme="forest"] button.text-slate-50,
+[data-theme="forest"] button[class*="text-slate-50"] {
+  color: #14532d !important;
+}
+
+[data-theme="sunset"] button.text-white,
+[data-theme="sunset"] button[class*="text-white"],
+[data-theme="sunset"] button.text-gray-50,
+[data-theme="sunset"] button[class*="text-gray-50"],
+[data-theme="sunset"] button.text-slate-50,
+[data-theme="sunset"] button[class*="text-slate-50"] {
+  color: #9a3412 !important;
+}
+
+[data-theme="purple"] button.text-white,
+[data-theme="purple"] button[class*="text-white"],
+[data-theme="purple"] button.text-gray-50,
+[data-theme="purple"] button[class*="text-gray-50"],
+[data-theme="purple"] button.text-slate-50,
+[data-theme="purple"] button[class*="text-slate-50"] {
+  color: #581c87 !important;
+}
+
+[data-theme="rose"] button.text-white,
+[data-theme="rose"] button[class*="text-white"],
+[data-theme="rose"] button.text-gray-50,
+[data-theme="rose"] button[class*="text-gray-50"],
+[data-theme="rose"] button.text-slate-50,
+[data-theme="rose"] button[class*="text-slate-50"] {
+  color: #881337 !important;
 }
 
 /* Ensure proper text contrast for muted text */
