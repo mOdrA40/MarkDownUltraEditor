@@ -171,7 +171,7 @@ function SettingsPageContent() {
   }
 
   return (
-    <div className="min-h-screen bg-background text-foreground">
+    <div className="min-h-screen bg-background text-foreground" data-settings-page>
       <div className="border-b bg-card/80 backdrop-blur-md sticky top-0 z-40">
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center justify-between">

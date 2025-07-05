@@ -54,7 +54,7 @@ export default function FilesPage() {
       <TooltipProvider>
         <Toaster />
         <Sonner />
-        <div className="min-h-screen w-full bg-background">
+        <div className="min-h-screen w-full bg-background" data-files-page>
           <FilesManager />
         </div>
       </TooltipProvider>

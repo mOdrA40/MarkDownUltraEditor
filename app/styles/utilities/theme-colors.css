@@ -178,32 +178,333 @@
   border-color: hsl(217.2 32.6% 17.5%) !important;
 }
 
-/* ===== TEXT COLOR UTILITIES ===== */
+/* ===== TEXT COLOR UTILITIES - FIXED ===== */
 
-.theme-ocean .text-muted-foreground { color: hsl(207 50% 45%) !important; }
-.theme-forest .text-muted-foreground { color: hsl(140 50% 45%) !important; }
-.theme-sunset .text-muted-foreground { color: hsl(17 50% 55%) !important; }
-.theme-purple .text-muted-foreground { color: hsl(270 50% 55%) !important; }
-.theme-rose .text-muted-foreground { color: hsl(347 50% 55%) !important; }
+.theme-ocean .text-muted-foreground { color: #64748b !important; } /* Ocean muted */
+.theme-forest .text-muted-foreground { color: #6b7280 !important; } /* Forest muted */
+.theme-sunset .text-muted-foreground { color: #a16207 !important; } /* Sunset muted */
+.theme-purple .text-muted-foreground { color: #7c3aed !important; } /* Purple muted */
+.theme-rose .text-muted-foreground { color: #be185d !important; } /* Rose muted */
 .dark .text-muted-foreground { color: hsl(215.4 16.3% 56.9%) !important; }
 
-/* ===== PAGE BACKGROUND OVERRIDES ===== */
+/* ===== PAGE BACKGROUND OVERRIDES - FIXED APPROACH ===== */
 
-.theme-ocean, .theme-forest, .theme-sunset, .theme-purple, .theme-rose {
-  background: hsl(var(--background)) !important;
+/* Direct background application using theme-specific colors */
+html.theme-ocean,
+html.theme-ocean body {
+  background-color: #f0f9ff !important; /* Ocean background */
+  color: #0c4a6e !important; /* Ocean text */
 }
 
-.dark { background: hsl(var(--background)) !important; }
+html.theme-forest,
+html.theme-forest body {
+  background-color: #f0fdf4 !important; /* Forest background */
+  color: #14532d !important; /* Forest text */
+}
 
-/* Settings and Files page specific overrides */
+html.theme-sunset,
+html.theme-sunset body {
+  background-color: #fff7ed !important; /* Sunset background */
+  color: #9a3412 !important; /* Sunset text */
+}
+
+html.theme-purple,
+html.theme-purple body {
+  background-color: #faf5ff !important; /* Purple background */
+  color: #581c87 !important; /* Purple text */
+}
+
+html.theme-rose,
+html.theme-rose body {
+  background-color: #fff1f2 !important; /* Rose background */
+  color: #881337 !important; /* Rose text */
+}
+
+html.dark,
+html.dark body {
+  background-color: hsl(222.2 84% 4.9%) !important; /* Dark background */
+  color: hsl(210 40% 98%) !important; /* Dark text */
+}
+
+/* Specific page containers */
 .theme-ocean .min-h-screen,
-.theme-forest .min-h-screen,
-.theme-sunset .min-h-screen,
-.theme-purple .min-h-screen,
-.theme-rose .min-h-screen {
-  background: hsl(var(--background)) !important;
+.theme-ocean .bg-background {
+  background-color: #f0f9ff !important;
+  color: #0c4a6e !important;
 }
 
-.dark .min-h-screen {
-  background: hsl(var(--background)) !important;
+.theme-forest .min-h-screen,
+.theme-forest .bg-background {
+  background-color: #f0fdf4 !important;
+  color: #14532d !important;
+}
+
+.theme-sunset .min-h-screen,
+.theme-sunset .bg-background {
+  background-color: #fff7ed !important;
+  color: #9a3412 !important;
+}
+
+.theme-purple .min-h-screen,
+.theme-purple .bg-background {
+  background-color: #faf5ff !important;
+  color: #581c87 !important;
+}
+
+.theme-rose .min-h-screen,
+.theme-rose .bg-background {
+  background-color: #fff1f2 !important;
+  color: #881337 !important;
+}
+
+.dark .min-h-screen,
+.dark .bg-background {
+  background-color: hsl(222.2 84% 4.9%) !important;
+  color: hsl(210 40% 98%) !important;
+}
+
+/* ===== SPECIFIC ELEMENT STYLING FIXES ===== */
+
+/* Card backgrounds with theme colors */
+.theme-ocean .bg-card {
+  background-color: #e0f2fe !important; /* Ocean card */
+  color: #0c4a6e !important;
+}
+
+.theme-forest .bg-card {
+  background-color: #dcfce7 !important; /* Forest card */
+  color: #14532d !important;
+}
+
+.theme-sunset .bg-card {
+  background-color: #fed7aa !important; /* Sunset card */
+  color: #9a3412 !important;
+}
+
+.theme-purple .bg-card {
+  background-color: #e9d5ff !important; /* Purple card */
+  color: #581c87 !important;
+}
+
+.theme-rose .bg-card {
+  background-color: #fecdd3 !important; /* Rose card */
+  color: #881337 !important;
+}
+
+.dark .bg-card {
+  background-color: hsl(222.2 84% 4.9%) !important;
+  color: hsl(210 40% 98%) !important;
+}
+
+/* ===== TABS STYLING FOR SETTINGS PAGE - FIXED ===== */
+
+/* Inactive tabs use muted colors */
+.theme-ocean [data-radix-tabs-trigger]:not([data-state="active"]) {
+  color: #64748b !important; /* Ocean muted */
+  background: transparent !important;
+}
+
+.theme-forest [data-radix-tabs-trigger]:not([data-state="active"]) {
+  color: #6b7280 !important; /* Forest muted */
+  background: transparent !important;
+}
+
+.theme-sunset [data-radix-tabs-trigger]:not([data-state="active"]) {
+  color: #a16207 !important; /* Sunset muted */
+  background: transparent !important;
+}
+
+.theme-purple [data-radix-tabs-trigger]:not([data-state="active"]) {
+  color: #7c3aed !important; /* Purple muted */
+  background: transparent !important;
+}
+
+.theme-rose [data-radix-tabs-trigger]:not([data-state="active"]) {
+  color: #be185d !important; /* Rose muted */
+  background: transparent !important;
+}
+
+.dark [data-radix-tabs-trigger]:not([data-state="active"]) {
+  color: hsl(215.4 16.3% 56.9%) !important;
+  background: transparent !important;
+}
+
+/* Active tabs use theme primary colors */
+.theme-ocean [data-radix-tabs-trigger][data-state="active"] {
+  color: #0c4a6e !important; /* Ocean text */
+  background: #f0f9ff !important; /* Ocean background */
+}
+
+.theme-forest [data-radix-tabs-trigger][data-state="active"] {
+  color: #14532d !important; /* Forest text */
+  background: #f0fdf4 !important; /* Forest background */
+}
+
+.theme-sunset [data-radix-tabs-trigger][data-state="active"] {
+  color: #9a3412 !important; /* Sunset text */
+  background: #fff7ed !important; /* Sunset background */
+}
+
+.theme-purple [data-radix-tabs-trigger][data-state="active"] {
+  color: #581c87 !important; /* Purple text */
+  background: #faf5ff !important; /* Purple background */
+}
+
+.theme-rose [data-radix-tabs-trigger][data-state="active"] {
+  color: #881337 !important; /* Rose text */
+  background: #fff1f2 !important; /* Rose background */
+}
+
+.dark [data-radix-tabs-trigger][data-state="active"] {
+  color: hsl(210 40% 98%) !important;
+  background: hsl(222.2 84% 4.9%) !important;
+}
+
+/* ===== PRIMARY COLOR STYLING ===== */
+
+/* Primary color elements */
+.theme-ocean .text-primary {
+  color: #0284c7 !important; /* Ocean primary */
+}
+
+.theme-forest .text-primary {
+  color: #10b981 !important; /* Forest primary */
+}
+
+.theme-sunset .text-primary {
+  color: #f97316 !important; /* Sunset primary */
+}
+
+.theme-purple .text-primary {
+  color: #a855f7 !important; /* Purple primary */
+}
+
+.theme-rose .text-primary {
+  color: #f43f5e !important; /* Rose primary */
+}
+
+.dark .text-primary {
+  color: hsl(217.2 91.2% 59.8%) !important; /* Dark primary */
+}
+
+/* ===== SPECIFIC TEXT STYLING FIXES ===== */
+
+/* Headings use theme foreground colors */
+.theme-ocean h1, .theme-ocean h2, .theme-ocean h3, .theme-ocean h4, .theme-ocean h5, .theme-ocean h6 {
+  color: #0c4a6e !important; /* Ocean text */
+}
+
+.theme-forest h1, .theme-forest h2, .theme-forest h3, .theme-forest h4, .theme-forest h5, .theme-forest h6 {
+  color: #14532d !important; /* Forest text */
+}
+
+.theme-sunset h1, .theme-sunset h2, .theme-sunset h3, .theme-sunset h4, .theme-sunset h5, .theme-sunset h6 {
+  color: #9a3412 !important; /* Sunset text */
+}
+
+.theme-purple h1, .theme-purple h2, .theme-purple h3, .theme-purple h4, .theme-purple h5, .theme-purple h6 {
+  color: #581c87 !important; /* Purple text */
+}
+
+.theme-rose h1, .theme-rose h2, .theme-rose h3, .theme-rose h4, .theme-rose h5, .theme-rose h6 {
+  color: #881337 !important; /* Rose text */
+}
+
+.dark h1, .dark h2, .dark h3, .dark h4, .dark h5, .dark h6 {
+  color: hsl(210 40% 98%) !important; /* Dark text */
+}
+
+/* Small text and descriptions */
+.theme-ocean .text-sm {
+  color: #64748b !important; /* Ocean muted */
+}
+
+.theme-forest .text-sm {
+  color: #6b7280 !important; /* Forest muted */
+}
+
+.theme-sunset .text-sm {
+  color: #a16207 !important; /* Sunset muted */
+}
+
+.theme-purple .text-sm {
+  color: #7c3aed !important; /* Purple muted */
+}
+
+.theme-rose .text-sm {
+  color: #be185d !important; /* Rose muted */
+}
+
+.dark .text-sm {
+  color: hsl(215.4 16.3% 56.9%) !important; /* Dark muted */
+}
+
+/* ===== SIMPLIFIED STYLING FIXES ===== */
+
+/* TabsList background with theme colors */
+.theme-ocean .bg-muted {
+  background-color: #e0f2fe !important; /* Ocean muted */
+  color: #64748b !important;
+}
+
+.theme-forest .bg-muted {
+  background-color: #dcfce7 !important; /* Forest muted */
+  color: #6b7280 !important;
+}
+
+.theme-sunset .bg-muted {
+  background-color: #fed7aa !important; /* Sunset muted */
+  color: #a16207 !important;
+}
+
+.theme-purple .bg-muted {
+  background-color: #e9d5ff !important; /* Purple muted */
+  color: #7c3aed !important;
+}
+
+.theme-rose .bg-muted {
+  background-color: #fecdd3 !important; /* Rose muted */
+  color: #be185d !important;
+}
+
+.dark .bg-muted {
+  background-color: hsl(217.2 32.6% 17.5%) !important;
+  color: hsl(215.4 16.3% 56.9%) !important;
+}
+
+/* Input styling with theme colors */
+.theme-ocean input {
+  background-color: #f0f9ff !important;
+  color: #0c4a6e !important;
+  border-color: #bae6fd !important;
+}
+
+.theme-forest input {
+  background-color: #f0fdf4 !important;
+  color: #14532d !important;
+  border-color: #bbf7d0 !important;
+}
+
+.theme-sunset input {
+  background-color: #fff7ed !important;
+  color: #9a3412 !important;
+  border-color: #fdba74 !important;
+}
+
+.theme-purple input {
+  background-color: #faf5ff !important;
+  color: #581c87 !important;
+  border-color: #d8b4fe !important;
+}
+
+.theme-rose input {
+  background-color: #fff1f2 !important;
+  color: #881337 !important;
+  border-color: #fda4af !important;
+}
+
+.dark input {
+  background-color: hsl(222.2 84% 4.9%) !important;
+  color: hsl(210 40% 98%) !important;
+  border-color: hsl(217.2 32.6% 17.5%) !important;
 }
