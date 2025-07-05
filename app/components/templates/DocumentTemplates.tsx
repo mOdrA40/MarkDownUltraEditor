@@ -7,7 +7,6 @@ import { useResponsiveBreakpoint } from '@/hooks/ui';
 import type { DocumentTemplatesProps, ViewMode } from '@/types/templates';
 import { documentTemplates } from '@/utils/documentTemplates';
 import { getThemeAwareDialogClasses } from '@/utils/templateUtils';
-import './styles.css';
 
 // Sub-components
 import { TemplateFilters } from './TemplateFilters';

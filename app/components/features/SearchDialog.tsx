@@ -8,7 +8,6 @@ import { Search } from 'lucide-react';
 import type React from 'react';
 import { useCallback } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
-import './SearchDialog/styles.css';
 import { SearchActions } from './SearchDialog/components/SearchActions';
 import { SearchControls } from './SearchDialog/components/SearchControls';
 import { SearchResults } from './SearchDialog/components/SearchResults';

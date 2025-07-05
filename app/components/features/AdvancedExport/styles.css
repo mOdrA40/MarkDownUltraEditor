@@ -295,143 +295,65 @@
   color: #60a5fa;
 }
 
-/* Theme-aware text colors for tabs */
+/* Theme-aware text colors for tabs - using CSS variables */
 [data-theme="ocean"] .advanced-export-tabs-trigger,
 [data-theme="ocean"] .advanced-export-mobile-tab-trigger {
-  color: #0c4a6e !important;
+  color: var(--ocean-text) !important;
 }
 
 [data-theme="ocean"] .advanced-export-tabs-trigger[data-state="active"],
 [data-theme="ocean"] .advanced-export-mobile-tab-trigger[data-state="active"] {
-  color: #0c4a6e !important;
-  background-color: rgba(14, 165, 233, 0.15) !important;
+  color: var(--ocean-text) !important;
+  background-color: var(--ocean-accent-bg) !important;
 }
 
 [data-theme="forest"] .advanced-export-tabs-trigger,
 [data-theme="forest"] .advanced-export-mobile-tab-trigger {
-  color: #14532d !important;
+  color: var(--forest-text) !important;
 }
 
 [data-theme="forest"] .advanced-export-tabs-trigger[data-state="active"],
 [data-theme="forest"] .advanced-export-mobile-tab-trigger[data-state="active"] {
-  color: #14532d !important;
-  background-color: rgba(16, 185, 129, 0.15) !important;
+  color: var(--forest-text) !important;
+  background-color: var(--forest-accent-bg) !important;
 }
 
 [data-theme="sunset"] .advanced-export-tabs-trigger,
 [data-theme="sunset"] .advanced-export-mobile-tab-trigger {
-  color: #9a3412 !important;
+  color: var(--sunset-text) !important;
 }
 
 [data-theme="sunset"] .advanced-export-tabs-trigger[data-state="active"],
 [data-theme="sunset"] .advanced-export-mobile-tab-trigger[data-state="active"] {
-  color: #9a3412 !important;
-  background-color: rgba(249, 115, 22, 0.15) !important;
+  color: var(--sunset-text) !important;
+  background-color: var(--sunset-accent-bg) !important;
 }
 
 [data-theme="purple"] .advanced-export-tabs-trigger,
 [data-theme="purple"] .advanced-export-mobile-tab-trigger {
-  color: #581c87 !important;
+  color: var(--purple-text) !important;
 }
 
 [data-theme="purple"] .advanced-export-tabs-trigger[data-state="active"],
 [data-theme="purple"] .advanced-export-mobile-tab-trigger[data-state="active"] {
-  color: #581c87 !important;
-  background-color: rgba(168, 85, 247, 0.15) !important;
+  color: var(--purple-text) !important;
+  background-color: var(--purple-accent-bg) !important;
 }
 
 [data-theme="rose"] .advanced-export-tabs-trigger,
 [data-theme="rose"] .advanced-export-mobile-tab-trigger {
-  color: #881337 !important;
+  color: var(--rose-text) !important;
 }
 
 [data-theme="rose"] .advanced-export-tabs-trigger[data-state="active"],
 [data-theme="rose"] .advanced-export-mobile-tab-trigger[data-state="active"] {
-  color: #881337 !important;
-  background-color: rgba(244, 63, 94, 0.15) !important;
+  color: var(--rose-text) !important;
+  background-color: var(--rose-accent-bg) !important;
 }
 
-/* Theme-aware close button colors for Advanced Export dialog */
-[data-theme="ocean"] [data-radix-dialog-content] button[data-radix-dialog-close],
-[data-theme="ocean"] .advanced-export-dialog button[data-radix-dialog-close] {
-  color: #0c4a6e !important;
-}
+/* Close button colors handled by global theme-colors.css */
 
-[data-theme="forest"] [data-radix-dialog-content] button[data-radix-dialog-close],
-[data-theme="forest"] .advanced-export-dialog button[data-radix-dialog-close] {
-  color: #14532d !important;
-}
-
-[data-theme="sunset"] [data-radix-dialog-content] button[data-radix-dialog-close],
-[data-theme="sunset"] .advanced-export-dialog button[data-radix-dialog-close] {
-  color: #9a3412 !important;
-}
-
-[data-theme="purple"] [data-radix-dialog-content] button[data-radix-dialog-close],
-[data-theme="purple"] .advanced-export-dialog button[data-radix-dialog-close] {
-  color: #581c87 !important;
-}
-
-[data-theme="rose"] [data-radix-dialog-content] button[data-radix-dialog-close],
-[data-theme="rose"] .advanced-export-dialog button[data-radix-dialog-close] {
-  color: #881337 !important;
-}
-
-/* Theme-aware preview mode buttons (Desktop, Tablet, Mobile) */
-[data-theme="ocean"] .advanced-export-preview-modes button,
-[data-theme="ocean"] .preview-mode-selector button {
-  color: #0c4a6e !important;
-}
-
-[data-theme="ocean"] .advanced-export-preview-modes button[data-state="active"],
-[data-theme="ocean"] .preview-mode-selector button[data-state="active"] {
-  color: #ffffff !important;
-  background-color: #0ea5e9 !important;
-}
-
-[data-theme="forest"] .advanced-export-preview-modes button,
-[data-theme="forest"] .preview-mode-selector button {
-  color: #14532d !important;
-}
-
-[data-theme="forest"] .advanced-export-preview-modes button[data-state="active"],
-[data-theme="forest"] .preview-mode-selector button[data-state="active"] {
-  color: #ffffff !important;
-  background-color: #10b981 !important;
-}
-
-[data-theme="sunset"] .advanced-export-preview-modes button,
-[data-theme="sunset"] .preview-mode-selector button {
-  color: #9a3412 !important;
-}
-
-[data-theme="sunset"] .advanced-export-preview-modes button[data-state="active"],
-[data-theme="sunset"] .preview-mode-selector button[data-state="active"] {
-  color: #ffffff !important;
-  background-color: #f97316 !important;
-}
-
-[data-theme="purple"] .advanced-export-preview-modes button,
-[data-theme="purple"] .preview-mode-selector button {
-  color: #581c87 !important;
-}
-
-[data-theme="purple"] .advanced-export-preview-modes button[data-state="active"],
-[data-theme="purple"] .preview-mode-selector button[data-state="active"] {
-  color: #ffffff !important;
-  background-color: #a855f7 !important;
-}
-
-[data-theme="rose"] .advanced-export-preview-modes button,
-[data-theme="rose"] .preview-mode-selector button {
-  color: #881337 !important;
-}
-
-[data-theme="rose"] .advanced-export-preview-modes button[data-state="active"],
-[data-theme="rose"] .preview-mode-selector button[data-state="active"] {
-  color: #ffffff !important;
-  background-color: #f43f5e !important;
-}
+/* Preview mode button colors handled by global theme-colors.css */
 
 /* Separator styling with theme awareness */
 .advanced-export-separator {
