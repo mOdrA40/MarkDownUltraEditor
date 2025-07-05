@@ -8,8 +8,12 @@
     "dev": "react-router dev",
     "lint": "biome lint .",
     "lint:fix": "biome lint --write .",
+    "lint:check": "biome lint .",
     "format": "biome format --write .",
+    "format:check": "biome format .",
     "check": "biome check --write .",
+    "ci": "biome ci",
+    "prebuild": "bun run check",
     "lint:eslint": "eslint --ignore-path .gitignore --cache --cache-location ./node_modules/.cache/eslint .",
     "start": "react-router-serve ./build/server/index.js",
     "typecheck": "react-router typegen && tsc"

@@ -108,7 +108,6 @@ export const EditorHeader: React.FC<EditorHeaderProps> = ({
     return () => document.removeEventListener('fullscreenchange', handleFullscreenChange);
   }, []);
 
-  
   if (zenMode || isMobile || isSmallTablet) return null;
 
   /**

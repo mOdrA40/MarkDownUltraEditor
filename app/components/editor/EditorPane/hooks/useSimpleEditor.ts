@@ -64,7 +64,7 @@ export const useSimpleEditor = (
       if (!textareaRef.current || isOperating.current) return;
 
       isOperating.current = true;
-      
+
       const textarea = textareaRef.current;
       const start = textarea.selectionStart;
       const end = textarea.selectionEnd;

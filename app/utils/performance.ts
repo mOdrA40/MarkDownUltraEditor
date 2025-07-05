@@ -89,7 +89,10 @@ class PerformanceMonitor {
 
       const observer = new PerformanceObserver((list) => {
         for (const entry of list.getEntries()) {
-          if (entry.entryType === 'layout-shift' && !(entry as unknown as { hadRecentInput: boolean }).hadRecentInput) {
+          if (
+            entry.entryType === 'layout-shift' &&
+            !(entry as unknown as { hadRecentInput: boolean }).hadRecentInput
+          ) {
             clsValue += (entry as unknown as { value: number }).value;
             this.updateMetric('cls', clsValue);
           }
@@ -111,7 +114,10 @@ class PerformanceMonitor {
       const observer = new PerformanceObserver((list) => {
         for (const entry of list.getEntries()) {
           if (entry.entryType === 'first-input') {
-            this.updateMetric('fid', (entry as unknown as { processingStart: number }).processingStart - entry.startTime);
+            this.updateMetric(
+              'fid',
+              (entry as unknown as { processingStart: number }).processingStart - entry.startTime
+            );
           }
         }
       });

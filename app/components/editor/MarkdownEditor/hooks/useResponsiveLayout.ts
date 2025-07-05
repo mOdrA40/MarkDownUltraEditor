@@ -190,7 +190,7 @@ export const useResponsiveLayout = (): UseResponsiveLayoutReturn => {
     // Update responsive state based on breakpoints
     setResponsiveState({
       isMobile: width < 500,
-      isSmallTablet: width >= 500 && width <= 768, 
+      isSmallTablet: width >= 500 && width <= 768,
       isTablet: width >= 500 && width < 1024,
     });
   }, [getDeviceType]);

@@ -9,13 +9,13 @@ import ReactMarkdown from 'react-markdown';
 import rehypeHighlight from 'rehype-highlight';
 import remarkGfm from 'remark-gfm';
 import { generateHeaderStyles } from '@/utils/themeUtils';
-import { createMarkdownComponents } from './PreviewPane/components/MarkdownComponents';
-import { useHeadingCache } from './PreviewPane/hooks/useHeadingCache';
+import { createMarkdownComponents } from './components/MarkdownComponents';
+import { useHeadingCache } from './hooks/useHeadingCache';
 // Custom hooks dan utilities
-import { useHighlightJs } from './PreviewPane/hooks/useHighlightJs';
+import { useHighlightJs } from './hooks/useHighlightJs';
 // Types
-import type { PreviewPaneProps } from './PreviewPane/types/preview.types';
-import { getResponsiveOptions } from './PreviewPane/utils/languageUtils';
+import type { PreviewPaneProps } from './types/preview.types';
+import { getResponsiveOptions } from './utils/languageUtils';
 
 /**
  * Komponen utama PreviewPane dengan architecture yang bersih

@@ -40,7 +40,6 @@ export const TocItem: React.FC<TocItemProps> = ({ item, index, isActive, theme, 
       title={`Navigate to: ${item.text}`}
       aria-label={`Navigate to ${item.text} heading, level ${item.level}`}
       aria-current={isActive ? 'location' : undefined}
-
       tabIndex={isActive ? 0 : -1}
     >
       <span className="flex items-start gap-2 leading-tight">

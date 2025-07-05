@@ -174,9 +174,11 @@ export const OutlineNavigationPanel: React.FC<OutlineNavigationPanelProps> = ({
         activeId: activeId || null,
         enabled,
         offset,
-        onActiveChange: onActiveChange || (() => {
-          // No-op fallback
-        }),
+        onActiveChange:
+          onActiveChange ||
+          (() => {
+            // No-op fallback
+          }),
       }}
     >
       <div className={`outline-navigation-panel ${className}`}>

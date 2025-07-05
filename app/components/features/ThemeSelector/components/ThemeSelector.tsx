@@ -27,7 +27,11 @@ export const ThemeSelector: React.FC<ThemeSelectorProps> = React.memo(
     });
     return (
       <fieldset
-        className={cn('flex items-center border-0 p-0 m-0', compact ? 'space-x-1' : 'space-x-2', className)}
+        className={cn(
+          'flex items-center border-0 p-0 m-0',
+          compact ? 'space-x-1' : 'space-x-2',
+          className
+        )}
       >
         <legend className="sr-only">Theme selector</legend>
         {/* Icon Palette */}

@@ -54,7 +54,7 @@ export const useEditorState = (
     clearHistory,
   } = useUndoRedo(getInitialContent(), {
     maxHistorySize: 50,
-    debounceMs: 300, 
+    debounceMs: 300,
   });
 
   // File state management

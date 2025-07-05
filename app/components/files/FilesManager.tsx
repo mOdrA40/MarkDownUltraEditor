@@ -38,8 +38,8 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { Input } from '@/components/ui/input';
+import { useFileStorage } from '@/hooks/files';
 import { useResponsiveDetection } from '@/hooks/ui/useResponsive';
-import { useFileStorage } from '@/hooks/useFileStorage';
 import type { FileData } from '@/lib/supabase';
 import { FilesTable } from './FilesTable';
 import { FilesTableToolbar } from './FilesTableToolbar';
@@ -222,8 +222,8 @@ export const FilesManager: React.FC = () => {
                 isSmallTablet: responsive.windowWidth <= 640, // sm breakpoint
               }}
               onViewFiles={() => {
-        // Already on files page - no action needed
-      }}
+                // Already on files page - no action needed
+              }}
               onSettings={() => navigate('/settings')}
             />
           </div>

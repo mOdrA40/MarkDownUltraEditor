@@ -30,10 +30,14 @@ export const convertMarkdownToHTML = (
 
   try {
     // Render ReactMarkdown to HTML string using server-side rendering
-    const markdownElement = React.createElement(ReactMarkdown, {
-      remarkPlugins: [remarkGfm],
-      rehypePlugins: [rehypeHighlight],
-    }, markdown);
+    const markdownElement = React.createElement(
+      ReactMarkdown,
+      {
+        remarkPlugins: [remarkGfm],
+        rehypePlugins: [rehypeHighlight],
+      },
+      markdown
+    );
 
     const html = renderToStaticMarkup(markdownElement);
 

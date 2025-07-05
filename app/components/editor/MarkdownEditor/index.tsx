@@ -5,7 +5,7 @@
 
 import React from 'react';
 import { usePerformanceDebug, useRenderPerformance } from '@/hooks/core/usePerformance';
-import { useFileStorage } from '@/hooks/useFileStorage';
+import { useFileStorage } from '@/hooks/files';
 import { useWelcomeDialog, WelcomeDialog } from '../../auth/WelcomeDialog';
 import { type Theme, useTheme } from '../../features/ThemeSelector';
 import { MobileNav } from '../../layout/MobileNav';
@@ -122,7 +122,8 @@ export const MarkdownEditor: React.FC<MarkdownEditorProps> = ({
         if (textarea) {
           const start = textarea.selectionStart;
           const end = textarea.selectionEnd;
-          const newText = editor.markdown.substring(0, start) + text + editor.markdown.substring(end);
+          const newText =
+            editor.markdown.substring(0, start) + text + editor.markdown.substring(end);
           editorActions.setMarkdown(newText);
 
           // Set cursor position after inserted text

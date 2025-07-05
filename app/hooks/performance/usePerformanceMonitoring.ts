@@ -27,20 +27,20 @@ export function useRenderPerformance(componentName: string): PerformanceMetrics 
 
   // Track render start
   const renderStart = performance.now();
-  
+
   useEffect(() => {
     // Track render end
     const renderEnd = performance.now();
     const renderTime = renderEnd - renderStart;
-    
+
     renderCount.current += 1;
     renderTimes.current.push(renderTime);
-    
+
     // Keep only last 100 render times for average calculation
     if (renderTimes.current.length > 100) {
       renderTimes.current = renderTimes.current.slice(-100);
     }
-    
+
     // Log slow renders in development
     if (process.env.NODE_ENV === 'development' && renderTime > 16) {
       console.warn(`Slow render detected in ${componentName}: ${renderTime.toFixed(2)}ms`);
@@ -49,9 +49,8 @@ export function useRenderPerformance(componentName: string): PerformanceMetrics 
 
   return useDeepMemo(() => {
     const times = renderTimes.current;
-    const averageRenderTime = times.length > 0 
-      ? times.reduce((sum, time) => sum + time, 0) / times.length 
-      : 0;
+    const averageRenderTime =
+      times.length > 0 ? times.reduce((sum, time) => sum + time, 0) / times.length : 0;
 
     return {
       renderTime: renderStart - lastRenderStart.current,
@@ -150,42 +149,42 @@ export function useOperationTiming() {
 
   const startTiming = useCallback((operationName: string) => {
     const startTime = performance.now();
-    
+
     return () => {
       const endTime = performance.now();
       const duration = endTime - startTime;
-      
+
       const operationTimings = timings.current.get(operationName) || [];
       operationTimings.push(duration);
-      
+
       // Keep only last 50 timings
       if (operationTimings.length > 50) {
         operationTimings.splice(0, operationTimings.length - 50);
       }
-      
+
       timings.current.set(operationName, operationTimings);
-      
+
       // Log slow operations in development
       if (process.env.NODE_ENV === 'development' && duration > 100) {
         console.warn(`Slow operation detected: ${operationName} took ${duration.toFixed(2)}ms`);
       }
-      
+
       return duration;
     };
   }, []);
 
   const getOperationStats = useCallback((operationName: string) => {
     const operationTimings = timings.current.get(operationName) || [];
-    
+
     if (operationTimings.length === 0) {
       return null;
     }
-    
+
     const sum = operationTimings.reduce((a, b) => a + b, 0);
     const average = sum / operationTimings.length;
     const min = Math.min(...operationTimings);
     const max = Math.max(...operationTimings);
-    
+
     return {
       count: operationTimings.length,
       average,
@@ -212,27 +211,30 @@ export function usePerformanceBottleneckDetection() {
     slowOperations: [],
   });
 
-  const reportBottleneck = useCallback((type: 'render' | 'memory' | 'operation', details: string) => {
-    switch (type) {
-      case 'render':
-        bottlenecks.current.slowRenders.push(details);
-        break;
-      case 'memory':
-        bottlenecks.current.memoryLeaks.push(details);
-        break;
-      case 'operation':
-        bottlenecks.current.slowOperations.push(details);
-        break;
-    }
-
-    // Keep only last 20 bottlenecks per type
-    Object.keys(bottlenecks.current).forEach(key => {
-      const arr = bottlenecks.current[key as keyof typeof bottlenecks.current];
-      if (arr.length > 20) {
-        arr.splice(0, arr.length - 20);
+  const reportBottleneck = useCallback(
+    (type: 'render' | 'memory' | 'operation', details: string) => {
+      switch (type) {
+        case 'render':
+          bottlenecks.current.slowRenders.push(details);
+          break;
+        case 'memory':
+          bottlenecks.current.memoryLeaks.push(details);
+          break;
+        case 'operation':
+          bottlenecks.current.slowOperations.push(details);
+          break;
       }
-    });
-  }, []);
+
+      // Keep only last 20 bottlenecks per type
+      Object.keys(bottlenecks.current).forEach((key) => {
+        const arr = bottlenecks.current[key as keyof typeof bottlenecks.current];
+        if (arr.length > 20) {
+          arr.splice(0, arr.length - 20);
+        }
+      });
+    },
+    []
+  );
 
   const getBottlenecks = useCallback(() => {
     return { ...bottlenecks.current };
@@ -308,7 +310,7 @@ export function useCoreWebVitals() {
       const fcpObserver = new PerformanceObserver((list) => {
         const entries = list.getEntries();
         // biome-ignore lint/suspicious/noExplicitAny: PerformanceEntry types are not fully typed
-        const fcpEntry = entries.find(entry => entry.name === 'first-contentful-paint') as any;
+        const fcpEntry = entries.find((entry) => entry.name === 'first-contentful-paint') as any;
         if (fcpEntry) {
           vitals.current.FCP = fcpEntry.startTime;
         }

@@ -239,7 +239,11 @@ export const usePerformanceDebug = (enabled = process.env.NODE_ENV === 'developm
       });
       console.log('Performance Score:', score);
       if (memoryUsage) {
-        const memory = memoryUsage as { usedJSHeapSize: number; totalJSHeapSize: number; jsHeapSizeLimit: number };
+        const memory = memoryUsage as {
+          usedJSHeapSize: number;
+          totalJSHeapSize: number;
+          jsHeapSizeLimit: number;
+        };
         console.log('Memory Usage:', {
           used: `${(memory.usedJSHeapSize / 1024 / 1024).toFixed(2)} MB`,
           total: `${(memory.totalJSHeapSize / 1024 / 1024).toFixed(2)} MB`,

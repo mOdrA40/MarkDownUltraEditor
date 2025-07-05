@@ -19,12 +19,12 @@ export const createOptimizedQueryClient = () => {
         // Cache optimization
         staleTime: 5 * 60 * 1000, // 5 minutes - data considered fresh
         gcTime: 10 * 60 * 1000, // 10 minutes - garbage collection time
-        
+
         // Network optimization
         refetchOnWindowFocus: false, // Prevent unnecessary refetches
         refetchOnReconnect: 'always', // Always refetch on reconnect
         refetchOnMount: true, // Refetch on component mount
-        
+
         // Retry strategy - exponential backoff
         retry: (failureCount, error) => {
           // Don't retry on 4xx errors (client errors)
@@ -32,12 +32,12 @@ export const createOptimizedQueryClient = () => {
             const status = (error as { status: number }).status;
             if (status >= 400 && status < 500) return false;
           }
-          
+
           // Retry up to 3 times with exponential backoff
           return failureCount < 3;
         },
         retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 30000),
-        
+
         // Performance optimization
         notifyOnChangeProps: ['data', 'error', 'isLoading'], // Only notify on specific prop changes
       },
@@ -49,11 +49,11 @@ export const createOptimizedQueryClient = () => {
             const status = (error as { status: number }).status;
             if (status >= 400 && status < 500) return false;
           }
-          
+
           // Only retry once for mutations
           return failureCount < 1;
         },
-        
+
         // Mutation timeout
         networkMode: 'online', // Only run mutations when online
       },
@@ -78,21 +78,21 @@ export const queryKeys = {
     details: () => [...queryKeys.files.all, 'detail'] as const,
     detail: (id: string) => [...queryKeys.files.details(), id] as const,
   },
-  
+
   // Storage queries
   storage: {
     all: ['storage'] as const,
     info: (userId: string) => [...queryKeys.storage.all, 'info', userId] as const,
     usage: (userId: string) => [...queryKeys.storage.all, 'usage', userId] as const,
   },
-  
+
   // Templates queries
   templates: {
     all: ['templates'] as const,
     lists: () => [...queryKeys.templates.all, 'list'] as const,
     list: (category?: string) => [...queryKeys.templates.lists(), category] as const,
   },
-  
+
   // User queries
   user: {
     all: ['user'] as const,
@@ -107,18 +107,21 @@ export const queryKeys = {
 export const invalidateQueries = {
   files: {
     all: () => queryClient.invalidateQueries({ queryKey: queryKeys.files.all }),
-    list: (userId: string) => queryClient.invalidateQueries({ queryKey: queryKeys.files.list(userId) }),
+    list: (userId: string) =>
+      queryClient.invalidateQueries({ queryKey: queryKeys.files.list(userId) }),
     detail: (id: string) => queryClient.invalidateQueries({ queryKey: queryKeys.files.detail(id) }),
   },
-  
+
   storage: {
     all: () => queryClient.invalidateQueries({ queryKey: queryKeys.storage.all }),
-    info: (userId: string) => queryClient.invalidateQueries({ queryKey: queryKeys.storage.info(userId) }),
+    info: (userId: string) =>
+      queryClient.invalidateQueries({ queryKey: queryKeys.storage.info(userId) }),
   },
-  
+
   templates: {
     all: () => queryClient.invalidateQueries({ queryKey: queryKeys.templates.all }),
-    list: (category?: string) => queryClient.invalidateQueries({ queryKey: queryKeys.templates.list(category) }),
+    list: (category?: string) =>
+      queryClient.invalidateQueries({ queryKey: queryKeys.templates.list(category) }),
   },
 } as const;
 
@@ -134,7 +137,7 @@ export const prefetchQueries = {
       });
     },
   },
-  
+
   storage: {
     info: async (userId: string) => {
       await queryClient.prefetchQuery({

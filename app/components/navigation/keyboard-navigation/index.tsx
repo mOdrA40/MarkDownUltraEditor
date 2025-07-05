@@ -119,11 +119,7 @@ export const NavigableList: React.FC<NavigableListProps> = ({
   }, [handleKeyDown]);
 
   return (
-    <ul
-      ref={containerRef}
-      className={`navigable-list ${className}`}
-      data-toc-container
-    >
+    <ul ref={containerRef} className={`navigable-list ${className}`} data-toc-container>
       {items.map((item) => (
         <button
           type="button"

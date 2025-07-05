@@ -256,7 +256,9 @@ export function withPerformanceOptimization<P extends Record<string, unknown>>(
 /**
  * VirtualizedEditorSidebar - Enhanced sidebar with virtualized TOC for large documents
  */
-export const VirtualizedEditorSidebar = memo<EditorSidebarProps & { enableVirtualization?: boolean }>(
+export const VirtualizedEditorSidebar = memo<
+  EditorSidebarProps & { enableVirtualization?: boolean }
+>(
   ({ markdown, enableVirtualization = false, ...props }) => {
     // Extract TOC items from markdown
     const tocItems = useTOCItems(markdown);

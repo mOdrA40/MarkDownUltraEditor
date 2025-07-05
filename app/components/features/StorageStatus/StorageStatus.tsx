@@ -43,8 +43,7 @@ export const StorageStatus: React.FC<StorageStatusProps> = ({
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isCleaningUp, setIsCleaningUp] = useState(false);
 
-  const { storageInfo, isNearCapacity, isCritical, statusColor, statusText } =
-    useStorageStatus();
+  const { storageInfo, isNearCapacity, isCritical, statusColor, statusText } = useStorageStatus();
 
   const { triggerCleanup, refreshInfo } = useStorageMonitor();
 

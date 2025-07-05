@@ -234,7 +234,13 @@ const VirtualizedTemplateCard: React.FC<VirtualizedTemplateCardProps> = ({
             className="p-1.5 bg-background/80 backdrop-blur-sm border border-border rounded-md hover:bg-muted transition-colors"
             title="Preview"
           >
-            <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+            <svg
+              className="w-3 h-3"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+              aria-hidden="true"
+            >
               <path
                 strokeLinecap="round"
                 strokeLinejoin="round"
@@ -259,7 +265,13 @@ const VirtualizedTemplateCard: React.FC<VirtualizedTemplateCardProps> = ({
             className="p-1.5 bg-primary text-primary-foreground rounded-md hover:bg-primary/90 transition-colors"
             title="Use Template"
           >
-            <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+            <svg
+              className="w-3 h-3"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+              aria-hidden="true"
+            >
               <path
                 strokeLinecap="round"
                 strokeLinejoin="round"

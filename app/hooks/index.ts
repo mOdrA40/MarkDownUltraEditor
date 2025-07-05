@@ -7,6 +7,8 @@
 export * from './core';
 // Editor hooks
 export * from './editor';
+// Files hooks
+export * from './files';
 // Navigation hooks
 export * from './navigation';
 // Legacy aliases untuk backward compatibility

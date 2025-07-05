@@ -40,7 +40,7 @@ export const useCursorPosition = (
   options: UseCursorPositionOptions = {}
 ): UseCursorPositionReturn => {
   const { preservePosition = true, debounceMs = 0 } = options;
-  
+
   const preservedPosition = useRef<CursorPosition | null>(null);
   const isUpdating = useRef(false);
   const debounceTimer = useRef<NodeJS.Timeout>();
@@ -50,7 +50,7 @@ export const useCursorPosition = (
    */
   const getCursorPosition = useCallback((): CursorPosition | null => {
     if (!textareaRef.current) return null;
-    
+
     const textarea = textareaRef.current;
     return {
       start: textarea.selectionStart,
@@ -64,10 +64,10 @@ export const useCursorPosition = (
   const setCursorPosition = useCallback(
     (start: number, end?: number) => {
       if (!textareaRef.current) return;
-      
+
       const textarea = textareaRef.current;
       const endPos = end ?? start;
-      
+
       // Use requestAnimationFrame to ensure DOM is ready
       requestAnimationFrame(() => {
         textarea.setSelectionRange(start, endPos);
@@ -82,7 +82,7 @@ export const useCursorPosition = (
    */
   const preserveCursorPosition = useCallback(() => {
     if (!preservePosition) return;
-    
+
     const position = getCursorPosition();
     if (position) {
       preservedPosition.current = position;
@@ -94,7 +94,7 @@ export const useCursorPosition = (
    */
   const restoreCursorPosition = useCallback(() => {
     if (!preservePosition || !preservedPosition.current) return;
-    
+
     const { start, end } = preservedPosition.current;
     setCursorPosition(start, end);
     preservedPosition.current = null;
@@ -106,39 +106,39 @@ export const useCursorPosition = (
   const insertTextAtCursor = useCallback(
     (text: string, selectInserted = false) => {
       if (!textareaRef.current || isUpdating.current) return;
-      
+
       const textarea = textareaRef.current;
       const start = textarea.selectionStart;
       const end = textarea.selectionEnd;
       const value = textarea.value;
-      
+
       // Mark as updating to prevent race conditions
       isUpdating.current = true;
-      
+
       // Calculate new value and cursor position
       const newValue = value.substring(0, start) + text + value.substring(end);
       const newCursorStart = start + text.length;
-      
+
       // Update textarea value directly first for immediate feedback
       textarea.value = newValue;
-      
+
       // Set cursor position immediately
       if (selectInserted) {
         textarea.setSelectionRange(start, newCursorStart);
       } else {
         textarea.setSelectionRange(newCursorStart, newCursorStart);
       }
-      
+
       // Clear existing debounce timer
       if (debounceTimer.current) {
         clearTimeout(debounceTimer.current);
       }
-      
+
       // Debounced state update to prevent excessive re-renders
       const updateState = () => {
         onChange(newValue);
         isUpdating.current = false;
-        
+
         // Ensure cursor position is maintained after state update
         requestAnimationFrame(() => {
           if (textareaRef.current) {
@@ -150,13 +150,13 @@ export const useCursorPosition = (
           }
         });
       };
-      
+
       if (debounceMs > 0) {
         debounceTimer.current = setTimeout(updateState, debounceMs);
       } else {
         updateState();
       }
-      
+
       // Trigger input event for other listeners
       textarea.dispatchEvent(new Event('input', { bubbles: true }));
     },

@@ -7,30 +7,7 @@ import { useVirtualizer } from '@tanstack/react-virtual';
 import { ChevronRight, Hash } from 'lucide-react';
 import React, { useMemo, useRef } from 'react';
 import { cn } from '@/lib/utils';
-
-/**
- * Table of Contents item interface
- */
-interface TOCItem {
-  id: string;
-  text: string;
-  level: number;
-  line: number;
-  isActive?: boolean;
-}
-
-/**
- * Props interface for VirtualizedTableOfContents
- */
-interface VirtualizedTableOfContentsProps {
-  items: TOCItem[];
-  activeId?: string;
-  onItemClick: (item: TOCItem) => void;
-  className?: string;
-  itemHeight?: number;
-  overscan?: number;
-  maxHeight?: number;
-}
+import type { TOCItem, VirtualizedTableOfContentsProps } from './types';
 
 /**
  * VirtualizedTableOfContents component for handling large document outlines
@@ -86,13 +63,12 @@ export const VirtualizedTableOfContents: React.FC<VirtualizedTableOfContentsProp
     }
   }, [activeId, processedItems, virtualizer]);
 
+  // Early return if no items
   if (processedItems.length === 0) {
     return (
       <div className={cn('flex items-center justify-center p-4 text-muted-foreground', className)}>
-        <div className="text-center">
-          <Hash className="w-8 h-8 mx-auto mb-2 opacity-50" />
-          <p className="text-sm">No headings found</p>
-        </div>
+        <Hash className="mr-2 h-4 w-4" />
+        No headings found
       </div>
     );
   }
@@ -160,34 +136,31 @@ const VirtualizedTOCItem: React.FC<VirtualizedTOCItemProps> = ({ virtualItem, it
         type="button"
         onClick={() => onClick(item)}
         className={cn(
-          'w-full text-left px-2 py-1 text-sm transition-all duration-150 hover:bg-muted/50 group flex items-center',
-          item.isActive && 'bg-primary/10 text-primary border-r-2 border-primary'
+          'w-full text-left px-2 py-1 text-sm transition-colors duration-150',
+          'hover:bg-accent hover:text-accent-foreground',
+          'focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2',
+          'flex items-center gap-2',
+          item.isActive && 'bg-accent text-accent-foreground font-medium'
         )}
         style={{ paddingLeft: `${8 + indentPx}px` }}
         title={`${item.text} (Line ${item.line})`}
       >
         {/* Hierarchy indicator */}
-        {indentLevel > 0 && <ChevronRight className="w-3 h-3 mr-1 opacity-40 flex-shrink-0" />}
+        {item.level > 1 && (
+          <ChevronRight
+            className="h-3 w-3 text-muted-foreground flex-shrink-0"
+            style={{ marginLeft: `${Math.max(0, (item.level - 2) * 8)}px` }}
+          />
+        )}
 
         {/* Heading level indicator */}
-        <span
-          className={cn(
-            'inline-flex items-center justify-center w-4 h-4 mr-2 text-xs rounded flex-shrink-0',
-            item.isActive
-              ? 'bg-primary text-primary-foreground'
-              : 'bg-muted text-muted-foreground group-hover:bg-muted-foreground/20'
-          )}
-        >
-          {item.level}
-        </span>
+        <Hash className="h-3 w-3 text-muted-foreground flex-shrink-0" />
 
         {/* Heading text */}
         <span className="truncate flex-1 min-w-0">{item.text}</span>
 
         {/* Line number */}
-        <span className="text-xs text-muted-foreground ml-2 opacity-0 group-hover:opacity-100 transition-opacity flex-shrink-0">
-          {item.line}
-        </span>
+        <span className="text-xs text-muted-foreground flex-shrink-0 ml-auto">{item.line}</span>
       </button>
     </div>
   );

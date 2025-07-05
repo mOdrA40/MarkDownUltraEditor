@@ -172,11 +172,9 @@ const VirtualizedFileItem: React.FC<VirtualizedFileItemProps> = ({
                   </svg>
                 </div>
               </div>
-              
+
               <div className="flex-1 min-w-0">
-                <p className="text-sm font-medium text-foreground truncate">
-                  {file.title}
-                </p>
+                <p className="text-sm font-medium text-foreground truncate">{file.title}</p>
                 <div className="flex items-center space-x-4 mt-1">
                   <p className="text-xs text-muted-foreground">
                     {file.fileSize ? formatFileSize(file.fileSize) : '-'}
@@ -218,7 +216,13 @@ const VirtualizedFileItem: React.FC<VirtualizedFileItemProps> = ({
               className="p-2 text-muted-foreground hover:text-foreground hover:bg-muted rounded-md transition-colors"
               title="Duplicate"
             >
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+              <svg
+                className="w-4 h-4"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+                aria-hidden="true"
+              >
                 <path
                   strokeLinecap="round"
                   strokeLinejoin="round"
@@ -227,7 +231,7 @@ const VirtualizedFileItem: React.FC<VirtualizedFileItemProps> = ({
                 />
               </svg>
             </button>
-            
+
             <button
               type="button"
               onClick={(e) => {
@@ -237,7 +241,13 @@ const VirtualizedFileItem: React.FC<VirtualizedFileItemProps> = ({
               className="p-2 text-muted-foreground hover:text-foreground hover:bg-muted rounded-md transition-colors"
               title="Export"
             >
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+              <svg
+                className="w-4 h-4"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+                aria-hidden="true"
+              >
                 <path
                   strokeLinecap="round"
                   strokeLinejoin="round"
@@ -246,7 +256,7 @@ const VirtualizedFileItem: React.FC<VirtualizedFileItemProps> = ({
                 />
               </svg>
             </button>
-            
+
             <button
               type="button"
               onClick={(e) => {
@@ -256,7 +266,13 @@ const VirtualizedFileItem: React.FC<VirtualizedFileItemProps> = ({
               className="p-2 text-muted-foreground hover:text-destructive hover:bg-destructive/10 rounded-md transition-colors"
               title="Delete"
             >
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+              <svg
+                className="w-4 h-4"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+                aria-hidden="true"
+              >
                 <path
                   strokeLinecap="round"
                   strokeLinejoin="round"
