@@ -462,6 +462,51 @@ html.dark body {
   color: #7c3aed !important;
 }
 
+/* ===== BADGE STYLING WITH THEME COLORS ===== */
+
+/* Cloud and Local storage badges */
+.theme-ocean [data-badge="cloud"],
+.theme-ocean [data-badge="local"] {
+  background-color: rgba(224, 242, 254, 0.9) !important; /* Ocean surface */
+  color: #0c4a6e !important; /* Ocean text */
+  border-color: rgba(2, 132, 199, 0.3) !important; /* Ocean accent */
+}
+
+.theme-forest [data-badge="cloud"],
+.theme-forest [data-badge="local"] {
+  background-color: rgba(220, 252, 231, 0.9) !important; /* Forest surface */
+  color: #14532d !important; /* Forest text */
+  border-color: rgba(16, 185, 129, 0.3) !important; /* Forest accent */
+}
+
+.theme-sunset [data-badge="cloud"],
+.theme-sunset [data-badge="local"] {
+  background-color: rgba(254, 215, 170, 0.9) !important; /* Sunset surface */
+  color: #9a3412 !important; /* Sunset text */
+  border-color: rgba(249, 115, 22, 0.3) !important; /* Sunset accent */
+}
+
+.theme-purple [data-badge="cloud"],
+.theme-purple [data-badge="local"] {
+  background-color: rgba(233, 213, 255, 0.9) !important; /* Purple surface */
+  color: #581c87 !important; /* Purple text */
+  border-color: rgba(168, 85, 247, 0.3) !important; /* Purple accent */
+}
+
+.theme-rose [data-badge="cloud"],
+.theme-rose [data-badge="local"] {
+  background-color: rgba(254, 205, 211, 0.9) !important; /* Rose surface */
+  color: #881337 !important; /* Rose text */
+  border-color: rgba(244, 63, 94, 0.3) !important; /* Rose accent */
+}
+
+.dark [data-badge="cloud"],
+.dark [data-badge="local"] {
+  background-color: rgba(30, 41, 59, 0.9) !important; /* Dark surface */
+  color: hsl(210 40% 98%) !important; /* Dark text */
+  border-color: rgba(139, 92, 246, 0.3) !important; /* Dark accent */
+}
+
 .theme-rose .bg-muted {
   background-color: #fecdd3 !important; /* Rose muted */
   color: #be185d !important;

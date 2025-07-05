@@ -6,6 +6,8 @@
 import { SignInButton, UserButton, useAuth, useUser } from '@clerk/react-router';
 import { Cloud, Files, HardDrive, Settings, User } from 'lucide-react';
 import React from 'react';
+import { useLocation } from 'react-router';
+import { useTheme } from '@/components/features/ThemeSelector';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import {
@@ -45,6 +47,23 @@ export const AuthButtons: React.FC<AuthButtonsProps> = ({
   const { isSignedIn, isLoaded } = useAuth();
   const { user } = useUser();
   const { isMobile, isSmallTablet } = responsive;
+  const location = useLocation();
+  const { currentTheme } = useTheme();
+
+  // Determine current page for navigation logic
+  const isFilesPage = location.pathname === '/files';
+  const isSettingsPage = location.pathname === '/settings';
+
+  // Get theme-aware badge styles
+  const getCloudBadgeStyles = () => {
+    if (!currentTheme) return {};
+
+    return {
+      backgroundColor: currentTheme.surface || currentTheme.background,
+      color: currentTheme.text,
+      borderColor: currentTheme.accent || currentTheme.primary,
+    };
+  };
 
   // Debug log untuk memastikan Clerk sudah loaded
   React.useEffect(() => {
@@ -64,23 +83,54 @@ export const AuthButtons: React.FC<AuthButtonsProps> = ({
   if (isSignedIn && user) {
     return (
       <div className={`flex items-center gap-2 ${className}`}>
-        {/* Storage indicator */}
-        <Badge variant="secondary" className="hidden sm:flex items-center gap-1 text-xs">
+        {/* Storage indicator with theme colors */}
+        <Badge
+          variant="secondary"
+          className="hidden sm:flex items-center gap-1 text-xs border"
+          style={getCloudBadgeStyles()}
+          data-badge="cloud"
+        >
           <Cloud className="w-3 h-3" />
           Cloud
         </Badge>
 
-        {/* Files button - hidden on mobile */}
-        {!isMobile && onViewFiles && (
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={onViewFiles}
-            className="hidden md:flex items-center gap-2"
-          >
-            <Files className="w-4 h-4" />
-            Files
-          </Button>
+        {/* Navigation button - shows opposite of current page */}
+        {!isMobile && (
+          <>
+            {isFilesPage && onSettings && (
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={onSettings}
+                className="hidden md:flex items-center gap-2"
+              >
+                <Settings className="w-4 h-4" />
+                Settings
+              </Button>
+            )}
+            {isSettingsPage && onViewFiles && (
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={onViewFiles}
+                className="hidden md:flex items-center gap-2"
+              >
+                <Files className="w-4 h-4" />
+                Files
+              </Button>
+            )}
+            {!isFilesPage && !isSettingsPage && onViewFiles && (
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={onViewFiles}
+                className="hidden md:flex items-center gap-2"
+              >
+                <Files className="w-4 h-4" />
+                Files
+              </Button>
+            )}
+          </>
         )}
 
         {/* User menu */}
@@ -177,8 +227,13 @@ export const AuthButtons: React.FC<AuthButtonsProps> = ({
   // Unauthenticated user UI
   return (
     <div className={`flex items-center gap-2 ${className}`}>
-      {/* Storage indicator for local storage */}
-      <Badge variant="outline" className="hidden sm:flex items-center gap-1 text-xs">
+      {/* Storage indicator for local storage with theme colors */}
+      <Badge
+        variant="outline"
+        className="hidden sm:flex items-center gap-1 text-xs"
+        style={getCloudBadgeStyles()}
+        data-badge="local"
+      >
         <HardDrive className="w-3 h-3" />
         Local
       </Badge>
