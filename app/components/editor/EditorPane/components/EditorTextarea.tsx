@@ -1,4 +1,5 @@
 import type React from 'react';
+import { useCallback } from 'react';
 import { Textarea } from '@/components/ui/textarea';
 import type { EditorStyles } from '../types/editorPane.types';
 import { generatePaddingStyles } from '../utils/editorStyles';
@@ -20,10 +21,12 @@ interface EditorTextareaProps {
   wordWrap: boolean;
   /** Editor styles */
   editorStyles: EditorStyles;
+  /** Auto-resize function */
+  onAutoResize?: () => void;
 }
 
 /**
- * Core editor textarea component
+ * Core editor textarea component - simplified for better performance
  */
 export const EditorTextarea: React.FC<EditorTextareaProps> = ({
   textareaRef,
@@ -34,14 +37,27 @@ export const EditorTextarea: React.FC<EditorTextareaProps> = ({
   typewriterMode,
   wordWrap,
   editorStyles,
+  onAutoResize,
 }) => {
+  // Simple change handler - auto-resize is handled by useSimpleEditor throttling
+  const handleChange = useCallback(
+    (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+      onChange(e.target.value);
+      // Auto-resize is already throttled in useSimpleEditor, call directly
+      if (onAutoResize) {
+        onAutoResize();
+      }
+    },
+    [onChange, onAutoResize]
+  );
+
   const paddingStyles = generatePaddingStyles(focusMode);
 
   return (
     <Textarea
       ref={textareaRef}
       value={markdown}
-      onChange={(e) => onChange(e.target.value)}
+      onChange={handleChange}
       onKeyDown={onKeyDown}
       placeholder="Start writing your markdown here..."
       className={`

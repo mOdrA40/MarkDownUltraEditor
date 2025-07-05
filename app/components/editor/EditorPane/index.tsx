@@ -4,13 +4,14 @@
  */
 
 import type React from 'react';
+import { useEffect } from 'react';
 import { EditorHeader } from './components/EditorHeader';
 import { EditorTextarea } from './components/EditorTextarea';
 import { FocusModeOverlay } from './components/FocusModeOverlay';
 import { LineNumbers } from './components/LineNumbers';
-import { useAutoResize } from './hooks/useAutoResize';
 import { useEditorState } from './hooks/useEditorState';
 import { useResponsiveEditor } from './hooks/useResponsiveEditor';
+import { useSimpleEditor } from './hooks/useSimpleEditor';
 import { useTypewriterMode } from './hooks/useTypewriterMode';
 import type { EditorPaneProps } from './types/editorPane.types';
 import { generateEditorStyles } from './utils/editorStyles';
@@ -32,15 +33,31 @@ export const EditorPane: React.FC<EditorPaneProps> = ({
   theme,
   isMobile = false,
   isTablet = false,
+  onInsertTextAtCursor,
 }) => {
   // State management
   const { vimModeState, textareaRef, vim } = useEditorState(markdown, onChange, vimMode);
 
+  // Ultra-simple editor without complex state management
+  const { insertTextAtCursor, autoResize } = useSimpleEditor(textareaRef, {
+    minHeight: 100,
+    maxHeight: 1000,
+  });
+
+  // Pass insertTextAtCursor to parent component
+  useEffect(() => {
+    if (onInsertTextAtCursor) {
+      onInsertTextAtCursor(insertTextAtCursor);
+    }
+  }, [onInsertTextAtCursor, insertTextAtCursor]);
+
+  // Auto-resize on mount only - changes are handled by textarea onChange
+  useEffect(() => {
+    autoResize();
+  }, [autoResize]);
+
   // Responsive configuration
   const responsiveConfig = useResponsiveEditor(fontSize, lineHeight, isMobile, isTablet);
-
-  // Auto-resize functionality
-  useAutoResize(textareaRef, markdown);
 
   // Typewriter mode functionality
   useTypewriterMode({
@@ -87,6 +104,7 @@ export const EditorPane: React.FC<EditorPaneProps> = ({
           typewriterMode={typewriterMode}
           wordWrap={wordWrap}
           editorStyles={editorStyles}
+          onAutoResize={autoResize}
         />
 
         {/* Line Numbers Overlay */}

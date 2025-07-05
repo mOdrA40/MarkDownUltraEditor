@@ -31,6 +31,8 @@ export interface EditorPaneProps {
   isMobile?: boolean;
   /** Tablet device flag */
   isTablet?: boolean;
+  /** Callback to get insertTextAtCursor function */
+  onInsertTextAtCursor?: (insertFn: (text: string, selectInserted?: boolean) => void) => void;
 }
 
 /**

@@ -106,24 +106,42 @@ export const MarkdownEditor: React.FC<MarkdownEditorProps> = ({
     }
   }, [responsive.isMobile, responsive.isTablet]);
 
-  // Text insertion helper
+  // Text insertion helper - now uses the robust cursor position management
+  const [insertTextAtCursor, setInsertTextAtCursor] = React.useState<
+    ((text: string, selectInserted?: boolean) => void) | null
+  >(null);
+
   const insertText = React.useCallback(
     (text: string) => {
-      const textarea = document.querySelector('textarea');
-      if (textarea) {
-        const start = textarea.selectionStart;
-        const end = textarea.selectionEnd;
-        const newText = editor.markdown.substring(0, start) + text + editor.markdown.substring(end);
-        editorActions.setMarkdown(newText);
+      if (insertTextAtCursor) {
+        // Use the robust insertTextAtCursor from EditorPane
+        insertTextAtCursor(text, false);
+      } else {
+        // Fallback to old method if insertTextAtCursor is not available yet
+        const textarea = document.querySelector('textarea');
+        if (textarea) {
+          const start = textarea.selectionStart;
+          const end = textarea.selectionEnd;
+          const newText = editor.markdown.substring(0, start) + text + editor.markdown.substring(end);
+          editorActions.setMarkdown(newText);
 
-        // Set cursor position after inserted text
-        setTimeout(() => {
-          textarea.focus();
-          textarea.setSelectionRange(start + text.length, start + text.length);
-        }, 0);
+          // Set cursor position after inserted text
+          setTimeout(() => {
+            textarea.focus();
+            textarea.setSelectionRange(start + text.length, start + text.length);
+          }, 0);
+        }
       }
     },
-    [editor.markdown, editorActions]
+    [insertTextAtCursor, editor.markdown, editorActions]
+  );
+
+  // Callback to receive insertTextAtCursor from EditorPane
+  const handleInsertTextAtCursor = React.useCallback(
+    (insertFn: (text: string, selectInserted?: boolean) => void) => {
+      setInsertTextAtCursor(() => insertFn);
+    },
+    []
   );
 
   // Template loading helper
@@ -312,6 +330,7 @@ export const MarkdownEditor: React.FC<MarkdownEditorProps> = ({
               settings={settings}
               showPreview={showPreview}
               responsive={responsive}
+              onInsertTextAtCursor={handleInsertTextAtCursor}
             />
           </div>
 

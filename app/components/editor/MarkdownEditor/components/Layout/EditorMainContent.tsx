@@ -28,6 +28,9 @@ export interface EditorMainContentProps {
 
   // Responsive
   responsive: ResponsiveState;
+
+  // Text insertion
+  onInsertTextAtCursor?: (insertFn: (text: string, selectInserted?: boolean) => void) => void;
 }
 
 /**
@@ -40,6 +43,7 @@ export const EditorMainContent: React.FC<EditorMainContentProps> = ({
   settings,
   showPreview,
   responsive,
+  onInsertTextAtCursor,
 }) => {
   const { isMobile, isTablet, isSmallTablet } = responsive;
   const { zenMode } = settings;
@@ -69,6 +73,7 @@ export const EditorMainContent: React.FC<EditorMainContentProps> = ({
           theme={theme}
           isMobile={isMobile}
           isTablet={isTablet}
+          onInsertTextAtCursor={onInsertTextAtCursor}
         />
       </div>
 

@@ -89,6 +89,7 @@ export const MemoizedEditorMainContent = memo<EditorMainContentProps>(
       prevProps.responsive.isMobile === nextProps.responsive.isMobile &&
       prevProps.responsive.isTablet === nextProps.responsive.isTablet &&
       prevProps.responsive.isSmallTablet === nextProps.responsive.isSmallTablet
+      // Note: onInsertTextAtCursor is intentionally not compared as it's a function that may change
     );
   }
 );

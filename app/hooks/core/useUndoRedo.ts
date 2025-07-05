@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useRef, useState } from 'react';
 
 interface HistoryState {
   value: string;
@@ -24,84 +24,90 @@ export const useUndoRedo = (
   initialValue = '',
   options: UseUndoRedoOptions = {}
 ): UseUndoRedoReturn => {
-  const { maxHistorySize = 50, debounceMs = 1000 } = options; // Increased debounce time
+  const { maxHistorySize = 50, debounceMs = 200 } = options; // Increased for better stability
 
-  // Simplified state management
-  const [history, setHistory] = useState<HistoryState[]>([
-    { value: initialValue, timestamp: Date.now() },
-  ]);
-  const [currentIndex, setCurrentIndex] = useState(0);
-  const [currentValue, setCurrentValue] = useState(initialValue);
+  // Optimized state management - single source of truth
+  const [state, setState] = useState(() => ({
+    history: [{ value: initialValue, timestamp: Date.now() }] as HistoryState[],
+    currentIndex: 0,
+    currentValue: initialValue,
+  }));
 
-  // Debounce timer and pending value
+  // Control flags
   const debounceTimer = useRef<NodeJS.Timeout | null>(null);
   const isUndoRedoOperation = useRef(false);
+  const lastHistoryValue = useRef(initialValue);
 
-  // Add new state to history - simplified and stable
+  // Add new state to history - atomic operation
   const addToHistory = useCallback(
     (value: string) => {
-      if (isUndoRedoOperation.current) {
-        return; // Skip adding to history during undo/redo operations
+      if (isUndoRedoOperation.current || value === lastHistoryValue.current) {
+        return; // Skip if undo/redo operation or value hasn't changed
       }
 
-      const newState: HistoryState = {
-        value,
-        timestamp: Date.now(),
-      };
-
-      setHistory((prevHistory) => {
+      setState((prevState) => {
         // Remove any future history if we're not at the end
-        const newHistory = prevHistory.slice(0, currentIndex + 1);
+        const newHistory = prevState.history.slice(0, prevState.currentIndex + 1);
 
         // Add new state
-        newHistory.push(newState);
+        newHistory.push({
+          value,
+          timestamp: Date.now(),
+        });
 
         // Limit history size
         const limitedHistory =
           newHistory.length > maxHistorySize ? newHistory.slice(-maxHistorySize) : newHistory;
 
-        return limitedHistory;
-      });
+        const newIndex = limitedHistory.length - 1;
+        lastHistoryValue.current = value;
 
-      setCurrentIndex((prevIndex) => {
-        const newIndex = Math.min(prevIndex + 1, maxHistorySize - 1);
-        return newIndex;
+        return {
+          history: limitedHistory,
+          currentIndex: newIndex,
+          currentValue: value,
+        };
       });
     },
-    [currentIndex, maxHistorySize]
+    [maxHistorySize]
   );
 
-  // Set value with debouncing - simplified and stable
+  // Set value with immediate UI update and debounced history
   const setValue = useCallback(
     (newValue: string) => {
       if (isUndoRedoOperation.current) {
-        // During undo/redo, just update current value without adding to history
-        setCurrentValue(newValue);
+        return; // Ignore setValue during undo/redo operations
+      }
+
+      // Skip if value hasn't actually changed
+      if (newValue === state.currentValue) {
         return;
       }
 
-      // Update current value immediately for UI responsiveness
-      setCurrentValue(newValue);
+      // Update current value immediately for instant UI response
+      setState((prevState) => ({
+        ...prevState,
+        currentValue: newValue,
+      }));
 
       // Clear existing timer
       if (debounceTimer.current) {
         clearTimeout(debounceTimer.current);
       }
 
-      // Debounce adding to history
+      // Debounce adding to history to prevent excessive history entries
       debounceTimer.current = setTimeout(() => {
-        const currentHistoryValue = history[currentIndex]?.value;
-        if (newValue !== currentHistoryValue) {
+        if (!isUndoRedoOperation.current) {
           addToHistory(newValue);
         }
       }, debounceMs);
     },
-    [addToHistory, debounceMs, history, currentIndex]
+    [state.currentValue, addToHistory, debounceMs]
   );
 
-  // Undo function - simplified and stable
+  // Undo function - atomic operation
   const undo = useCallback(() => {
-    if (currentIndex <= 0) return;
+    if (state.currentIndex <= 0) return;
 
     // Clear any pending debounced changes
     if (debounceTimer.current) {
@@ -110,19 +116,26 @@ export const useUndoRedo = (
     }
 
     isUndoRedoOperation.current = true;
-    const newIndex = currentIndex - 1;
-    setCurrentIndex(newIndex);
-    setCurrentValue(history[newIndex]?.value || '');
+    const newIndex = state.currentIndex - 1;
+    const newValue = state.history[newIndex]?.value || '';
 
-    // Reset flag after a short delay
+    setState((prevState) => ({
+      ...prevState,
+      currentIndex: newIndex,
+      currentValue: newValue,
+    }));
+
+    lastHistoryValue.current = newValue;
+
+    // Reset flag immediately - no delay needed
     setTimeout(() => {
       isUndoRedoOperation.current = false;
-    }, 100);
-  }, [currentIndex, history]);
+    }, 0);
+  }, [state.currentIndex, state.history]);
 
-  // Redo function - simplified and stable
+  // Redo function - atomic operation
   const redo = useCallback(() => {
-    if (currentIndex >= history.length - 1) return;
+    if (state.currentIndex >= state.history.length - 1) return;
 
     // Clear any pending debounced changes
     if (debounceTimer.current) {
@@ -131,17 +144,24 @@ export const useUndoRedo = (
     }
 
     isUndoRedoOperation.current = true;
-    const newIndex = currentIndex + 1;
-    setCurrentIndex(newIndex);
-    setCurrentValue(history[newIndex]?.value || '');
+    const newIndex = state.currentIndex + 1;
+    const newValue = state.history[newIndex]?.value || '';
 
-    // Reset flag after a short delay
+    setState((prevState) => ({
+      ...prevState,
+      currentIndex: newIndex,
+      currentValue: newValue,
+    }));
+
+    lastHistoryValue.current = newValue;
+
+    // Reset flag immediately - no delay needed
     setTimeout(() => {
       isUndoRedoOperation.current = false;
-    }, 100);
-  }, [currentIndex, history]);
+    }, 0);
+  }, [state.currentIndex, state.history]);
 
-  // Clear history - simplified and stable
+  // Clear history - atomic operation
   const clearHistory = useCallback(
     (newValue?: string) => {
       if (debounceTimer.current) {
@@ -149,30 +169,25 @@ export const useUndoRedo = (
         debounceTimer.current = null;
       }
 
-      const valueToUse = newValue !== undefined ? newValue : currentValue;
-      const newHistory = [{ value: valueToUse, timestamp: Date.now() }];
-      setHistory(newHistory);
-      setCurrentIndex(0);
+      const valueToUse = newValue !== undefined ? newValue : state.currentValue;
+
+      setState({
+        history: [{ value: valueToUse, timestamp: Date.now() }],
+        currentIndex: 0,
+        currentValue: valueToUse,
+      });
+
+      lastHistoryValue.current = valueToUse;
     },
-    [currentValue]
+    [state.currentValue]
   );
 
-  // Can undo/redo flags - stable calculations
-  const canUndo = currentIndex > 0;
-  const canRedo = currentIndex < history.length - 1;
-
-  // Effect to sync current value with history when index changes
-  useEffect(() => {
-    if (!isUndoRedoOperation.current) {
-      const historyValue = history[currentIndex]?.value;
-      if (historyValue !== undefined && historyValue !== currentValue) {
-        setCurrentValue(historyValue);
-      }
-    }
-  }, [currentIndex, history, currentValue]);
+  // Can undo/redo flags - derived from state
+  const canUndo = state.currentIndex > 0;
+  const canRedo = state.currentIndex < state.history.length - 1;
 
   return {
-    value: currentValue,
+    value: state.currentValue,
     setValue,
     undo,
     redo,
