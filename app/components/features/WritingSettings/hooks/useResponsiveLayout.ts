@@ -145,36 +145,5 @@ export const useWindowDimensions = (debounceMs = 150) => {
   return dimensions;
 };
 
-/**
- * Hook untuk media query matching
- * @param query - CSS media query string
- * @returns True jika media query match
- */
-export const useMediaQuery = (query: string): boolean => {
-  const [matches, setMatches] = useState(() => {
-    if (typeof window === 'undefined') return false;
-    return window.matchMedia(query).matches;
-  });
-
-  useEffect(() => {
-    if (typeof window === 'undefined') return;
-
-    const mediaQuery = window.matchMedia(query);
-    const handleChange = (e: MediaQueryListEvent) => {
-      setMatches(e.matches);
-    };
-
-    // Initial check
-    setMatches(mediaQuery.matches);
-
-    // Add listener
-    mediaQuery.addEventListener('change', handleChange);
-
-    // Cleanup
-    return () => {
-      mediaQuery.removeEventListener('change', handleChange);
-    };
-  }, [query]);
-
-  return matches;
-};
+// useMediaQuery hook moved to app/hooks/useMediaQuery.ts to avoid duplication
+// Import from there: import { useMediaQuery } from '~/hooks/useMediaQuery';

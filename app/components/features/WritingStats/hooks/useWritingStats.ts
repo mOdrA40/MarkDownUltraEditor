@@ -22,12 +22,13 @@ import {
   getStatsConfig,
 } from '../utils/stats.utils';
 
+// Export shared useMediaQuery hook
+export { useMediaQuery } from '~/hooks/useMediaQuery';
 // Re-export responsive hooks untuk convenience
 export {
   useIsDesktop,
   useIsMobile,
   useIsTablet,
-  useMediaQuery,
   useOrientation,
   useResponsiveDetection,
   useWindowDimensions,

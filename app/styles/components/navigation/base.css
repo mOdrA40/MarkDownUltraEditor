@@ -5,12 +5,7 @@
  * @author Axel Modra
  */
 
-/* ===== SMOOTH SCROLLING ===== */
-
-/* Smooth scrolling untuk seluruh dokumen */
-html {
-  scroll-behavior: smooth;
-}
+/* ===== HEADING SCROLL MARGIN ===== */
 
 /* Scroll margin untuk headings agar tidak tertutup header */
 h1, h2, h3, h4, h5, h6 {
@@ -131,30 +126,8 @@ h1, h2, h3, h4, h5, h6 {
 
 /* ===== CUSTOM SCROLLBAR ===== */
 
-/* Custom scrollbar untuk navigation areas */
+/* Navigation areas menggunakan scrollbar-navigation utility class */
 [data-toc-container] .scroll-area,
 [data-outline-container] .scroll-area {
-  scrollbar-width: thin;
-  scrollbar-color: rgba(156, 163, 175, 0.5) transparent;
-}
-
-[data-toc-container] .scroll-area::-webkit-scrollbar,
-[data-outline-container] .scroll-area::-webkit-scrollbar {
-  width: 6px;
-}
-
-[data-toc-container] .scroll-area::-webkit-scrollbar-track,
-[data-outline-container] .scroll-area::-webkit-scrollbar-track {
-  background: transparent;
-}
-
-[data-toc-container] .scroll-area::-webkit-scrollbar-thumb,
-[data-outline-container] .scroll-area::-webkit-scrollbar-thumb {
-  background-color: rgba(156, 163, 175, 0.5);
-  border-radius: 3px;
-}
-
-[data-toc-container] .scroll-area::-webkit-scrollbar-thumb:hover,
-[data-outline-container] .scroll-area::-webkit-scrollbar-thumb:hover {
-  background-color: rgba(156, 163, 175, 0.7);
+  /* Scrollbar styling handled by .scrollbar-navigation utility class */
 }

@@ -1,0 +1,189 @@
+/**
+ * Scrollbar Utilities
+ * Reusable scrollbar styles untuk berbagai komponen
+ * 
+ * @author Axel Modra
+ */
+
+/* ===== BASE SCROLLBAR STYLES ===== */
+
+/* Thin scrollbar untuk container umum */
+.scrollbar-thin {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(0, 0, 0, 0.1) transparent;
+}
+
+.scrollbar-thin::-webkit-scrollbar {
+  width: 4px;
+  height: 4px;
+}
+
+.scrollbar-thin::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.scrollbar-thin::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.1);
+  border-radius: 2px;
+}
+
+.scrollbar-thin::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 0, 0, 0.2);
+}
+
+/* ===== MOBILE SCROLLBAR STYLES ===== */
+
+/* Scrollbar untuk mobile dengan opacity lebih tinggi */
+.scrollbar-mobile {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(0, 0, 0, 0.2) transparent;
+}
+
+.scrollbar-mobile::-webkit-scrollbar {
+  width: 4px;
+  height: 4px;
+}
+
+.scrollbar-mobile::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.scrollbar-mobile::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 2px;
+}
+
+.scrollbar-mobile::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 0, 0, 0.3);
+}
+
+/* ===== TABLET SCROLLBAR STYLES ===== */
+
+/* Scrollbar untuk tablet dengan ukuran sedikit lebih kecil */
+.scrollbar-tablet {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(0, 0, 0, 0.1) transparent;
+}
+
+.scrollbar-tablet::-webkit-scrollbar {
+  width: 3px;
+  height: 3px;
+}
+
+.scrollbar-tablet::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.scrollbar-tablet::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.1);
+  border-radius: 2px;
+}
+
+.scrollbar-tablet::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 0, 0, 0.2);
+}
+
+/* ===== NAVIGATION SCROLLBAR STYLES ===== */
+
+/* Scrollbar untuk navigation areas */
+.scrollbar-navigation {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(156, 163, 175, 0.5) transparent;
+}
+
+.scrollbar-navigation::-webkit-scrollbar {
+  width: 6px;
+}
+
+.scrollbar-navigation::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.scrollbar-navigation::-webkit-scrollbar-thumb {
+  background-color: rgba(156, 163, 175, 0.5);
+  border-radius: 3px;
+}
+
+.scrollbar-navigation::-webkit-scrollbar-thumb:hover {
+  background-color: rgba(156, 163, 175, 0.7);
+}
+
+/* ===== RESPONSIVE SCROLLBAR UTILITIES ===== */
+
+/* Scrollable container dengan responsive styling */
+.scroll-container-responsive {
+  overflow-x: auto;
+}
+
+/* Apply scrollbar styles berdasarkan breakpoint */
+@media (max-width: 499px) {
+  .scroll-container-responsive {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(0, 0, 0, 0.2) transparent;
+  }
+  
+  .scroll-container-responsive::-webkit-scrollbar {
+    height: 4px;
+  }
+  
+  .scroll-container-responsive::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  
+  .scroll-container-responsive::-webkit-scrollbar-thumb {
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 2px;
+  }
+  
+  .scroll-container-responsive::-webkit-scrollbar-thumb:hover {
+    background: rgba(0, 0, 0, 0.3);
+  }
+}
+
+@media (min-width: 500px) and (max-width: 768px) {
+  .scroll-container-responsive {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(0, 0, 0, 0.1) transparent;
+  }
+  
+  .scroll-container-responsive::-webkit-scrollbar {
+    height: 3px;
+  }
+  
+  .scroll-container-responsive::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  
+  .scroll-container-responsive::-webkit-scrollbar-thumb {
+    background: rgba(0, 0, 0, 0.1);
+    border-radius: 2px;
+  }
+  
+  .scroll-container-responsive::-webkit-scrollbar-thumb:hover {
+    background: rgba(0, 0, 0, 0.2);
+  }
+}
+
+@media (min-width: 769px) {
+  .scroll-container-responsive {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(0, 0, 0, 0.1) transparent;
+  }
+  
+  .scroll-container-responsive::-webkit-scrollbar {
+    height: 4px;
+  }
+  
+  .scroll-container-responsive::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  
+  .scroll-container-responsive::-webkit-scrollbar-thumb {
+    background: rgba(0, 0, 0, 0.1);
+    border-radius: 2px;
+  }
+  
+  .scroll-container-responsive::-webkit-scrollbar-thumb:hover {
+    background: rgba(0, 0, 0, 0.2);
+  }
+}

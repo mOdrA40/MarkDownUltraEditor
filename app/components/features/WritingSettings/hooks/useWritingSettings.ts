@@ -51,12 +51,13 @@ export const useWritingSettings = (
   };
 };
 
+// Re-export useMediaQuery dari shared hook
+export { useMediaQuery } from '~/hooks/useMediaQuery';
 // Re-export hooks dari useResponsiveLayout untuk convenience
 export {
   useIsDesktop,
   useIsMobile,
   useIsTablet,
-  useMediaQuery,
   useResponsiveLayout,
   useWindowDimensions,
 } from './useResponsiveLayout';

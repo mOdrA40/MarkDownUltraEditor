@@ -1,0 +1,48 @@
+/**
+ * Dropdown Fixes
+ * Fixes untuk dropdown menu positioning dan behavior
+ * 
+ * @author Axel Modra
+ */
+
+/* ===== DROPDOWN MENU FIXES ===== */
+
+/* Fix untuk dropdown layout shift dan overflow */
+[data-radix-dropdown-menu-content] {
+  position: fixed !important;
+  transform: none !important;
+  will-change: auto !important;
+  contain: layout style !important;
+  z-index: 9999 !important;
+}
+
+/* Prevent body scroll dan layout shift saat dropdown open */
+body:has([data-radix-dropdown-menu-content][data-state="open"]) {
+  overflow-x: hidden !important;
+  position: relative !important;
+  width: 100% !important;
+}
+
+/* Fix untuk animasi dropdown yang smooth */
+[data-radix-dropdown-menu-content][data-state="open"] {
+  animation-duration: 150ms !important;
+  animation-timing-function: ease-out !important;
+}
+
+[data-radix-dropdown-menu-content][data-state="closed"] {
+  animation-duration: 100ms !important;
+  animation-timing-function: ease-in !important;
+}
+
+/* Prevent layout shift pada trigger button */
+[data-radix-dropdown-menu-trigger] {
+  transform: none !important;
+  will-change: auto !important;
+}
+
+/* Fix untuk overlay yang tidak menyebabkan scroll */
+[data-radix-dropdown-menu-overlay] {
+  position: fixed !important;
+  inset: 0 !important;
+  z-index: 9998 !important;
+}

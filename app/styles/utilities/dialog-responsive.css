@@ -1,0 +1,111 @@
+/**
+ * Dialog Responsive Utilities
+ * Responsive styles untuk dialog components
+ * 
+ * @author Axel Modra
+ */
+
+/* ===== MOBILE DIALOG STYLES (max-width: 499px) ===== */
+
+@media (max-width: 499px) {
+  /* Advanced Export Dialog - proper viewport sizing */
+  [data-radix-dialog-content] {
+    width: 92vw !important;
+    max-width: 92vw !important;
+    height: 94vh !important;
+    max-height: 94vh !important;
+    margin: 3vh 4vw !important;
+    left: 50% !important;
+    top: 50% !important;
+    transform: translate(-50%, -50%) !important;
+    position: fixed !important;
+    border-radius: 0.75rem !important;
+  }
+
+  /* Document Templates Dialog */
+  [data-radix-dialog-content]:has([data-document-templates]) {
+    width: 92vw !important;
+    max-width: 92vw !important;
+    height: 94vh !important;
+    max-height: 94vh !important;
+    margin: 3vh 4vw !important;
+  }
+}
+
+/* ===== SMALL TABLET DIALOG STYLES (500px - 768px) ===== */
+
+@media (min-width: 500px) and (max-width: 768px) {
+  /* Advanced Export Dialog - proper viewport sizing untuk small tablet */
+  [data-radix-dialog-content] {
+    width: 92vw !important;
+    max-width: 92vw !important;
+    height: 88vh !important;
+    max-height: 88vh !important;
+    margin: 4vw auto !important;
+    left: 50% !important;
+    top: 50% !important;
+    transform: translate(-50%, -50%) !important;
+    position: fixed !important;
+  }
+
+  /* Document Templates Dialog */
+  [data-radix-dialog-content]:has([data-document-templates]) {
+    width: 92vw !important;
+    max-width: 92vw !important;
+    height: 88vh !important;
+    max-height: 88vh !important;
+    margin: 4vw auto !important;
+  }
+}
+
+/* ===== MEDIUM TABLET DIALOG STYLES (768px - 1023px) ===== */
+
+@media (min-width: 768px) and (max-width: 1023px) {
+  /* Advanced Export Dialog - proper viewport sizing untuk medium tablet */
+  [data-radix-dialog-content] {
+    width: 90vw !important;
+    max-width: 90vw !important;
+    height: 85vh !important;
+    max-height: 85vh !important;
+    margin: 5vw auto !important;
+    left: 50% !important;
+    top: 50% !important;
+    transform: translate(-50%, -50%) !important;
+    position: fixed !important;
+  }
+
+  /* Document Templates Dialog */
+  [data-radix-dialog-content]:has([data-document-templates]) {
+    width: 90vw !important;
+    max-width: 90vw !important;
+    height: 85vh !important;
+    max-height: 85vh !important;
+    margin: 5vw auto !important;
+  }
+}
+
+/* ===== DESKTOP DIALOG STYLES (1024px+) ===== */
+
+@media (min-width: 1024px) {
+  /* Advanced Export Dialog - standard desktop sizing */
+  [data-radix-dialog-content] {
+    width: 80vw !important;
+    max-width: 1200px !important;
+    height: 80vh !important;
+    max-height: 800px !important;
+    margin: auto !important;
+    left: 50% !important;
+    top: 50% !important;
+    transform: translate(-50%, -50%) !important;
+    position: fixed !important;
+  }
+
+  /* Document Templates Dialog */
+  [data-radix-dialog-content]:has([data-document-templates]) {
+    width: 80vw !important;
+    max-width: 1200px !important;
+    height: 80vh !important;
+    max-height: 800px !important;
+    margin: auto !important;
+  }
+}

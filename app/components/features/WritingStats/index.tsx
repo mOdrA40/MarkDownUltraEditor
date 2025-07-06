@@ -5,13 +5,14 @@
  * @author Axel Modra
  */
 
+// Export shared useMediaQuery hook
+export { useMediaQuery } from '~/hooks/useMediaQuery';
 export { ResponsiveStatsLayout } from './components/ResponsiveStatsLayout';
 export { StatBadge } from './components/StatBadge';
 export { StatItem } from './components/StatItem';
 // Export komponen utama
 // Default export untuk backward compatibility
 export { WritingStats, WritingStats as default } from './components/WritingStats';
-
 // Export constants
 export {
   A11Y,
@@ -33,7 +34,6 @@ export {
   useIsDesktop,
   useIsMobile,
   useIsTablet,
-  useMediaQuery,
   useOrientation,
   useResponsiveDetection,
   useWindowDimensions,

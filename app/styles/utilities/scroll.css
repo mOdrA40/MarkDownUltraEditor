@@ -13,22 +13,7 @@
   will-change: auto;
 }
 
-/* Override untuk button hover effects yang menyebabkan scroll */
-.button-hover-fix {
-  transition: background-color 0.2s ease, color 0.2s ease, box-shadow 0.2s ease, opacity 0.2s ease;
-  transform: none !important;
-}
 
-.button-hover-fix:hover {
-  transform: none !important;
-  background-color: hsl(var(--accent) / 0.8);
-  color: hsl(var(--accent-foreground));
-}
-
-.button-hover-fix:active {
-  transform: none !important;
-  background-color: hsl(var(--accent) / 0.6);
-}
 
 /* ===== CONTAINER SCROLL PREVENTION ===== */
 
@@ -68,28 +53,4 @@
   transform: none !important;
 }
 
-/* ===== SCROLLABLE CONTAINER UTILITIES ===== */
 
-/* Scrollable container with proper styling */
-.scroll-container-responsive {
-  overflow-x: auto;
-  scrollbar-width: thin;
-  scrollbar-color: rgba(0, 0, 0, 0.1) transparent;
-}
-
-.scroll-container-responsive::-webkit-scrollbar {
-  height: 4px;
-}
-
-.scroll-container-responsive::-webkit-scrollbar-track {
-  background: transparent;
-}
-
-.scroll-container-responsive::-webkit-scrollbar-thumb {
-  background: rgba(0, 0, 0, 0.1);
-  border-radius: 2px;
-}
-
-.scroll-container-responsive::-webkit-scrollbar-thumb:hover {
-  background: rgba(0, 0, 0, 0.2);
-}

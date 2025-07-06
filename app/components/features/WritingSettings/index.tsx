@@ -5,6 +5,8 @@
  * @author Axel Modra
  */
 
+// Export shared useMediaQuery hook
+export { useMediaQuery } from '~/hooks/useMediaQuery';
 export { FontSizeControl } from './components/FontSizeControl';
 export { LineHeightControl } from './components/LineHeightControl';
 export { ResponsiveLayout } from './components/ResponsiveLayout';
@@ -12,7 +14,6 @@ export { WritingModeButtons } from './components/WritingModeButtons';
 // Export komponen utama
 // Default export untuk backward compatibility
 export { WritingSettings, WritingSettings as default } from './components/WritingSettings';
-
 // Export constants
 export {
   A11Y,
@@ -31,7 +32,6 @@ export {
   useIsDesktop,
   useIsMobile,
   useIsTablet,
-  useMediaQuery,
   useResponsiveLayout,
   useWindowDimensions,
   useWritingSettings,

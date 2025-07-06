@@ -1,0 +1,96 @@
+/**
+ * Theme Dialog Styles
+ * Styles khusus untuk dialog dengan theme support
+ * 
+ * @author Axel Modra
+ */
+
+/* ===== THEME DIALOG APPLICATIONS ===== */
+
+/* Force theme application for template dialogs */
+.theme-ocean .document-templates-dialog {
+  background-color: hsl(240 100% 98%) !important; /* Ocean background */
+  color: hsl(207 100% 22%) !important; /* Ocean foreground */
+  border-color: hsl(199 100% 89%) !important; /* Ocean border */
+}
+
+.theme-forest .document-templates-dialog {
+  background-color: hsl(120 100% 97%) !important; /* Forest background */
+  color: hsl(140 100% 20%) !important; /* Forest foreground */
+  border-color: hsl(138 76% 87%) !important; /* Forest border */
+}
+
+.theme-sunset .document-templates-dialog {
+  background-color: hsl(33 100% 96%) !important; /* Sunset background */
+  color: hsl(17 88% 34%) !important; /* Sunset foreground */
+  border-color: hsl(24 100% 83%) !important; /* Sunset border */
+}
+
+.theme-purple .document-templates-dialog {
+  background-color: hsl(270 100% 98%) !important; /* Purple background */
+  color: hsl(270 91% 32%) !important; /* Purple foreground */
+  border-color: hsl(266 100% 87%) !important; /* Purple border */
+}
+
+.theme-rose .document-templates-dialog {
+  background-color: hsl(0 100% 98%) !important; /* Rose background */
+  color: hsl(347 77% 30%) !important; /* Rose foreground */
+  border-color: hsl(351 100% 81%) !important; /* Rose border */
+}
+
+/* Template cards theme application */
+.theme-ocean .template-card {
+  background-color: hsl(199 100% 94%) !important; /* Ocean card */
+  color: hsl(207 100% 22%) !important;
+  border-color: hsl(199 100% 89%) !important;
+}
+
+.theme-forest .template-card {
+  background-color: hsl(138 76% 92%) !important; /* Forest card */
+  color: hsl(140 100% 20%) !important;
+  border-color: hsl(138 76% 87%) !important;
+}
+
+.theme-sunset .template-card {
+  background-color: hsl(24 100% 88%) !important; /* Sunset card */
+  color: hsl(17 88% 34%) !important;
+  border-color: hsl(24 100% 83%) !important;
+}
+
+.theme-purple .template-card {
+  background-color: hsl(266 100% 92%) !important; /* Purple card */
+  color: hsl(270 91% 32%) !important;
+  border-color: hsl(266 100% 87%) !important;
+}
+
+.theme-rose .template-card {
+  background-color: hsl(351 100% 86%) !important; /* Rose card */
+  color: hsl(347 77% 30%) !important;
+  border-color: hsl(351 100% 81%) !important;
+}
+
+/* Template preview content area */
+.theme-ocean .template-preview-content {
+  background-color: hsl(240 100% 98%) !important;
+  color: hsl(207 100% 22%) !important;
+}
+
+.theme-forest .template-preview-content {
+  background-color: hsl(120 100% 97%) !important;
+  color: hsl(140 100% 20%) !important;
+}
+
+.theme-sunset .template-preview-content {
+  background-color: hsl(33 100% 96%) !important;
+  color: hsl(17 88% 34%) !important;
+}
+
+.theme-purple .template-preview-content {
+  background-color: hsl(270 100% 98%) !important;
+  color: hsl(270 91% 32%) !important;
+}
+
+.theme-rose .template-preview-content {
+  background-color: hsl(0 100% 98%) !important;
+  color: hsl(347 77% 30%) !important;
+}

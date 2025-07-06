@@ -15,39 +15,12 @@
   }
 
   /* ===== DIALOG STYLES ===== */
-  
-  /* Advanced Export Dialog - proper viewport sizing untuk medium tablet */
-  [data-radix-dialog-content] {
-    width: 90vw !important;
-    max-width: 90vw !important;
-    height: 85vh !important;
-    max-height: 85vh !important;
-    margin: 5vw auto !important;
-    left: 50% !important;
-    top: 50% !important;
-    transform: translate(-50%, -50%) !important;
-    position: fixed !important;
-  }
+
+  /* Dialog styles handled by dialog-responsive.css utility */
 
   /* ===== TABS STYLES ===== */
-  
-  /* Export tabs untuk medium tablet */
-  [data-radix-tabs-list] {
-    padding: 0.75rem !important;
-    gap: 0.5rem !important;
-    margin: 0.75rem !important;
-  }
 
-  [data-radix-tabs-trigger] {
-    padding: 0.5rem 1rem !important;
-    font-size: 0.875rem !important;
-  }
-
-  /* Content padding untuk medium tablet */
-  [data-radix-tabs-content] {
-    padding: 0.75rem !important;
-    margin: 0 0.75rem !important;
-  }
+  /* Tabs styles handled by tabs-responsive.css utility */
 
   /* ===== GRID LAYOUTS ===== */
   
@@ -77,15 +50,8 @@
   }
 
   /* ===== DOCUMENT TEMPLATES ===== */
-  
-  /* Document Templates Dialog */
-  [data-radix-dialog-content]:has([data-document-templates]) {
-    width: 90vw !important;
-    max-width: 90vw !important;
-    height: 85vh !important;
-    max-height: 85vh !important;
-    margin: 5vw auto !important;
-  }
+
+  /* Document Templates Dialog styles handled by dialog-responsive.css utility */
 
   .templates-grid-medium-tablet {
     grid-template-columns: repeat(2, 1fr) !important;

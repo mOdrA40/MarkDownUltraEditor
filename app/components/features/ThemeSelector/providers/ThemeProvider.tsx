@@ -55,6 +55,18 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({
   const [isLoading, setIsLoading] = useState(true);
 
   /**
+   * Button color mapping untuk themes
+   */
+  const buttonColorMap: Record<string, string> = {
+    ocean: '#1e3a8a',
+    forest: '#14532d',
+    sunset: '#c2410c',
+    purple: '#6b21a8',
+    rose: '#be185d',
+    dark: 'hsl(210 40% 98%)',
+  };
+
+  /**
    * Apply theme to document root
    */
   const applyTheme = useCallback((theme: Theme) => {
@@ -75,14 +87,6 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({
 
     // Set CSS custom properties for button colors to prevent JavaScript override
     const root = document.documentElement;
-    const buttonColorMap: Record<string, string> = {
-      ocean: '#1e3a8a',
-      forest: '#14532d',
-      sunset: '#c2410c',
-      purple: '#6b21a8',
-      rose: '#be185d',
-      dark: 'hsl(210 40% 98%)',
-    };
 
     const buttonColor = buttonColorMap[theme.id] || theme.text;
     root.style.setProperty('--theme-button-color', buttonColor);
@@ -109,15 +113,6 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({
    */
   useEffect(() => {
     if (typeof document === 'undefined') return;
-
-    const buttonColorMap: Record<string, string> = {
-      ocean: '#1e3a8a',
-      forest: '#14532d',
-      sunset: '#c2410c',
-      purple: '#6b21a8',
-      rose: '#be185d',
-      dark: 'hsl(210 40% 98%)',
-    };
 
     const applyButtonColors = () => {
       const buttonColor = buttonColorMap[currentTheme.id] || currentTheme.text;

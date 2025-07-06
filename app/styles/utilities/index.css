@@ -7,8 +7,14 @@
 
 /* Import utility styles */
 @import './scroll.css';
+@import './scrollbar.css';
 @import './responsive.css';
+@import './dialog-responsive.css';
+@import './tabs-responsive.css';
 @import './theme-colors.css';
+@import './themes.css';
+@import './theme-dialogs.css';
+@import './dropdown-fixes.css';
 
 /**
  * Utility classes

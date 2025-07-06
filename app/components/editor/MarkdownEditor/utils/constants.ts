@@ -4,7 +4,7 @@
  */
 
 import type { EditorConfig } from '../types';
-import type { Breakpoints, MediaQueries } from '../types/responsive.types';
+import type { Breakpoints } from '../types/responsive.types';
 
 /**
  * Application metadata
@@ -56,18 +56,9 @@ export const BREAKPOINTS: Breakpoints = {
 };
 
 /**
- * Media queries
+ * Media queries - using shared constants from hooks/useMediaQuery
  */
-export const MEDIA_QUERIES: MediaQueries = {
-  mobile: '(max-width: 499px)',
-  smallTablet: '(min-width: 500px) and (max-width: 767px)',
-  tablet: '(min-width: 768px) and (max-width: 1023px)',
-  desktop: '(min-width: 1024px) and (max-width: 1439px)',
-  largeDesktop: '(min-width: 1440px)',
-  touchDevice: '(pointer: coarse)',
-  hoverDevice: '(hover: hover)',
-  highDensity: '(-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi)',
-};
+export { MEDIA_QUERIES } from '~/hooks/useMediaQuery';
 
 /**
  * Local storage keys

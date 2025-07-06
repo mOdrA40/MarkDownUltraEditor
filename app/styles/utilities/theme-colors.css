@@ -1,7 +1,7 @@
 /**
  * Theme Color Utilities - CLEANED & OPTIMIZED
  * Consolidated theme color management without duplications
- * 
+ *
  * @author Axel Modra
  */
 
@@ -15,7 +15,7 @@
   --ocean-surface: rgba(224, 242, 254, 0.8);
   --ocean-accent: rgba(14, 165, 233, 0.3);
   --ocean-accent-bg: rgba(14, 165, 233, 0.1);
-  
+
   /* Forest Theme */
   --forest-text: #14532d;
   --forest-primary: #10b981;
@@ -23,7 +23,7 @@
   --forest-surface: rgba(220, 252, 231, 0.8);
   --forest-accent: rgba(16, 185, 129, 0.3);
   --forest-accent-bg: rgba(16, 185, 129, 0.1);
-  
+
   /* Sunset Theme */
   --sunset-text: #9a3412;
   --sunset-primary: #f97316;
@@ -31,7 +31,7 @@
   --sunset-surface: rgba(254, 215, 170, 0.8);
   --sunset-accent: rgba(249, 115, 22, 0.3);
   --sunset-accent-bg: rgba(249, 115, 22, 0.1);
-  
+
   /* Purple Theme */
   --purple-text: #581c87;
   --purple-primary: #a855f7;
@@ -39,7 +39,7 @@
   --purple-surface: rgba(233, 213, 255, 0.8);
   --purple-accent: rgba(168, 85, 247, 0.3);
   --purple-accent-bg: rgba(168, 85, 247, 0.1);
-  
+
   /* Rose Theme */
   --rose-text: #881337;
   --rose-primary: #f43f5e;
@@ -762,27 +762,3 @@ html.dark .dark-preview .prose a {
   color: #60a5fa !important; /* Blue links for dark theme */
 }
 
-/* ===== EDITOR PANE DARK THEME FIXES ===== */
-
-/* Force white text in editor pane for dark theme - highest specificity */
-html.dark [data-editor-pane],
-html.dark [data-editor-pane] *,
-html.dark .editor-content,
-html.dark .editor-content *,
-html.dark .editor-pane,
-html.dark .editor-pane * {
-  color: #ffffff !important; /* White text for dark theme */
-}
-
-/* Specific targeting for editor textarea with highest specificity */
-html.dark [data-editor-pane] textarea,
-html.dark [data-editor-pane] .markdown-editor-textarea,
-html.dark .editor-content textarea,
-html.dark .editor-content .markdown-editor-textarea,
-html.dark .editor-pane textarea,
-html.dark .editor-pane .markdown-editor-textarea {
-  color: #ffffff !important; /* White text for dark theme */
-  background-color: #0f172a !important; /* Dark background */
-  caret-color: #ffffff !important; /* White cursor */
-  border-color: #334155 !important;
-}
