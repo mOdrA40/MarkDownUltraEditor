@@ -8,6 +8,11 @@ import type { Route } from './+types/root';
 
 import './tailwind.css';
 
+// Import storage analyzer for development
+if (typeof window !== 'undefined' && process.env.NODE_ENV === 'development') {
+  import('@/utils/storageAnalyzer');
+}
+
 // Add the loader function for Clerk authentication
 export async function loader(args: Route.LoaderArgs) {
   return rootAuthLoader(args);

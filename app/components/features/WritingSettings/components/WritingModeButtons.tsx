@@ -85,6 +85,7 @@ export const WritingModeButtons: React.FC<WritingModeButtonsProps> = memo(
           aria-label={A11Y.labels.toggleFocus}
           aria-pressed={focusMode}
           title={WRITING_MODES.focus.description}
+          data-state={focusMode ? 'on' : 'off'}
         >
           <Focus className={`${iconSize} ${orientation !== 'vertical' ? 'mr-1' : ''}`} />
           {orientation === 'grid' ? (
@@ -103,6 +104,7 @@ export const WritingModeButtons: React.FC<WritingModeButtonsProps> = memo(
           aria-label={A11Y.labels.toggleTypewriter}
           aria-pressed={typewriterMode}
           title={WRITING_MODES.typewriter.description}
+          data-state={typewriterMode ? 'on' : 'off'}
         >
           <Type className={`${iconSize} ${orientation !== 'vertical' ? 'mr-1' : ''}`} />
           {orientation === 'grid' ? (
@@ -121,6 +123,7 @@ export const WritingModeButtons: React.FC<WritingModeButtonsProps> = memo(
           aria-label={A11Y.labels.toggleWordWrap}
           aria-pressed={wordWrap}
           title={WRITING_MODES.wordWrap.description}
+          data-state={wordWrap ? 'on' : 'off'}
         >
           {orientation === 'grid' ? (
             WRITING_MODES.wordWrap.label
@@ -138,6 +141,7 @@ export const WritingModeButtons: React.FC<WritingModeButtonsProps> = memo(
           aria-label={A11Y.labels.toggleVim}
           aria-pressed={vimMode}
           title={WRITING_MODES.vim.description}
+          data-state={vimMode ? 'on' : 'off'}
         >
           <Keyboard className={`${iconSize} ${orientation !== 'vertical' ? 'mr-1' : ''}`} />
           {orientation === 'grid' ? (
@@ -158,6 +162,7 @@ export const WritingModeButtons: React.FC<WritingModeButtonsProps> = memo(
               aria-label={A11Y.labels.toggleZen}
               aria-pressed={zenMode}
               title={WRITING_MODES.zen.description}
+              data-state={zenMode ? 'on' : 'off'}
             >
               <Eye className={`${iconSize} mr-2`} />
               {WRITING_MODES.zen.label} Mode
@@ -172,6 +177,7 @@ export const WritingModeButtons: React.FC<WritingModeButtonsProps> = memo(
             aria-label={A11Y.labels.toggleZen}
             aria-pressed={zenMode}
             title={WRITING_MODES.zen.description}
+            data-state={zenMode ? 'on' : 'off'}
           >
             <Eye className={`${iconSize} ${orientation !== 'vertical' ? 'mr-1' : ''}`} />
             <span className="hidden sm:inline">{WRITING_MODES.zen.label}</span>

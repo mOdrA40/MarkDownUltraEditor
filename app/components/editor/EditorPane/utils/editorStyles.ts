@@ -47,7 +47,6 @@ export const generateEditorStyles = (
       'ui-monospace, SFMono-Regular, "SF Mono", Monaco, Consolas, "Liberation Mono", "Courier New", monospace',
     whiteSpace: isMobileOrTablet ? 'pre-wrap' : wordWrap ? 'pre-wrap' : 'pre',
     backgroundColor: theme?.surface || 'transparent',
-    color: theme?.text || 'inherit',
     borderColor: theme?.accent || 'transparent',
     wordWrap: isMobileOrTablet ? 'break-word' : wordWrap ? 'break-word' : 'normal',
     overflowWrap: isMobileOrTablet ? 'break-word' : wordWrap ? 'break-word' : 'normal',

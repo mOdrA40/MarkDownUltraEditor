@@ -62,6 +62,7 @@ export const EditorTextarea: React.FC<EditorTextareaProps> = ({
       placeholder="Start writing your markdown here..."
       className={`
         w-full h-full resize-none border-0 rounded-none focus:ring-0 focus:outline-none pl-14
+        markdown-editor-textarea
         ${focusMode ? 'bg-opacity-95' : ''}
         ${typewriterMode ? 'scroll-smooth' : ''}
         transition-all duration-200

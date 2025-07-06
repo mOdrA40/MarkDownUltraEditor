@@ -20,7 +20,7 @@ export const EditorHeader: React.FC<EditorHeaderConfig> = ({
 
   return (
     <div
-      className="px-4 py-2 border-b backdrop-blur-md"
+      className="px-4 py-2 border-b backdrop-blur-md editor-header"
       style={{
         ...headerStyles,
         backdropFilter: 'blur(12px)',

@@ -14,3 +14,8 @@ hasil.txt
 # Kecualikan README.md
 !README.md
 bash.exe.stackdump
+
+# Ignore debug components folder
+app/components/debug/
+app/routes/debug.*.tsx
+app/utils/storageAnalyzer.ts

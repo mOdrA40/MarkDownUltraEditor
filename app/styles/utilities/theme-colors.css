@@ -387,6 +387,104 @@ html.dark body {
   color: hsl(217.2 91.2% 59.8%) !important; /* Dark primary */
 }
 
+/* ===== EDITOR TEXTAREA STYLING FIXES ===== */
+
+/* Editor textarea text color for all themes */
+.theme-ocean textarea,
+.theme-ocean .markdown-editor-textarea {
+  color: #0c4a6e !important; /* Ocean text */
+  background-color: #f0f9ff !important; /* Ocean background */
+}
+
+.theme-forest textarea,
+.theme-forest .markdown-editor-textarea {
+  color: #14532d !important; /* Forest text */
+  background-color: #f0fdf4 !important; /* Forest background */
+}
+
+.theme-sunset textarea,
+.theme-sunset .markdown-editor-textarea {
+  color: #9a3412 !important; /* Sunset text */
+  background-color: #fff7ed !important; /* Sunset background */
+}
+
+.theme-purple textarea,
+.theme-purple .markdown-editor-textarea {
+  color: #581c87 !important; /* Purple text */
+  background-color: #faf5ff !important; /* Purple background */
+}
+
+.theme-rose textarea,
+.theme-rose .markdown-editor-textarea {
+  color: #881337 !important; /* Rose text */
+  background-color: #fff1f2 !important; /* Rose background */
+}
+
+/* Enhanced editor textarea styling for dark theme */
+html.dark textarea,
+html.dark .markdown-editor-textarea,
+html.dark .ui-textarea,
+html.dark [data-component="textarea"],
+.dark textarea,
+.dark .markdown-editor-textarea,
+.dark .ui-textarea,
+.dark [data-component="textarea"] {
+  color: #ffffff !important; /* White text for dark theme */
+  background-color: #0f172a !important; /* Dark background */
+  caret-color: #ffffff !important; /* White cursor */
+}
+
+/* Override any inherited styles in dark theme */
+html.dark textarea::placeholder,
+html.dark .markdown-editor-textarea::placeholder,
+.dark textarea::placeholder,
+.dark .markdown-editor-textarea::placeholder {
+  color: #94a3b8 !important; /* Light gray placeholder */
+}
+
+/* ===== WRITING MODE BUTTONS STYLING FIXES ===== */
+
+/* Active mode buttons - ensure proper contrast */
+.dark .writing-mode-button.active,
+.dark .writing-mode-button[data-state="on"],
+.dark button[variant="default"] {
+  color: #000000 !important; /* Black text on active buttons in dark theme */
+  background-color: #8b5cf6 !important; /* Purple background for dark theme */
+}
+
+.dark .writing-mode-button:not(.active),
+.dark .writing-mode-button:not([data-state="on"]),
+.dark button[variant="ghost"] {
+  color: #f1f5f9 !important; /* White text for inactive buttons in dark theme */
+  background-color: transparent !important;
+}
+
+/* ===== AUTH BUTTONS STYLING FIXES ===== */
+
+/* Sign up and auth buttons in dark theme */
+.dark .auth-button,
+.dark [data-component="auth-button"],
+.dark .signup-button {
+  color: #000000 !important; /* Black text for visibility */
+  background-color: #8b5cf6 !important; /* Purple background */
+}
+
+.dark .auth-button:hover,
+.dark [data-component="auth-button"]:hover,
+.dark .signup-button:hover {
+  color: #000000 !important; /* Keep black text on hover */
+  background-color: #7c3aed !important; /* Darker purple on hover */
+}
+
+/* Light themes - ensure active buttons have proper contrast */
+.theme-ocean .writing-mode-button.active,
+.theme-forest .writing-mode-button.active,
+.theme-sunset .writing-mode-button.active,
+.theme-purple .writing-mode-button.active,
+.theme-rose .writing-mode-button.active {
+  color: #ffffff !important; /* White text on active buttons */
+}
+
 /* ===== SPECIFIC TEXT STYLING FIXES ===== */
 
 /* Headings use theme foreground colors */
@@ -552,4 +650,139 @@ html.dark body {
   background-color: hsl(222.2 84% 4.9%) !important;
   color: hsl(210 40% 98%) !important;
   border-color: hsl(217.2 32.6% 17.5%) !important;
+}
+
+/* ===== VIM MODE INDICATOR STYLING ===== */
+
+/* Vim mode indicators with proper contrast */
+.dark .vim-mode-wrapper .bg-blue-500 {
+  background-color: #3b82f6 !important;
+  color: #ffffff !important;
+}
+
+.dark .vim-mode-wrapper .bg-green-500 {
+  background-color: #10b981 !important;
+  color: #ffffff !important;
+}
+
+.dark .vim-mode-wrapper .bg-yellow-500 {
+  background-color: #f59e0b !important;
+  color: #000000 !important;
+}
+
+.dark .vim-mode-wrapper .bg-red-500 {
+  background-color: #ef4444 !important;
+  color: #ffffff !important;
+}
+
+.dark .vim-mode-wrapper .bg-gray-500 {
+  background-color: #6b7280 !important;
+  color: #ffffff !important;
+}
+
+/* ===== EDITOR HEADER MODE INDICATORS ===== */
+
+/* Editor header mode indicators styling */
+.dark .editor-header h3,
+.dark .editor-header .text-sm {
+  color: #f1f5f9 !important; /* White text for dark theme */
+}
+
+.theme-ocean .editor-header h3,
+.theme-ocean .editor-header .text-sm {
+  color: #0c4a6e !important; /* Ocean text */
+}
+
+.theme-forest .editor-header h3,
+.theme-forest .editor-header .text-sm {
+  color: #14532d !important; /* Forest text */
+}
+
+.theme-sunset .editor-header h3,
+.theme-sunset .editor-header .text-sm {
+  color: #9a3412 !important; /* Sunset text */
+}
+
+.theme-purple .editor-header h3,
+.theme-purple .editor-header .text-sm {
+  color: #581c87 !important; /* Purple text */
+}
+
+.theme-rose .editor-header h3,
+.theme-rose .editor-header .text-sm {
+  color: #881337 !important; /* Rose text */
+}
+
+/* ===== ZEN MODE EXIT BUTTON STYLING ===== */
+
+/* Zen mode exit button with proper contrast */
+.dark .fixed.top-4.right-4 {
+  background-color: rgba(30, 41, 59, 0.9) !important;
+  color: #f1f5f9 !important;
+  border-color: #8b5cf6 !important;
+}
+
+.dark .fixed.top-4.right-4:hover {
+  background-color: rgba(30, 41, 59, 1) !important;
+}
+
+/* ===== PREVIEW PANE DARK THEME FIXES ===== */
+
+/* Force white text in preview pane for dark theme */
+html.dark [data-preview-pane],
+html.dark [data-preview-pane] *,
+html.dark .preview-content,
+html.dark .preview-content *,
+html.dark .dark-preview,
+html.dark .dark-preview * {
+  color: hsl(210 40% 98%) !important; /* White text for dark theme */
+}
+
+/* Links in preview pane for dark theme */
+html.dark [data-preview-pane] a,
+html.dark .preview-content a,
+html.dark .dark-preview a {
+  color: #60a5fa !important; /* Blue links for dark theme */
+}
+
+/* Prose styling in preview pane for dark theme */
+html.dark [data-preview-pane] .prose,
+html.dark [data-preview-pane] .prose *,
+html.dark .preview-content .prose,
+html.dark .preview-content .prose *,
+html.dark .dark-preview .prose,
+html.dark .dark-preview .prose * {
+  color: hsl(210 40% 98%) !important; /* White text for dark theme */
+}
+
+/* Prose links in preview pane for dark theme */
+html.dark [data-preview-pane] .prose a,
+html.dark .preview-content .prose a,
+html.dark .dark-preview .prose a {
+  color: #60a5fa !important; /* Blue links for dark theme */
+}
+
+/* ===== EDITOR PANE DARK THEME FIXES ===== */
+
+/* Force white text in editor pane for dark theme - highest specificity */
+html.dark [data-editor-pane],
+html.dark [data-editor-pane] *,
+html.dark .editor-content,
+html.dark .editor-content *,
+html.dark .editor-pane,
+html.dark .editor-pane * {
+  color: #ffffff !important; /* White text for dark theme */
+}
+
+/* Specific targeting for editor textarea with highest specificity */
+html.dark [data-editor-pane] textarea,
+html.dark [data-editor-pane] .markdown-editor-textarea,
+html.dark .editor-content textarea,
+html.dark .editor-content .markdown-editor-textarea,
+html.dark .editor-pane textarea,
+html.dark .editor-pane .markdown-editor-textarea {
+  color: #ffffff !important; /* White text for dark theme */
+  background-color: #0f172a !important; /* Dark background */
+  caret-color: #ffffff !important; /* White cursor */
+  border-color: #334155 !important;
 }

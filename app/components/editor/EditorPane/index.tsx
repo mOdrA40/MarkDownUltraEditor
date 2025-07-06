@@ -80,7 +80,8 @@ export const EditorPane: React.FC<EditorPaneProps> = ({
 
   return (
     <div
-      className={`h-full flex flex-col ${responsiveConfig.isMobileOrTablet ? 'editor-pane-responsive' : ''}`}
+      data-editor-pane
+      className={`h-full flex flex-col editor-pane ${responsiveConfig.isMobileOrTablet ? 'editor-pane-responsive' : ''}`}
     >
       {/* Editor Header */}
       <EditorHeader
@@ -93,7 +94,7 @@ export const EditorPane: React.FC<EditorPaneProps> = ({
       />
 
       {/* Editor Content Area */}
-      <div className="flex-1 relative">
+      <div className="flex-1 relative editor-content" data-editor-content>
         {/* Main Textarea */}
         <EditorTextarea
           textareaRef={textareaRef}

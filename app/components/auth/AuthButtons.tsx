@@ -243,7 +243,8 @@ export const AuthButtons: React.FC<AuthButtonsProps> = ({
         <Button
           variant="default"
           size="sm"
-          className="flex items-center gap-2"
+          className="flex items-center gap-2 auth-button"
+          data-component="auth-button"
           onClick={() => console.log('Auth button clicked')}
         >
           <User className="w-4 h-4" />

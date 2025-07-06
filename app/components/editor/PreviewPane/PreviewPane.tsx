@@ -48,9 +48,17 @@ export const PreviewPane: React.FC<PreviewPaneProps> = ({
   // Get header styles for consistent theming
   const headerStyles = generateHeaderStyles(theme);
 
+  // Ensure proper text color for dark theme
+  const getTextColor = () => {
+    if (isDarkMode && theme?.id === 'dark') {
+      return theme.text || '#f1f5f9'; // Force white text for dark theme
+    }
+    return theme?.text || (isDarkMode ? '#f1f5f9' : 'inherit');
+  };
+
   const previewStyles = {
     backgroundColor: theme?.background || 'white',
-    color: theme?.text || 'inherit',
+    color: getTextColor(),
     fontSize: responsiveOptions.fontSize,
     lineHeight: responsiveOptions.lineHeight,
   };
@@ -70,7 +78,7 @@ export const PreviewPane: React.FC<PreviewPaneProps> = ({
 
       <div
         data-preview-pane
-        className={`flex-1 overflow-auto transition-colors duration-200 ${isMobile || isTablet ? 'preview-pane-responsive' : 'p-6'}`}
+        className={`flex-1 overflow-auto transition-colors duration-200 preview-content ${isMobile || isTablet ? 'preview-pane-responsive' : 'p-6'} ${isDarkMode ? 'dark-preview' : ''}`}
         style={{
           ...previewStyles,
           padding: isMobile || isTablet ? responsiveOptions.padding : '1.5rem',
@@ -84,16 +92,17 @@ export const PreviewPane: React.FC<PreviewPaneProps> = ({
           `}
           style={
             {
-              '--tw-prose-headings': theme?.text || 'inherit',
-              '--tw-prose-body': theme?.text || 'inherit',
-              '--tw-prose-links': theme?.primary || '#3b82f6',
-              '--tw-prose-bold': theme?.text || 'inherit',
-              '--tw-prose-code': theme?.accent || '#ec4899',
-              '--tw-prose-pre-bg': theme?.surface || '#f8fafc',
-              '--tw-prose-th-borders': theme?.accent || '#d1d5db',
-              '--tw-prose-td-borders': theme?.accent || '#d1d5db',
-              '--tw-prose-quotes': theme?.text || 'inherit',
-              '--tw-prose-quote-borders': theme?.primary || '#3b82f6',
+              '--tw-prose-headings': getTextColor(),
+              '--tw-prose-body': getTextColor(),
+              '--tw-prose-links': theme?.primary || (isDarkMode ? '#60a5fa' : '#3b82f6'),
+              '--tw-prose-bold': getTextColor(),
+              '--tw-prose-code': theme?.accent || (isDarkMode ? '#60a5fa' : '#ec4899'),
+              '--tw-prose-pre-bg':
+                theme?.surface || (isDarkMode ? 'rgba(255, 255, 255, 0.1)' : '#f8fafc'),
+              '--tw-prose-th-borders': theme?.accent || (isDarkMode ? '#4b5563' : '#d1d5db'),
+              '--tw-prose-td-borders': theme?.accent || (isDarkMode ? '#4b5563' : '#d1d5db'),
+              '--tw-prose-quotes': getTextColor(),
+              '--tw-prose-quote-borders': theme?.primary || (isDarkMode ? '#60a5fa' : '#3b82f6'),
             } as React.CSSProperties
           }
         >

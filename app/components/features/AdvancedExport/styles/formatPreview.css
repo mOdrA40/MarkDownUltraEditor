@@ -319,23 +319,7 @@
   border-color: #4b5563;
 }
 
-/* Enhanced dark theme text color overrides */
-/* Force all text elements to be white in dark theme */
-.dark .preview-content,
-.dark .preview-content *,
-[data-theme="dark"] .preview-content,
-[data-theme="dark"] .preview-content *,
-.theme-dark .preview-content,
-.theme-dark .preview-content * {
-  color: #ffffff !important;
-}
 
-/* Override for links to maintain visibility */
-.dark .preview-content a,
-[data-theme="dark"] .preview-content a,
-.theme-dark .preview-content a {
-  color: #60a5fa !important;
-}
 
 /* Specific format overrides for dark theme */
 .dark .pdf-preview *,
@@ -392,16 +376,8 @@ body[style*="color: #e5e7eb"] .preview-content * {
   color: #ffffff !important;
 }
 
-/* Universal dark theme override - most aggressive approach */
-/* This will catch any dark theme regardless of detection method */
-@media (prefers-color-scheme: dark) {
-  .preview-content *:not(a) {
-    color: #ffffff !important;
-  }
-  .preview-content a {
-    color: #60a5fa !important;
-  }
-}
+/* Universal dark theme override - MOVED TO theme-colors.css */
+/* Keeping only format-specific CSS here */
 
 /* Responsive adjustments */
 @media (max-width: 768px) {

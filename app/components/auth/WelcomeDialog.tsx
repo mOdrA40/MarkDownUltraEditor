@@ -113,7 +113,12 @@ export const WelcomeDialog: React.FC<WelcomeDialogProps> = ({
             </div>
 
             <SignUpButton mode="redirect">
-              <Button size="lg" onClick={handleSignUp} className="w-full font-semibold">
+              <Button
+                size="lg"
+                onClick={handleSignUp}
+                className="w-full font-semibold signup-button auth-button"
+                data-component="auth-button"
+              >
                 Sign Up Now
               </Button>
             </SignUpButton>
