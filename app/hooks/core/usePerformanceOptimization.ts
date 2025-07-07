@@ -7,34 +7,24 @@
  */
 
 import { useCallback, useRef } from 'react';
+import { debounce as commonDebounce, throttle as commonThrottle } from '@/utils/common';
 
 /**
  * Simplified performance optimization hook
+ * Using centralized utilities to avoid duplication
  *
  * @returns Object dengan basic performance optimization functions
  */
 export const usePerformanceOptimization = () => {
-  const timeoutRef = useRef<NodeJS.Timeout>();
   const frameRef = useRef<number>();
 
+  // Use centralized debounce/throttle functions
   const debounce = useCallback((fn: (...args: unknown[]) => void, delay = 300) => {
-    return (...args: unknown[]) => {
-      if (timeoutRef.current) {
-        clearTimeout(timeoutRef.current);
-      }
-      timeoutRef.current = setTimeout(() => fn(...args), delay);
-    };
+    return commonDebounce(fn, delay);
   }, []);
 
   const throttle = useCallback((fn: (...args: unknown[]) => void, delay = 100) => {
-    let lastCall = 0;
-    return (...args: unknown[]) => {
-      const now = Date.now();
-      if (now - lastCall >= delay) {
-        lastCall = now;
-        fn(...args);
-      }
-    };
+    return commonThrottle(fn, delay);
   }, []);
 
   const requestAnimationFrame = useCallback((fn: () => void) => {

@@ -19,86 +19,24 @@ export class StorageError extends Error {
   }
 }
 
-/**
- * Check if localStorage is available
- */
-export const isStorageAvailable = (): boolean => {
-  try {
-    const test = '__storage_test__';
-    localStorage.setItem(test, test);
-    localStorage.removeItem(test);
-    return true;
-  } catch {
-    return false;
-  }
-};
+// Import common utilities to avoid duplication
+import {
+  getStorageItem,
+  getStorageJSON,
+  isStorageAvailable,
+  removeStorageItem,
+  setStorageItem,
+  setStorageJSON,
+} from '@/utils/common';
 
-/**
- * Safe localStorage getter with error handling
- */
-export const getStorageItem = (key: string): string | null => {
-  try {
-    if (!isStorageAvailable()) return null;
-    return localStorage.getItem(key);
-  } catch (error) {
-    console.warn(`Failed to get item from localStorage: ${key}`, error);
-    return null;
-  }
-};
-
-/**
- * Safe localStorage setter with error handling
- */
-export const setStorageItem = (key: string, value: string): boolean => {
-  try {
-    if (!isStorageAvailable()) return false;
-    localStorage.setItem(key, value);
-    return true;
-  } catch (error) {
-    console.warn(`Failed to set item in localStorage: ${key}`, error);
-    return false;
-  }
-};
-
-/**
- * Safe localStorage remover with error handling
- */
-export const removeStorageItem = (key: string): boolean => {
-  try {
-    if (!isStorageAvailable()) return false;
-    localStorage.removeItem(key);
-    return true;
-  } catch (error) {
-    console.warn(`Failed to remove item from localStorage: ${key}`, error);
-    return false;
-  }
-};
-
-/**
- * Get JSON data from localStorage
- */
-export const getStorageJSON = <T>(key: string, defaultValue?: T): T | null => {
-  try {
-    const item = getStorageItem(key);
-    if (item === null) return defaultValue || null;
-    return JSON.parse(item) as T;
-  } catch (error) {
-    console.warn(`Failed to parse JSON from localStorage: ${key}`, error);
-    return defaultValue || null;
-  }
-};
-
-/**
- * Set JSON data to localStorage
- */
-export const setStorageJSON = <T>(key: string, value: T): boolean => {
-  try {
-    const jsonString = JSON.stringify(value);
-    return setStorageItem(key, jsonString);
-  } catch (error) {
-    console.warn(`Failed to stringify JSON for localStorage: ${key}`, error);
-    return false;
-  }
+// Re-export for backward compatibility
+export {
+  isStorageAvailable,
+  getStorageItem,
+  setStorageItem,
+  removeStorageItem,
+  getStorageJSON,
+  setStorageJSON,
 };
 
 /**

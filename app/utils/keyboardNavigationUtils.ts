@@ -67,6 +67,7 @@ export const isFocusable = (element: Element): element is HTMLElement => {
 
 /**
  * Get all focusable elements within container
+ * Uses centralized implementation from accessibility utils
  */
 export const getFocusableElements = (container: Element): HTMLElement[] => {
   const focusableSelectors = [
@@ -79,8 +80,14 @@ export const getFocusableElements = (container: Element): HTMLElement[] => {
     '[contenteditable="true"]',
   ].join(', ');
 
-  const elements = Array.from(container.querySelectorAll(focusableSelectors));
-  return elements.filter(isFocusable) as HTMLElement[];
+  return Array.from(container.querySelectorAll(focusableSelectors)).filter((element) => {
+    const htmlElement = element as HTMLElement;
+    return (
+      htmlElement.offsetParent !== null && // Element is visible
+      !htmlElement.hasAttribute('disabled') &&
+      htmlElement.tabIndex >= 0
+    );
+  }) as HTMLElement[];
 };
 
 /**
@@ -162,46 +169,24 @@ export const getElementByDataAttribute = (
   container?: Element
 ): HTMLElement | null => {
   const selector = `[${attribute}="${value}"]`;
-  const searchRoot = container || document;
-
-  const element = searchRoot.querySelector(selector);
-  return element instanceof HTMLElement ? element : null;
+  const element = safeQuerySelector<HTMLElement>(selector, container);
+  return element;
 };
+
+// Import common utilities to avoid duplication
+import { debounce, safeQuerySelector, throttle } from './common';
 
 /**
  * Debounce function untuk keyboard events
+ * Using centralized implementation
  */
-export const debounceKeyboard = <T extends (...args: unknown[]) => void>(
-  func: T,
-  wait: number
-): ((...args: Parameters<T>) => void) => {
-  let timeout: NodeJS.Timeout;
-
-  return (...args: Parameters<T>) => {
-    clearTimeout(timeout);
-    timeout = setTimeout(() => func(...args), wait);
-  };
-};
+export const debounceKeyboard = debounce;
 
 /**
  * Throttle function untuk keyboard events
+ * Using centralized implementation
  */
-export const throttleKeyboard = <T extends (...args: unknown[]) => void>(
-  func: T,
-  limit: number
-): ((...args: Parameters<T>) => void) => {
-  let inThrottle: boolean;
-
-  return (...args: Parameters<T>) => {
-    if (!inThrottle) {
-      func(...args);
-      inThrottle = true;
-      setTimeout(() => {
-        inThrottle = false;
-      }, limit);
-    }
-  };
-};
+export const throttleKeyboard = throttle;
 
 /**
  * Check if key combination matches

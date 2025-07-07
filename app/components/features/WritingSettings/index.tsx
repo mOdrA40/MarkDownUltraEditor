@@ -58,7 +58,6 @@ export {
   getCurrentBreakpoint,
   getMediaQuery,
   getOrientation,
-  getPreferredColorScheme,
   getSafeAreaInsets,
   getViewportDimensions,
   isDesktopWidth,
@@ -68,7 +67,7 @@ export {
   isSmallTabletWidth,
   isTabletWidth,
   isTouchDevice,
-  matchesMediaQuery,
+  matchesBreakpoint,
   throttle,
 } from './utils/responsive.utils';
 // Export utilities

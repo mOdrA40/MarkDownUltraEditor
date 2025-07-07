@@ -7,6 +7,7 @@
 
 import React, { useEffect, useState } from 'react';
 import { cn } from '@/lib/utils';
+import { addEventListenerWithCleanup } from '@/utils/common';
 import { useKeyboardShortcuts, useUndoRedoState } from '../hooks/useKeyboardShortcuts';
 import type { UndoRedoButtonsProps } from '../types/undoRedo.types';
 import { DesktopUndoRedo } from './DesktopUndoRedo';
@@ -46,8 +47,7 @@ export const UndoRedoButtons: React.FC<UndoRedoButtonsProps> = React.memo(
         setWindowWidth(window.innerWidth);
       };
 
-      window.addEventListener('resize', handleResize);
-      return () => window.removeEventListener('resize', handleResize);
+      return addEventListenerWithCleanup(window, 'resize', handleResize);
     }, []);
 
     // Auto-detect responsive mode jika tidak ada props

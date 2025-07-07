@@ -220,59 +220,70 @@ export const useMemoryUsage = () => {
   return memoryUsage;
 };
 
+// Import common utilities to avoid duplication
+import { debounce as commonDebounce, throttle as commonThrottle } from '@/utils/common';
+
 /**
- * Performance optimization utilities
+ * Performance optimization utilities with tracking
  */
 export const performanceUtils = {
   /**
    * Debounce function with performance tracking
+   * Uses centralized implementation with added tracking
    */
   debounce: <T extends (...args: unknown[]) => unknown>(
     func: T,
     wait: number,
     trackPerformance = false
   ): ((...args: Parameters<T>) => void) => {
+    if (!trackPerformance) {
+      // Use centralized implementation when no tracking needed
+      return commonDebounce(func, wait);
+    }
+
+    // Enhanced version with performance tracking
     let timeout: NodeJS.Timeout;
 
     return (...args: Parameters<T>) => {
-      const start = trackPerformance ? performance.now() : 0;
+      const start = performance.now();
 
       clearTimeout(timeout);
       timeout = setTimeout(() => {
         func(...args);
-
-        if (trackPerformance) {
-          const duration = performance.now() - start;
-          console.log(`Debounced function execution time: ${duration.toFixed(2)}ms`);
-        }
+        const duration = performance.now() - start;
+        console.log(`Debounced function execution time: ${duration.toFixed(2)}ms`);
       }, wait);
     };
   },
 
   /**
    * Throttle function with performance tracking
+   * Uses centralized implementation with added tracking
    */
   throttle: <T extends (...args: unknown[]) => unknown>(
     func: T,
     limit: number,
     trackPerformance = false
   ): ((...args: Parameters<T>) => void) => {
+    if (!trackPerformance) {
+      // Use centralized implementation when no tracking needed
+      return commonThrottle(func, limit);
+    }
+
+    // Enhanced version with performance tracking
     let inThrottle: boolean;
 
     return (...args: Parameters<T>) => {
       if (!inThrottle) {
-        const start = trackPerformance ? performance.now() : 0;
+        const start = performance.now();
 
         func(...args);
         inThrottle = true;
 
         setTimeout(() => {
           inThrottle = false;
-
-          if (trackPerformance) {
-            const duration = performance.now() - start;
-            console.log(`Throttled function execution time: ${duration.toFixed(2)}ms`);
-          }
+          const duration = performance.now() - start;
+          console.log(`Throttled function execution time: ${duration.toFixed(2)}ms`);
         }, limit);
       }
     };

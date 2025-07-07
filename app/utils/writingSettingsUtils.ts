@@ -10,44 +10,47 @@ import {
   type WritingSettings,
   type WritingSettingsValidation,
 } from '@/types/writingSettings';
+import {
+  validateBooleanProperties,
+  validateNumericRange,
+  validateRequiredProperties,
+} from '@/utils/common';
 
 // Re-export types and constants for convenience
 export type { WritingSettings, WritingSettingsValidation };
 export { DEFAULT_WRITING_SETTINGS, DEFAULT_VALIDATION_RULES, WRITING_SETTINGS_CONSTANTS };
 
 /**
- * Validate font size
+ * Validate font size using centralized utility
  */
 export const validateFontSize = (
   size: number,
   rules: WritingSettingsValidation = DEFAULT_VALIDATION_RULES
 ): boolean => {
   const { min, max } = rules.fontSize;
-  return typeof size === 'number' && size >= min && size <= max && !Number.isNaN(size);
+  const result = validateNumericRange(size, min, max, 'fontSize');
+  return result.isValid;
 };
 
 /**
- * Validate line height
+ * Validate line height using centralized utility
  */
 export const validateLineHeight = (
   height: number,
   rules: WritingSettingsValidation = DEFAULT_VALIDATION_RULES
 ): boolean => {
   const { min, max } = rules.lineHeight;
-  return typeof height === 'number' && height >= min && height <= max && !Number.isNaN(height);
+  const result = validateNumericRange(height, min, max, 'lineHeight');
+  return result.isValid;
 };
 
 /**
- * Validate complete writing settings object
+ * Validate complete writing settings object using centralized utilities
  */
 export const validateWritingSettings = (
   settings: unknown,
   rules: WritingSettingsValidation = DEFAULT_VALIDATION_RULES
 ): settings is WritingSettings => {
-  if (!settings || typeof settings !== 'object') return false;
-
-  const settingsObj = settings as Record<string, unknown>;
-
   // Check required properties
   const requiredProps: (keyof WritingSettings)[] = [
     'fontSize',
@@ -59,9 +62,10 @@ export const validateWritingSettings = (
     'zenMode',
   ];
 
-  for (const prop of requiredProps) {
-    if (!(prop in settingsObj)) return false;
-  }
+  const requiredResult = validateRequiredProperties(settings, requiredProps);
+  if (!requiredResult.isValid) return false;
+
+  const settingsObj = settings as Record<string, unknown>;
 
   // Validate numeric values
   if (!validateFontSize(settingsObj.fontSize as number, rules)) return false;
@@ -76,11 +80,9 @@ export const validateWritingSettings = (
     'zenMode',
   ];
 
-  for (const prop of booleanProps) {
-    if (typeof settingsObj[prop] !== 'boolean') return false;
-  }
+  const booleanResult = validateBooleanProperties(settingsObj, booleanProps);
 
-  return true;
+  return booleanResult.isValid;
 };
 
 /**
@@ -198,32 +200,23 @@ export const importWritingSettings = (
   }
 };
 
-/**
- * Debounce function untuk auto-save
- */
-export const debounce = <T extends (...args: unknown[]) => void>(
-  func: T,
-  wait: number
-): ((...args: Parameters<T>) => void) => {
-  let timeout: NodeJS.Timeout;
-
-  return (...args: Parameters<T>) => {
-    clearTimeout(timeout);
-    timeout = setTimeout(() => func(...args), wait);
-  };
-};
+// Import common utilities to avoid duplication
+import { debounce } from './common';
 
 /**
  * Deep compare untuk settings objects
+ * Specific implementation for WritingSettings type
  */
 export const areSettingsEqual = (
   settings1: WritingSettings,
   settings2: WritingSettings
 ): boolean => {
   const keys = Object.keys(settings1) as (keyof WritingSettings)[];
-
   return keys.every((key) => settings1[key] === settings2[key]);
 };
+
+// Re-export debounce from common utilities
+export { debounce };
 
 /**
  * Get settings diff untuk debugging

@@ -41,6 +41,7 @@ import { Input } from '@/components/ui/input';
 import { useFileStorage } from '@/hooks/files';
 import { useResponsiveDetection } from '@/hooks/ui/useResponsive';
 import type { FileData } from '@/lib/supabase';
+import { formatBytes, formatRelativeDate } from '@/utils/common';
 import { FilesTable } from './FilesTable';
 import { FilesTableToolbar } from './FilesTableToolbar';
 import { VirtualizedFileList } from './VirtualizedFileList';
@@ -167,22 +168,15 @@ export const FilesManager: React.FC = () => {
     }
   };
 
-  // Format file size
+  // Format file size - using centralized utility
   const formatFileSize = (bytes: number) => {
-    if (bytes === 0) return '0 B';
-    const k = 1024;
-    const sizes = ['B', 'KB', 'MB'];
-    const i = Math.floor(Math.log(bytes) / Math.log(k));
-    return `${Number.parseFloat((bytes / k ** i).toFixed(1))} ${sizes[i]}`;
+    // Use centralized formatBytes from common utils
+    return formatBytes(bytes);
   };
 
-  // Format date
+  // Format date - using centralized utility
   const formatDate = (dateString: string) => {
-    try {
-      return formatDistanceToNow(new Date(dateString), { addSuffix: true });
-    } catch {
-      return 'Unknown';
-    }
+    return formatRelativeDate(dateString, formatDistanceToNow);
   };
 
   return (

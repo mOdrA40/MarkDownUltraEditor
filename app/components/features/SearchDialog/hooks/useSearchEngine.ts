@@ -4,6 +4,7 @@
  */
 
 import { useCallback, useMemo, useState } from 'react';
+import { createSafeRegex } from '@/utils/common';
 import type {
   NavigationDirection,
   ReplaceResult,
@@ -13,39 +14,9 @@ import type {
   SearchResult,
 } from '../types/search.types';
 
-/**
- * Escape special regex characters
- * @param string - String to escape
- * @returns Escaped string
- */
-const escapeRegex = (string: string): string => {
-  return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-};
+// Removed duplicate escapeRegex function - using centralized utility from common.ts
 
-/**
- * Create regex pattern from search term
- * @param searchTerm - Search term
- * @param options - Search options
- * @returns RegExp object
- */
-const createSearchRegex = (searchTerm: string, options: SearchOptions): RegExp => {
-  const { caseSensitive, useRegex = false, wholeWord = false } = options;
-
-  let pattern = useRegex ? searchTerm : escapeRegex(searchTerm);
-
-  if (wholeWord) {
-    pattern = `\\b${pattern}\\b`;
-  }
-
-  const flags = caseSensitive ? 'g' : 'gi';
-
-  try {
-    return new RegExp(pattern, flags);
-  } catch {
-    // Fallback to escaped pattern if regex is invalid
-    return new RegExp(escapeRegex(searchTerm), flags);
-  }
-};
+// Removed duplicate createSearchRegex function - using centralized createSafeRegex from common.ts
 
 /**
  * Find all matches in markdown content
@@ -68,7 +39,12 @@ const findMatches = (
     };
   }
 
-  const regex = createSearchRegex(searchTerm, options);
+  const { caseSensitive, useRegex = false, wholeWord = false } = options;
+  const flags = caseSensitive ? 'g' : 'gi';
+  const regex = createSafeRegex(searchTerm, flags, {
+    shouldEscape: !useRegex,
+    wholeWord,
+  });
   const matches: SearchMatch[] = [];
   let match: RegExpExecArray | null;
 
@@ -198,7 +174,12 @@ export const useSearchEngine = (markdown: string) => {
       };
     }
 
-    const regex = createSearchRegex(searchTerm, searchOptions);
+    const { caseSensitive, useRegex = false, wholeWord = false } = searchOptions;
+    const flags = caseSensitive ? 'g' : 'gi';
+    const regex = createSafeRegex(searchTerm, flags, {
+      shouldEscape: !useRegex,
+      wholeWord,
+    });
     const newMarkdown = markdown.replace(regex, replaceTerm);
     const replacementCount = searchResult.totalMatches;
 

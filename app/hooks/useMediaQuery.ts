@@ -6,6 +6,7 @@
  */
 
 import { useEffect, useState } from 'react';
+import { addMediaQueryListener, matchesMediaQuery } from '@/utils/common';
 
 /**
  * Hook untuk media query matching
@@ -14,28 +15,19 @@ import { useEffect, useState } from 'react';
  */
 export const useMediaQuery = (query: string): boolean => {
   const [matches, setMatches] = useState(() => {
-    if (typeof window === 'undefined') return false;
-    return window.matchMedia(query).matches;
+    return matchesMediaQuery(query);
   });
 
   useEffect(() => {
-    if (typeof window === 'undefined') return;
-
-    const mediaQuery = window.matchMedia(query);
-    const handleChange = (e: MediaQueryListEvent) => {
-      setMatches(e.matches);
-    };
-
     // Initial check
-    setMatches(mediaQuery.matches);
+    setMatches(matchesMediaQuery(query));
 
-    // Add listener
-    mediaQuery.addEventListener('change', handleChange);
+    // Setup listener with centralized utility
+    const cleanup = addMediaQueryListener(query, (e) => {
+      setMatches(e.matches);
+    });
 
-    // Cleanup
-    return () => {
-      mediaQuery.removeEventListener('change', handleChange);
-    };
+    return cleanup;
   }, [query]);
 
   return matches;

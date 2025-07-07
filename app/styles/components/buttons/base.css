@@ -5,111 +5,51 @@
  * @author Axel Modra
  */
 
-/* ===== THEME BUTTON FIXES ===== */
+/* ===== CONSOLIDATED BUTTON FIXES ===== */
 
-/* Theme button hover effects tanpa scale dan border circle */
-.theme-button-fix {
-  transition: filter 0.2s ease, opacity 0.2s ease;
+/* Base button reset - applies to all button fix classes */
+.theme-button-fix,
+.toolbar-button-fix,
+.clean-button,
+.focus-fix {
   transform: none !important;
   border: none !important;
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+/* Theme button specific styles */
+.theme-button-fix {
+  transition: filter 0.2s ease, opacity 0.2s ease;
   will-change: filter, opacity;
 }
 
 .theme-button-fix:hover {
-  transform: none !important;
-  border: none !important;
   filter: brightness(1.1);
 }
 
 .theme-button-fix:active {
-  transform: none !important;
-  border: none !important;
   filter: brightness(0.9);
   opacity: 0.9;
 }
 
-.theme-button-fix:focus {
-  transform: none !important;
-  border: none !important;
-  outline: none !important;
-  box-shadow: none !important;
-}
-
-/* ===== TOOLBAR BUTTON FIXES ===== */
-
-/* Toolbar button hover effects seperti vim/zen mode - clean tanpa border overlap */
-.toolbar-button-fix {
+/* Toolbar and clean button shared styles */
+.toolbar-button-fix,
+.clean-button {
   transition: background-color 0.2s ease, color 0.2s ease, opacity 0.2s ease;
-  transform: none !important;
-  border: none !important;
   will-change: background-color, color, opacity;
 }
 
-.toolbar-button-fix:hover {
-  transform: none !important;
-  border: none !important;
-  background-color: hsl(var(--accent) / 0.8) !important;
-  color: hsl(var(--accent-foreground)) !important;
-}
-
-.toolbar-button-fix:active {
-  transform: none !important;
-  border: none !important;
-  background-color: hsl(var(--accent) / 0.6) !important;
-  opacity: 0.9;
-}
-
-.toolbar-button-fix:focus {
-  transform: none !important;
-  border: none !important;
-  outline: none !important;
-  box-shadow: none !important;
-}
-
-/* ===== CLEAN BUTTON STYLES (VIM/ZEN MODE STYLE) ===== */
-
-/* Clean button styling untuk toolbar - mengikuti gaya vim/zen mode */
-.clean-button {
-  border: none !important;
-  outline: none !important;
-  box-shadow: none !important;
-  transition: background-color 0.2s ease, color 0.2s ease, opacity 0.2s ease;
-  transform: none !important;
-}
-
+.toolbar-button-fix:hover,
 .clean-button:hover {
-  border: none !important;
-  outline: none !important;
-  box-shadow: none !important;
   background-color: hsl(var(--accent) / 0.8) !important;
   color: hsl(var(--accent-foreground)) !important;
-  transform: none !important;
 }
 
+.toolbar-button-fix:active,
 .clean-button:active {
-  border: none !important;
-  outline: none !important;
-  box-shadow: none !important;
   background-color: hsl(var(--accent) / 0.6) !important;
   opacity: 0.9;
-  transform: none !important;
-}
-
-.clean-button:focus {
-  border: none !important;
-  outline: none !important;
-  box-shadow: none !important;
-  transform: none !important;
-}
-
-/* ===== FOCUS FIXES ===== */
-
-/* Focus states tanpa scroll issues - clean seperti vim/zen mode */
-.focus-fix:focus {
-  outline: none !important;
-  box-shadow: none !important;
-  border: none !important;
-  transform: none !important;
 }
 
 /* ===== RESPONSIVE BUTTON FIXES ===== */

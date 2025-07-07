@@ -379,53 +379,29 @@ export const templateUtils = {
 
   /**
    * Search templates by name or description
+   * Uses centralized search logic from documentTemplates
    */
   searchTemplates: (templates: TemplateData[], query: string): TemplateData[] => {
+    // Use the same search logic as documentTemplates.searchTemplates
     const lowerQuery = query.toLowerCase();
     return templates.filter(
       (template) =>
         template.name.toLowerCase().includes(lowerQuery) ||
-        template.description.toLowerCase().includes(lowerQuery)
+        template.description.toLowerCase().includes(lowerQuery) ||
+        template.tags?.some((tag) => tag.toLowerCase().includes(lowerQuery))
     );
   },
 };
 
+// Import common utilities to avoid duplication
+import { debounce, throttle } from '@/utils/common';
+
 /**
- * Performance utilities
+ * Performance utilities - using centralized functions
  */
 export const performanceUtils = {
-  /**
-   * Debounce function
-   */
-  debounce: <T extends (...args: unknown[]) => unknown>(
-    func: T,
-    wait: number
-  ): ((...args: Parameters<T>) => void) => {
-    let timeout: NodeJS.Timeout;
-    return (...args: Parameters<T>) => {
-      clearTimeout(timeout);
-      timeout = setTimeout(() => func(...args), wait);
-    };
-  },
-
-  /**
-   * Throttle function
-   */
-  throttle: <T extends (...args: unknown[]) => unknown>(
-    func: T,
-    limit: number
-  ): ((...args: Parameters<T>) => void) => {
-    let inThrottle: boolean;
-    return (...args: Parameters<T>) => {
-      if (!inThrottle) {
-        func(...args);
-        inThrottle = true;
-        setTimeout(() => {
-          inThrottle = false;
-        }, limit);
-      }
-    };
-  },
+  debounce,
+  throttle,
 
   /**
    * Measure execution time

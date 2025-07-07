@@ -27,20 +27,8 @@ const getScreenSizeFromWidth = (width: number): ScreenSize => {
   return 'desktop';
 };
 
-/**
- * Debounce function untuk resize events
- */
-const debounce = <T extends (...args: unknown[]) => unknown>(
-  func: T,
-  wait: number
-): ((...args: Parameters<T>) => void) => {
-  let timeout: NodeJS.Timeout;
-
-  return (...args: Parameters<T>) => {
-    clearTimeout(timeout);
-    timeout = setTimeout(() => func(...args), wait);
-  };
-};
+// Import common utilities to avoid duplication
+import { debounce } from '@/utils/common';
 
 /**
  * Hook untuk mendeteksi dan mengelola responsive screen size

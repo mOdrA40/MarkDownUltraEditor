@@ -5,6 +5,7 @@
  * @author Axel Modra
  */
 
+import { matchesMediaQuery } from '@/utils/common';
 import { BREAKPOINTS } from '../constants/settings.constants';
 import type { BreakpointType } from '../types/settings.types';
 
@@ -82,11 +83,9 @@ export const getMediaQuery = (breakpoint: BreakpointType): string => {
  * @param breakpoint - Breakpoint type
  * @returns True jika media query match
  */
-export const matchesMediaQuery = (breakpoint: BreakpointType): boolean => {
-  if (typeof window === 'undefined') return false;
-
+export const matchesBreakpoint = (breakpoint: BreakpointType): boolean => {
   const mediaQuery = getMediaQuery(breakpoint);
-  return window.matchMedia(mediaQuery).matches;
+  return matchesMediaQuery(mediaQuery);
 };
 
 /**
@@ -99,46 +98,11 @@ export const getCurrentBreakpoint = (): BreakpointType => {
   return getBreakpointFromWidth(window.innerWidth);
 };
 
-/**
- * Debounce function untuk resize events
- * @param func - Function yang akan di-debounce
- * @param wait - Delay dalam milliseconds
- * @returns Debounced function
- */
-export const debounce = <T extends (...args: unknown[]) => unknown>(
-  func: T,
-  wait: number
-): ((...args: Parameters<T>) => void) => {
-  let timeout: NodeJS.Timeout;
+// Import common utilities to avoid duplication
+import { debounce, throttle } from '@/utils/common';
 
-  return (...args: Parameters<T>) => {
-    clearTimeout(timeout);
-    timeout = setTimeout(() => func(...args), wait);
-  };
-};
-
-/**
- * Throttle function untuk resize events
- * @param func - Function yang akan di-throttle
- * @param limit - Limit dalam milliseconds
- * @returns Throttled function
- */
-export const throttle = <T extends (...args: unknown[]) => unknown>(
-  func: T,
-  limit: number
-): ((...args: Parameters<T>) => void) => {
-  let inThrottle: boolean;
-
-  return (...args: Parameters<T>) => {
-    if (!inThrottle) {
-      func(...args);
-      inThrottle = true;
-      setTimeout(() => {
-        inThrottle = false;
-      }, limit);
-    }
-  };
-};
+// Re-export for backward compatibility
+export { debounce, throttle };
 
 /**
  * Mendapatkan viewport dimensions
@@ -216,22 +180,5 @@ export const getSafeAreaInsets = (): {
   };
 };
 
-/**
- * Mendapatkan preferred color scheme
- * @returns 'light' atau 'dark'
- */
-export const getPreferredColorScheme = (): 'light' | 'dark' => {
-  if (typeof window === 'undefined') return 'light';
-
-  return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
-};
-
-/**
- * Cek apakah user prefer reduced motion
- * @returns True jika prefer reduced motion
- */
-export const prefersReducedMotion = (): boolean => {
-  if (typeof window === 'undefined') return false;
-
-  return window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-};
+// Removed duplicate getPreferredColorScheme and prefersReducedMotion functions
+// Using centralized utilities from common.ts

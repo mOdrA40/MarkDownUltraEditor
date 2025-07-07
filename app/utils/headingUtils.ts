@@ -140,7 +140,7 @@ export const scrollToHeading = (
 
     // Wait for next frame to ensure DOM is ready
     requestAnimationFrame(() => {
-      const element = document.getElementById(headingId);
+      const element = safeGetElementById(headingId);
       if (!element) {
         console.warn(`Heading dengan ID "${headingId}" tidak ditemukan`);
         resolve(false);
@@ -148,21 +148,8 @@ export const scrollToHeading = (
       }
 
       // Find the correct scroll container
-      let targetContainer: Element;
-
-      if (container) {
-        targetContainer = container;
-      } else {
-        // Try to find preview pane container first
-        const previewPane = document.querySelector('[data-preview-pane]');
-        if (previewPane) {
-          targetContainer = previewPane;
-        } else {
-          // Fallback to prose container or document
-          const proseContainer = document.querySelector('.prose');
-          targetContainer = proseContainer || document.documentElement;
-        }
-      }
+      const targetContainer =
+        container || findScrollContainer(element, ['[data-preview-pane]', '.prose']);
 
       // Calculate scroll position
       const elementRect = element.getBoundingClientRect();
@@ -475,40 +462,11 @@ export const parseHeadingIdToInfo = (
   return { lineNumber, text };
 };
 
-/**
- * Debounce function untuk optimasi performance
- */
-export const debounce = <T extends (...args: unknown[]) => unknown>(
-  func: T,
-  wait: number
-): ((...args: Parameters<T>) => void) => {
-  let timeout: NodeJS.Timeout;
+// Import common utilities to avoid duplication
+import { debounce, findScrollContainer, safeGetElementById, throttle } from './common';
 
-  return (...args: Parameters<T>) => {
-    clearTimeout(timeout);
-    timeout = setTimeout(() => func(...args), wait);
-  };
-};
-
-/**
- * Throttle function untuk scroll events
- */
-export const throttle = <T extends (...args: unknown[]) => unknown>(
-  func: T,
-  limit: number
-): ((...args: Parameters<T>) => void) => {
-  let inThrottle: boolean;
-
-  return (...args: Parameters<T>) => {
-    if (!inThrottle) {
-      func(...args);
-      inThrottle = true;
-      setTimeout(() => {
-        inThrottle = false;
-      }, limit);
-    }
-  };
-};
+// Re-export for backward compatibility
+export { debounce, throttle };
 
 /**
  * Check if element is in viewport

@@ -4,13 +4,13 @@
  */
 
 import { useCallback, useEffect, useRef, useState } from 'react';
+import { addEventListenerWithCleanup, throttle } from '@/utils/common';
 import {
   type DeviceType,
   getDeviceType,
   getWindowDimensions,
   MEDIA_QUERIES,
   type ResponsiveState,
-  throttle,
 } from '@/utils/responsive';
 
 /**
@@ -118,8 +118,8 @@ export const useResponsiveDetection = (
     // Throttled resize handler
     const throttledUpdate = throttle(updateResponsiveState, throttleDelay);
 
-    // Setup resize listener
-    window.addEventListener('resize', throttledUpdate);
+    // Setup resize listener with centralized utility
+    const cleanupResize = addEventListenerWithCleanup(window, 'resize', throttledUpdate);
 
     // Setup media query listeners untuk better performance
     const mediaQueryLists = [
@@ -132,9 +132,10 @@ export const useResponsiveDetection = (
       updateResponsiveState();
     };
 
-    // Add listeners to all media queries
-    mediaQueryLists.forEach((mql) => {
+    // Add listeners to all media queries with cleanup tracking
+    const cleanupMediaQueries = mediaQueryLists.map((mql) => {
       mql.addEventListener('change', handleMediaQueryChange);
+      return () => mql.removeEventListener('change', handleMediaQueryChange);
     });
 
     // Initial update
@@ -142,10 +143,8 @@ export const useResponsiveDetection = (
 
     // Cleanup function
     cleanupRef.current = () => {
-      window.removeEventListener('resize', throttledUpdate);
-      mediaQueryLists.forEach((mql) => {
-        mql.removeEventListener('change', handleMediaQueryChange);
-      });
+      cleanupResize();
+      cleanupMediaQueries.forEach((cleanup) => cleanup());
     };
 
     return cleanupRef.current;

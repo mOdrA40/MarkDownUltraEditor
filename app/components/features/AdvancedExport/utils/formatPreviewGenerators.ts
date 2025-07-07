@@ -3,6 +3,7 @@
  * @author Axel Modra
  */
 
+import { isDarkMode } from '@/utils/common';
 import type { HTMLGeneratorOptions, ThemeConfig } from '../types/export.types';
 import { THEMES } from './constants';
 
@@ -58,90 +59,7 @@ const getTableHeaderBackgroundColor = (isDarkTheme: boolean, accentColor: string
   return accentColor; // Untuk theme light, gunakan accent color normal
 };
 
-/**
- * Force check if current app theme is dark by checking multiple sources
- */
-const isCurrentAppThemeDark = (): boolean => {
-  if (typeof window === 'undefined') return false;
-
-  // Check multiple possible sources for theme information
-  const body = document.body;
-  const html = document.documentElement;
-
-  // Check data attributes
-  const bodyTheme = body.getAttribute('data-theme');
-  const htmlTheme = html.getAttribute('data-theme');
-
-  // Check classes
-  const hasDarkClass =
-    body.classList.contains('dark') ||
-    body.classList.contains('theme-dark') ||
-    html.classList.contains('dark') ||
-    html.classList.contains('theme-dark');
-
-  // Check if theme is explicitly dark
-  const isExplicitlyDark = bodyTheme === 'dark' || htmlTheme === 'dark';
-
-  // Check CSS custom properties
-  const rootStyles = getComputedStyle(html);
-  const bgColor = rootStyles.getPropertyValue('--background') || '';
-  const textColor = rootStyles.getPropertyValue('--foreground') || '';
-
-  // Dark theme typically has dark background colors
-  const hasDarkBgColor =
-    bgColor.includes('0f172a') ||
-    bgColor.includes('1e293b') ||
-    bgColor.includes('1f2937') ||
-    bgColor.includes('111827') ||
-    bgColor.includes('1a1a1a');
-
-  // Light text color indicates dark theme
-  const hasLightTextColor =
-    textColor.includes('f1f5f9') || textColor.includes('ffffff') || textColor.includes('e5e7eb');
-
-  // Additional check for theme selector state
-  const themeSelector = document.querySelector('[data-theme-selector]') as HTMLElement;
-  const selectedTheme = themeSelector?.getAttribute('data-current-theme') || '';
-  const isSelectedDark = selectedTheme === 'dark';
-
-  // Check for dark theme in localStorage
-  let storedTheme = '';
-  try {
-    storedTheme = localStorage.getItem('theme') || localStorage.getItem('selectedTheme') || '';
-  } catch {
-    // Ignore localStorage errors
-  }
-  const isStoredDark = storedTheme === 'dark';
-
-  const result =
-    isExplicitlyDark ||
-    hasDarkClass ||
-    hasDarkBgColor ||
-    hasLightTextColor ||
-    isSelectedDark ||
-    isStoredDark;
-
-  // Debug logging in development
-  if (process.env.NODE_ENV === 'development') {
-    console.log('Dark theme detection:', {
-      isExplicitlyDark,
-      hasDarkClass,
-      hasDarkBgColor,
-      hasLightTextColor,
-      isSelectedDark,
-      isStoredDark,
-      result,
-      bodyTheme,
-      htmlTheme,
-      bgColor,
-      textColor,
-      selectedTheme,
-      storedTheme,
-    });
-  }
-
-  return result;
-};
+// Removed duplicate isCurrentAppThemeDark function - using centralized isDarkMode from common.ts
 
 /**
  * Detect if current context is dark theme
@@ -170,7 +88,7 @@ const isDarkThemeContext = (options?: HTMLGeneratorOptions): boolean => {
 
   // Use comprehensive dark theme detection
   if (typeof window !== 'undefined') {
-    const isDark = isCurrentAppThemeDark();
+    const isDark = isDarkMode();
 
     // Additional fallback: check if body background is dark
     if (!isDark) {

@@ -101,37 +101,8 @@ export const getWindowDimensions = () => {
   };
 };
 
-/**
- * Utility function untuk debounce resize events
- */
-export const debounce = <T extends (...args: unknown[]) => void>(
-  func: T,
-  wait: number
-): ((...args: Parameters<T>) => void) => {
-  let timeout: NodeJS.Timeout;
+// Import common utilities to avoid duplication
+import { debounce, throttle } from './common';
 
-  return (...args: Parameters<T>) => {
-    clearTimeout(timeout);
-    timeout = setTimeout(() => func(...args), wait);
-  };
-};
-
-/**
- * Utility function untuk throttle resize events
- */
-export const throttle = <T extends (...args: unknown[]) => void>(
-  func: T,
-  limit: number
-): ((...args: Parameters<T>) => void) => {
-  let inThrottle: boolean;
-
-  return (...args: Parameters<T>) => {
-    if (!inThrottle) {
-      func(...args);
-      inThrottle = true;
-      setTimeout(() => {
-        inThrottle = false;
-      }, limit);
-    }
-  };
-};
+// Re-export for backward compatibility
+export { debounce, throttle };

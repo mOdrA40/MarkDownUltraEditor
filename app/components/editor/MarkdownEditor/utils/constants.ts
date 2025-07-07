@@ -244,26 +244,12 @@ export const CSS_CLASSES = {
   PREVIEW_HIDDEN: 'preview-hidden',
 } as const;
 
-/**
- * Animation durations (in milliseconds)
- */
-export const ANIMATION_DURATION = {
-  FAST: 150,
-  NORMAL: 300,
-  SLOW: 500,
-  VERY_SLOW: 1000,
-} as const;
+// Import common constants to avoid duplication
+import { ANIMATION_DURATIONS, DEBOUNCE_DELAYS } from '@/utils/common';
 
-/**
- * Debounce delays (in milliseconds)
- */
-export const DEBOUNCE_DELAY = {
-  SEARCH: 300,
-  AUTO_SAVE: 2000,
-  RESIZE: 100,
-  SCROLL: 50,
-  INPUT: 500,
-} as const;
+// Re-export with original names for backward compatibility
+export const ANIMATION_DURATION = ANIMATION_DURATIONS;
+export const DEBOUNCE_DELAY = DEBOUNCE_DELAYS;
 
 /**
  * File size limits (in bytes)

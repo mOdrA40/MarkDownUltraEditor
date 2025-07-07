@@ -1,163 +1,123 @@
 /**
- * Theme Styles
- * Definisi semua theme colors dan variants
- * 
+ * Theme CSS Variables - CONSOLIDATED
+ * Definisi CSS variables untuk semua theme - menggantikan duplikasi
+ *
  * @author Axel Modra
  */
 
-/* ===== THEME DEFINITIONS ===== */
+/* ===== CONSOLIDATED THEME DEFINITIONS ===== */
 
 /* Ocean Theme */
 .theme-ocean {
   --background: 240 100% 98%; /* #f0f9ff */
   --foreground: 207 100% 22%; /* #0c4a6e */
-
   --card: 199 100% 94%; /* #e0f2fe */
   --card-foreground: 207 100% 22%; /* #0c4a6e */
-
   --popover: 199 100% 94%; /* #e0f2fe */
   --popover-foreground: 207 100% 22%; /* #0c4a6e */
-
   --primary: 199 100% 39%; /* #0284c7 */
   --primary-foreground: 0 0% 100%;
-
   --secondary: 199 100% 94%; /* #e0f2fe */
   --secondary-foreground: 207 100% 22%; /* #0c4a6e */
-
   --muted: 199 100% 94%; /* #e0f2fe */
   --muted-foreground: 207 50% 45%;
-
   --accent: 199 100% 39%; /* #0284c7 */
   --accent-foreground: 0 0% 100%;
-
   --destructive: 0 84.2% 60.2%;
   --destructive-foreground: 210 40% 98%;
-
-  --border: 199 100% 89%; /* lighter ocean */
+  --border: 199 100% 89%;
   --input: 199 100% 89%;
-  --ring: 199 100% 39%; /* #0284c7 */
+  --ring: 199 100% 39%;
 }
 
 /* Forest Theme */
 .theme-forest {
   --background: 120 100% 97%; /* #f0fdf4 */
   --foreground: 140 100% 20%; /* #14532d */
-
   --card: 138 76% 92%; /* #dcfce7 */
   --card-foreground: 140 100% 20%; /* #14532d */
-
   --popover: 138 76% 92%; /* #dcfce7 */
   --popover-foreground: 140 100% 20%; /* #14532d */
-
   --primary: 160 84% 39%; /* #10b981 */
   --primary-foreground: 0 0% 100%;
-
   --secondary: 138 76% 92%; /* #dcfce7 */
   --secondary-foreground: 140 100% 20%; /* #14532d */
-
   --muted: 138 76% 92%; /* #dcfce7 */
   --muted-foreground: 140 50% 45%;
-
   --accent: 160 84% 39%; /* #10b981 */
   --accent-foreground: 0 0% 100%;
-
   --destructive: 0 84.2% 60.2%;
   --destructive-foreground: 210 40% 98%;
-
-  --border: 138 76% 87%; /* lighter forest */
+  --border: 138 76% 87%;
   --input: 138 76% 87%;
-  --ring: 160 84% 39%; /* #10b981 */
+  --ring: 160 84% 39%;
 }
 
 /* Sunset Theme */
 .theme-sunset {
   --background: 33 100% 96%; /* #fff7ed */
   --foreground: 17 88% 34%; /* #9a3412 */
-
   --card: 24 100% 88%; /* #fed7aa */
   --card-foreground: 17 88% 34%; /* #9a3412 */
-
   --popover: 24 100% 88%; /* #fed7aa */
   --popover-foreground: 17 88% 34%; /* #9a3412 */
-
   --primary: 20 91% 48%; /* #f97316 */
   --primary-foreground: 0 0% 100%;
-
   --secondary: 24 100% 88%; /* #fed7aa */
   --secondary-foreground: 17 88% 34%; /* #9a3412 */
-
   --muted: 24 100% 88%; /* #fed7aa */
   --muted-foreground: 17 50% 55%;
-
   --accent: 20 91% 48%; /* #f97316 */
   --accent-foreground: 0 0% 100%;
-
   --destructive: 0 84.2% 60.2%;
   --destructive-foreground: 210 40% 98%;
-
-  --border: 24 100% 83%; /* lighter sunset */
+  --border: 24 100% 83%;
   --input: 24 100% 83%;
-  --ring: 20 91% 48%; /* #f97316 */
+  --ring: 20 91% 48%;
 }
 
 /* Purple Theme */
 .theme-purple {
   --background: 270 100% 98%; /* #faf5ff */
   --foreground: 270 91% 32%; /* #581c87 */
-
   --card: 266 100% 92%; /* #e9d5ff */
   --card-foreground: 270 91% 32%; /* #581c87 */
-
   --popover: 266 100% 92%; /* #e9d5ff */
   --popover-foreground: 270 91% 32%; /* #581c87 */
-
   --primary: 262 83% 58%; /* #a855f7 */
   --primary-foreground: 0 0% 100%;
-
   --secondary: 266 100% 92%; /* #e9d5ff */
   --secondary-foreground: 270 91% 32%; /* #581c87 */
-
   --muted: 266 100% 92%; /* #e9d5ff */
   --muted-foreground: 270 50% 55%;
-
   --accent: 262 83% 58%; /* #a855f7 */
   --accent-foreground: 0 0% 100%;
-
   --destructive: 0 84.2% 60.2%;
   --destructive-foreground: 210 40% 98%;
-
-  --border: 266 100% 87%; /* lighter purple */
+  --border: 266 100% 87%;
   --input: 266 100% 87%;
-  --ring: 262 83% 58%; /* #a855f7 */
+  --ring: 262 83% 58%;
 }
 
 /* Rose Theme */
 .theme-rose {
   --background: 0 100% 98%; /* #fff1f2 */
   --foreground: 347 77% 30%; /* #881337 */
-
   --card: 351 100% 86%; /* #fecdd3 */
   --card-foreground: 347 77% 30%; /* #881337 */
-
   --popover: 351 100% 86%; /* #fecdd3 */
   --popover-foreground: 347 77% 30%; /* #881337 */
-
   --primary: 346 77% 49%; /* #f43f5e */
   --primary-foreground: 0 0% 100%;
-
   --secondary: 351 100% 86%; /* #fecdd3 */
   --secondary-foreground: 347 77% 30%; /* #881337 */
-
   --muted: 351 100% 86%; /* #fecdd3 */
   --muted-foreground: 347 50% 55%;
-
   --accent: 346 77% 49%; /* #f43f5e */
   --accent-foreground: 0 0% 100%;
-
   --destructive: 0 84.2% 60.2%;
   --destructive-foreground: 210 40% 98%;
-
-  --border: 351 100% 81%; /* lighter rose */
+  --border: 351 100% 81%;
   --input: 351 100% 81%;
-  --ring: 346 77% 49%; /* #f43f5e */
+  --ring: 346 77% 49%;
 }

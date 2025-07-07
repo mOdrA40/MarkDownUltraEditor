@@ -120,49 +120,12 @@ export const generateAccessibleId = (prefix = 'accessible'): string => {
   return `${prefix}-${Math.random().toString(36).substring(2, 11)}`;
 };
 
-/**
- * Check color contrast ratio
- */
-export const getContrastRatio = (foreground: string, background: string): number => {
-  const getLuminance = (color: string): number => {
-    // Convert hex to RGB
-    const hex = color.replace('#', '');
-    const r = Number.parseInt(hex.substring(0, 2), 16) / 255;
-    const g = Number.parseInt(hex.substring(2, 4), 16) / 255;
-    const b = Number.parseInt(hex.substring(4, 6), 16) / 255;
+// Import common utilities to avoid duplication
+import { calculateContrastRatio, meetsContrastRequirement } from './common';
 
-    // Calculate relative luminance
-    const sRGB = [r, g, b].map((c) => {
-      return c <= 0.03928 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4;
-    });
-
-    return 0.2126 * sRGB[0] + 0.7152 * sRGB[1] + 0.0722 * sRGB[2];
-  };
-
-  const l1 = getLuminance(foreground);
-  const l2 = getLuminance(background);
-  const lighter = Math.max(l1, l2);
-  const darker = Math.min(l1, l2);
-
-  return (lighter + 0.05) / (darker + 0.05);
-};
-
-/**
- * Check if contrast ratio meets WCAG standards
- */
-export const meetsContrastRequirement = (
-  foreground: string,
-  background: string,
-  level: 'AA' | 'AAA' = 'AA',
-  size: 'normal' | 'large' = 'normal'
-): boolean => {
-  const ratio = getContrastRatio(foreground, background);
-
-  if (level === 'AAA') {
-    return size === 'large' ? ratio >= 4.5 : ratio >= 7;
-  }
-  return size === 'large' ? ratio >= 3 : ratio >= 4.5;
-};
+// Re-export with original function name for backward compatibility
+export const getContrastRatio = calculateContrastRatio;
+export { meetsContrastRequirement };
 
 /**
  * Add skip link untuk keyboard navigation

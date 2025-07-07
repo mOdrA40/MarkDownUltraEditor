@@ -5,7 +5,6 @@
 
 // Editor hooks
 export { useVimMode } from './useVimMode';
-export { useWritingSettings } from './useWritingSettings';
 
 // Vim utilities
 export * from './vim/vimCommands';

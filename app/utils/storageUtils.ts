@@ -2,6 +2,9 @@
  * Utility functions for localStorage management and capacity checking
  */
 
+// Import common utilities to avoid duplication
+import { formatBytes, STORAGE_THRESHOLDS } from './common';
+
 export interface StorageInfo {
   used: number;
   available: number;
@@ -12,18 +15,8 @@ export interface StorageInfo {
   totalFormatted: string;
 }
 
-/**
- * Format bytes to human readable format
- */
-export const formatBytes = (bytes: number): string => {
-  if (bytes === 0) return '0 Bytes';
-
-  const k = 1024;
-  const sizes = ['Bytes', 'KB', 'MB', 'GB'];
-  const i = Math.floor(Math.log(bytes) / Math.log(k));
-
-  return `${Number.parseFloat((bytes / k ** i).toFixed(2))} ${sizes[i]}`;
-};
+// Re-export for backward compatibility
+export { formatBytes, STORAGE_THRESHOLDS };
 
 /**
  * Get localStorage usage information
@@ -155,13 +148,7 @@ export const testStorageCapacity = (): number => {
   }
 };
 
-/**
- * Storage quota warning thresholds
- */
-export const STORAGE_THRESHOLDS = {
-  WARNING: 80, // 80% usage
-  CRITICAL: 95, // 95% usage
-} as const;
+// STORAGE_THRESHOLDS already imported at the top
 
 /**
  * Get storage warning level

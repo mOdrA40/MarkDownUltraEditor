@@ -20,17 +20,23 @@ export {
   codeTemplates,
   getTemplatesByCategory as getCodeTemplatesByCategory,
 } from '../utils/codeTemplates';
+// Import performance utilities from common (avoid duplication)
+export {
+  debounce as headingDebounce,
+  debounce as responsiveDebounce,
+  debounce as writingSettingsDebounce,
+  throttle as headingThrottle,
+  throttle as responsiveThrottle,
+} from '../utils/common';
 export {
   documentTemplates,
   getTemplatesByCategory as getDocumentTemplatesByCategory,
 } from '../utils/documentTemplates';
 export {
-  debounce as headingDebounce,
   generateHeadingId,
   isElementInViewport as isHeadingElementInViewport,
   parseMarkdownHeadings,
   scrollToHeading,
-  throttle as headingThrottle,
 } from '../utils/headingUtils';
 export {
   calculateTargetIndex,
@@ -40,10 +46,8 @@ export {
 export { handleOutlineItemClick } from '../utils/outlineUtils';
 export {
   BREAKPOINTS,
-  debounce as responsiveDebounce,
   getDeviceType,
   MEDIA_QUERIES,
-  throttle as responsiveThrottle,
 } from '../utils/responsive';
 export {
   formatCategoryName,
@@ -65,7 +69,6 @@ export * from '../utils/toastUtils';
 export * from '../utils/vimUtils';
 export {
   areSettingsEqual,
-  debounce as writingSettingsDebounce,
   exportWritingSettings,
   getSettingsDiff,
   importWritingSettings,

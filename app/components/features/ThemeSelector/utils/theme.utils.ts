@@ -108,20 +108,11 @@ export const calculateLuminance = (hex: string): number => {
   return 0.2126 * rs + 0.7152 * gs + 0.0722 * bs;
 };
 
-/**
- * Menghitung contrast ratio antara dua warna
- * @param color1 - Warna pertama (hex)
- * @param color2 - Warna kedua (hex)
- * @returns Contrast ratio (1-21)
- */
-export const calculateContrastRatio = (color1: string, color2: string): number => {
-  const lum1 = calculateLuminance(color1);
-  const lum2 = calculateLuminance(color2);
-  const brightest = Math.max(lum1, lum2);
-  const darkest = Math.min(lum1, lum2);
+// Import common utilities to avoid duplication
+import { calculateContrastRatio, meetsContrastRequirement } from '@/utils/common';
 
-  return (brightest + 0.05) / (darkest + 0.05);
-};
+// Re-export for backward compatibility
+export { calculateContrastRatio };
 
 /**
  * Mengecek apakah kombinasi warna memenuhi standar WCAG AA
@@ -130,7 +121,7 @@ export const calculateContrastRatio = (color1: string, color2: string): number =
  * @returns True jika memenuhi standar WCAG AA
  */
 export const meetsWCAGAA = (foreground: string, background: string): boolean => {
-  return calculateContrastRatio(foreground, background) >= 4.5;
+  return meetsContrastRequirement(foreground, background, 'AA', 'normal');
 };
 
 /**

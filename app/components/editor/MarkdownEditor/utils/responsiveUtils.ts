@@ -313,40 +313,11 @@ export const getResponsiveMaxWidth = (deviceType: DeviceType): string => {
   }
 };
 
-/**
- * Debounce function for resize events
- */
-export const debounce = <T extends (...args: unknown[]) => unknown>(
-  func: T,
-  wait: number
-): ((...args: Parameters<T>) => void) => {
-  let timeout: NodeJS.Timeout;
+// Import common utilities to avoid duplication
+import { debounce, throttle } from '@/utils/common';
 
-  return (...args: Parameters<T>) => {
-    clearTimeout(timeout);
-    timeout = setTimeout(() => func(...args), wait);
-  };
-};
-
-/**
- * Throttle function for scroll events
- */
-export const throttle = <T extends (...args: unknown[]) => unknown>(
-  func: T,
-  limit: number
-): ((...args: Parameters<T>) => void) => {
-  let inThrottle: boolean;
-
-  return (...args: Parameters<T>) => {
-    if (!inThrottle) {
-      func(...args);
-      inThrottle = true;
-      setTimeout(() => {
-        inThrottle = false;
-      }, limit);
-    }
-  };
-};
+// Re-export for backward compatibility
+export { debounce, throttle };
 
 /**
  * Create responsive observer for element size changes

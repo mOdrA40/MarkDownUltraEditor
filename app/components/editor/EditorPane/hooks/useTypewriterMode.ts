@@ -4,6 +4,7 @@
  */
 
 import { useEffect } from 'react';
+import { addMultipleEventListeners } from '@/utils/common';
 import type { TypewriterConfig } from '../types/editorPane.types';
 
 /**
@@ -32,14 +33,10 @@ export const useTypewriterMode = (config: TypewriterConfig): void => {
       }
     };
 
-    // Add event listeners for typewriter effect
-    textarea.addEventListener('input', handleScroll);
-    textarea.addEventListener('keyup', handleScroll);
-
-    // Cleanup event listeners
-    return () => {
-      textarea.removeEventListener('input', handleScroll);
-      textarea.removeEventListener('keyup', handleScroll);
-    };
+    // Add event listeners for typewriter effect with centralized utility
+    return addMultipleEventListeners(textarea, [
+      { type: 'input', listener: handleScroll },
+      { type: 'keyup', listener: handleScroll },
+    ]);
   }, [enabled, textareaRef]);
 };

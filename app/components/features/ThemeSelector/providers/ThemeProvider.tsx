@@ -13,6 +13,7 @@ import React, {
   useEffect,
   useState,
 } from 'react';
+import { safeQuerySelectorAll } from '@/utils/common';
 import { themes } from '../constants/themes.constants';
 import type { Theme } from '../types/theme.types';
 
@@ -93,13 +94,11 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({
 
     // Force immediate application with high priority
     setTimeout(() => {
-      const buttons = document.querySelectorAll(
+      const buttons = safeQuerySelectorAll<HTMLElement>(
         'button[data-theme-button="true"], .editor-header button, .toolbar button'
       );
       buttons.forEach((button) => {
-        if (button instanceof HTMLElement) {
-          button.style.setProperty('color', buttonColor, 'important');
-        }
+        button.style.setProperty('color', buttonColor, 'important');
       });
     }, 0);
 
@@ -116,13 +115,11 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({
 
     const applyButtonColors = () => {
       const buttonColor = buttonColorMap[currentTheme.id] || currentTheme.text;
-      const buttons = document.querySelectorAll(
+      const buttons = safeQuerySelectorAll<HTMLElement>(
         'button[data-theme-button="true"], .editor-header button, .toolbar button'
       );
       buttons.forEach((button) => {
-        if (button instanceof HTMLElement) {
-          button.style.setProperty('color', buttonColor, 'important');
-        }
+        button.style.setProperty('color', buttonColor, 'important');
       });
     };
 

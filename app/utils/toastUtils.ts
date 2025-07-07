@@ -4,6 +4,7 @@
  */
 
 import { TOAST_CONFIG } from '@/types/toast';
+import { clearAllTimeouts, createSafeTimeout } from '@/utils/common';
 
 /**
  * Counter untuk unique ID generation
@@ -32,22 +33,26 @@ export const addToRemoveQueue = (
   dispatch: (action: { type: 'REMOVE_TOAST'; toastId?: string }) => void,
   delay: number = TOAST_CONFIG.REMOVE_DELAY
 ): void => {
-  // Clear existing timeout jika ada
-  if (toastTimeouts.has(toastId)) {
-    clearTimeout(toastTimeouts.get(toastId));
-    toastTimeouts.delete(toastId);
-  }
+  // Use centralized safe timeout utility
+  createSafeTimeout(
+    () => {
+      dispatch({
+        type: 'REMOVE_TOAST',
+        toastId: toastId,
+      });
+    },
+    delay,
+    toastTimeouts,
+    toastId
+  );
+};
 
-  // Set new timeout
-  const timeout = setTimeout(() => {
-    toastTimeouts.delete(toastId);
-    dispatch({
-      type: 'REMOVE_TOAST',
-      toastId: toastId,
-    });
-  }, delay);
-
-  toastTimeouts.set(toastId, timeout);
+/**
+ * Clear all pending toast timeouts
+ * Useful for cleanup on unmount or reset
+ */
+export const clearAllToastTimeouts = (): void => {
+  clearAllTimeouts(toastTimeouts);
 };
 
 /**
@@ -60,15 +65,7 @@ export const clearToastTimeout = (toastId: string): void => {
   }
 };
 
-/**
- * Clear semua toast timeouts
- */
-export const clearAllToastTimeouts = (): void => {
-  toastTimeouts.forEach((timeout) => {
-    clearTimeout(timeout);
-  });
-  toastTimeouts.clear();
-};
+// Removed duplicate clearAllToastTimeouts function - using centralized utility above
 
 /**
  * Validate toast input

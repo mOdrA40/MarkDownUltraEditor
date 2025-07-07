@@ -6,6 +6,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import isEqual from 'react-fast-compare';
 import { useMemoOne } from 'use-memo-one';
+import { createSafeTimeout } from '@/utils/common';
 
 /**
  * Enhanced useMemo with deep comparison
@@ -196,7 +197,7 @@ export function useBatchedUpdates<T>(
         clearTimeout(timeoutRef.current);
       }
 
-      timeoutRef.current = setTimeout(() => {
+      timeoutRef.current = createSafeTimeout(() => {
         setValue((prev) => {
           let newValue = prev;
           for (const update of pendingUpdates.current) {

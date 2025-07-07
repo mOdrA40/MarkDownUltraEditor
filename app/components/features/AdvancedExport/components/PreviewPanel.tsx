@@ -6,6 +6,7 @@ import rehypeHighlight from 'rehype-highlight';
 import remarkGfm from 'remark-gfm';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
+import { generateKey } from '@/utils/common';
 import { generateHeaderStyles } from '@/utils/themeUtils';
 import { createMarkdownComponents } from '../../../editor/PreviewPane/components/MarkdownComponents';
 import { useHighlightJs } from '../../../editor/PreviewPane/hooks/useHighlightJs';
@@ -236,7 +237,7 @@ export const PreviewPanel: React.FC<PreviewPanelProps> = ({
       markdown.substring(0, 50), // Include part of markdown for content changes
       currentTheme?.id || 'default',
     ];
-    return keyComponents.join('-');
+    return generateKey(keyComponents);
   }, [
     options.format,
     options.theme,
