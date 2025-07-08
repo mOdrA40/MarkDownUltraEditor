@@ -10,6 +10,7 @@
 
 /* Specific component styles */
 @import "./buttons/base.css";
+@import "./buttons/auth-button.css";
 @import "./dialogs/base.css";
 @import "./navigation/index.css";
 @import "./dropdowns/auth-dropdown.css";

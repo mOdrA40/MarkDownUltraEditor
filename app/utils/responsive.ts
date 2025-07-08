@@ -73,7 +73,7 @@ export const MEDIA_QUERIES = {
   prefersDarkMode: '(prefers-color-scheme: dark)',
 
   // Special device detection
-  iPadPro: '(min-width: 1024px) and (max-width: 1366px) and (orientation: portrait)',
+  largeTabletPortrait: '(min-width: 1024px) and (max-width: 1199px) and (orientation: portrait)',
   ultrawide: '(min-aspect-ratio: 21/9)',
 } as const;
 
@@ -192,15 +192,13 @@ export const detectDevice = (width: number, height: number) => {
     isMobile: deviceCategory === 'mobile',
     isTablet: deviceCategory === 'tablet',
     isDesktop: deviceCategory === 'desktop',
-    // Special device detection
     isPhone: deviceCategory === 'mobile',
     isTabletPortrait: deviceCategory === 'tablet' && width < height,
     isTabletLandscape: deviceCategory === 'tablet' && width > height,
     isLaptop: deviceType === 'desktop-small',
     isDesktopLarge: deviceType === 'desktop-large',
     isUltrawide: aspectRatio > 2.1,
-    // iPad Pro specific
-    isIPadPro: width >= 1024 && width <= 1366 && height > width,
+    isLargeTabletPortrait: width >= 1024 && width <= 1199 && height > width,
   };
 };
 

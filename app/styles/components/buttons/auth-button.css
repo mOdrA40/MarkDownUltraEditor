@@ -1,0 +1,210 @@
+/**
+ * Auth Button Styles
+ * Specific styles untuk authentication buttons dengan responsive design
+ * 
+ * @author Axel Modra
+ */
+
+/* ===== BASE AUTH BUTTON STYLES ===== */
+
+.auth-button,
+[data-component="auth-button"] {
+  @apply inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-colors;
+  @apply focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring;
+  @apply disabled:pointer-events-none disabled:opacity-50;
+  @apply bg-primary text-primary-foreground shadow hover:bg-primary/90;
+
+  /* Base spacing  */
+  padding: 0.75rem 1.5rem; 
+  min-width: 7rem;
+  height: 2.75rem;
+  border-radius: 0.5rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  justify-content: center;
+  align-items: center;
+}
+
+/* ===== RESPONSIVE AUTH BUTTON STYLES ===== */
+
+/* Mobile styles */
+@media (max-width: 767px) {
+  .auth-button,
+  [data-component="auth-button"] {
+    padding: 0.375rem 0.5rem !important;
+    min-width: 3rem !important;
+    gap: 0.25rem !important;
+  }
+  
+  .auth-button .lucide,
+  [data-component="auth-button"] .lucide {
+    width: 1rem !important;
+    height: 1rem !important;
+  }
+}
+
+/* Tablet range  */
+@media (min-width: 768px) and (max-width: 1023px) {
+  .auth-button,
+  [data-component="auth-button"] {
+    padding: 0.75rem 1.5rem !important; 
+    margin: 0 0.5rem !important; 
+    min-width: 7rem !important; 
+    gap: 0.75rem !important; 
+    border-radius: 0.5rem !important; 
+    height: 2.75rem !important; 
+    font-size: 0.875rem !important; 
+    font-weight: 500 !important; 
+    justify-content: center !important; 
+    align-items: center !important; 
+  }
+
+  /* Ensure proper icon spacing */
+  .auth-button .lucide,
+  [data-component="auth-button"] .lucide {
+    margin-right: 0.75rem !important; 
+    margin-left: 0 !important; 
+    flex-shrink: 0 !important;
+    width: 1.125rem !important;
+    height: 1.125rem !important; 
+  }
+
+  /* Text spacing */
+  .auth-button span,
+  [data-component="auth-button"] span {
+    white-space: nowrap !important;
+    font-size: 0.875rem !important;
+    font-weight: 500 !important;
+    line-height: 1.25rem !important;
+    margin-right: 0 !important; 
+    padding-right: 0 !important; 
+  }
+
+  /* Container spacing in editor header */
+  .editor-header .auth-button,
+  .editor-header [data-component="auth-button"] {
+    margin-left: 0.75rem !important;
+    margin-right: 0.75rem !important;
+  }
+
+  /* Badge spacing adjustment */
+  [data-badge="local"] + .auth-button,
+  [data-badge="cloud"] + .auth-button,
+  [data-badge="local"] + [data-component="auth-button"],
+  [data-badge="cloud"] + [data-component="auth-button"] {
+    margin-left: 0.75rem !important;
+  }
+}
+
+/* Desktop styles - REFERENSI UKURAN UNTUK TABLET */
+@media (min-width: 1024px) {
+  .auth-button,
+  [data-component="auth-button"] {
+    padding: 0.75rem 1.5rem !important; 
+    min-width: 7rem !important; 
+    gap: 0.75rem !important; 
+    height: 2.75rem !important;
+    font-size: 0.875rem !important;
+    font-weight: 500 !important;
+    justify-content: center !important;
+    align-items: center !important;
+  }
+
+  .auth-button .lucide,
+  [data-component="auth-button"] .lucide {
+    width: 1.125rem !important; 
+    height: 1.125rem !important; 
+    margin-right: 0.75rem !important;
+    margin-left: 0 !important;
+  }
+}
+
+/* ===== THEME-SPECIFIC AUTH BUTTON STYLES ===== */
+
+/* Dark theme overrides */
+.dark .auth-button,
+.dark [data-component="auth-button"] {
+  color: #000000 !important;
+  background-color: #8b5cf6 !important;
+}
+
+.dark .auth-button:hover,
+.dark [data-component="auth-button"]:hover {
+  color: #000000 !important;
+  background-color: #7c3aed !important;
+}
+
+/* Light theme active states */
+.auth-button:hover,
+[data-component="auth-button"]:hover {
+  background-color: hsl(var(--primary) / 0.9) !important;
+}
+
+.auth-button:active,
+[data-component="auth-button"]:active {
+  background-color: hsl(var(--primary) / 0.8) !important;
+  transform: translateY(1px);
+}
+
+/* ===== INTERNAL SPACING FIXES - ANTI MEPET ===== */
+
+
+.auth-button .lucide:first-child,
+[data-component="auth-button"] .lucide:first-child {
+  margin-left: 0.125rem !important; 
+}
+
+
+.auth-button span:last-child,
+[data-component="auth-button"] span:last-child {
+  margin-right: 0.125rem !important; 
+}
+
+/* Force proper flex distribution */
+.auth-button,
+[data-component="auth-button"] {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  text-align: center !important;
+}
+
+/* ===== BADGE SPACING FIXES ===== */
+
+/* Storage badge spacing next to auth button */
+[data-badge="local"] + .auth-button,
+[data-badge="cloud"] + .auth-button,
+[data-badge="local"] + [data-component="auth-button"],
+[data-badge="cloud"] + [data-component="auth-button"] {
+  margin-left: 0.5rem !important;
+}
+
+/* ===== ACCESSIBILITY IMPROVEMENTS ===== */
+
+.auth-button:focus-visible,
+[data-component="auth-button"]:focus-visible {
+  outline: 2px solid hsl(var(--ring));
+  outline-offset: 2px;
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  .auth-button,
+  [data-component="auth-button"] {
+    border: 1px solid currentColor;
+  }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  .auth-button,
+  [data-component="auth-button"] {
+    transition: none !important;
+  }
+  
+  .auth-button:active,
+  [data-component="auth-button"]:active {
+    transform: none !important;
+  }
+}

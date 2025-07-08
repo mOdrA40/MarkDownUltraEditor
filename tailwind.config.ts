@@ -30,8 +30,8 @@ export default {
       'tablet-portrait': {
         raw: '(min-width: 768px) and (max-width: 1199px) and (orientation: portrait)',
       },
-      'ipad-pro': {
-        raw: '(min-width: 1024px) and (max-width: 1366px) and (orientation: portrait)',
+      'large-tablet-portrait': {
+        raw: '(min-width: 1024px) and (max-width: 1199px) and (orientation: portrait)',
       },
       ultrawide: { raw: '(min-aspect-ratio: 21/9)' },
     },

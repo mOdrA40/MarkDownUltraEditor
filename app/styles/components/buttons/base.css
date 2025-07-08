@@ -67,6 +67,40 @@
   .toolbar-button-fix {
     transition-duration: 0.2s;
   }
+
+  /* Auth button specific fixes for tablet range - UKURAN SETARA DESKTOP + ANTI MEPET */
+  .auth-button,
+  [data-component="auth-button"] {
+    padding: 0.75rem 1.5rem !important; 
+    margin: 0 0.5rem !important; 
+    min-width: 7rem !important; 
+    gap: 0.75rem !important; 
+    border-radius: 0.5rem !important; 
+    height: 2.75rem !important; 
+    font-size: 0.875rem !important;
+    font-weight: 500 !important;
+    justify-content: center !important;
+    align-items: center !important;
+  }
+
+  /* Ensure proper icon spacing - TIDAK MEPET KIRI */
+  .auth-button .lucide,
+  [data-component="auth-button"] .lucide {
+    margin-right: 0.75rem !important;
+    margin-left: 0.125rem !important; 
+    flex-shrink: 0 !important;
+    width: 1.125rem !important;
+    height: 1.125rem !important;
+  }
+
+  /* Text spacing - TIDAK MEPET KANAN */
+  .auth-button span,
+  [data-component="auth-button"] span {
+    white-space: nowrap !important;
+    font-weight: 500 !important;
+    line-height: 1.25rem !important;
+    margin-right: 0.125rem !important;
+  }
 }
 
 /* Desktop fixes */
