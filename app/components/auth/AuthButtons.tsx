@@ -5,7 +5,7 @@
 
 import { SignInButton, UserButton, useAuth, useUser } from '@clerk/react-router';
 import { Cloud, Files, HardDrive, Settings, User } from 'lucide-react';
-import React from 'react';
+import type React from 'react';
 import { useLocation } from 'react-router';
 import { useTheme } from '@/components/features/ThemeSelector';
 import { Badge } from '@/components/ui/badge';
@@ -64,11 +64,6 @@ export const AuthButtons: React.FC<AuthButtonsProps> = ({
       borderColor: currentTheme.accent || currentTheme.primary,
     };
   };
-
-  // Debug log untuk memastikan Clerk sudah loaded
-  React.useEffect(() => {
-    console.log('Clerk Auth Status:', { isLoaded, isSignedIn, user });
-  }, [isLoaded, isSignedIn, user]);
 
   // Show loading state while auth is loading
   if (!isLoaded) {
@@ -245,7 +240,6 @@ export const AuthButtons: React.FC<AuthButtonsProps> = ({
           size="sm"
           className="flex items-center gap-2 auth-button"
           data-component="auth-button"
-          onClick={() => console.log('Auth button clicked')}
         >
           <User className="w-4 h-4" />
           {!isSmallTablet && <span>Sign In</span>}

@@ -281,7 +281,6 @@ export const EditorHeader: React.FC<EditorHeaderProps> = ({
               variant="ghost"
               size="sm"
               onClick={() => {
-                console.log('New button clicked - calling onNewFile');
                 onNewFile();
               }}
               className="h-6 sm:h-8 px-2 sm:px-3 text-xs sm:text-sm whitespace-nowrap"

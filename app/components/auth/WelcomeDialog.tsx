@@ -225,12 +225,10 @@ export const useWelcomeDialog = () => {
   };
 
   const handleContinueAsGuest = () => {
-    console.log('User chose to continue as guest');
     handleClose();
   };
 
   const handleSignUp = () => {
-    console.log('User chose to sign up');
     handleClose();
   };
 

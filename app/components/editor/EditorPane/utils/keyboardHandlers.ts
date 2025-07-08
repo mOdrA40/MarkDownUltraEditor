@@ -48,9 +48,6 @@ export const handleKeyDown = (
     handleTabIndentation(e, markdown, onChange);
     return;
   }
-
-  // Additional keyboard shortcuts can be added here
-  // For example: Ctrl+S for save, Ctrl+Z for undo, etc.
 };
 
 /**
