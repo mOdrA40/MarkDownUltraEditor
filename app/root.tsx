@@ -13,6 +13,13 @@ if (typeof window !== 'undefined' && process.env.NODE_ENV === 'development') {
   import('@/utils/storageAnalyzer');
 }
 
+// Initialize performance optimizations
+if (typeof window !== 'undefined') {
+  import('@/utils/performance').then(({ initializePerformanceOptimizations }) => {
+    initializePerformanceOptimizations();
+  });
+}
+
 // Add the loader function for Clerk authentication
 export async function loader(args: Route.LoaderArgs) {
   return rootAuthLoader(args);

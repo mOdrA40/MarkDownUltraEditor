@@ -4,6 +4,15 @@
  */
 
 /**
+ * Memory info interface
+ */
+export interface MemoryInfo {
+  usedJSHeapSize: number;
+  totalJSHeapSize: number;
+  jsHeapSizeLimit: number;
+}
+
+/**
  * Performance metrics interface
  */
 export interface PerformanceMetrics {
@@ -351,9 +360,9 @@ export const performanceUtils = {
   /**
    * Memory usage monitoring
    */
-  getMemoryUsage: (): unknown => {
+  getMemoryUsage: (): MemoryInfo | null => {
     if (typeof window !== 'undefined' && 'memory' in performance) {
-      return (performance as unknown as { memory: unknown }).memory;
+      return (performance as Performance & { memory: MemoryInfo }).memory;
     }
     return null;
   },
@@ -371,3 +380,122 @@ export const performanceUtils = {
 };
 
 export default getPerformanceMonitor;
+
+/**
+ * ===== PERFORMANCE OPTIMIZATION UTILITIES =====
+ */
+
+/**
+ * Initialize performance monitoring
+ */
+export const initializePerformanceMonitoring = (): PerformanceMonitor => {
+  return new PerformanceMonitor();
+};
+
+/**
+ * Preload critical resources
+ */
+export const preloadCriticalResources = () => {
+  if (typeof window === 'undefined') return;
+
+  // Preload critical fonts
+  const fontPreloads = ['/fonts/inter-var.woff2', '/fonts/inter-var-latin.woff2'];
+
+  fontPreloads.forEach((href) => {
+    const link = document.createElement('link');
+    link.rel = 'preload';
+    link.href = href;
+    link.as = 'font';
+    link.type = 'font/woff2';
+    link.crossOrigin = 'anonymous';
+    document.head.appendChild(link);
+  });
+
+  // Preload critical images
+  const imagePreloads = ['/logo-light.png', '/logo-dark.png'];
+
+  imagePreloads.forEach((href) => {
+    const link = document.createElement('link');
+    link.rel = 'preload';
+    link.href = href;
+    link.as = 'image';
+    document.head.appendChild(link);
+  });
+};
+
+/**
+ * Optimize images with lazy loading
+ */
+export const optimizeImages = () => {
+  if (typeof window === 'undefined') return;
+
+  const imageObserver = new IntersectionObserver((entries) => {
+    entries.forEach((entry) => {
+      if (entry.isIntersecting) {
+        const img = entry.target as HTMLImageElement;
+        if (img.dataset.src) {
+          img.src = img.dataset.src;
+          img.removeAttribute('data-src');
+          imageObserver.unobserve(img);
+        }
+      }
+    });
+  });
+
+  document.querySelectorAll('img[data-src]').forEach((img) => {
+    imageObserver.observe(img);
+  });
+};
+
+/**
+ * Add resource hints for better performance
+ */
+export const addResourceHints = () => {
+  if (typeof window === 'undefined') return;
+
+  // DNS prefetch for external domains
+  const domains = ['fonts.googleapis.com', 'fonts.gstatic.com', 'cdn.jsdelivr.net'];
+
+  domains.forEach((domain) => {
+    const link = document.createElement('link');
+    link.rel = 'dns-prefetch';
+    link.href = `//${domain}`;
+    document.head.appendChild(link);
+  });
+
+  // Preconnect to critical origins
+  const criticalOrigins = ['https://fonts.googleapis.com', 'https://fonts.gstatic.com'];
+
+  criticalOrigins.forEach((origin) => {
+    const link = document.createElement('link');
+    link.rel = 'preconnect';
+    link.href = origin;
+    link.crossOrigin = 'anonymous';
+    document.head.appendChild(link);
+  });
+};
+
+/**
+ * Initialize all performance optimizations
+ */
+export const initializePerformanceOptimizations = () => {
+  if (typeof window === 'undefined') return;
+
+  // Run immediately
+  preloadCriticalResources();
+  addResourceHints();
+
+  // Run when DOM is ready
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', () => {
+      optimizeImages();
+    });
+  } else {
+    optimizeImages();
+  }
+
+  // Initialize monitoring
+  const monitor = initializePerformanceMonitoring();
+
+  return { monitor };
+};

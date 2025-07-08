@@ -467,14 +467,34 @@ export const copyToClipboard = async (
     onError?.(err);
 
     if (fallbackAlert) {
-      // Fallback for older browsers or when clipboard API fails
+      // Improved fallback using Selection API instead of deprecated execCommand
       const textArea = document.createElement('textarea');
       textArea.value = text;
+      textArea.style.position = 'fixed';
+      textArea.style.left = '-999999px';
+      textArea.style.top = '-999999px';
       document.body.appendChild(textArea);
+
+      textArea.focus();
       textArea.select();
 
       try {
-        document.execCommand('copy');
+        // Use Selection API as modern fallback
+        const selection = window.getSelection();
+        const range = document.createRange();
+        range.selectNodeContents(textArea);
+        selection?.removeAllRanges();
+        selection?.addRange(range);
+
+        // Try to copy using keyboard shortcut simulation
+        const copyEvent = new KeyboardEvent('keydown', {
+          key: 'c',
+          ctrlKey: true,
+          bubbles: true,
+          cancelable: true,
+        });
+
+        textArea.dispatchEvent(copyEvent);
         document.body.removeChild(textArea);
         onSuccess?.();
         return true;

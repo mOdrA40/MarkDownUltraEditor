@@ -280,6 +280,23 @@ export interface I18nConfig {
 }
 
 /**
+ * Plugin configuration type
+ */
+export interface PluginConfig {
+  [key: string]: string | number | boolean | PluginConfig;
+}
+
+/**
+ * Theme configuration type
+ */
+export interface ThemeConfig {
+  name: string;
+  colors: Record<string, string>;
+  fonts?: Record<string, string>;
+  spacing?: Record<string, string>;
+}
+
+/**
  * Plugin types
  */
 export interface Plugin {
@@ -287,28 +304,42 @@ export interface Plugin {
   name: string;
   version: string;
   enabled: boolean;
-  config: Record<string, unknown>;
+  config: PluginConfig;
   hooks: {
     onInit?: () => void;
     onDestroy?: () => void;
     onMarkdownChange?: (markdown: string) => string;
-    onThemeChange?: (theme: unknown) => void;
+    onThemeChange?: (theme: ThemeConfig) => void;
   };
+}
+
+/**
+ * HTTP method types
+ */
+export type HttpMethod = 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH';
+
+/**
+ * API error type
+ */
+export interface ApiError {
+  code: string;
+  message: string;
+  details?: Record<string, string | number>;
 }
 
 /**
  * API types
  */
-export interface ApiResponse<T = unknown> {
+export interface ApiResponse<T = Record<string, unknown>> {
   success: boolean;
   data?: T;
-  error?: string;
+  error?: ApiError;
   message?: string;
   timestamp: number;
 }
 
-export interface ApiRequest<T = unknown> {
-  method: 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH';
+export interface ApiRequest<T = Record<string, unknown>> {
+  method: HttpMethod;
   url: string;
   data?: T;
   headers?: Record<string, string>;

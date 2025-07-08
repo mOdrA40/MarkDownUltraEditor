@@ -255,7 +255,8 @@ export class HybridFileStorage implements FileStorageService {
       }
 
       // Generate ID if not present
-      const fileId = file.id || `local_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+      const fileId =
+        file.id || `local_${Date.now()}_${Math.random().toString(36).substring(2, 11)}`;
       const fileWithId = { ...file, id: fileId };
 
       // Save file data

@@ -56,9 +56,8 @@ export const useExportToPDF = (
 
         setExportProgress(EXPORT_PROGRESS_STEPS.STYLING);
 
-        // Write content ke window
-        printWindow.document.write(styledHTML);
-        printWindow.document.close();
+        // Use modern approach instead of deprecated document.write
+        printWindow.document.documentElement.innerHTML = styledHTML;
 
         setExportProgress(EXPORT_PROGRESS_STEPS.FINALIZING);
 

@@ -12,7 +12,6 @@ export default function SignInPage() {
           },
         }}
         signUpUrl="/sign-up"
-        afterSignInUrl="/"
         routing="path"
         path="/sign-in"
       />

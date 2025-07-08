@@ -203,7 +203,6 @@ export const AuthButtons: React.FC<AuthButtonsProps> = ({
               {/* Sign out - using Clerk's UserButton for proper sign out */}
               <div className="p-1">
                 <UserButton
-                  afterSignOutUrl="/"
                   appearance={{
                     elements: {
                       userButtonAvatarBox: 'w-0 h-0 hidden',

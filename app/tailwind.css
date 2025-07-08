@@ -111,6 +111,7 @@
 @layer base {
   * {
     @apply border-border;
+    scroll-behavior: smooth;
   }
 
   html {
@@ -125,27 +126,17 @@
     overflow-x: hidden;
   }
 
-  /* 🖱️ Ensure mouse scroll works everywhere */
-  * {
-    scroll-behavior: smooth;
-  }
-
   /* Fix scroll issues */
   .scroll-container {
     overflow-y: auto;
     overflow-x: hidden;
     height: 100%;
   }
-}
-
-
-
-html,
-body {
-  @apply bg-white dark:bg-gray-950;
 
   @media (prefers-color-scheme: dark) {
-    color-scheme: dark;
+    html, body {
+      color-scheme: dark;
+    }
   }
 }
 

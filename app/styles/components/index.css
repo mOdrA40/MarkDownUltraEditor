@@ -1,11 +1,14 @@
 /**
  * Components Index
  * Import semua component styles
- * 
+ *
  * @author Axel Modra
  */
 
-/* Component Styles */
+/* Common consolidated styles */
+@import "./common.css";
+
+/* Specific component styles */
 @import "./buttons/base.css";
 @import "./dialogs/base.css";
 @import "./navigation/index.css";

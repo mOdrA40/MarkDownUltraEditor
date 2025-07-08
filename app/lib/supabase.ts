@@ -135,30 +135,12 @@ export const createAuthenticatedSupabaseClient = (token: string): SupabaseClient
  * Using native Third Party Auth integration (no JWT template needed)
  */
 export const useSupabase = (): SupabaseClient<Database> | null => {
-  const { getToken, isSignedIn } = useAuth();
+  const { isSignedIn } = useAuth();
 
   if (!isSignedIn) {
     console.log('User not signed in, returning base Supabase client');
     return supabaseClient; // Return base client for non-authenticated users
   }
-
-  // For Third Party Auth integration, we use the default token
-  const _getAuthenticatedClient = async (): Promise<SupabaseClient<Database> | null> => {
-    try {
-      // Get default Clerk token (no template needed for Third Party Auth)
-      const token = await getToken();
-      if (!token) {
-        console.warn('Failed to get Clerk token');
-        return supabaseClient; // Fallback to base client
-      }
-
-      console.log('✓ Creating authenticated Supabase client with Third Party Auth');
-      return createAuthenticatedSupabaseClient(token);
-    } catch (error) {
-      console.error('Error creating authenticated Supabase client:', error);
-      return supabaseClient; // Fallback to base client
-    }
-  };
 
   // Return base client for now - will be enhanced with proper async handling
   return supabaseClient;

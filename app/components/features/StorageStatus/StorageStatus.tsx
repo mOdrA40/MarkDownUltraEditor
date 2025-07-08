@@ -5,7 +5,7 @@
  * @author Axel Modra
  */
 
-import { AlertTriangle, CheckCircle, HardDrive, Info, RefreshCw, Trash2 } from 'lucide-react';
+import { AlertTriangle, HardDrive, Info, RefreshCw, Trash2 } from 'lucide-react';
 import type React from 'react';
 import { useState } from 'react';
 import { Badge } from '@/components/ui/badge';
@@ -63,15 +63,6 @@ export const StorageStatus: React.FC<StorageStatusProps> = ({
     } finally {
       setIsCleaningUp(false);
     }
-  };
-
-  /**
-   * Get status icon
-   */
-  const _getStatusIcon = () => {
-    if (isCritical) return <AlertTriangle className="h-4 w-4" />;
-    if (isNearCapacity) return <AlertTriangle className="h-4 w-4" />;
-    return <CheckCircle className="h-4 w-4" />;
   };
 
   if (compact) {
