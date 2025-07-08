@@ -3,7 +3,7 @@
  */
 
 import type { HeadingItem, ScrollOptions, ThemeConfig } from '@/types/outline';
-import { announceToScreenReader } from '@/utils/accessibility';
+import { a11yUtils } from '@/utils/accessibilityEnhanced';
 import { getActiveHeadingClasses, scrollToHeadingGlobal } from '@/utils/headingUtils';
 
 /**
@@ -78,9 +78,9 @@ export const handleOutlineItemClick = async (
     });
 
     if (success && headingItem) {
-      announceToScreenReader(
+      a11yUtils.announcer.announce(
         `Navigated to ${headingItem.text}, heading level ${headingItem.level}`,
-        'polite'
+        { priority: 'polite' }
       );
     } else if (!success) {
       console.warn(`Failed to scroll to heading: ${headingId}`);

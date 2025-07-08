@@ -5,7 +5,7 @@
 
 import { useCallback } from 'react';
 import { useKeyboardNavigation, useScrollSpy } from '@/hooks/navigation';
-import { announceToScreenReader } from '@/utils/accessibility';
+import { a11yUtils } from '@/utils/accessibilityEnhanced';
 import { type HeadingItem, scrollToHeadingGlobal } from '@/utils/headingUtils';
 import type {
   TocKeyboardOptions,
@@ -62,9 +62,9 @@ export const useTocNavigation = (
 
         // Announce navigation untuk screen readers only if successful
         if (success && headingItem) {
-          announceToScreenReader(
+          a11yUtils.announcer.announce(
             `Navigated to ${headingItem.text}, heading level ${headingItem.level}`,
-            'polite'
+            { priority: 'polite' }
           );
         } else if (!success) {
           console.warn(`Failed to scroll to heading: ${headingId}`);
@@ -80,9 +80,9 @@ export const useTocNavigation = (
 
             // Announce fallback navigation
             if (headingItem) {
-              announceToScreenReader(
+              a11yUtils.announcer.announce(
                 `Navigated to ${headingItem.text} using fallback method`,
-                'polite'
+                { priority: 'polite' }
               );
             }
           }
