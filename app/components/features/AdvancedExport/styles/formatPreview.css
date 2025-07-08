@@ -8,10 +8,12 @@
   transition: all 0.3s ease;
   overflow-y: auto;
   scrollbar-width: thin;
+  scrollbar-color: rgba(0, 0, 0, 0.2) transparent;
 }
 
 .preview-content::-webkit-scrollbar {
   width: 6px;
+  height: 6px;
 }
 
 .preview-content::-webkit-scrollbar-track {

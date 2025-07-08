@@ -13,13 +13,27 @@ export default {
       },
     },
     screens: {
-      xs: '320px',
-      sm: '500px',
-      md: '768px',
-      lg: '1024px',
-      xl: '1280px',
-      '2xl': '1440px',
-      '3xl': '1920px',
+      // Mobile breakpoints
+      xs: '320px', // Mobile small
+      sm: '576px', // Mobile
+
+      // Tablet breakpoints
+      md: '768px', // Tablet small
+      lg: '992px', // Tablet large
+
+      // Desktop breakpoints
+      xl: '1200px', // Desktop small
+      '2xl': '1400px', // Desktop large
+      '3xl': '1920px', // Ultra wide
+
+      // Special breakpoints
+      'tablet-portrait': {
+        raw: '(min-width: 768px) and (max-width: 1199px) and (orientation: portrait)',
+      },
+      'ipad-pro': {
+        raw: '(min-width: 1024px) and (max-width: 1366px) and (orientation: portrait)',
+      },
+      ultrawide: { raw: '(min-aspect-ratio: 21/9)' },
     },
     extend: {
       fontFamily: {

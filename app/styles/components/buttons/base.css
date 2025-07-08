@@ -12,10 +12,7 @@
 .toolbar-button-fix,
 .clean-button,
 .focus-fix {
-  transform: none !important;
-  border: none !important;
-  outline: none !important;
-  box-shadow: none !important;
+  @apply button-reset;
 }
 
 /* Theme button specific styles */

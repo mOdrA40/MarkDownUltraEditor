@@ -40,6 +40,14 @@
   z-index: 90;
 }
 
+/* Button reset utilities */
+.button-reset {
+  transform: none !important;
+  border: none !important;
+  outline: none !important;
+  box-shadow: none !important;
+}
+
 /* Dropdown positioning utilities */
 .dropdown-fixed {
   position: fixed !important;
@@ -80,5 +88,31 @@
   to {
     opacity: 1;
     transform: translateY(0) scale(1);
+  }
+}
+
+/* Scrollbar utilities */
+@layer utilities {
+  .scrollbar-thin {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(0, 0, 0, 0.2) transparent;
+  }
+
+  .scrollbar-thin::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+
+  .scrollbar-thin::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  .scrollbar-thin::-webkit-scrollbar-thumb {
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 3px;
+  }
+
+  .scrollbar-thin::-webkit-scrollbar-thumb:hover {
+    background: rgba(0, 0, 0, 0.3);
   }
 }

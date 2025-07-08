@@ -424,34 +424,33 @@
   border-bottom-color: #60a5fa !important;
 }
 
-/* Scrollbar styling */
+/* Use utility scrollbar classes instead of duplicating styles */
+.advanced-export-tabs-content,
+.advanced-export-preview-content {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(0, 0, 0, 0.2) transparent;
+}
+
 .advanced-export-tabs-content::-webkit-scrollbar,
 .advanced-export-preview-content::-webkit-scrollbar {
   width: 6px;
+  height: 6px;
 }
 
 .advanced-export-tabs-content::-webkit-scrollbar-track,
 .advanced-export-preview-content::-webkit-scrollbar-track {
-  background: hsl(var(--muted) / 0.3);
-  border-radius: 3px;
+  background: transparent;
 }
 
 .advanced-export-tabs-content::-webkit-scrollbar-thumb,
 .advanced-export-preview-content::-webkit-scrollbar-thumb {
-  background: hsl(var(--muted-foreground) / 0.3);
+  background: rgba(0, 0, 0, 0.2);
   border-radius: 3px;
 }
 
 .advanced-export-tabs-content::-webkit-scrollbar-thumb:hover,
 .advanced-export-preview-content::-webkit-scrollbar-thumb:hover {
-  background: hsl(var(--muted-foreground) / 0.5);
-}
-
-/* Firefox scrollbar styling */
-.advanced-export-tabs-content,
-.advanced-export-preview-content {
-  scrollbar-width: thin;
-  scrollbar-color: hsl(var(--muted-foreground) / 0.3) hsl(var(--muted) / 0.3);
+  background: rgba(0, 0, 0, 0.3);
 }
 
 /* Focus states for accessibility */

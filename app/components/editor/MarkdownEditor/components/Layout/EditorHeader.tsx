@@ -3,7 +3,17 @@
  * @author Axel Modra
  */
 
-import { Eye, EyeOff, FileText, Keyboard, Maximize2, Minimize2, Search } from 'lucide-react';
+import {
+  Eye,
+  EyeOff,
+  FileText,
+  Keyboard,
+  List,
+  Maximize2,
+  Minimize2,
+  PanelLeft,
+  Search,
+} from 'lucide-react';
 import React from 'react';
 import { useNavigate } from 'react-router';
 import { Badge } from '@/components/ui/badge';
@@ -65,6 +75,12 @@ export interface EditorHeaderProps {
 
   // Zen mode
   zenMode: boolean;
+
+  // Sidebar controls
+  showToc?: boolean;
+  showOutline?: boolean;
+  onToggleToc?: () => void;
+  onToggleOutline?: () => void;
 }
 /**
  * Editor header component with file controls, theme selector, and toolbar
@@ -93,6 +109,10 @@ export const EditorHeader: React.FC<EditorHeaderProps> = ({
   canRedo,
   responsive,
   zenMode,
+  showToc,
+  showOutline,
+  onToggleToc,
+  onToggleOutline,
 }) => {
   const navigate = useNavigate();
   const { isMobile, isTablet, isSmallTablet } = responsive;
@@ -134,7 +154,10 @@ export const EditorHeader: React.FC<EditorHeaderProps> = ({
     >
       <div className="flex flex-col lg:flex-row lg:items-center justify-between px-2 sm:px-4 py-2 gap-2">
         {/* File Info Row */}
-        <div className="flex items-center space-x-2 sm:space-x-4 min-w-0 flex-1">
+        <div
+          className="flex items-center space-x-2 sm:space-x-4 min-w-0 flex-1"
+          data-file-info="true"
+        >
           <div className="flex items-center space-x-2 min-w-0 flex-1">
             <FileText
               className="h-4 w-4 sm:h-5 sm:w-5 flex-shrink-0"
@@ -156,6 +179,16 @@ export const EditorHeader: React.FC<EditorHeaderProps> = ({
             )}
           </div>
         </div>
+        {/* Theme Selector Row - Only on tablet, placed first to avoid overlap */}
+        {isTablet && (
+          <div
+            className="flex items-center justify-center gap-2 py-2 border-b border-gray-200 dark:border-gray-700"
+            data-theme-selector="true"
+          >
+            <ThemeSelector currentTheme={currentTheme} onThemeChange={onThemeChange} />
+          </div>
+        )}
+
         {/* Controls Row - Responsive Layout */}
         <div
           className={`
@@ -163,11 +196,15 @@ export const EditorHeader: React.FC<EditorHeaderProps> = ({
           overflow-x-auto
         `}
         >
-          {/* First Row - File Operations & Theme */}
+          {/* First Row - File Operations */}
           <div className="flex items-center justify-between gap-1 sm:gap-2">
             <div className="flex items-center space-x-1 flex-shrink-0">
-              <ThemeSelector currentTheme={currentTheme} onThemeChange={onThemeChange} />
+              {/* Theme Selector - Moved to separate row on tablet for better spacing */}
+              {!isTablet && (
+                <ThemeSelector currentTheme={currentTheme} onThemeChange={onThemeChange} />
+              )}
               {!isTablet && <Separator orientation="vertical" className="h-4 sm:h-6" />}
+
               <div className="flex items-center space-x-1">
                 <FileOperations
                   markdown={markdown}
@@ -206,13 +243,47 @@ export const EditorHeader: React.FC<EditorHeaderProps> = ({
               />
             </div>
           </div>
-          {/* Second Row - Action Buttons */}
+          {/* Action Buttons Row */}
           <div
             className={`
             flex items-center ${isTablet ? 'justify-center' : 'justify-end'}
             space-x-1 flex-wrap gap-1
           `}
+            data-action-buttons="true"
           >
+            {/* Sidebar Controls - TOC and Outline */}
+            {onToggleToc && (
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={onToggleToc}
+                className="h-6 w-6 sm:h-8 sm:w-8 p-0 sm:p-2"
+                title={showToc ? 'Hide Table of Contents' : 'Show Table of Contents'}
+                style={{ color: currentTheme.text }}
+                data-theme-button="true"
+              >
+                <List className="h-3 w-3 sm:h-4 sm:w-4" />
+              </Button>
+            )}
+
+            {onToggleOutline && (
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={onToggleOutline}
+                className="h-6 w-6 sm:h-8 sm:w-8 p-0 sm:p-2"
+                title={showOutline ? 'Hide Document Outline' : 'Show Document Outline'}
+                style={{ color: currentTheme.text }}
+                data-theme-button="true"
+              >
+                <PanelLeft className="h-3 w-3 sm:h-4 sm:w-4" />
+              </Button>
+            )}
+
+            {(onToggleToc || onToggleOutline) && (
+              <Separator orientation="vertical" className="h-4 sm:h-6" />
+            )}
+
             <Button
               variant="ghost"
               size="sm"

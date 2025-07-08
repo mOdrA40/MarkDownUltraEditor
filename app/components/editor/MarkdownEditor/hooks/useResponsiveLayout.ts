@@ -4,6 +4,7 @@
  */
 
 import { useCallback, useEffect, useState } from 'react';
+import { detectDevice } from '@/utils/responsive';
 import {
   type ComponentSizing,
   DeviceType,
@@ -28,19 +29,15 @@ export const useResponsiveLayout = (): UseResponsiveLayoutReturn => {
   // Additional responsive configuration
   const [screenWidth, setScreenWidth] = useState(0);
   const [screenHeight, setScreenHeight] = useState(0);
-  const [deviceType, setDeviceType] = useState<DeviceType>(DeviceType.DESKTOP);
+  const [deviceType, setDeviceType] = useState<DeviceType>(DeviceType.DESKTOP_SMALL);
   const [orientation, setOrientation] = useState<'portrait' | 'landscape'>('landscape');
   const [isTouchDevice, setIsTouchDevice] = useState(false);
 
   /**
-   * Determine device type based on screen width
+   * Use the new comprehensive device detection
    */
-  const getDeviceType = useCallback((width: number): DeviceType => {
-    if (width < 500) return DeviceType.MOBILE;
-    if (width >= 500 && width < 768) return DeviceType.SMALL_TABLET;
-    if (width >= 768 && width < 1024) return DeviceType.TABLET;
-    if (width >= 1024 && width < 1440) return DeviceType.DESKTOP;
-    return DeviceType.LARGE_DESKTOP;
+  const getDeviceInfo = useCallback((width: number, height: number) => {
+    return detectDevice(width, height);
   }, []);
 
   /**
@@ -48,6 +45,7 @@ export const useResponsiveLayout = (): UseResponsiveLayoutReturn => {
    */
   const getLayoutConfig = useCallback((deviceType: DeviceType): LayoutConfig => {
     switch (deviceType) {
+      case DeviceType.MOBILE_SMALL:
       case DeviceType.MOBILE:
         return {
           showSidebar: false,
@@ -58,7 +56,7 @@ export const useResponsiveLayout = (): UseResponsiveLayoutReturn => {
           touchFriendly: true,
         };
 
-      case DeviceType.SMALL_TABLET:
+      case DeviceType.TABLET_SMALL:
         return {
           showSidebar: true,
           sidebarWidth: 200,
@@ -68,7 +66,7 @@ export const useResponsiveLayout = (): UseResponsiveLayoutReturn => {
           touchFriendly: true,
         };
 
-      case DeviceType.TABLET:
+      case DeviceType.TABLET_LARGE:
         return {
           showSidebar: true,
           sidebarWidth: 250,
@@ -78,7 +76,7 @@ export const useResponsiveLayout = (): UseResponsiveLayoutReturn => {
           touchFriendly: true,
         };
 
-      case DeviceType.DESKTOP:
+      case DeviceType.DESKTOP_SMALL:
         return {
           showSidebar: true,
           sidebarWidth: 300,
@@ -88,7 +86,7 @@ export const useResponsiveLayout = (): UseResponsiveLayoutReturn => {
           touchFriendly: false,
         };
 
-      case DeviceType.LARGE_DESKTOP:
+      case DeviceType.DESKTOP_LARGE:
         return {
           showSidebar: true,
           sidebarWidth: 350,
@@ -124,7 +122,7 @@ export const useResponsiveLayout = (): UseResponsiveLayoutReturn => {
           minTouchTarget: 44,
         };
 
-      case DeviceType.SMALL_TABLET:
+      case DeviceType.TABLET_SMALL:
         return {
           buttonSize: 'sm',
           iconSize: 18,
@@ -133,7 +131,7 @@ export const useResponsiveLayout = (): UseResponsiveLayoutReturn => {
           minTouchTarget: 44,
         };
 
-      case DeviceType.TABLET:
+      case DeviceType.TABLET_LARGE:
         return {
           buttonSize: 'md',
           iconSize: 20,
@@ -142,7 +140,7 @@ export const useResponsiveLayout = (): UseResponsiveLayoutReturn => {
           minTouchTarget: 44,
         };
 
-      case DeviceType.DESKTOP:
+      case DeviceType.DESKTOP_SMALL:
         return {
           buttonSize: 'md',
           iconSize: 20,
@@ -151,7 +149,7 @@ export const useResponsiveLayout = (): UseResponsiveLayoutReturn => {
           minTouchTarget: 32,
         };
 
-      case DeviceType.LARGE_DESKTOP:
+      case DeviceType.DESKTOP_LARGE:
         return {
           buttonSize: 'lg',
           iconSize: 24,
@@ -179,7 +177,8 @@ export const useResponsiveLayout = (): UseResponsiveLayoutReturn => {
 
     const width = window.innerWidth;
     const height = window.innerHeight;
-    const newDeviceType = getDeviceType(width);
+    const deviceInfo = getDeviceInfo(width, height);
+    const newDeviceType = deviceInfo.deviceType as DeviceType;
     const newOrientation = width > height ? 'landscape' : 'portrait';
 
     setScreenWidth(width);
@@ -193,7 +192,7 @@ export const useResponsiveLayout = (): UseResponsiveLayoutReturn => {
       isSmallTablet: width >= 500 && width <= 768,
       isTablet: width >= 500 && width < 1024,
     });
-  }, [getDeviceType]);
+  }, [getDeviceInfo]);
 
   /**
    * Detect touch device

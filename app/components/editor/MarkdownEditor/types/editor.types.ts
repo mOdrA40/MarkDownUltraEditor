@@ -187,14 +187,15 @@ export interface UseEditorStateReturn {
 }
 
 /**
- * Device type enumeration
+ * Device type enumeration - Updated to match new responsive system
  */
 export enum DeviceType {
+  MOBILE_SMALL = 'mobile-small',
   MOBILE = 'mobile',
-  SMALL_TABLET = 'small_tablet',
-  TABLET = 'tablet',
-  DESKTOP = 'desktop',
-  LARGE_DESKTOP = 'large_desktop',
+  TABLET_SMALL = 'tablet-small',
+  TABLET_LARGE = 'tablet-large',
+  DESKTOP_SMALL = 'desktop-small',
+  DESKTOP_LARGE = 'desktop-large',
 }
 
 /**

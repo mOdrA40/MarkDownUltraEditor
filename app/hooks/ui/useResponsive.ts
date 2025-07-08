@@ -7,7 +7,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { addEventListenerWithCleanup, throttle } from '@/utils/common';
 import {
   type DeviceType,
-  getDeviceType,
+  detectDevice,
   getWindowDimensions,
   MEDIA_QUERIES,
   type ResponsiveState,
@@ -66,15 +66,18 @@ export const useResponsiveDetection = (
   // State untuk responsive information
   const [responsiveState, setResponsiveState] = useState<ResponsiveState>(() => {
     const dimensions = getInitialDimensions();
-    const deviceType = getDeviceType(dimensions.width);
+    const deviceInfo = detectDevice(dimensions.width, dimensions.height);
 
     return {
-      deviceType,
-      isMobile: deviceType === 'mobile',
-      isTablet: deviceType === 'tablet',
-      isDesktop: deviceType === 'desktop',
+      deviceType: deviceInfo.deviceType,
+      deviceCategory: deviceInfo.deviceCategory,
+      isMobile: deviceInfo.isMobile,
+      isTablet: deviceInfo.isTablet,
+      isDesktop: deviceInfo.isDesktop,
       windowWidth: dimensions.width,
       windowHeight: dimensions.height,
+      aspectRatio: deviceInfo.aspectRatio,
+      orientation: deviceInfo.orientation as 'portrait' | 'landscape',
     };
   });
 
@@ -86,25 +89,28 @@ export const useResponsiveDetection = (
    */
   const updateResponsiveState = useCallback(() => {
     const dimensions = getWindowDimensions();
-    const deviceType = getDeviceType(dimensions.width);
+    const deviceInfo = detectDevice(dimensions.width, dimensions.height);
 
     setResponsiveState((prevState) => {
       // Only update if something actually changed
       if (
         prevState.windowWidth === dimensions.width &&
         prevState.windowHeight === dimensions.height &&
-        prevState.deviceType === deviceType
+        prevState.deviceType === deviceInfo.deviceType
       ) {
         return prevState;
       }
 
       return {
-        deviceType,
-        isMobile: deviceType === 'mobile',
-        isTablet: deviceType === 'tablet',
-        isDesktop: deviceType === 'desktop',
+        deviceType: deviceInfo.deviceType,
+        deviceCategory: deviceInfo.deviceCategory,
+        isMobile: deviceInfo.isMobile,
+        isTablet: deviceInfo.isTablet,
+        isDesktop: deviceInfo.isDesktop,
         windowWidth: dimensions.width,
         windowHeight: dimensions.height,
+        aspectRatio: deviceInfo.aspectRatio,
+        orientation: deviceInfo.orientation as 'portrait' | 'landscape',
       };
     });
   }, []);
@@ -123,9 +129,9 @@ export const useResponsiveDetection = (
 
     // Setup media query listeners untuk better performance
     const mediaQueryLists = [
-      window.matchMedia(MEDIA_QUERIES.mobile),
-      window.matchMedia(MEDIA_QUERIES.tablet),
-      window.matchMedia(MEDIA_QUERIES.desktop),
+      window.matchMedia(MEDIA_QUERIES.allMobile),
+      window.matchMedia(MEDIA_QUERIES.allTablet),
+      window.matchMedia(MEDIA_QUERIES.allDesktop),
     ];
 
     const handleMediaQueryChange = () => {

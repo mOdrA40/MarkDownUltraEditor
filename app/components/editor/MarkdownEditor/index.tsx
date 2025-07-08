@@ -306,6 +306,10 @@ export const MarkdownEditor: React.FC<MarkdownEditorProps> = ({
               canRedo={undoRedo.canRedo}
               responsive={responsive}
               zenMode={settings.zenMode}
+              showToc={showToc}
+              showOutline={showOutline}
+              onToggleToc={() => setShowToc(!showToc)}
+              onToggleOutline={() => setShowOutline(!showOutline)}
             />
           )}
 

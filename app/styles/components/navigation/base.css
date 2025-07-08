@@ -1,9 +1,31 @@
 /**
  * Navigation Base Styles
  * Base styles untuk semua komponen navigasi (TOC, Outline, dll)
- * 
+ *
  * @author Axel Modra
  */
+
+/* ===== TOC AND OUTLINE BUTTONS ===== */
+
+/* TOC/Outline toggle buttons in header */
+[data-theme-button="true"][title*="Table of Contents"],
+[data-theme-button="true"][title*="Document Outline"] {
+  transition: all 0.2s ease;
+  border-radius: 0.375rem;
+}
+
+[data-theme-button="true"][title*="Table of Contents"]:hover,
+[data-theme-button="true"][title*="Document Outline"]:hover {
+  background-color: rgba(0, 0, 0, 0.05);
+  transform: scale(1.05);
+}
+
+/* Active state for TOC/Outline buttons */
+[data-theme-button="true"][title*="Hide Table of Contents"],
+[data-theme-button="true"][title*="Hide Document Outline"] {
+  background-color: rgba(0, 0, 0, 0.1) !important;
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
+}
 
 /* ===== HEADING SCROLL MARGIN ===== */
 
