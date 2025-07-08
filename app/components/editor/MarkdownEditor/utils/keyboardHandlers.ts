@@ -3,6 +3,7 @@
  * @author Axel Modra
  */
 
+import { insertTextAtCursor, wrapSelectedText as wrapText } from '@/utils/editorUtils';
 import type { KeyboardEventData } from '../types';
 
 /**
@@ -67,77 +68,8 @@ export const shouldIgnoreShortcuts = (target: EventTarget | null): boolean => {
   return false;
 };
 
-/**
- * Insert text at cursor position in textarea
- */
-export const insertTextAtCursor = (
-  textarea: HTMLTextAreaElement,
-  text: string,
-  selectInserted = false
-): void => {
-  const start = textarea.selectionStart;
-  const end = textarea.selectionEnd;
-  const value = textarea.value;
-
-  // Insert text
-  const newValue = value.substring(0, start) + text + value.substring(end);
-  textarea.value = newValue;
-
-  // Update cursor position
-  if (selectInserted) {
-    textarea.setSelectionRange(start, start + text.length);
-  } else {
-    textarea.setSelectionRange(start + text.length, start + text.length);
-  }
-
-  // Trigger input event
-  textarea.dispatchEvent(new Event('input', { bubbles: true }));
-  textarea.focus();
-};
-
-/**
- * Wrap selected text with markdown syntax
- */
-export const wrapSelectedText = (
-  textarea: HTMLTextAreaElement,
-  prefix: string,
-  suffix: string = prefix,
-  placeholder = 'text'
-): void => {
-  const start = textarea.selectionStart;
-  const end = textarea.selectionEnd;
-  const value = textarea.value;
-  const selectedText = value.substring(start, end);
-
-  let newText: string;
-  let newCursorPos: number;
-
-  if (selectedText) {
-    // Wrap selected text
-    newText = prefix + selectedText + suffix;
-    newCursorPos = start + prefix.length + selectedText.length + suffix.length;
-  } else {
-    // Insert with placeholder
-    newText = prefix + placeholder + suffix;
-    newCursorPos = start + prefix.length + placeholder.length;
-  }
-
-  // Replace text
-  const newValue = value.substring(0, start) + newText + value.substring(end);
-  textarea.value = newValue;
-
-  // Set cursor position
-  if (selectedText) {
-    textarea.setSelectionRange(newCursorPos, newCursorPos);
-  } else {
-    // Select placeholder text
-    textarea.setSelectionRange(start + prefix.length, start + prefix.length + placeholder.length);
-  }
-
-  // Trigger input event
-  textarea.dispatchEvent(new Event('input', { bubbles: true }));
-  textarea.focus();
-};
+// Re-export wrapSelectedText from editorUtils for backward compatibility
+export const wrapSelectedText = wrapText;
 
 /**
  * Insert markdown heading
@@ -148,7 +80,7 @@ export const insertHeading = (
   text = 'Heading'
 ): void => {
   const prefix = `${'#'.repeat(Math.max(1, Math.min(6, level)))} `;
-  insertTextAtCursor(textarea, prefix + text);
+  insertTextAtCursor(textarea, prefix + text, { focus: true });
 };
 
 /**
@@ -160,7 +92,7 @@ export const insertListItem = (
   text = 'List item'
 ): void => {
   const prefix = ordered ? '1. ' : '- ';
-  insertTextAtCursor(textarea, prefix + text);
+  insertTextAtCursor(textarea, prefix + text, { focus: true });
 };
 
 /**
@@ -172,7 +104,7 @@ export const insertLink = (
   text = 'Link Text'
 ): void => {
   const linkText = `[${text}](${url})`;
-  insertTextAtCursor(textarea, linkText);
+  insertTextAtCursor(textarea, linkText, { focus: true });
 };
 
 /**
@@ -186,7 +118,7 @@ export const insertImage = (
 ): void => {
   const titlePart = title ? ` "${title}"` : '';
   const imageText = `![${alt}](${url}${titlePart})`;
-  insertTextAtCursor(textarea, imageText);
+  insertTextAtCursor(textarea, imageText, { focus: true });
 };
 
 /**
@@ -198,7 +130,7 @@ export const insertCodeBlock = (
   code = 'code'
 ): void => {
   const codeBlock = `\`\`\`${language}\n${code}\n\`\`\``;
-  insertTextAtCursor(textarea, codeBlock);
+  insertTextAtCursor(textarea, codeBlock, { focus: true });
 };
 
 /**
@@ -218,14 +150,14 @@ export const insertTable = (textarea: HTMLTextAreaElement, rows = 3, cols = 3): 
     table += `| ${rowData.join(' | ')} |\n`;
   }
 
-  insertTextAtCursor(textarea, table);
+  insertTextAtCursor(textarea, table, { focus: true });
 };
 
 /**
  * Insert markdown horizontal rule
  */
 export const insertHorizontalRule = (textarea: HTMLTextAreaElement): void => {
-  insertTextAtCursor(textarea, '\n---\n');
+  insertTextAtCursor(textarea, '\n---\n', { focus: true });
 };
 
 /**
@@ -234,7 +166,7 @@ export const insertHorizontalRule = (textarea: HTMLTextAreaElement): void => {
 export const insertBlockquote = (textarea: HTMLTextAreaElement, text = 'Quote text'): void => {
   const lines = text.split('\n');
   const quotedLines = lines.map((line) => `> ${line}`);
-  insertTextAtCursor(textarea, quotedLines.join('\n'));
+  insertTextAtCursor(textarea, quotedLines.join('\n'), { focus: true });
 };
 
 /**
@@ -310,7 +242,7 @@ export const handleEnterKey = (event: KeyboardEvent, textarea: HTMLTextAreaEleme
     event.preventDefault();
     const [, indent, bullet] = unorderedListMatch;
     const newLine = `\n${indent}${bullet} `;
-    insertTextAtCursor(textarea, newLine);
+    insertTextAtCursor(textarea, newLine, { focus: true });
     return true;
   }
 
@@ -319,7 +251,7 @@ export const handleEnterKey = (event: KeyboardEvent, textarea: HTMLTextAreaEleme
     const [, indent, number] = orderedListMatch;
     const nextNumber = Number.parseInt(number) + 1;
     const newLine = `\n${indent}${nextNumber}. `;
-    insertTextAtCursor(textarea, newLine);
+    insertTextAtCursor(textarea, newLine, { focus: true });
     return true;
   }
 

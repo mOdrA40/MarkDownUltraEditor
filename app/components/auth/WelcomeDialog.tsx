@@ -17,6 +17,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
+import { getStorageItem, setStorageItem } from '@/utils/common';
 
 /**
  * Props for WelcomeDialog component
@@ -42,10 +43,10 @@ export const WelcomeDialog: React.FC<WelcomeDialogProps> = ({
 
   // Check if this is first visit
   useEffect(() => {
-    const hasVisited = localStorage.getItem('markdownEditor_hasVisited');
+    const hasVisited = getStorageItem('markdownEditor_hasVisited');
     if (!hasVisited && controlledIsOpen === undefined) {
       setInternalIsOpen(true);
-      localStorage.setItem('markdownEditor_hasVisited', 'true');
+      setStorageItem('markdownEditor_hasVisited', 'true');
     }
   }, [controlledIsOpen]);
 
@@ -208,7 +209,7 @@ export const useWelcomeDialog = () => {
 
   // Check if should show welcome dialog on mount
   useEffect(() => {
-    const hasVisited = localStorage.getItem('markdownEditor_hasVisited');
+    const hasVisited = getStorageItem('markdownEditor_hasVisited');
     if (!hasVisited) {
       // Small delay to ensure page is loaded
       const timer = setTimeout(() => {
@@ -220,7 +221,7 @@ export const useWelcomeDialog = () => {
   }, []);
 
   const handleClose = () => {
-    localStorage.setItem('markdownEditor_hasVisited', 'true');
+    setStorageItem('markdownEditor_hasVisited', 'true');
     setIsOpen(false);
   };
 

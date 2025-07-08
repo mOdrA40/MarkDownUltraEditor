@@ -4,6 +4,7 @@
  */
 
 import { useCallback, useRef } from 'react';
+import { insertTextAtCursor } from '@/utils/editorUtils';
 
 interface UseSimpleEditorOptions {
   /** Minimum height for auto-resize */
@@ -57,50 +58,34 @@ export const useSimpleEditor = (
   }, [textareaRef, minHeight, maxHeight]);
 
   /**
-   * Insert text at cursor position with minimal interference
+   * Wrapper for insertTextAtCursor with auto-resize
    */
-  const insertTextAtCursor = useCallback(
+  const insertText = useCallback(
     (text: string, selectInserted = false) => {
       if (!textareaRef.current || isOperating.current) return;
 
       isOperating.current = true;
 
       const textarea = textareaRef.current;
-      const start = textarea.selectionStart;
-      const end = textarea.selectionEnd;
-      const value = textarea.value;
 
-      // Calculate new value and cursor position
-      const newValue = value.substring(0, start) + text + value.substring(end);
-      const newCursorStart = start + text.length;
-
-      // Update textarea value directly
-      textarea.value = newValue;
-
-      // Set cursor position immediately without any async operations
-      if (selectInserted) {
-        textarea.setSelectionRange(start, newCursorStart);
-      } else {
-        textarea.setSelectionRange(newCursorStart, newCursorStart);
-      }
-
-      // Trigger input event to notify React first
-      const inputEvent = new Event('input', { bubbles: true });
-      textarea.dispatchEvent(inputEvent);
-
-      // Auto-resize after input event to prevent glitches
-      requestAnimationFrame(() => {
-        autoResize();
+      // Use centralized insertTextAtCursor
+      insertTextAtCursor(textarea, text, {
+        selectInserted,
+        triggerInput: true,
+        focus: false,
       });
 
-      // Reset flag immediately
-      isOperating.current = false;
+      // Auto-resize after insertion
+      requestAnimationFrame(() => {
+        autoResize();
+        isOperating.current = false;
+      });
     },
     [textareaRef, autoResize]
   );
 
   return {
-    insertTextAtCursor,
+    insertTextAtCursor: insertText,
     autoResize,
   };
 };
