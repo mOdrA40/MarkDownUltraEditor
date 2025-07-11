@@ -175,4 +175,3 @@ export const getSafeAreaInsets = (): {
     left: Number.parseInt(style.getPropertyValue('--safe-area-inset-left') || '0', 10),
   };
 };
-

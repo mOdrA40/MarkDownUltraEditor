@@ -1,11 +1,3 @@
-/**
- * Responsive Styles Index
- * Import semua responsive styles berdasarkan breakpoint
- * 
- * @author Axel Modra
- */
-
-/* Import responsive styles berdasarkan breakpoint */
 @import "./mobile.css";
 @import "./tablet-small.css";
 @import "./tablet-medium.css";

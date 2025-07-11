@@ -1,18 +1,6 @@
-/**
- * Components Index
- * Import semua component styles
- *
- * @author Axel Modra
- */
-
-/* Common consolidated styles */
 @import "./common.css";
-
-/* Specific component styles */
 @import "./buttons/base.css";
 @import "./buttons/auth-button.css";
 @import "./dialogs/base.css";
 @import "./navigation/index.css";
 @import "./dropdowns/auth-dropdown.css";
-
-

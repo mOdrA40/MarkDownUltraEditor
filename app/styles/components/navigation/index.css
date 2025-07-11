@@ -1,18 +1,4 @@
-/**
- * Navigation Components Index
- * Import semua styles untuk komponen navigasi
- * 
- * @author Axel Modra
- */
-
-/* Import base navigation styles */
-@import './base.css';
-
-/* Import responsive styles */
-@import './responsive.css';
-
-/* Import theme styles */
-@import './themes.css';
-
-/* Import accessibility styles */
-@import './accessibility.css';
+@import "./base.css";
+@import "./responsive.css";
+@import "./themes.css";
+@import "./accessibility.css";

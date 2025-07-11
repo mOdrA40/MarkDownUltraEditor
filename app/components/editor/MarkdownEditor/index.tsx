@@ -3,7 +3,6 @@ MarkdownEditor
 @author Axel Modra
  */
 
-
 import React from 'react';
 import { usePerformanceDebug, useRenderPerformance } from '@/hooks/core/usePerformance';
 import { useFileStorage } from '@/hooks/files';

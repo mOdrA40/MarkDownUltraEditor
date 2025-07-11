@@ -1,15 +1,3 @@
-/**
- * Styles Index - Main Entry Point
- * Import semua styles dengan struktur yang terorganisir
- * 
- * @author Axel Modra
- */
-
-/* Import component styles */
-@import './components/index.css';
-
-/* Import utility styles */
-@import './utilities/index.css';
-
-/* Import responsive styles */
-@import './responsive/index.css';
+@import "./components/index.css";
+@import "./utilities/index.css";
+@import "./responsive/index.css";

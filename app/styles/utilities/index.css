@@ -1,81 +1,51 @@
-/**
- * Utilities Index
- * Import semua utility styles
- * 
- * @author Axel Modra
- */
+@import "./scroll.css";
+@import "./scrollbar.css";
+@import "./responsive.css";
+@import "./dialog-responsive.css";
+@import "./tabs-responsive.css";
+@import "./theme-colors.css";
+@import "./theme-dialogs.css";
+@import "./dropdown-fixes.css";
 
-/* Import utility styles */
-@import './scroll.css';
-@import './scrollbar.css';
-@import './responsive.css';
-@import './dialog-responsive.css';
-@import './tabs-responsive.css';
-@import './theme-colors.css';
-@import './themes.css';
-@import './theme-dialogs.css';
-@import './dropdown-fixes.css';
-
-/**
- * Utility classes
- * Kumpulan class utility untuk keperluan styling umum
- * 
- * @author Axel Modra
- */
-
-/* Z-index layering utilities */
+/* Z-index utilities */
 .z-dropdown {
   z-index: 60;
 }
-
 .z-modal {
   z-index: 70;
 }
-
 .z-toast {
   z-index: 80;
 }
-
 .z-tooltip {
   z-index: 90;
 }
 
-/* Button reset utilities */
+/* Utility classes */
 .button-reset {
   transform: none !important;
   border: none !important;
   outline: none !important;
   box-shadow: none !important;
 }
-
-/* Dropdown positioning utilities */
 .dropdown-fixed {
   position: fixed !important;
   transform: none !important;
 }
-
-/* Backdrop blur utilities */
 .backdrop-blur-light {
   backdrop-filter: blur(4px);
 }
-
 .backdrop-blur-medium {
   backdrop-filter: blur(8px);
 }
-
 .backdrop-blur-strong {
   backdrop-filter: blur(16px);
 }
 
-/* Enhanced shadows for dropdowns */
 .shadow-dropdown {
-  box-shadow: 
-    0 10px 25px -5px rgba(0, 0, 0, 0.1), 
-    0 10px 20px -6px rgba(0, 0, 0, 0.05),
-    0 0 0 1px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1),
+    0 10px 20px -6px rgba(0, 0, 0, 0.05), 0 0 0 1px rgba(0, 0, 0, 0.05);
 }
-
-/* Animation utilities */
 .animate-slide-down {
   animation: slideDown 0.15s ease-out;
 }
@@ -88,31 +58,5 @@
   to {
     opacity: 1;
     transform: translateY(0) scale(1);
-  }
-}
-
-/* Scrollbar utilities */
-@layer utilities {
-  .scrollbar-thin {
-    scrollbar-width: thin;
-    scrollbar-color: rgba(0, 0, 0, 0.2) transparent;
-  }
-
-  .scrollbar-thin::-webkit-scrollbar {
-    width: 6px;
-    height: 6px;
-  }
-
-  .scrollbar-thin::-webkit-scrollbar-track {
-    background: transparent;
-  }
-
-  .scrollbar-thin::-webkit-scrollbar-thumb {
-    background: rgba(0, 0, 0, 0.2);
-    border-radius: 3px;
-  }
-
-  .scrollbar-thin::-webkit-scrollbar-thumb:hover {
-    background: rgba(0, 0, 0, 0.3);
   }
 }

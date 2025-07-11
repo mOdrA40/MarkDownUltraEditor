@@ -1,24 +1,5 @@
-/**
- * Responsive Utilities
- * Utility classes untuk responsive design
- * 
- * @author Axel Modra
- */
-
-/* ===== UTILITY CLASSES ===== */
-
-/* Prevent text overflow in small spaces */
-.text-truncate-responsive {
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-/* Ensure minimum touch targets */
+/* Responsive Utilities */
 .touch-target-minimum {
   min-height: 44px;
   min-width: 44px;
 }
-
-/* ===== UNUSED RESPONSIVE UTILITIES REMOVED ===== */
-/* Removed button-responsive, margin-responsive, gap-responsive - not used in components */

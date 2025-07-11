@@ -1,56 +1,26 @@
-/**
- * Scroll Utilities
- * Utility classes untuk scroll behavior dan fixes
- * 
- * @author Axel Modra
- */
+/* Scroll Utilities */
 
-/* ===== GLOBAL SCROLL BEHAVIOR FIXES ===== */
-
-/* Mencegah scroll behavior yang tidak diinginkan dari transform scale */
 .no-scroll-scale {
   transform-origin: center center;
   will-change: auto;
 }
-
-
-
-/* ===== CONTAINER SCROLL PREVENTION ===== */
-
-/* Mencegah container scroll saat hover pada child elements */
 .scroll-container-stable {
   overflow: hidden;
   contain: layout style;
 }
-
 .scroll-container-stable:hover {
   overflow: hidden;
 }
-
-/* ===== UTILITY CLASSES ===== */
-
-/* Utility untuk mencegah layout shift */
 .prevent-layout-shift {
   contain: layout;
   transform: none !important;
 }
-
-/* Utility untuk smooth transitions tanpa scale */
-.smooth-transition {
-  transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
-  transform: none !important;
-}
-
-/* Utility untuk hover effects yang aman */
 .safe-hover:hover {
   background-color: hsl(var(--accent) / 0.8);
   color: hsl(var(--accent-foreground));
   transform: none !important;
 }
-
 .safe-active:active {
   background-color: hsl(var(--accent) / 0.6);
   transform: none !important;
 }
-
-
