@@ -23,13 +23,7 @@ import { useExportToPresentation } from './hooks/useExportToPresentation';
 import type { AdvancedExportProps, PreviewMode } from './types/export.types';
 
 /**
- * Advanced Export Component - Main Component
- *
- * Komponen utama yang sudah direfactor dengan arsitektur yang lebih baik:
- * - Menggunakan custom hooks untuk state management dan business logic
- * - Memisahkan UI components untuk better maintainability
- * - Type-safe dengan TypeScript interfaces
- * - Responsive design dengan mobile-first approach
+ * Advanced Export Component
  */
 export const AdvancedExport: React.FC<AdvancedExportProps> = ({
   markdown,
@@ -38,20 +32,15 @@ export const AdvancedExport: React.FC<AdvancedExportProps> = ({
   onClose,
   currentTheme,
 }) => {
-  // Responsive breakpoints
   const { isMobile, isTablet } = useResponsiveBreakpoint();
 
-  // Toast notifications
   const { toast } = useToast();
 
-  // Preview mode state
   const [previewMode, setPreviewMode] = useState<PreviewMode>('desktop');
 
-  // Export options management
   const { options, updateOption, validateOptions, getValidatedOptions } =
     useExportOptions(fileName);
 
-  // Success and error handlers
   const handleExportSuccess = (message: string) => {
     toast({
       title: 'Export berhasil',
@@ -67,7 +56,6 @@ export const AdvancedExport: React.FC<AdvancedExportProps> = ({
     });
   };
 
-  // Export hooks
   const pdfExport = useExportToPDF(markdown, handleExportSuccess, handleExportError);
   const docxExport = useExportToDocx(markdown, fileName, handleExportSuccess, handleExportError);
   const epubExport = useExportToEpub(markdown, fileName, handleExportSuccess, handleExportError);
@@ -78,7 +66,6 @@ export const AdvancedExport: React.FC<AdvancedExportProps> = ({
     handleExportError
   );
 
-  // Get current export state based on selected format
   const getCurrentExportState = () => {
     switch (options.format) {
       case 'pdf':
@@ -94,7 +81,6 @@ export const AdvancedExport: React.FC<AdvancedExportProps> = ({
     }
   };
 
-  // Handle export based on format
   const handleExport = async () => {
     const validation = validateOptions();
     if (!validation.isValid) {
@@ -132,7 +118,6 @@ export const AdvancedExport: React.FC<AdvancedExportProps> = ({
 
   const currentExportState = getCurrentExportState();
 
-  // Get theme-based styling
   const textColor = getThemeTextColor(currentTheme);
 
   return (
@@ -179,11 +164,11 @@ export const AdvancedExport: React.FC<AdvancedExportProps> = ({
         >
           {/* Export Options Panel */}
           <div
-            className={`bg-muted/20 flex flex-col advanced-export-options-panel ${
+            className={`bg-muted/20 flex flex-col ${
               isMobile || isTablet
-                ? 'w-full border-b flex-shrink-0'
-                : 'w-full lg:w-80 xl:w-96 border-b lg:border-b-0 lg:border-r flex-shrink-0'
-            } ${isMobile ? 'max-h-[45vh]' : isTablet ? 'max-h-[50vh]' : ''}`}
+                ? 'w-full border-b flex-shrink-0 max-h-[45vh] md:max-h-[50vh]'
+                : 'w-full lg:w-80 xl:w-96 border-b lg:border-b-0 lg:border-r flex-shrink-0 lg:min-w-80 lg:max-w-96'
+            }`}
           >
             <Tabs
               defaultValue="format"
@@ -248,7 +233,15 @@ export const AdvancedExport: React.FC<AdvancedExportProps> = ({
               </TabsList>
 
               {/* Tabs Content */}
-              <div className="advanced-export-tabs-content flex-1 overflow-auto pb-4 space-y-3 sm:space-y-4">
+              <div
+                className={`flex-1 overflow-auto pb-4 space-y-3 sm:space-y-4 ${
+                  isMobile
+                    ? 'px-3 pt-6 pb-4 max-h-[calc(45vh-120px)]'
+                    : isTablet
+                      ? 'px-4 pt-5 pb-3 max-h-[calc(50vh-110px)]'
+                      : 'px-4 py-5 lg:px-5 max-h-[calc(90vh-120px)]'
+                }`}
+              >
                 <TabsContent value="format" className="mt-0">
                   <FormatSelector
                     selectedFormat={options.format}
@@ -283,7 +276,9 @@ export const AdvancedExport: React.FC<AdvancedExportProps> = ({
           </div>
 
           {/* Preview Panel */}
-          <div className="advanced-export-preview-panel">
+          <div
+            className={`flex-1 flex flex-col min-h-0 ${isMobile || isTablet ? 'mt-4' : 'lg:mt-0'}`}
+          >
             <PreviewPanel
               markdown={markdown}
               options={options}

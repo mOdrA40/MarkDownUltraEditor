@@ -1,78 +1,34 @@
 /**
- * Mobile Responsive Styles (320px - 499px)
- * Styles khusus untuk perangkat mobile
- * 
+ * Mobile Responsive Styles
  * @author Axel Modra
  */
 
-/* ===== MOBILE FIXES (320px - 499px) ===== */
+.mobile-filename-input {
+  min-height: 2rem;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.mobile-filename-input:focus {
+  @apply outline-none ring-2 ring-blue-500/50 rounded;
+}
+
+/* Select dropdown positioning fix for mobile */
 @media (max-width: 499px) {
-  /* ===== TOOLBAR MOBILE ===== */
-  
-  /* Toolbar mobile - pastikan semua button terlihat */
-  .toolbar-mobile-container {
-    overflow-x: auto;
-  }
-
-  /* ===== UNDO/REDO BUTTONS ===== */
-  
-  /* Undo/Redo buttons - compact tapi visible */
-  .undo-redo-mobile {
-    gap: 0.25rem;
-  }
-
-  .undo-redo-mobile button {
-    min-width: 32px;
-    min-height: 32px;
-    padding: 0;
-    flex-shrink: 0;
-  }
-
-  /* ===== FILE NAME INPUT ===== */
-  
-  /* File name input di mobile - pastikan touch-friendly */
-  .mobile-filename-input {
-    min-height: 32px;
-    touch-action: manipulation;
-    -webkit-tap-highlight-color: transparent;
-  }
-
-  .mobile-filename-input:focus {
-    outline: none;
-    box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.5);
-    border-radius: 4px;
-  }
-
-  /* ===== DIALOG STYLES ===== */
-
-  /* Dialog styles handled by dialog-responsive.css utility */
-
-  /* ===== TABS STYLES ===== */
-
-  /* Tabs styles handled by tabs-responsive.css utility */
-
-  /* ===== SELECT DROPDOWN ===== */
-  
-  /* Select dropdown positioning fix untuk mobile */
   [data-radix-select-content] {
-    max-height: 200px !important;
-    z-index: 9999 !important;
-    position: fixed !important;
+    max-height: 13rem;
+    z-index: 50;
+    position: fixed;
+    left: 1rem;
+    right: 1rem;
+    width: auto;
+    max-width: 92vw;
     transform: none !important;
-    left: 4vw !important;
-    right: 4vw !important;
-    width: auto !important;
-    max-width: 92vw !important;
   }
 
-  /* Document Templates dialog specific fixes */
   .document-templates-dialog [data-radix-select-content] {
-    left: 1rem !important;
-    right: 1rem !important;
-    max-width: calc(100vw - 2rem) !important;
+    left: 1rem;
+    right: 1rem;
+    max-width: calc(100vw - 2rem);
   }
-
-  /* ===== ADVANCED EXPORT TABS ===== */
-
-  /* Advanced Export tabs styles handled by tabs-responsive.css utility */
 }

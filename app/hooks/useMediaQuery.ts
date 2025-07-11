@@ -1,17 +1,16 @@
 /**
  * useMediaQuery Hook
- * Shared hook untuk media query matching
- *
  * @author Axel Modra
  */
 
 import { useEffect, useState } from 'react';
 import { addMediaQueryListener, matchesMediaQuery } from '@/utils/common';
+import { MEDIA_QUERIES } from '@/utils/responsive';
 
 /**
- * Hook untuk media query matching
+ * Hook for media query matching
  * @param query - CSS media query string
- * @returns True jika media query match
+ * @returns True if media query matches
  */
 export const useMediaQuery = (query: string): boolean => {
   const [matches, setMatches] = useState(() => {
@@ -34,35 +33,21 @@ export const useMediaQuery = (query: string): boolean => {
 };
 
 /**
- * Common media queries untuk kemudahan penggunaan
+ * Convenience hooks for common breakpoints
+ * Using MEDIA_QUERIES from @/utils/responsive for consistency
  */
-export const MEDIA_QUERIES = {
-  mobile: '(max-width: 499px)',
-  smallTablet: '(min-width: 500px) and (max-width: 767px)',
-  tablet: '(min-width: 768px) and (max-width: 1023px)',
-  desktop: '(min-width: 1024px)',
-  largeDesktop: '(min-width: 1440px)',
-  touchDevice: '(pointer: coarse)',
-  hoverDevice: '(hover: hover)',
-  prefersReducedMotion: '(prefers-reduced-motion: reduce)',
-  prefersDarkMode: '(prefers-color-scheme: dark)',
-} as const;
-
-/**
- * Convenience hooks untuk breakpoint umum
- */
-export const useIsMobile = () => useMediaQuery(MEDIA_QUERIES.mobile);
-export const useIsSmallTablet = () => useMediaQuery(MEDIA_QUERIES.smallTablet);
-export const useIsTablet = () => useMediaQuery(MEDIA_QUERIES.tablet);
-export const useIsDesktop = () => useMediaQuery(MEDIA_QUERIES.desktop);
-export const useIsLargeDesktop = () => useMediaQuery(MEDIA_QUERIES.largeDesktop);
-export const useIsTouchDevice = () => useMediaQuery(MEDIA_QUERIES.touchDevice);
-export const useHasHover = () => useMediaQuery(MEDIA_QUERIES.hoverDevice);
+export const useIsMobile = () => useMediaQuery(MEDIA_QUERIES.allMobile);
+export const useIsSmallTablet = () => useMediaQuery(MEDIA_QUERIES.tabletSmall);
+export const useIsTablet = () => useMediaQuery(MEDIA_QUERIES.allTablet);
+export const useIsDesktop = () => useMediaQuery(MEDIA_QUERIES.allDesktop);
+export const useIsLargeDesktop = () => useMediaQuery(MEDIA_QUERIES.desktopLarge);
+export const useIsTouchDevice = () => useMediaQuery('(pointer: coarse)');
+export const useHasHover = () => useMediaQuery('(hover: hover)');
 export const usePrefersReducedMotion = () => useMediaQuery(MEDIA_QUERIES.prefersReducedMotion);
 export const usePrefersDarkMode = () => useMediaQuery(MEDIA_QUERIES.prefersDarkMode);
 
 /**
- * Hook untuk mendapatkan breakpoint saat ini
+ * Hook for getting current breakpoint
  */
 export const useCurrentBreakpoint = ():
   | 'mobile'

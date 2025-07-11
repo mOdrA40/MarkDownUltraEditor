@@ -1,48 +1,20 @@
 /**
  * Navigation Responsive Styles
- * Responsive design untuk komponen navigasi
- * 
  * @author Axel Modra
  */
 
-/* ===== MOBILE RESPONSIVE (max-width: 768px) ===== */
-
-@media (max-width: 768px) {
-  /* Mobile optimizations */
-  [data-toc-container],
-  [data-outline-container] {
-    font-size: 0.875rem;
-  }
-  
-  [data-toc-container] [data-heading-id],
-  [data-outline-container] [data-heading-id] {
-    padding: 0.5rem;
-    margin-bottom: 0.25rem;
-  }
-  
-  /* Larger touch targets untuk mobile */
-  [data-toc-container] [data-heading-id],
-  [data-outline-container] [data-heading-id] {
-    min-height: 44px;
-    display: flex;
-    align-items: center;
-  }
+[data-toc-container],
+[data-outline-container] {
+  @apply md:text-sm lg:text-base;
 }
 
-/* ===== TABLET RESPONSIVE (768px - 1023px) ===== */
-
-@media (min-width: 768px) and (max-width: 1023px) {
-  /* Tablet optimizations */
-  [data-toc-container],
-  [data-outline-container] {
-    font-size: 0.9rem;
-  }
+[data-toc-container] [data-heading-id],
+[data-outline-container] [data-heading-id] {
+  @apply md:p-2 md:mb-1 md:min-h-11 md:flex md:items-center;
 }
 
-/* ===== DESKTOP RESPONSIVE (1024px+) ===== */
-
+/* Desktop hover effects */
 @media (min-width: 1024px) {
-  /* Desktop optimizations */
   [data-toc-container] [data-heading-id]:hover,
   [data-outline-container] [data-heading-id]:hover {
     transform: translateX(4px);

@@ -1,14 +1,9 @@
 /**
  * Tabs Responsive Utilities
- * Responsive styles untuk tabs components
- * 
  * @author Axel Modra
  */
 
-/* ===== MOBILE TABS STYLES (max-width: 499px) ===== */
-
 @media (max-width: 499px) {
-  /* Export tabs compact */
   [data-radix-tabs-list] {
     padding: 0.5rem !important;
     gap: 0.25rem !important;
@@ -21,13 +16,11 @@
     flex: 1 !important;
   }
 
-  /* Content padding untuk mobile */
   [data-radix-tabs-content] {
     padding: 1rem !important;
     margin: 0 1rem !important;
   }
 
-  /* Advanced Export mobile/tablet tabs layout fixes */
   [data-radix-tabs-list].grid-cols-1 {
     display: flex !important;
     flex-direction: column !important;
@@ -38,7 +31,7 @@
     backdrop-filter: blur(12px) !important;
     border: 1px solid #e2e8f0 !important;
     border-radius: 0.5rem !important;
-    margin: 0.75rem 1rem !important;
+    margin: 0.75rem 1rem 1.5rem 1rem !important;
     width: calc(100% - 2rem) !important;
     max-width: calc(100vw - 2rem) !important;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
@@ -57,18 +50,29 @@
     transition: all 0.2s ease !important;
   }
 
-  [data-radix-tabs-list].grid-cols-1 [data-radix-tabs-trigger][data-state="active"] {
+  [data-radix-tabs-list].grid-cols-1
+    [data-radix-tabs-trigger][data-state="active"] {
     background: white !important;
     border: 1px solid #3b82f6 !important;
     color: #1e40af !important;
     box-shadow: 0 1px 3px rgba(59, 130, 246, 0.2) !important;
   }
+
+  .advanced-export-tabs-container [data-radix-tabs-content] {
+    margin-top: 1rem !important;
+    padding-top: 1rem !important;
+  }
+
+  .advanced-export-tabs-container
+    [data-radix-tabs-content]
+    > div
+    > div:first-child
+    > label {
+    margin-top: 0.5rem !important;
+  }
 }
 
-/* ===== SMALL TABLET TABS STYLES (500px - 768px) ===== */
-
 @media (min-width: 500px) and (max-width: 768px) {
-  /* Export tabs untuk small tablet */
   [data-radix-tabs-list] {
     padding: 0.5rem !important;
     gap: 0.25rem !important;
@@ -81,17 +85,18 @@
     flex: 1 !important;
   }
 
-  /* Content padding untuk small tablet */
   [data-radix-tabs-content] {
     padding: 0.5rem !important;
     margin: 0 0.5rem !important;
   }
+
+  .advanced-export-tabs-container [data-radix-tabs-content] {
+    margin-top: 0.75rem !important;
+    padding-top: 0.75rem !important;
+  }
 }
 
-/* ===== MEDIUM TABLET TABS STYLES (768px - 1023px) ===== */
-
 @media (min-width: 768px) and (max-width: 1023px) {
-  /* Export tabs untuk medium tablet */
   [data-radix-tabs-list] {
     padding: 0.75rem !important;
     gap: 0.5rem !important;
@@ -103,17 +108,13 @@
     font-size: 0.875rem !important;
   }
 
-  /* Content padding untuk medium tablet */
   [data-radix-tabs-content] {
     padding: 0.75rem !important;
     margin: 0 0.75rem !important;
   }
 }
 
-/* ===== DESKTOP TABS STYLES (1024px+) ===== */
-
 @media (min-width: 1024px) {
-  /* Export tabs untuk desktop */
   [data-radix-tabs-list] {
     padding: 1rem !important;
     gap: 0.75rem !important;
@@ -125,23 +126,18 @@
     font-size: 0.875rem !important;
   }
 
-  /* Content padding untuk desktop */
   [data-radix-tabs-content] {
     padding: 1rem !important;
     margin: 0 1rem !important;
   }
 }
 
-/* ===== ADVANCED EXPORT TABS CONTAINER ===== */
-
-/* Advanced Export tabs container - prevent scroll issues */
 .advanced-export-tabs-container {
   display: flex !important;
   flex-direction: column !important;
   height: 100% !important;
 }
 
-/* Advanced Export tabs content - scrollable area */
 .advanced-export-tabs-content {
   flex: 1 !important;
   overflow-y: auto !important;

@@ -1,53 +1,33 @@
 /**
- * Small Tablet Responsive Styles (500px - 767px)
- * Styles khusus untuk tablet kecil
- * 
+ * Small Tablet Responsive Styles
  * @author Axel Modra
  */
 
-/* ===== SMALL TABLET FIXES (500px - 768px) ===== */
-@media (min-width: 500px) and (max-width: 768px) {
-  /* ===== MOBILE NAVIGATION ===== */
+.mobile-nav-container {
+  @apply sm:block;
+}
 
-  /* Show mobile navigation on small tablet */
-  .mobile-nav-container {
-    display: block !important;
-  }
+.desktop-editor-header {
+  @apply block;
+}
 
-  /* Hide desktop editor header on small tablet - use specific selector */
-  .desktop-editor-header {
-    display: none !important;
-  }
+.mobile-nav-header {
+  @apply sm:px-4 sm:py-3 sm:min-h-14;
+}
 
-  /* Mobile nav header adjustments for small tablet */
-  .mobile-nav-header {
-    padding: 0.75rem 1rem;
-    min-height: 3.5rem;
-  }
+.mobile-nav-sidebar {
+  @apply sm:w-80;
+}
 
-  /* Mobile nav sidebar width for small tablet */
-  .mobile-nav-sidebar {
-    width: 20rem !important; 
-  }
+.mobile-nav-undo-redo {
+  @apply sm:gap-1;
+}
 
-  /* Undo/Redo buttons in mobile nav header for small tablet */
-  .mobile-nav-undo-redo {
-    gap: 0.25rem !important;
-  }
+.mobile-nav-undo-redo button {
+  @apply sm:w-8 sm:h-8 sm:p-0;
+}
 
-  .mobile-nav-undo-redo button {
-    width: 2rem !important;
-    height: 2rem !important;
-    padding: 0 !important;
-  }
-
-  /* ===== TOOLBAR STYLES ===== */
-
-  /* Force mobile layout for toolbar in mobile navigation */
-  .mobile-nav-toolbar {
-    /* Force mobile layout regardless of screen size */
-  }
-
+@media (min-width: 576px) and (max-width: 767px) {
   .mobile-nav-toolbar .hidden.sm\\:block,
   .mobile-nav-toolbar .hidden.md\\:block,
   .mobile-nav-toolbar .hidden.xl\\:block {
@@ -58,14 +38,13 @@
     display: block !important;
   }
 
-  /* Toolbar - compact layout dengan scroll horizontal */
   .toolbar-small-tablet-row {
     display: flex;
     align-items: center;
     justify-content: flex-start;
     gap: 0.25rem;
     overflow-x: auto;
-    padding: 0.25rem 0.5rem;
+    padding: 0.5rem 0.25rem;
   }
 
   .toolbar-small-tablet-button {
@@ -76,8 +55,6 @@
     white-space: nowrap;
   }
 
-  /* ===== WRITING SETTINGS ===== */
-  /* Writing Settings - compact horizontal layout */
   .writing-settings-small-tablet {
     display: flex;
     align-items: center;
@@ -93,23 +70,17 @@
     flex-shrink: 0;
   }
 
-  /* ===== UNDO/REDO BUTTONS ===== */
-
-  /* Undo/Redo - visible dan accessible */
   .undo-redo-small-tablet {
     gap: 0.25rem;
   }
 
   .undo-redo-small-tablet button {
-    min-width: 28px;
-    min-height: 28px;
+    min-width: 1.75rem;
+    min-height: 1.75rem;
     padding: 0;
     flex-shrink: 0;
   }
 
-  /* ===== VIM & ZEN MODE BUTTONS ===== */
-
-  /* Vim dan Zen mode buttons - pastikan terlihat */
   .vim-zen-buttons-small-tablet {
     display: flex;
     gap: 0.25rem;
@@ -120,41 +91,28 @@
     height: 1.5rem;
     padding: 0 0.5rem;
     font-size: 0.75rem;
-    min-width: auto;
+    min-width: 0;
   }
 
-  /* ===== GRID LAYOUTS ===== */
-
-  /* Format grid untuk small tablet */
   .export-grid-small-tablet {
     grid-template-columns: repeat(2, 1fr) !important;
     gap: 0.5rem !important;
   }
 
-  /* Small tablet layout - vertical stacking */
   .export-layout-small-tablet {
     flex-direction: column !important;
   }
 
-  /* ===== PANEL HEIGHTS ===== */
-
-  /* Options panel height limit on small tablet */
   .export-options-small-tablet {
     max-height: 50vh !important;
     overflow-y: auto !important;
   }
 
-  /* Preview panel minimum height on small tablet */
   .export-preview-small-tablet {
     min-height: 400px !important;
     flex: 1 !important;
   }
 
-  /* ===== DOCUMENT TEMPLATES ===== */
-
-  /* Document Templates Dialog styles handled by dialog-responsive.css utility */
-
-  /* Toolbar responsive */
   .templates-toolbar {
     flex-direction: column !important;
     gap: 0.75rem !important;

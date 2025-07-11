@@ -1,21 +1,24 @@
 /**
  * Button Base Styles
- * Base styles untuk semua button components
- * 
  * @author Axel Modra
  */
 
 /* ===== CONSOLIDATED BUTTON FIXES ===== */
 
-/* Base button reset - applies to all button fix classes */
+/* Base button reset */
 .theme-button-fix,
 .toolbar-button-fix,
 .clean-button,
 .focus-fix {
-  @apply button-reset;
+  border: none;
+  background: none;
+  padding: 0;
+  margin: 0;
+  font: inherit;
+  cursor: pointer;
+  outline: none;
 }
 
-/* Theme button specific styles */
 .theme-button-fix {
   transition: filter 0.2s ease, opacity 0.2s ease;
   will-change: filter, opacity;
@@ -30,7 +33,6 @@
   opacity: 0.9;
 }
 
-/* Toolbar and clean button shared styles */
 .toolbar-button-fix,
 .clean-button {
   transition: background-color 0.2s ease, color 0.2s ease, opacity 0.2s ease;
@@ -52,52 +54,30 @@
 /* ===== RESPONSIVE BUTTON FIXES ===== */
 
 /* Mobile fixes */
-@media (max-width: 767px) {
-  .button-hover-fix,
-  .theme-button-fix,
-  .toolbar-button-fix {
-    transition-duration: 0.15s;
-  }
+.button-hover-fix,
+.theme-button-fix,
+.toolbar-button-fix {
+  @apply md:duration-150 lg:duration-200;
 }
 
 /* Tablet fixes */
 @media (min-width: 768px) and (max-width: 1023px) {
-  .button-hover-fix,
-  .theme-button-fix,
-  .toolbar-button-fix {
-    transition-duration: 0.2s;
-  }
-
-  /* Auth button specific fixes for tablet range - ukuran lebih kecil dan proporsional */
   .auth-button,
   [data-component="auth-button"] {
-    padding: 0.5rem 1rem !important;
-    margin: 0 0.375rem !important;
-    min-width: 5.5rem !important;
-    gap: 0.5rem !important;
-    border-radius: 0.375rem !important;
-    height: 2.25rem !important;
-    font-size: 0.8125rem !important;
-    font-weight: 500 !important;
-    justify-content: center !important;
-    align-items: center !important;
+    @apply px-4 py-2 mx-1.5 gap-2 rounded-md h-9 text-sm font-medium justify-center items-center;
+    min-width: 5.5rem;
   }
 
-  /* Ensure proper icon spacing - TIDAK MEPET KIRI */
   .auth-button .lucide,
   [data-component="auth-button"] .lucide {
-    margin-right: 0.75rem !important;
-    margin-left: 0.125rem !important;
-    flex-shrink: 0 !important;
-    width: 1.125rem !important;
-    height: 1.125rem !important;
+    @apply mr-3 ml-0.5 flex-shrink-0;
+    width: 1.125rem;
+    height: 1.125rem;
   }
 
-  /* Text spacing - TIDAK MEPET KANAN */
   .auth-button span,
   [data-component="auth-button"] span {
-    white-space: nowrap !important;
-    font-weight: 500 !important;
+    @apply whitespace-nowrap font-medium;
     line-height: 1.25rem !important;
     margin-right: 0.125rem !important;
   }
@@ -111,7 +91,6 @@
     transition-duration: 0.2s;
   }
 
-  /* Auth button specific fixes for desktop - ukuran proporsional */
   .auth-button,
   [data-component="auth-button"] {
     padding: 0.625rem 1.25rem !important;
@@ -126,7 +105,6 @@
     align-items: center !important;
   }
 
-  /* Ensure proper icon spacing */
   .auth-button .lucide,
   [data-component="auth-button"] .lucide {
     margin-right: 0.5rem !important;
@@ -136,7 +114,6 @@
     height: 1rem !important;
   }
 
-  /* Text spacing */
   .auth-button span,
   [data-component="auth-button"] span {
     white-space: nowrap !important;

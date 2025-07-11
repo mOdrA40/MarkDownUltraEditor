@@ -1,10 +1,9 @@
 /**
- * WritingSettings Constants - Konfigurasi dan Konstanta
- * Definisi konstanta untuk WritingSettings module
- *
- * @author Axel Modra
+ * WritingSettings Constants
+@author Axel Modra
  */
 
+import { BREAKPOINTS as RESPONSIVE_BREAKPOINTS } from '@/utils/responsive';
 import type {
   BreakpointType,
   ControlSize,
@@ -13,35 +12,27 @@ import type {
 } from '../types/settings.types';
 
 /**
- * Konstanta untuk batasan font size
+ * Font size constraints
  */
 export const FONT_SIZE_CONSTRAINTS = {
-  /** Ukuran font minimum */
   MIN: 12,
-  /** Ukuran font maksimum */
   MAX: 24,
-  /** Step perubahan font size */
   STEP: 1,
-  /** Default font size */
   DEFAULT: 16,
 } as const;
 
 /**
- * Konstanta untuk batasan line height
+ * Line height constraints
  */
 export const LINE_HEIGHT_CONSTRAINTS = {
-  /** Line height minimum */
   MIN: 1.2,
-  /** Line height maksimum */
   MAX: 2.5,
-  /** Step perubahan line height */
   STEP: 0.1,
-  /** Default line height */
   DEFAULT: 1.5,
 } as const;
 
 /**
- * Konfigurasi default untuk settings
+ * Default settings
  */
 export const DEFAULT_SETTINGS: SettingsConfig = {
   minFontSize: FONT_SIZE_CONSTRAINTS.MIN,
@@ -53,7 +44,7 @@ export const DEFAULT_SETTINGS: SettingsConfig = {
 };
 
 /**
- * Konfigurasi writing modes
+ * Writing modes
  */
 export const WRITING_MODES: Record<string, WritingModeConfig> = {
   focus: {
@@ -94,37 +85,38 @@ export const WRITING_MODES: Record<string, WritingModeConfig> = {
 } as const;
 
 /**
- * Breakpoints untuk responsive design
+ * Breakpoints
  */
+
 export const BREAKPOINTS = {
-  /** Mobile breakpoint (320px - 499px) */
+  /** Mobile breakpoint */
   mobile: {
-    min: 320,
-    max: 499,
+    min: RESPONSIVE_BREAKPOINTS.mobileSmall.min,
+    max: RESPONSIVE_BREAKPOINTS.mobile.max,
     type: 'mobile' as BreakpointType,
   },
-  /** Small tablet breakpoint (500px - 767px) */
+  /** Small tablet breakpoint */
   smallTablet: {
-    min: 500,
-    max: 767,
+    min: RESPONSIVE_BREAKPOINTS.tabletSmall.min,
+    max: RESPONSIVE_BREAKPOINTS.tabletSmall.max,
     type: 'small-tablet' as BreakpointType,
   },
-  /** Tablet breakpoint (768px - 1023px) */
+  /** Tablet breakpoint */
   tablet: {
-    min: 768,
-    max: 1023,
+    min: RESPONSIVE_BREAKPOINTS.tabletLarge.min,
+    max: RESPONSIVE_BREAKPOINTS.tabletLarge.max,
     type: 'tablet' as BreakpointType,
   },
-  /** Desktop breakpoint (1024px+) */
+  /** Desktop breakpoint */
   desktop: {
-    min: 1024,
+    min: RESPONSIVE_BREAKPOINTS.desktopSmall.min,
     max: Number.POSITIVE_INFINITY,
     type: 'desktop' as BreakpointType,
   },
 } as const;
 
 /**
- * Ukuran control yang tersedia
+ * Control sizes
  */
 export const CONTROL_SIZES: Record<
   ControlSize,
@@ -156,11 +148,11 @@ export const CONTROL_SIZES: Record<
 } as const;
 
 /**
- * CSS classes untuk responsive layouts
+ * CSS classes
  */
 export const RESPONSIVE_CLASSES = {
   mobile: {
-    container: 'block sm:hidden space-y-4',
+    container: 'block space-y-4',
     fontControl: 'flex items-center justify-between',
     lineControl: 'flex items-center justify-between',
     modeButtons: 'grid grid-cols-2 gap-2',
@@ -168,21 +160,19 @@ export const RESPONSIVE_CLASSES = {
   },
   'small-tablet': {
     container:
-      'hidden sm:flex md:hidden items-center space-x-1 px-2 py-2 bg-background/50 backdrop-blur border-b overflow-x-auto',
+      'flex items-center space-x-1 px-2 py-2 bg-background/50 backdrop-blur border-b overflow-x-auto',
     control: 'flex items-center space-x-1 flex-shrink-0',
     button: 'h-6 px-2 text-xs flex-shrink-0',
     separator: 'h-3',
   },
   tablet: {
-    container:
-      'hidden md:flex lg:hidden items-center space-x-2 px-3 py-2 bg-background/50 backdrop-blur border-b',
+    container: 'flex items-center space-x-2 px-3 py-2 bg-background/50 backdrop-blur border-b',
     control: 'flex items-center space-x-1',
     button: 'h-7 text-xs',
     separator: 'h-4',
   },
   desktop: {
-    container:
-      'hidden lg:flex items-center space-x-2 px-4 py-2 bg-background/50 backdrop-blur border-b',
+    container: 'flex items-center space-x-2 px-4 py-2 bg-background/50 backdrop-blur border-b',
     control: 'flex items-center space-x-1',
     button: 'h-7 text-xs',
     separator: 'h-4',
@@ -190,16 +180,13 @@ export const RESPONSIVE_CLASSES = {
 } as const;
 
 /**
- * Animasi dan transisi
+ * Animations
  */
 export const ANIMATIONS = {
-  /** Durasi transisi default */
+  /** Default duration */
   duration: '0.2s',
-  /** Easing function */
   easing: 'ease-in-out',
-  /** Hover scale */
   hoverScale: 'scale-105',
-  /** Active scale */
   activeScale: 'scale-95',
 } as const;
 
@@ -207,9 +194,7 @@ export const ANIMATIONS = {
  * Accessibility constants
  */
 export const A11Y = {
-  /** Minimum touch target size (44px) */
   minTouchTarget: 44,
-  /** ARIA labels */
   labels: {
     fontSizeIncrease: 'Increase font size',
     fontSizeDecrease: 'Decrease font size',

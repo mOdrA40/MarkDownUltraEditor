@@ -1,7 +1,12 @@
-/**
- * @fileoverview Responsive layout type definitions
- * @author Axel Modra
+/*
+ResponsiveTypes
+@author Axel Modra
  */
+
+import {
+  BREAKPOINTS as RESPONSIVE_BREAKPOINTS,
+  MEDIA_QUERIES as RESPONSIVE_MEDIA_QUERIES,
+} from '@/utils/responsive';
 
 /**
  * Device type enumeration
@@ -18,15 +23,15 @@ export enum DeviceType {
  * Breakpoint configuration
  */
 export interface Breakpoints {
-  /** Mobile breakpoint (320px - 499px) */
+  /** Mobile breakpoint */
   mobile: number;
-  /** Small tablet breakpoint (500px - 767px) */
+  /** Small tablet breakpoint */
   smallTablet: number;
-  /** Tablet breakpoint (768px - 1023px) */
+  /** Tablet breakpoint */
   tablet: number;
-  /** Desktop breakpoint (1024px - 1439px) */
+  /** Desktop breakpoint */
   desktop: number;
-  /** Large desktop breakpoint (1440px+) */
+  /** Large desktop breakpoint */
   largeDesktop: number;
 }
 
@@ -165,19 +170,19 @@ export interface ResponsiveClasses {
  * Default responsive configuration
  */
 export const DEFAULT_BREAKPOINTS: Breakpoints = {
-  mobile: 499,
-  smallTablet: 767,
-  tablet: 1023,
-  desktop: 1439,
-  largeDesktop: 1440,
+  mobile: RESPONSIVE_BREAKPOINTS.mobile.max,
+  smallTablet: RESPONSIVE_BREAKPOINTS.tabletSmall.max,
+  tablet: RESPONSIVE_BREAKPOINTS.tabletLarge.max,
+  desktop: RESPONSIVE_BREAKPOINTS.desktopSmall.max,
+  largeDesktop: RESPONSIVE_BREAKPOINTS.desktopLarge.min,
 };
 
 export const DEFAULT_MEDIA_QUERIES: MediaQueries = {
-  mobile: '(max-width: 499px)',
-  smallTablet: '(min-width: 500px) and (max-width: 767px)',
-  tablet: '(min-width: 768px) and (max-width: 1023px)',
-  desktop: '(min-width: 1024px) and (max-width: 1439px)',
-  largeDesktop: '(min-width: 1440px)',
+  mobile: RESPONSIVE_MEDIA_QUERIES.allMobile,
+  smallTablet: RESPONSIVE_MEDIA_QUERIES.tabletSmall,
+  tablet: RESPONSIVE_MEDIA_QUERIES.allTablet,
+  desktop: RESPONSIVE_MEDIA_QUERIES.desktopSmall,
+  largeDesktop: RESPONSIVE_MEDIA_QUERIES.desktopLarge,
   touchDevice: '(pointer: coarse)',
   hoverDevice: '(hover: hover)',
   highDensity: '(-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi)',

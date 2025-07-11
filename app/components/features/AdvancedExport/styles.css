@@ -1,256 +1,57 @@
-/* Desktop TabsList improvements */
-@media (min-width: 1024px) {
-  .advanced-export-tabs-list {
-    max-width: 280px;
-    margin: 12px 16px;
-    border: 1px solid hsl(var(--border));
-    border-radius: 8px;
-    background: hsl(var(--muted) / 0.3);
-    box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1);
-    padding: 4px;
-    gap: 2px;
-    display: flex;
-    align-items: center;
-    height: 44px;
-  }
+/*
+AdvancedExport Styles
+@author Axel Modra
+ */
 
-  .advanced-export-tabs-trigger {
-    flex: 1;
-    padding: 8px 12px;
-    font-size: 0.875rem;
-    font-weight: 500;
-    transition: all 0.2s ease;
-    border-radius: 6px;
-    margin: 0;
-    background: transparent;
-    border: none;
-    position: relative;
-    height: 36px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-
-  .advanced-export-tabs-trigger[data-state="active"] {
-    background: hsl(var(--background));
-    color: hsl(var(--foreground));
-    box-shadow:
-      0 2px 4px 0 rgb(0 0 0 / 0.1),
-      0 1px 2px 0 rgb(0 0 0 / 0.06);
-    border: 2px solid hsl(var(--primary));
-    transform: none;
-    z-index: 10;
-  }
-
-  /* Theme-aware active states */
-  [data-theme="forest"] .advanced-export-tabs-trigger[data-state="active"] {
-    border-color: #10b981;
-  }
-
-  [data-theme="ocean"] .advanced-export-tabs-trigger[data-state="active"] {
-    border-color: #0ea5e9;
-  }
-
-  [data-theme="dark"] .advanced-export-tabs-trigger[data-state="active"] {
-    border-color: #60a5fa;
-  }
-
-  .advanced-export-tabs-trigger:hover:not([data-state="active"]) {
-    background: hsl(var(--muted) / 0.5);
-    transform: none;
-  }
-  
-  .advanced-export-options-panel {
-    width: 320px;
-    min-width: 320px;
-    max-width: 380px;
-  }
-  
-  .advanced-export-tabs-content {
-    padding: 16px 20px;
-    max-height: calc(90vh - 120px);
-    overflow-y: auto;
-  }
+/* Desktop TabsList  */
+.advanced-export-tabs-list {
+  @apply lg:max-w-72 lg:mx-4 lg:my-3 lg:border lg:rounded-lg lg:bg-muted/30 lg:shadow-sm lg:p-1 lg:gap-0.5 lg:flex lg:items-center lg:h-11;
 }
 
-/* Tablet specific adjustments */
-@media (min-width: 768px) and (max-width: 1023px) {
-  .advanced-export-options-panel {
-    max-height: 50vh;
-  }
-  
-  .advanced-export-tabs-content {
-    padding: 12px 16px;
-  }
+.advanced-export-tabs-trigger {
+  @apply lg:flex-1 lg:px-3 lg:py-2 lg:text-sm lg:font-medium lg:transition-all lg:duration-200 lg:rounded-md lg:bg-transparent lg:border-0 lg:relative lg:h-9 lg:flex lg:items-center lg:justify-center;
 }
 
-/* Mobile specific adjustments */
-@media (max-width: 767px) {
-  .advanced-export-tabs-container {
-    max-height: 45vh;
-  }
-  
-  .advanced-export-tabs-content {
-    padding: 12px 16px;
-    max-height: calc(45vh - 80px);
-    overflow-y: auto;
-  }
-  
-  .advanced-export-mobile-tabs {
-    margin: 12px 16px;
-    gap: 6px;
-    height: auto;
-    padding: 6px;
-    background: hsl(var(--muted) / 0.3);
-    backdrop-filter: blur(8px);
-    border-radius: 8px;
-    border: 1px solid hsl(var(--border));
-    box-shadow: 0 2px 4px 0 rgb(0 0 0 / 0.05);
-  }
-
-  .advanced-export-mobile-tab-trigger {
-    height: 36px;
-    background: transparent;
-    border: 1px solid transparent;
-    border-radius: 6px;
-    padding: 8px 12px;
-    font-size: 0.75rem;
-    transition: all 0.2s ease;
-    margin: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-
-  .advanced-export-mobile-tab-trigger[data-state="active"] {
-    background: hsl(var(--background));
-    color: hsl(var(--foreground));
-    border: 2px solid hsl(var(--primary));
-    box-shadow: 0 2px 4px 0 rgb(0 0 0 / 0.1), 0 1px 2px 0 rgb(0 0 0 / 0.06);
-    transform: none;
-  }
-
-  /* Theme-aware mobile active states */
-  [data-theme="forest"] .advanced-export-mobile-tab-trigger[data-state="active"] {
-    border-color: #10b981;
-  }
-
-  [data-theme="ocean"] .advanced-export-mobile-tab-trigger[data-state="active"] {
-    border-color: #0ea5e9;
-  }
-
-  [data-theme="dark"] .advanced-export-mobile-tab-trigger[data-state="active"] {
-    border-color: #60a5fa;
-  }
-
-  .advanced-export-mobile-tab-trigger:hover:not([data-state="active"]) {
-    background: hsl(var(--muted) / 0.5);
-  }
+.advanced-export-tabs-trigger[data-state="active"] {
+  @apply lg:bg-background lg:text-foreground lg:shadow-md lg:border-2 lg:border-primary lg:z-10;
 }
 
-/* Preview panel improvements */
-.advanced-export-preview-panel {
-  flex: 1;
-  min-height: 0;
-  overflow: hidden;
-  display: flex;
-  flex-direction: column;
+/* Active states */
+[data-theme="forest"] .advanced-export-tabs-trigger[data-state="active"] {
+  border-color: #10b981;
 }
 
-.advanced-export-preview-header {
-  border-bottom: 1px solid hsl(var(--border));
-  background: hsl(var(--muted) / 0.2);
-  flex-shrink: 0;
+[data-theme="ocean"] .advanced-export-tabs-trigger[data-state="active"] {
+  border-color: #0ea5e9;
 }
 
-.advanced-export-preview-content {
-  flex: 1;
-  overflow-y: auto;
-  overflow-x: hidden;
-  background: hsl(var(--muted) / 0.1);
-  min-height: 0;
-  max-height: 100%;
+[data-theme="dark"] .advanced-export-tabs-trigger[data-state="active"] {
+  border-color: #60a5fa;
 }
 
-/* Ensure preview content is scrollable on all devices */
-@media (max-width: 767px) {
-  .advanced-export-preview-content {
-    max-height: calc(50vh - 60px);
-    overflow-y: auto;
-  }
+.advanced-export-tabs-trigger:hover:not([data-state="active"]) {
+  @apply lg:bg-muted/50;
 }
 
-@media (min-width: 768px) and (max-width: 1023px) {
-  .advanced-export-preview-content {
-    max-height: calc(50vh - 60px);
-    overflow-y: auto;
-  }
+/* Mobile tab trigger styling */
+.advanced-export-mobile-tab-trigger[data-state="active"] {
+  @apply bg-background text-foreground border-2 border-primary shadow-md;
 }
 
-@media (min-width: 1024px) {
-  .advanced-export-preview-content {
-    max-height: calc(90vh - 120px);
-    overflow-y: auto;
-  }
+[data-theme="forest"] .advanced-export-mobile-tab-trigger[data-state="active"] {
+  border-color: #10b981;
 }
 
-.advanced-export-preview-document {
-  margin: 0 auto;
-  background: hsl(var(--background));
-  box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
-  border-radius: 8px;
-  overflow: hidden;
-  transition: all 0.3s ease;
+[data-theme="ocean"] .advanced-export-mobile-tab-trigger[data-state="active"] {
+  border-color: #0ea5e9;
 }
 
-/* Responsive preview modes */
-.advanced-export-preview-desktop {
-  max-width: 1024px;
+[data-theme="dark"] .advanced-export-mobile-tab-trigger[data-state="active"] {
+  border-color: #60a5fa;
 }
 
-.advanced-export-preview-tablet {
-  max-width: 768px;
-}
-
-.advanced-export-preview-mobile {
-  max-width: 375px;
-}
-
-/* Export button improvements */
-.advanced-export-button {
-  background: linear-gradient(135deg, #10b981 0%, #3b82f6 100%);
-  transition: all 0.2s ease;
-}
-
-.advanced-export-button:hover {
-  background: linear-gradient(135deg, #059669 0%, #2563eb 100%);
-  transform: translateY(-1px);
-  box-shadow: 0 4px 8px 0 rgb(0 0 0 / 0.15);
-}
-
-.advanced-export-button:disabled {
-  background: hsl(var(--muted));
-  color: hsl(var(--muted-foreground));
-  transform: none;
-  box-shadow: none;
-}
-
-/* Progress bar */
-.advanced-export-progress {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  height: 2px;
-  background: hsl(var(--muted));
-  overflow: hidden;
-}
-
-.advanced-export-progress-bar {
-  height: 100%;
-  background: linear-gradient(90deg, #10b981 0%, #3b82f6 100%);
-  transition: width 0.3s ease;
-  transform-origin: left;
+.advanced-export-mobile-tab-trigger:hover:not([data-state="active"]) {
+  @apply bg-muted/50;
 }
 
 /* Icon styling in tabs */
@@ -264,38 +65,50 @@
   color: hsl(var(--primary));
 }
 
-/* Theme-aware icon colors */
+/* Icon colors */
 [data-theme="forest"] .advanced-export-tabs-trigger[data-state="active"] svg,
-[data-theme="forest"] .advanced-export-mobile-tab-trigger[data-state="active"] svg {
+[data-theme="forest"]
+  .advanced-export-mobile-tab-trigger[data-state="active"]
+  svg {
   color: #10b981;
 }
 
 [data-theme="ocean"] .advanced-export-tabs-trigger[data-state="active"] svg,
-[data-theme="ocean"] .advanced-export-mobile-tab-trigger[data-state="active"] svg {
+[data-theme="ocean"]
+  .advanced-export-mobile-tab-trigger[data-state="active"]
+  svg {
   color: #0ea5e9;
 }
 
 [data-theme="sunset"] .advanced-export-tabs-trigger[data-state="active"] svg,
-[data-theme="sunset"] .advanced-export-mobile-tab-trigger[data-state="active"] svg {
+[data-theme="sunset"]
+  .advanced-export-mobile-tab-trigger[data-state="active"]
+  svg {
   color: #f97316;
 }
 
 [data-theme="purple"] .advanced-export-tabs-trigger[data-state="active"] svg,
-[data-theme="purple"] .advanced-export-mobile-tab-trigger[data-state="active"] svg {
+[data-theme="purple"]
+  .advanced-export-mobile-tab-trigger[data-state="active"]
+  svg {
   color: #a855f7;
 }
 
 [data-theme="rose"] .advanced-export-tabs-trigger[data-state="active"] svg,
-[data-theme="rose"] .advanced-export-mobile-tab-trigger[data-state="active"] svg {
+[data-theme="rose"]
+  .advanced-export-mobile-tab-trigger[data-state="active"]
+  svg {
   color: #f43f5e;
 }
 
 [data-theme="dark"] .advanced-export-tabs-trigger[data-state="active"] svg,
-[data-theme="dark"] .advanced-export-mobile-tab-trigger[data-state="active"] svg {
+[data-theme="dark"]
+  .advanced-export-mobile-tab-trigger[data-state="active"]
+  svg {
   color: #60a5fa;
 }
 
-/* Theme-aware text colors for tabs - using CSS variables */
+/* Text colors for tabs */
 [data-theme="ocean"] .advanced-export-tabs-trigger,
 [data-theme="ocean"] .advanced-export-mobile-tab-trigger {
   color: var(--ocean-text) !important;
@@ -351,11 +164,7 @@
   background-color: var(--rose-accent-bg) !important;
 }
 
-/* Close button colors handled by global theme-colors.css */
-
-/* Preview mode button colors handled by global theme-colors.css */
-
-/* Separator styling with theme awareness */
+/* Separator */
 .advanced-export-separator {
   border-color: hsl(var(--border));
 }
@@ -372,7 +181,7 @@
   border-color: rgba(96, 165, 250, 0.2);
 }
 
-/* Preview content styling with theme awareness */
+/* Preview content */
 .advanced-export-preview-document .author {
   color: hsl(var(--foreground)) !important;
   opacity: 0.8 !important;
@@ -390,7 +199,7 @@
   color: #e5e7eb !important;
 }
 
-/* Title styling with theme awareness */
+/* Title */
 .advanced-export-preview-document .title {
   color: hsl(var(--primary)) !important;
 }
@@ -407,7 +216,7 @@
   color: #60a5fa !important;
 }
 
-/* Header border styling */
+/* Header border */
 .advanced-export-preview-document .header {
   border-bottom-color: hsl(var(--primary)) !important;
 }
@@ -424,7 +233,7 @@
   border-bottom-color: #60a5fa !important;
 }
 
-/* Use utility scrollbar classes instead of duplicating styles */
+/* Scrollbar */
 .advanced-export-tabs-content,
 .advanced-export-preview-content {
   scrollbar-width: thin;
@@ -453,7 +262,7 @@
   background: rgba(0, 0, 0, 0.3);
 }
 
-/* Focus states for accessibility */
+/* Focus states */
 .advanced-export-tabs-trigger:focus-visible {
   outline: 2px solid hsl(var(--ring));
   outline-offset: 2px;
@@ -464,7 +273,7 @@
   outline-offset: 2px;
 }
 
-/* Animation for smooth transitions */
+/* Animation */
 .advanced-export-fade-in {
   animation: fadeIn 0.2s ease-in-out;
 }
@@ -477,5 +286,43 @@
   to {
     opacity: 1;
     transform: translateY(0);
+  }
+}
+
+/* Mobile and tablet */
+@media (max-width: 768px) {
+  .advanced-export-mobile-tabs {
+    margin-bottom: 1.5rem !important;
+    position: relative;
+    z-index: 20;
+  }
+
+  .advanced-export-tabs-container [data-radix-tabs-content] {
+    padding-top: 1.5rem !important;
+    margin-top: 0.5rem !important;
+  }
+
+  /* First label */
+  .advanced-export-tabs-container
+    [data-radix-tabs-content]
+    > div
+    > div:first-child
+    label:first-child {
+    margin-top: 0.75rem;
+  }
+
+  /* Export Format label */
+  .advanced-export-tabs-container
+    [data-radix-tabs-content]
+    label[class*="text-xs"]:first-child {
+    margin-top: 1rem !important;
+    padding-top: 0.5rem;
+  }
+}
+
+/* Small tablet */
+@media (min-width: 500px) and (max-width: 768px) {
+  .advanced-export-tabs-container [data-radix-tabs-content] {
+    padding-top: 1rem !important;
   }
 }

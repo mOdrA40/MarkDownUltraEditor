@@ -15,7 +15,7 @@ import { THEMES } from '../utils/constants';
 import '../styles/formatPreview.css';
 
 /**
- * Komponen untuk preview panel dengan kontrol responsif dan export
+ * PreviewPanel
  */
 export const PreviewPanel: React.FC<PreviewPanelProps> = ({
   markdown,
@@ -30,7 +30,6 @@ export const PreviewPanel: React.FC<PreviewPanelProps> = ({
 }) => {
   const previewRef = useRef<HTMLDivElement>(null);
 
-  // Font family helper untuk preview real-time
   const getFontFamilyForPreview = useCallback((fontFamily: string): string => {
     const fontMap: Record<string, string> = {
       Arial: 'Arial, "Helvetica Neue", Helvetica, sans-serif',
@@ -44,14 +43,12 @@ export const PreviewPanel: React.FC<PreviewPanelProps> = ({
     return fontMap[fontFamily] || `${fontFamily}, Arial, sans-serif`;
   }, []);
 
-  // Setup highlight.js dengan theme management
   const isDarkMode =
     currentTheme?.id === 'dark' ||
     options.theme === 'dark' ||
     (typeof window !== 'undefined' && window.matchMedia('(prefers-color-scheme: dark)').matches);
   useHighlightJs(isDarkMode, currentTheme);
 
-  // Inject CSS dinamis untuk font family real-time dan dark theme detection
   useEffect(() => {
     const styleId = 'advanced-export-preview-styles';
     let styleElement = document.getElementById(styleId) as HTMLStyleElement;
@@ -64,31 +61,25 @@ export const PreviewPanel: React.FC<PreviewPanelProps> = ({
 
     const fontFamily = getFontFamilyForPreview(options.fontFamily);
 
-    // Detect if current theme is dark
     const isDarkTheme = () => {
       const body = document.body;
       const html = document.documentElement;
 
-      // Check data attributes
       const bodyTheme = body.getAttribute('data-theme');
       const htmlTheme = html.getAttribute('data-theme');
 
-      // Check classes
       const hasDarkClass =
         body.classList.contains('dark') ||
         body.classList.contains('theme-dark') ||
         html.classList.contains('dark') ||
         html.classList.contains('theme-dark');
 
-      // Check if theme is explicitly dark
       const isExplicitlyDark = bodyTheme === 'dark' || htmlTheme === 'dark';
 
-      // Check CSS custom properties
       const rootStyles = getComputedStyle(html);
       const bgColor = rootStyles.getPropertyValue('--background') || '';
       const textColor = rootStyles.getPropertyValue('--foreground') || '';
 
-      // Dark theme typically has dark background colors
       const hasDarkBgColor =
         bgColor.includes('0f172a') ||
         bgColor.includes('1e293b') ||
@@ -96,7 +87,6 @@ export const PreviewPanel: React.FC<PreviewPanelProps> = ({
         bgColor.includes('111827') ||
         bgColor.includes('1a1a1a');
 
-      // Light text color indicates dark theme
       const hasLightTextColor =
         textColor.includes('f1f5f9') ||
         textColor.includes('ffffff') ||
@@ -145,27 +135,23 @@ export const PreviewPanel: React.FC<PreviewPanelProps> = ({
     styleElement.textContent = css;
 
     return () => {
-      // Cleanup saat component unmount
       if (styleElement?.parentNode) {
         styleElement.parentNode.removeChild(styleElement);
       }
     };
   }, [options.fontFamily, getFontFamilyForPreview]);
 
-  // Watch for theme changes and update styles accordingly
   useEffect(() => {
     const updatePreviewStyles = () => {
       const styleId = 'advanced-export-preview-styles';
       const styleElement = document.getElementById(styleId) as HTMLStyleElement;
 
       if (styleElement) {
-        // Trigger re-render of styles
         const event = new CustomEvent('themeChanged');
         document.dispatchEvent(event);
       }
     };
 
-    // Watch for changes in body attributes and classes
     const observer = new MutationObserver((mutations) => {
       mutations.forEach((mutation) => {
         if (
@@ -177,7 +163,6 @@ export const PreviewPanel: React.FC<PreviewPanelProps> = ({
       });
     });
 
-    // Observe body and html for theme changes
     observer.observe(document.body, {
       attributes: true,
       attributeFilter: ['data-theme', 'class'],
@@ -193,12 +178,9 @@ export const PreviewPanel: React.FC<PreviewPanelProps> = ({
     };
   }, []);
 
-  // Create markdown components dengan current props dan theme
   const markdownComponents = useMemo(() => {
     const themeConfig = THEMES[options.theme] || THEMES.default;
 
-    // Untuk preview, gunakan warna yang sesuai dengan theme yang dipilih
-    // Jika theme dark, gunakan warna putih untuk teks
     const isThemeDark = options.theme === 'dark' || themeConfig.backgroundColor === '#1f2937';
 
     const previewTheme = {
@@ -221,7 +203,6 @@ export const PreviewPanel: React.FC<PreviewPanelProps> = ({
     });
   }, [markdown, options.theme, currentTheme, isMobile, isTablet]);
 
-  // Generate unique key untuk force re-render saat options berubah
   const previewKey = useMemo(() => {
     const keyComponents = [
       options.format,
@@ -234,7 +215,7 @@ export const PreviewPanel: React.FC<PreviewPanelProps> = ({
       options.watermark ? btoa(options.watermark).substring(0, 10) : 'no-watermark',
       options.title,
       options.author,
-      markdown.substring(0, 50), // Include part of markdown for content changes
+      markdown.substring(0, 50),
       currentTheme?.id || 'default',
     ];
     return generateKey(keyComponents);
@@ -253,13 +234,10 @@ export const PreviewPanel: React.FC<PreviewPanelProps> = ({
     currentTheme,
   ]);
 
-  // Get header styles for consistent theming
   const headerStyles = generateHeaderStyles(currentTheme);
 
-  // Format-specific styling helpers dengan memoization
   const formatSpecificStyles = useMemo(() => {
     const getFontSize = (format: string): string => {
-      // Base font size dari options, dengan adjustment per format
       const baseSize = options.fontSize;
       switch (format) {
         case 'pdf':
@@ -312,7 +290,6 @@ export const PreviewPanel: React.FC<PreviewPanelProps> = ({
     };
   }, [options.format, options.fontSize]);
 
-  // Page size helpers untuk preview real-time
   const getPageWidthForPreview = (pageSize: string, orientation: string): string => {
     const isLandscape = orientation === 'landscape';
     switch (pageSize.toLowerCase()) {
@@ -345,7 +322,9 @@ export const PreviewPanel: React.FC<PreviewPanelProps> = ({
     <div className="flex flex-col min-h-0 overflow-hidden flex-1">
       {/* Preview Header */}
       <div
-        className={`advanced-export-preview-header ${isMobile ? 'p-2' : 'p-2 sm:p-3'}`}
+        className={`flex-shrink-0 border-b bg-background/50 backdrop-blur-md ${
+          isMobile ? 'p-2' : 'p-2 sm:p-3'
+        }`}
         style={{
           ...headerStyles,
           backdropFilter: 'blur(12px)',
@@ -399,7 +378,6 @@ export const PreviewPanel: React.FC<PreviewPanelProps> = ({
             }`}
           >
             {isMobile ? (
-              // Mobile: Compact layout
               <div className="w-full space-y-1">
                 <div className="grid grid-cols-3 gap-1">
                   <Button
@@ -430,7 +408,7 @@ export const PreviewPanel: React.FC<PreviewPanelProps> = ({
                 <Button
                   onClick={onExport}
                   disabled={exportState.isExporting}
-                  className="advanced-export-button w-full text-xs h-7"
+                  className="w-full text-xs h-7 bg-gradient-to-r from-emerald-500 to-blue-500 hover:from-emerald-600 hover:to-blue-600 transition-all duration-200"
                   size="sm"
                 >
                   {exportState.isExporting ? (
@@ -447,7 +425,6 @@ export const PreviewPanel: React.FC<PreviewPanelProps> = ({
                 </Button>
               </div>
             ) : (
-              // Desktop/Tablet: Horizontal layout
               <>
                 <div className="flex items-center border rounded-md overflow-hidden">
                   <Button
@@ -481,7 +458,7 @@ export const PreviewPanel: React.FC<PreviewPanelProps> = ({
                 <Button
                   onClick={onExport}
                   disabled={exportState.isExporting}
-                  className="advanced-export-button text-xs h-7 px-3"
+                  className="text-xs h-7 px-3 bg-gradient-to-r from-emerald-500 to-blue-500 hover:from-emerald-600 hover:to-blue-600 transition-all duration-200"
                   size="sm"
                 >
                   {exportState.isExporting ? (
@@ -504,16 +481,20 @@ export const PreviewPanel: React.FC<PreviewPanelProps> = ({
 
       {/* Preview Content */}
       <div
-        className={`advanced-export-preview-content flex-1 overflow-y-auto min-h-0 ${
-          isMobile ? 'p-2' : isTablet ? 'p-2' : 'p-2 sm:p-3'
+        className={`flex-1 overflow-y-auto min-h-0 ${
+          isMobile
+            ? 'p-2 max-h-[calc(45vh-60px)]'
+            : isTablet
+              ? 'p-2 max-h-[calc(50vh-60px)]'
+              : 'p-2 sm:p-3 lg:max-h-[calc(90vh-120px)]'
         }`}
       >
         <div
           className={`
-            advanced-export-preview-document mx-auto transition-all duration-300
-            ${previewMode === 'desktop' ? (isMobile ? 'max-w-full' : 'advanced-export-preview-desktop') : ''}
-            ${previewMode === 'tablet' ? (isMobile ? 'max-w-full' : 'advanced-export-preview-tablet') : ''}
-            ${previewMode === 'mobile' ? (isMobile ? 'max-w-full' : 'advanced-export-preview-mobile') : ''}
+            mx-auto transition-all duration-300 bg-background shadow-lg rounded-lg overflow-hidden
+            ${previewMode === 'desktop' ? (isMobile ? 'max-w-full' : 'max-w-4xl') : ''}
+            ${previewMode === 'tablet' ? (isMobile ? 'max-w-full' : 'max-w-3xl') : ''}
+            ${previewMode === 'mobile' ? (isMobile ? 'max-w-full' : 'max-w-sm') : ''}
           `}
         >
           <div
@@ -538,7 +519,6 @@ export const PreviewPanel: React.FC<PreviewPanelProps> = ({
                 : getPageHeightForPreview(options.pageSize, options.orientation),
               border: '2px dashed #ccc',
               margin: '0 auto',
-              // Hanya set background dan color jika bukan theme dark, biarkan CSS handle dark theme
               ...(options.theme !== 'dark'
                 ? {
                     backgroundColor: THEMES[options.theme]?.backgroundColor || '#ffffff',
@@ -633,9 +613,9 @@ export const PreviewPanel: React.FC<PreviewPanelProps> = ({
 
       {/* Progress Bar */}
       {exportState.isExporting && exportState.exportProgress > 0 && (
-        <div className="advanced-export-progress">
+        <div className="w-full bg-gray-200 rounded-full h-2 mt-2">
           <div
-            className="advanced-export-progress-bar"
+            className="bg-gradient-to-r from-emerald-500 to-blue-500 h-2 rounded-full transition-all duration-300"
             style={{ width: `${exportState.exportProgress}%` }}
           />
         </div>

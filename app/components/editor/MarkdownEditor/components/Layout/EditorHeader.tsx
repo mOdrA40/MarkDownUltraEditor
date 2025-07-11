@@ -1,6 +1,6 @@
-/**
- * @fileoverview Editor header component with file controls and toolbar
- * @author Axel Modra
+/*
+EditorHeader
+@author Axel Modra
  */
 
 import {
@@ -85,7 +85,7 @@ export interface EditorHeaderProps {
 }
 
 /**
- * Editor header component with file controls, theme selector, and toolbar
+ * EditorHeader component
  */
 export const EditorHeader: React.FC<EditorHeaderProps> = ({
   fileName,
@@ -120,7 +120,6 @@ export const EditorHeader: React.FC<EditorHeaderProps> = ({
   const { isMobile, isTablet, isSmallTablet } = responsive;
   const [isFullscreen, setIsFullscreen] = React.useState(false);
 
-  
   const [isDesktop, setIsDesktop] = React.useState(false);
 
   React.useEffect(() => {
@@ -133,7 +132,6 @@ export const EditorHeader: React.FC<EditorHeaderProps> = ({
     return () => window.removeEventListener('resize', checkDesktop);
   }, []);
 
-  // Listen for fullscreen changes
   React.useEffect(() => {
     const handleFullscreenChange = () => {
       setIsFullscreen(!!document.fullscreenElement);
@@ -143,7 +141,7 @@ export const EditorHeader: React.FC<EditorHeaderProps> = ({
     return () => document.removeEventListener('fullscreenchange', handleFullscreenChange);
   }, []);
 
-  if (zenMode || isMobile || isSmallTablet) return null;
+  if (zenMode || isMobile) return null;
 
   /**
    * Toggle fullscreen mode
@@ -156,7 +154,6 @@ export const EditorHeader: React.FC<EditorHeaderProps> = ({
     }
   };
 
-  // Get theme-based header styling
   const headerClassName = getHeaderClassName(currentTheme);
   const headerStyles = generateHeaderStyles(currentTheme);
 
@@ -169,7 +166,7 @@ export const EditorHeader: React.FC<EditorHeaderProps> = ({
         WebkitBackdropFilter: 'blur(12px)',
       }}
     >
-      {/* Desktop Layout (1200px+) - Horizontal */}
+      {/* Desktop Layout */}
       {isDesktop ? (
         <div className="flex items-center justify-between px-2 sm:px-4 py-2 gap-2">
           {/* Left Side - File Info */}
@@ -199,12 +196,12 @@ export const EditorHeader: React.FC<EditorHeaderProps> = ({
             </div>
           </div>
 
-          {/* Center - Theme Selector */}
+          {/* Center */}
           <div className="flex items-center gap-2" data-theme-selector="true">
             <ThemeSelector currentTheme={currentTheme} onThemeChange={onThemeChange} />
           </div>
 
-          {/* Right Side - Controls */}
+          {/* Right Side */}
           <div className="flex items-center space-x-1 flex-shrink-0">
             <FileOperations
               markdown={markdown}
@@ -239,9 +236,9 @@ export const EditorHeader: React.FC<EditorHeaderProps> = ({
           </div>
         </div>
       ) : (
-        /* Tablet Layout (768-1199px) - Vertical */
+        /* Tablet Layout */
         <div className="flex flex-col px-2 sm:px-4 py-2 gap-2">
-          {/* File Info Row - Always on top */}
+          {/* File Info Row */}
           <div className="flex items-center space-x-2 sm:space-x-4 min-w-0" data-file-info="true">
             <div className="flex items-center space-x-2 min-w-0 flex-1">
               <FileText
@@ -265,7 +262,7 @@ export const EditorHeader: React.FC<EditorHeaderProps> = ({
             </div>
           </div>
 
-          {/* Theme Selector Row - Centered, separate row to prevent overlap */}
+          {/* Theme Selector Row */}
           <div
             className="flex items-center justify-center gap-2 py-1 border-b border-gray-200/50 dark:border-gray-700/50"
             data-theme-selector="true"
@@ -273,9 +270,9 @@ export const EditorHeader: React.FC<EditorHeaderProps> = ({
             <ThemeSelector currentTheme={currentTheme} onThemeChange={onThemeChange} />
           </div>
 
-          {/* Controls Row - File Operations and Actions */}
+          {/* Controls Row */}
           <div className="flex items-center justify-between gap-1 sm:gap-2 overflow-x-auto">
-            {/* Left Side - File Operations */}
+            {/* Left Side */}
             <div className="flex items-center space-x-1 flex-shrink-0">
               <FileOperations
                 markdown={markdown}

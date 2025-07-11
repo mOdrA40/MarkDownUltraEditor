@@ -1,6 +1,6 @@
-/**
- * @fileoverview Application constants and configuration
- * @author Axel Modra
+/*
+Constants
+@author Axel Modra
  */
 
 import type { EditorConfig } from '../types';
@@ -56,9 +56,9 @@ export const BREAKPOINTS: Breakpoints = {
 };
 
 /**
- * Media queries - using shared constants from hooks/useMediaQuery
+ * Media queries
  */
-export { MEDIA_QUERIES } from '~/hooks/useMediaQuery';
+export { MEDIA_QUERIES } from '@/utils/responsive';
 
 /**
  * Local storage keys
@@ -244,10 +244,8 @@ export const CSS_CLASSES = {
   PREVIEW_HIDDEN: 'preview-hidden',
 } as const;
 
-// Import common constants to avoid duplication
 import { ANIMATION_DURATIONS, DEBOUNCE_DELAYS } from '@/utils/common';
 
-// Re-export with original names for backward compatibility
 export const ANIMATION_DURATION = ANIMATION_DURATIONS;
 export const DEBOUNCE_DELAY = DEBOUNCE_DELAYS;
 
@@ -255,8 +253,8 @@ export const DEBOUNCE_DELAY = DEBOUNCE_DELAYS;
  * File size limits (in bytes)
  */
 export const FILE_LIMITS = {
-  MAX_FILE_SIZE: 10 * 1024 * 1024, // 10MB
-  MAX_IMAGE_SIZE: 5 * 1024 * 1024, // 5MB
+  MAX_FILE_SIZE: 10 * 1024 * 1024,
+  MAX_IMAGE_SIZE: 5 * 1024 * 1024,
   MAX_HISTORY_SIZE: 50,
   MAX_UNDO_STEPS: 100,
 } as const;
@@ -328,10 +326,10 @@ export const SUCCESS_MESSAGES = {
  * Accessibility configuration
  */
 export const A11Y_CONFIG = {
-  MIN_TOUCH_TARGET: 44, // pixels
+  MIN_TOUCH_TARGET: 44,
   MIN_CONTRAST_RATIO: 4.5,
-  FOCUS_OUTLINE_WIDTH: 2, // pixels
-  SCREEN_READER_DELAY: 100, // milliseconds
+  FOCUS_OUTLINE_WIDTH: 2,
+  SCREEN_READER_DELAY: 100,
 } as const;
 
 /**

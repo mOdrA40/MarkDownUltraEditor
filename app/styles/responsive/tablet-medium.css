@@ -1,43 +1,36 @@
 /**
- * Medium Tablet Responsive Styles (768px - 1023px)
- * Styles khusus untuk tablet medium
- * 
+ * Medium Tablet Responsive Styles
  * @author Axel Modra
  */
 
-/* ===== MEDIUM TABLET FIXES (768px - 1023px) ===== */
 @media (min-width: 768px) and (max-width: 1023px) {
-  /* ===== TOOLBAR STYLES ===== */
-
-  /* Toolbar - standard layout */
   .toolbar-medium-tablet {
-    padding: 0.5rem 0.75rem;
+    padding-left: 0.75rem;
+    padding-right: 0.75rem;
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem;
   }
 
-  /* Format grid untuk medium tablet */
   .export-grid-medium-tablet {
     grid-template-columns: repeat(2, 1fr) !important;
     gap: 0.75rem !important;
   }
 
-  /* Medium tablet layout - vertical stacking */
   .export-layout-medium-tablet {
     flex-direction: column !important;
   }
 
-  /* Theme selector spacing on tablet */
   .desktop-editor-header .flex.flex-col.gap-2 {
     gap: 0.5rem !important;
   }
 
-  /* Prevent theme selector from overlapping filename */
   .desktop-editor-header .flex.items-center.justify-center.gap-2 {
-    padding: 0.25rem 0 !important;
+    padding-top: 0.25rem;
+    padding-bottom: 0.25rem;
     border-bottom: 1px solid rgba(0, 0, 0, 0.1);
     margin-bottom: 0.25rem;
   }
 
-  /* Fix auth button spacing in medium tablet range - ukuran lebih kecil */
   .desktop-editor-header .auth-button,
   .desktop-editor-header [data-component="auth-button"] {
     padding: 0.5rem 1rem !important;
@@ -53,29 +46,21 @@
   }
 }
 
-/* ===== LARGE TABLET PORTRAIT FIXES (1024px - 1199px) ===== */
 @media (min-width: 1024px) and (max-width: 1199px) and (orientation: portrait) {
-  /* Treat large tablet portrait (including iPad Pro) as tablet for better UX */
-
-  /* ===== EDITOR HEADER LAYOUT ===== */
-
-  /* File info section - ensure proper spacing */
   .desktop-editor-header [data-file-info] {
     margin-bottom: 0.75rem !important;
     padding-bottom: 0.5rem !important;
     border-bottom: 1px solid rgba(0, 0, 0, 0.05) !important;
   }
 
-  /* Theme selector spacing - ensure no overlap with filename */
   .desktop-editor-header [data-theme-selector] {
     margin: 0.5rem 0 !important;
     padding: 0.75rem 0 !important;
     border-bottom: 1px solid rgba(0, 0, 0, 0.1) !important;
     width: 100% !important;
-    order: -1 !important; /* Move to top */
+    order: -1 !important;
   }
 
-  /* Action buttons centered */
   .desktop-editor-header [data-action-buttons] {
     justify-content: center !important;
     flex-wrap: wrap !important;
@@ -83,51 +68,34 @@
     margin-top: 0.5rem !important;
   }
 
-  /* Main container adjustments */
   .desktop-editor-header > div {
     flex-direction: column !important;
     gap: 0 !important;
   }
 
-  /* ===== SIDEBAR ADJUSTMENTS ===== */
-
-  /* Sidebar width for iPad Pro */
   .editor-sidebar {
-    width: 20rem !important; /* 320px */
+    width: 20rem !important;
   }
 
-  /* ===== TOOLBAR ADJUSTMENTS ===== */
-
-  /* Toolbar spacing for iPad Pro */
   .toolbar-container {
     padding: 0.75rem 1rem !important;
   }
 
-  /* ===== PANEL HEIGHTS ===== */
-
-  /* Options panel height limit on medium tablet */
   .export-options-medium-tablet {
     max-height: 45vh !important;
     overflow-y: auto !important;
   }
 
-  /* Preview panel minimum height on medium tablet */
   .export-preview-medium-tablet {
     min-height: 450px !important;
     flex: 1 !important;
   }
 
-  /* ===== DOCUMENT TEMPLATES ===== */
-
-  /* Document Templates Dialog styles handled by dialog-responsive.css utility */
   .templates-grid-medium-tablet {
     grid-template-columns: repeat(2, 1fr) !important;
     gap: 1rem !important;
   }
 
-  /* ===== ADVANCED EXPORT TABS ===== */
-
-  /* Tablet specific adjustments */
   [data-radix-tabs-list].grid-cols-1 [data-radix-tabs-trigger] {
     font-size: 0.875rem !important;
     padding: 0.5rem 1.25rem !important;

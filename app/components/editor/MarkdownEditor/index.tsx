@@ -1,7 +1,8 @@
-/**
- * @fileoverview Refactored MarkdownEditor main component
- * @author Axel Modra
+/*
+MarkdownEditor
+@author Axel Modra
  */
+
 
 import React from 'react';
 import { usePerformanceDebug, useRenderPerformance } from '@/hooks/core/usePerformance';
@@ -29,16 +30,7 @@ import type { MarkdownEditorProps } from './types';
 import { DEFAULT_FILE } from './utils/constants';
 
 /**
- * Main MarkdownEditor component - Refactored with clean architecture
- *
- * Features:
- * - Modular architecture with separation of concerns
- * - Custom hooks for state management
- * - Memoized components for performance
- * - Error boundaries for robustness
- * - Performance monitoring
- * - Responsive design
- * - Accessibility support
+ * Main MarkdownEditor component
  */
 export const MarkdownEditor: React.FC<MarkdownEditorProps> = ({
   initialMarkdown = DEFAULT_FILE.CONTENT,
@@ -249,8 +241,8 @@ export const MarkdownEditor: React.FC<MarkdownEditorProps> = ({
           className={className}
           style={style}
         >
-          {/* Mobile Navigation - Show on mobile and small tablet */}
-          {(responsive.isMobile || responsive.isSmallTablet) && !settings.zenMode && (
+          {/* Mobile Navigation */}
+          {responsive.isMobile && !settings.zenMode && (
             <MobileNav
               currentTheme={currentTheme}
               onThemeChange={handleThemeChange}

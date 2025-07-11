@@ -1,8 +1,6 @@
 /**
- * Responsive Utilities - Helper Functions untuk Responsive Design
- * Utility functions untuk menangani responsive behavior
- *
- * @author Axel Modra
+ * Responsive Utilities
+@author Axel Modra
  */
 
 import { matchesMediaQuery } from '@/utils/common';
@@ -10,15 +8,15 @@ import { BREAKPOINTS } from '../constants/settings.constants';
 import type { BreakpointType } from '../types/settings.types';
 
 /**
- * Mendapatkan breakpoint berdasarkan window width
- * @param width - Window width dalam pixels
- * @returns Breakpoint type yang sesuai
+ * Get breakpoint based on window width
+ * @param width - Window width in pixels
+ * @returns Breakpoint type
  */
 export const getBreakpointFromWidth = (width: number): BreakpointType => {
-  if (width < BREAKPOINTS.mobile.max) {
+  if (width < 500) {
     return 'mobile';
   }
-  if (width <= BREAKPOINTS.smallTablet.max) {
+  if (width <= 768) {
     return 'small-tablet';
   }
   if (width <= BREAKPOINTS.tablet.max) {
@@ -28,43 +26,43 @@ export const getBreakpointFromWidth = (width: number): BreakpointType => {
 };
 
 /**
- * Cek apakah width termasuk dalam breakpoint mobile
- * @param width - Window width dalam pixels
- * @returns True jika mobile
+ * Check if width is in mobile breakpoint
+ * @param width - Window width in pixels
+ * @returns True if mobile
  */
 export const isMobileWidth = (width: number): boolean => {
   return width >= BREAKPOINTS.mobile.min && width <= BREAKPOINTS.mobile.max;
 };
 
 /**
- * Cek apakah width termasuk dalam breakpoint small tablet
- * @param width - Window width dalam pixels
- * @returns True jika small tablet
+ * Check if width is in small tablet breakpoint
+ * @param width - Window width in pixels
+ * @returns True if small tablet
  */
 export const isSmallTabletWidth = (width: number): boolean => {
   return width >= BREAKPOINTS.smallTablet.min && width <= BREAKPOINTS.smallTablet.max;
 };
 
 /**
- * Cek apakah width termasuk dalam breakpoint tablet
- * @param width - Window width dalam pixels
- * @returns True jika tablet
+ * Check if width is in tablet breakpoint
+ * @param width - Window width in pixels
+ * @returns True if tablet
  */
 export const isTabletWidth = (width: number): boolean => {
   return width >= BREAKPOINTS.tablet.min && width <= BREAKPOINTS.tablet.max;
 };
 
 /**
- * Cek apakah width termasuk dalam breakpoint desktop
- * @param width - Window width dalam pixels
- * @returns True jika desktop
+ * Check if width is in desktop breakpoint
+ * @param width - Window width in pixels
+ * @returns True if desktop
  */
 export const isDesktopWidth = (width: number): boolean => {
   return width >= BREAKPOINTS.desktop.min;
 };
 
 /**
- * Mendapatkan CSS media query string untuk breakpoint
+ * Get CSS media query string for breakpoint
  * @param breakpoint - Breakpoint type
  * @returns CSS media query string
  */
@@ -79,9 +77,9 @@ export const getMediaQuery = (breakpoint: BreakpointType): string => {
 };
 
 /**
- * Cek apakah media query cocok dengan breakpoint saat ini
+ * Check if media query matches current breakpoint
  * @param breakpoint - Breakpoint type
- * @returns True jika media query match
+ * @returns True if media query matches
  */
 export const matchesBreakpoint = (breakpoint: BreakpointType): boolean => {
   const mediaQuery = getMediaQuery(breakpoint);
@@ -89,7 +87,7 @@ export const matchesBreakpoint = (breakpoint: BreakpointType): boolean => {
 };
 
 /**
- * Mendapatkan breakpoint saat ini berdasarkan window
+ * Get current breakpoint based on window
  * @returns Current breakpoint type
  */
 export const getCurrentBreakpoint = (): BreakpointType => {
@@ -98,19 +96,17 @@ export const getCurrentBreakpoint = (): BreakpointType => {
   return getBreakpointFromWidth(window.innerWidth);
 };
 
-// Import common utilities to avoid duplication
 import { debounce, throttle } from '@/utils/common';
 
-// Re-export for backward compatibility
 export { debounce, throttle };
 
 /**
- * Mendapatkan viewport dimensions
- * @returns Object dengan width dan height
+ * Get viewport dimensions
+ * @returns Object with width and height
  */
 export const getViewportDimensions = (): { width: number; height: number } => {
   if (typeof window === 'undefined') {
-    return { width: 1024, height: 768 }; // Default untuk SSR
+    return { width: 1024, height: 768 };
   }
 
   return {
@@ -120,8 +116,8 @@ export const getViewportDimensions = (): { width: number; height: number } => {
 };
 
 /**
- * Cek apakah device mendukung touch
- * @returns True jika mendukung touch
+ * Check if device supports touch
+ * @returns True if device supports touch
  */
 export const isTouchDevice = (): boolean => {
   if (typeof window === 'undefined') return false;
@@ -130,8 +126,8 @@ export const isTouchDevice = (): boolean => {
 };
 
 /**
- * Mendapatkan orientation device
- * @returns 'portrait' atau 'landscape'
+ * Get device orientation
+ * @returns 'portrait' or 'landscape'
  */
 export const getOrientation = (): 'portrait' | 'landscape' => {
   if (typeof window === 'undefined') return 'landscape';
@@ -141,24 +137,24 @@ export const getOrientation = (): 'portrait' | 'landscape' => {
 };
 
 /**
- * Cek apakah dalam mode landscape
- * @returns True jika landscape
+ * Check if in landscape mode
+ * @returns True if landscape
  */
 export const isLandscape = (): boolean => {
   return getOrientation() === 'landscape';
 };
 
 /**
- * Cek apakah dalam mode portrait
- * @returns True jika portrait
+ * Check if in portrait mode
+ * @returns True if portrait
  */
 export const isPortrait = (): boolean => {
   return getOrientation() === 'portrait';
 };
 
 /**
- * Mendapatkan safe area insets (untuk mobile dengan notch)
- * @returns Object dengan insets
+ * Get safe area insets (for mobile with notch)
+ * @returns Object with insets
  */
 export const getSafeAreaInsets = (): {
   top: number;
@@ -180,5 +176,3 @@ export const getSafeAreaInsets = (): {
   };
 };
 
-// Removed duplicate getPreferredColorScheme and prefersReducedMotion functions
-// Using centralized utilities from common.ts
