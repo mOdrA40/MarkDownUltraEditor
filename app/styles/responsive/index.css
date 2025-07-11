@@ -6,7 +6,7 @@
  */
 
 /* Import responsive styles berdasarkan breakpoint */
-@import './mobile.css';
-@import './tablet-small.css';
-@import './tablet-medium.css';
-@import './desktop.css';
+@import "./mobile.css";
+@import "./tablet-small.css";
+@import "./tablet-medium.css";
+@import "./desktop.css";

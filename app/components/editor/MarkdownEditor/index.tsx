@@ -205,6 +205,15 @@ export const MarkdownEditor: React.FC<MarkdownEditorProps> = ({
     [setTheme, eventHandlers]
   );
 
+  // Toggle handlers for sidebar
+  const handleToggleToc = React.useCallback(() => {
+    setShowToc((prev) => !prev);
+  }, []);
+
+  const handleToggleOutline = React.useCallback(() => {
+    setShowOutline((prev) => !prev);
+  }, []);
+
   // Auto-save functionality
   React.useEffect(() => {
     if (!editor.markdown || !editor.fileName || !editor.isModified) return;
@@ -308,8 +317,8 @@ export const MarkdownEditor: React.FC<MarkdownEditorProps> = ({
               zenMode={settings.zenMode}
               showToc={showToc}
               showOutline={showOutline}
-              onToggleToc={() => setShowToc(!showToc)}
-              onToggleOutline={() => setShowOutline(!showOutline)}
+              onToggleToc={handleToggleToc}
+              onToggleOutline={handleToggleOutline}
             />
           )}
 
@@ -320,8 +329,8 @@ export const MarkdownEditor: React.FC<MarkdownEditorProps> = ({
               markdown={editor.markdown}
               theme={currentTheme}
               uiState={uiState}
-              onToggleToc={() => setShowToc(!showToc)}
-              onToggleOutline={() => setShowOutline(!showOutline)}
+              onToggleToc={handleToggleToc}
+              onToggleOutline={handleToggleOutline}
               onToggleSidebar={() => setSidebarCollapsed(!sidebarCollapsed)}
               responsive={responsive}
               zenMode={settings.zenMode}

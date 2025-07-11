@@ -76,6 +76,8 @@ export interface WritingSettingsProps {
   className?: string;
   /** Custom children untuk extensibility */
   children?: ReactNode;
+  /** Force mobile layout regardless of screen size */
+  forceMobileLayout?: boolean;
 }
 
 /**

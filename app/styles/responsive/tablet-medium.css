@@ -8,12 +8,12 @@
 /* ===== MEDIUM TABLET FIXES (768px - 1023px) ===== */
 @media (min-width: 768px) and (max-width: 1023px) {
   /* ===== TOOLBAR STYLES ===== */
-  
+
   /* Toolbar - standard layout */
   .toolbar-medium-tablet {
     padding: 0.5rem 0.75rem;
   }
-  
+
   /* Format grid untuk medium tablet */
   .export-grid-medium-tablet {
     grid-template-columns: repeat(2, 1fr) !important;
@@ -26,29 +26,30 @@
   }
 
   /* Theme selector spacing on tablet */
-  .editor-header .flex.flex-col.gap-2 {
+  .desktop-editor-header .flex.flex-col.gap-2 {
     gap: 0.5rem !important;
   }
 
   /* Prevent theme selector from overlapping filename */
-  .editor-header .flex.items-center.justify-center.gap-2 {
+  .desktop-editor-header .flex.items-center.justify-center.gap-2 {
     padding: 0.25rem 0 !important;
     border-bottom: 1px solid rgba(0, 0, 0, 0.1);
     margin-bottom: 0.25rem;
   }
 
-  /* Fix auth button spacing in medium tablet range  */
-  .editor-header .auth-button,
-  .editor-header [data-component="auth-button"] {
-    padding: 0.75rem 1.5rem !important; 
-    margin: 0 0.5rem !important; 
-    min-width: 7rem !important; 
-    gap: 0.75rem !important; 
-    height: 2.75rem !important; 
-    font-size: 0.875rem !important;
+  /* Fix auth button spacing in medium tablet range - ukuran lebih kecil */
+  .desktop-editor-header .auth-button,
+  .desktop-editor-header [data-component="auth-button"] {
+    padding: 0.5rem 1rem !important;
+    margin: 0 0.375rem !important;
+    min-width: 5.5rem !important;
+    gap: 0.5rem !important;
+    height: 2.25rem !important;
+    font-size: 0.8125rem !important;
     font-weight: 500 !important;
     justify-content: center !important;
     align-items: center !important;
+    border-radius: 0.375rem !important;
   }
 }
 
@@ -59,14 +60,14 @@
   /* ===== EDITOR HEADER LAYOUT ===== */
 
   /* File info section - ensure proper spacing */
-  .editor-header [data-file-info] {
+  .desktop-editor-header [data-file-info] {
     margin-bottom: 0.75rem !important;
     padding-bottom: 0.5rem !important;
     border-bottom: 1px solid rgba(0, 0, 0, 0.05) !important;
   }
 
   /* Theme selector spacing - ensure no overlap with filename */
-  .editor-header [data-theme-selector] {
+  .desktop-editor-header [data-theme-selector] {
     margin: 0.5rem 0 !important;
     padding: 0.75rem 0 !important;
     border-bottom: 1px solid rgba(0, 0, 0, 0.1) !important;
@@ -75,7 +76,7 @@
   }
 
   /* Action buttons centered */
-  .editor-header [data-action-buttons] {
+  .desktop-editor-header [data-action-buttons] {
     justify-content: center !important;
     flex-wrap: wrap !important;
     gap: 0.5rem !important;
@@ -83,7 +84,7 @@
   }
 
   /* Main container adjustments */
-  .editor-header > div {
+  .desktop-editor-header > div {
     flex-direction: column !important;
     gap: 0 !important;
   }

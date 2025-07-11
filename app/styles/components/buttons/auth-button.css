@@ -14,12 +14,12 @@
   @apply disabled:pointer-events-none disabled:opacity-50;
   @apply bg-primary text-primary-foreground shadow hover:bg-primary/90;
 
-  /* Base spacing  */
-  padding: 0.75rem 1.5rem; 
-  min-width: 7rem;
-  height: 2.75rem;
-  border-radius: 0.5rem;
-  font-size: 0.875rem;
+  /* Base spacing - ukuran default yang lebih responsif */
+  padding: 0.5rem 0.875rem;
+  min-width: 4.5rem;
+  height: 2rem;
+  border-radius: 0.375rem;
+  font-size: 0.8125rem;
   font-weight: 500;
   box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
   justify-content: center;
@@ -36,7 +36,7 @@
     min-width: 3rem !important;
     gap: 0.25rem !important;
   }
-  
+
   .auth-button .lucide,
   [data-component="auth-button"] .lucide {
     width: 1rem !important;
@@ -44,48 +44,48 @@
   }
 }
 
-/* Tablet range  */
+/* Tablet range - ukuran lebih kecil dan proporsional */
 @media (min-width: 768px) and (max-width: 1023px) {
   .auth-button,
   [data-component="auth-button"] {
-    padding: 0.75rem 1.5rem !important; 
-    margin: 0 0.5rem !important; 
-    min-width: 7rem !important; 
-    gap: 0.75rem !important; 
-    border-radius: 0.5rem !important; 
-    height: 2.75rem !important; 
-    font-size: 0.875rem !important; 
-    font-weight: 500 !important; 
-    justify-content: center !important; 
-    align-items: center !important; 
+    padding: 0.5rem 1rem !important;
+    margin: 0 0.375rem !important;
+    min-width: 5.5rem !important;
+    gap: 0.5rem !important;
+    border-radius: 0.375rem !important;
+    height: 2.25rem !important;
+    font-size: 0.8125rem !important;
+    font-weight: 500 !important;
+    justify-content: center !important;
+    align-items: center !important;
   }
 
   /* Ensure proper icon spacing */
   .auth-button .lucide,
   [data-component="auth-button"] .lucide {
-    margin-right: 0.75rem !important; 
-    margin-left: 0 !important; 
+    margin-right: 0.5rem !important;
+    margin-left: 0 !important;
     flex-shrink: 0 !important;
-    width: 1.125rem !important;
-    height: 1.125rem !important; 
+    width: 1rem !important;
+    height: 1rem !important;
   }
 
   /* Text spacing */
   .auth-button span,
   [data-component="auth-button"] span {
     white-space: nowrap !important;
-    font-size: 0.875rem !important;
+    font-size: 0.8125rem !important;
     font-weight: 500 !important;
-    line-height: 1.25rem !important;
-    margin-right: 0 !important; 
-    padding-right: 0 !important; 
+    line-height: 1.125rem !important;
+    margin-right: 0 !important;
+    padding-right: 0 !important;
   }
 
   /* Container spacing in editor header */
   .editor-header .auth-button,
   .editor-header [data-component="auth-button"] {
-    margin-left: 0.75rem !important;
-    margin-right: 0.75rem !important;
+    margin-left: 0.5rem !important;
+    margin-right: 0.5rem !important;
   }
 
   /* Badge spacing adjustment */
@@ -93,30 +93,67 @@
   [data-badge="cloud"] + .auth-button,
   [data-badge="local"] + [data-component="auth-button"],
   [data-badge="cloud"] + [data-component="auth-button"] {
-    margin-left: 0.75rem !important;
+    margin-left: 0.5rem !important;
   }
 }
 
-/* Desktop styles - REFERENSI UKURAN UNTUK TABLET */
-@media (min-width: 1024px) {
+/* Small Desktop styles (1024px - 1399px) - ukuran sedang */
+@media (min-width: 1024px) and (max-width: 1399px) {
   .auth-button,
   [data-component="auth-button"] {
-    padding: 0.75rem 1.5rem !important; 
-    min-width: 7rem !important; 
-    gap: 0.75rem !important; 
-    height: 2.75rem !important;
-    font-size: 0.875rem !important;
+    padding: 0.5rem 0.875rem !important;
+    min-width: 4.5rem !important;
+    gap: 0.375rem !important;
+    height: 2rem !important;
+    font-size: 0.8125rem !important;
     font-weight: 500 !important;
     justify-content: center !important;
     align-items: center !important;
+    border-radius: 0.375rem !important;
   }
 
   .auth-button .lucide,
   [data-component="auth-button"] .lucide {
-    width: 1.125rem !important; 
-    height: 1.125rem !important; 
-    margin-right: 0.75rem !important;
+    width: 0.875rem !important;
+    height: 0.875rem !important;
+    margin-right: 0.375rem !important;
     margin-left: 0 !important;
+  }
+
+  .auth-button span,
+  [data-component="auth-button"] span {
+    font-size: 0.8125rem !important;
+    line-height: 1.125rem !important;
+  }
+}
+
+/* Large Desktop styles (1400px+) - ukuran normal */
+@media (min-width: 1400px) {
+  .auth-button,
+  [data-component="auth-button"] {
+    padding: 0.625rem 1rem !important;
+    min-width: 5rem !important;
+    gap: 0.5rem !important;
+    height: 2.25rem !important;
+    font-size: 0.875rem !important;
+    font-weight: 500 !important;
+    justify-content: center !important;
+    align-items: center !important;
+    border-radius: 0.5rem !important;
+  }
+
+  .auth-button .lucide,
+  [data-component="auth-button"] .lucide {
+    width: 1rem !important;
+    height: 1rem !important;
+    margin-right: 0.5rem !important;
+    margin-left: 0 !important;
+  }
+
+  .auth-button span,
+  [data-component="auth-button"] span {
+    font-size: 0.875rem !important;
+    line-height: 1.25rem !important;
   }
 }
 
@@ -149,16 +186,14 @@
 
 /* ===== INTERNAL SPACING FIXES - ANTI MEPET ===== */
 
-
 .auth-button .lucide:first-child,
 [data-component="auth-button"] .lucide:first-child {
-  margin-left: 0.125rem !important; 
+  margin-left: 0.125rem !important;
 }
-
 
 .auth-button span:last-child,
 [data-component="auth-button"] span:last-child {
-  margin-right: 0.125rem !important; 
+  margin-right: 0.125rem !important;
 }
 
 /* Force proper flex distribution */
@@ -202,7 +237,7 @@
   [data-component="auth-button"] {
     transition: none !important;
   }
-  
+
   .auth-button:active,
   [data-component="auth-button"]:active {
     transform: none !important;

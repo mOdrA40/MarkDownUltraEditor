@@ -52,12 +52,36 @@
 /* ===== CONSOLIDATED THEME STYLING ===== */
 
 /* Header styles using CSS custom properties */
-.header-ocean { background-color: var(--ocean-surface) !important; border-color: var(--ocean-primary) !important; color: var(--ocean-text) !important; }
-.header-forest { background-color: var(--forest-surface) !important; border-color: var(--forest-primary) !important; color: var(--forest-text) !important; }
-.header-sunset { background-color: var(--sunset-surface) !important; border-color: var(--sunset-primary) !important; color: var(--sunset-text) !important; }
-.header-purple { background-color: var(--purple-surface) !important; border-color: var(--purple-primary) !important; color: var(--purple-text) !important; }
-.header-rose { background-color: var(--rose-surface) !important; border-color: var(--rose-primary) !important; color: var(--rose-text) !important; }
-.header-dark { background-color: rgba(30, 41, 59, 0.8) !important; border-color: #8b5cf6 !important; color: #f1f5f9 !important; }
+.header-ocean {
+  background-color: var(--ocean-surface) !important;
+  border-color: var(--ocean-primary) !important;
+  color: var(--ocean-text) !important;
+}
+.header-forest {
+  background-color: var(--forest-surface) !important;
+  border-color: var(--forest-primary) !important;
+  color: var(--forest-text) !important;
+}
+.header-sunset {
+  background-color: var(--sunset-surface) !important;
+  border-color: var(--sunset-primary) !important;
+  color: var(--sunset-text) !important;
+}
+.header-purple {
+  background-color: var(--purple-surface) !important;
+  border-color: var(--purple-primary) !important;
+  color: var(--purple-text) !important;
+}
+.header-rose {
+  background-color: var(--rose-surface) !important;
+  border-color: var(--rose-primary) !important;
+  color: var(--rose-text) !important;
+}
+.header-dark {
+  background-color: rgba(30, 41, 59, 0.8) !important;
+  border-color: #8b5cf6 !important;
+  color: #f1f5f9 !important;
+}
 
 /* Consolidated button and interactive element styling */
 [data-theme] button[variant="default"],
@@ -72,245 +96,686 @@
 [data-theme="ocean"] [data-radix-select-trigger],
 [data-theme="ocean"] [data-radix-select-item],
 [data-theme="ocean"] [data-radix-tabs-trigger],
-[data-theme="ocean"] [data-radix-toggle-root] { color: var(--ocean-text) !important; }
+[data-theme="ocean"] [data-radix-toggle-root] {
+  color: var(--ocean-text) !important;
+}
 
 [data-theme="forest"] button:not([variant="default"]),
 [data-theme="forest"] [data-radix-dialog-close],
 [data-theme="forest"] [data-radix-select-trigger],
 [data-theme="forest"] [data-radix-select-item],
 [data-theme="forest"] [data-radix-tabs-trigger],
-[data-theme="forest"] [data-radix-toggle-root] { color: var(--forest-text) !important; }
+[data-theme="forest"] [data-radix-toggle-root] {
+  color: var(--forest-text) !important;
+}
 
 [data-theme="sunset"] button:not([variant="default"]),
 [data-theme="sunset"] [data-radix-dialog-close],
 [data-theme="sunset"] [data-radix-select-trigger],
 [data-theme="sunset"] [data-radix-select-item],
 [data-theme="sunset"] [data-radix-tabs-trigger],
-[data-theme="sunset"] [data-radix-toggle-root] { color: var(--sunset-text) !important; }
+[data-theme="sunset"] [data-radix-toggle-root] {
+  color: var(--sunset-text) !important;
+}
 
 [data-theme="purple"] button:not([variant="default"]),
 [data-theme="purple"] [data-radix-dialog-close],
 [data-theme="purple"] [data-radix-select-trigger],
 [data-theme="purple"] [data-radix-select-item],
 [data-theme="purple"] [data-radix-tabs-trigger],
-[data-theme="purple"] [data-radix-toggle-root] { color: var(--purple-text) !important; }
+[data-theme="purple"] [data-radix-toggle-root] {
+  color: var(--purple-text) !important;
+}
 
 [data-theme="rose"] button:not([variant="default"]),
 [data-theme="rose"] [data-radix-dialog-close],
 [data-theme="rose"] [data-radix-select-trigger],
 [data-theme="rose"] [data-radix-select-item],
 [data-theme="rose"] [data-radix-tabs-trigger],
-[data-theme="rose"] [data-radix-toggle-root] { color: var(--rose-text) !important; }
+[data-theme="rose"] [data-radix-toggle-root] {
+  color: var(--rose-text) !important;
+}
 
 /* Consolidated outline, hover, and background styles */
-[data-theme="ocean"] button[variant="outline"] { border-color: var(--ocean-accent) !important; }
-[data-theme="forest"] button[variant="outline"] { border-color: var(--forest-accent) !important; }
-[data-theme="sunset"] button[variant="outline"] { border-color: var(--sunset-accent) !important; }
-[data-theme="purple"] button[variant="outline"] { border-color: var(--purple-accent) !important; }
-[data-theme="rose"] button[variant="outline"] { border-color: var(--rose-accent) !important; }
+[data-theme="ocean"] button[variant="outline"] {
+  border-color: var(--ocean-accent) !important;
+}
+[data-theme="forest"] button[variant="outline"] {
+  border-color: var(--forest-accent) !important;
+}
+[data-theme="sunset"] button[variant="outline"] {
+  border-color: var(--sunset-accent) !important;
+}
+[data-theme="purple"] button[variant="outline"] {
+  border-color: var(--purple-accent) !important;
+}
+[data-theme="rose"] button[variant="outline"] {
+  border-color: var(--rose-accent) !important;
+}
 
-[data-theme="ocean"] button:not([variant="default"]):hover { background-color: var(--ocean-accent-bg) !important; }
-[data-theme="forest"] button:not([variant="default"]):hover { background-color: var(--forest-accent-bg) !important; }
-[data-theme="sunset"] button:not([variant="default"]):hover { background-color: var(--sunset-accent-bg) !important; }
-[data-theme="purple"] button:not([variant="default"]):hover { background-color: var(--purple-accent-bg) !important; }
-[data-theme="rose"] button:not([variant="default"]):hover { background-color: var(--rose-accent-bg) !important; }
+[data-theme="ocean"] button:not([variant="default"]):hover {
+  background-color: var(--ocean-accent-bg) !important;
+}
+[data-theme="forest"] button:not([variant="default"]):hover {
+  background-color: var(--forest-accent-bg) !important;
+}
+[data-theme="sunset"] button:not([variant="default"]):hover {
+  background-color: var(--sunset-accent-bg) !important;
+}
+[data-theme="purple"] button:not([variant="default"]):hover {
+  background-color: var(--purple-accent-bg) !important;
+}
+[data-theme="rose"] button:not([variant="default"]):hover {
+  background-color: var(--rose-accent-bg) !important;
+}
 
-[data-theme="ocean"] [data-radix-select-content] { background-color: var(--ocean-bg) !important; }
-[data-theme="forest"] [data-radix-select-content] { background-color: var(--forest-bg) !important; }
-[data-theme="sunset"] [data-radix-select-content] { background-color: var(--sunset-bg) !important; }
-[data-theme="purple"] [data-radix-select-content] { background-color: var(--purple-bg) !important; }
-[data-theme="rose"] [data-radix-select-content] { background-color: var(--rose-bg) !important; }
+[data-theme="ocean"] [data-radix-select-content] {
+  background-color: var(--ocean-bg) !important;
+}
+[data-theme="forest"] [data-radix-select-content] {
+  background-color: var(--forest-bg) !important;
+}
+[data-theme="sunset"] [data-radix-select-content] {
+  background-color: var(--sunset-bg) !important;
+}
+[data-theme="purple"] [data-radix-select-content] {
+  background-color: var(--purple-bg) !important;
+}
+[data-theme="rose"] [data-radix-select-content] {
+  background-color: var(--rose-bg) !important;
+}
 
 /* ===== CONSOLIDATED UI COMPONENT STYLES ===== */
 
 /* Dropdown and menu styles using CSS custom properties */
 .theme-ocean [data-radix-popper-content-wrapper] [role="menu"],
-.theme-ocean .dropdown-menu-content { background-color: var(--ocean-surface) !important; color: var(--ocean-text) !important; border-color: var(--ocean-accent) !important; }
+.theme-ocean .dropdown-menu-content {
+  background-color: var(--ocean-surface) !important;
+  color: var(--ocean-text) !important;
+  border-color: var(--ocean-accent) !important;
+}
 
 .theme-forest [data-radix-popper-content-wrapper] [role="menu"],
-.theme-forest .dropdown-menu-content { background-color: var(--forest-surface) !important; color: var(--forest-text) !important; border-color: var(--forest-accent) !important; }
+.theme-forest .dropdown-menu-content {
+  background-color: var(--forest-surface) !important;
+  color: var(--forest-text) !important;
+  border-color: var(--forest-accent) !important;
+}
 
 .theme-sunset [data-radix-popper-content-wrapper] [role="menu"],
-.theme-sunset .dropdown-menu-content { background-color: var(--sunset-surface) !important; color: var(--sunset-text) !important; border-color: var(--sunset-accent) !important; }
+.theme-sunset .dropdown-menu-content {
+  background-color: var(--sunset-surface) !important;
+  color: var(--sunset-text) !important;
+  border-color: var(--sunset-accent) !important;
+}
 
 .theme-purple [data-radix-popper-content-wrapper] [role="menu"],
-.theme-purple .dropdown-menu-content { background-color: var(--purple-surface) !important; color: var(--purple-text) !important; border-color: var(--purple-accent) !important; }
+.theme-purple .dropdown-menu-content {
+  background-color: var(--purple-surface) !important;
+  color: var(--purple-text) !important;
+  border-color: var(--purple-accent) !important;
+}
 
 .theme-rose [data-radix-popper-content-wrapper] [role="menu"],
-.theme-rose .dropdown-menu-content { background-color: var(--rose-surface) !important; color: var(--rose-text) !important; border-color: var(--rose-accent) !important; }
+.theme-rose .dropdown-menu-content {
+  background-color: var(--rose-surface) !important;
+  color: var(--rose-text) !important;
+  border-color: var(--rose-accent) !important;
+}
 
 .dark [data-radix-popper-content-wrapper] [role="menu"],
-.dark .dropdown-menu-content { background-color: hsl(222.2 84% 4.9%) !important; color: hsl(210 40% 98%) !important; border-color: hsl(217.2 32.6% 17.5%) !important; }
+.dark .dropdown-menu-content {
+  background-color: hsl(222.2 84% 4.9%) !important;
+  color: hsl(210 40% 98%) !important;
+  border-color: hsl(217.2 32.6% 17.5%) !important;
+}
 
 /* Text utilities using CSS custom properties */
-.theme-ocean .text-muted-foreground { color: #64748b !important; }
-.theme-forest .text-muted-foreground { color: #6b7280 !important; }
-.theme-sunset .text-muted-foreground { color: #a16207 !important; }
-.theme-purple .text-muted-foreground { color: #7c3aed !important; }
-.theme-rose .text-muted-foreground { color: #be185d !important; }
-.dark .text-muted-foreground { color: hsl(215.4 16.3% 56.9%) !important; }
+.theme-ocean .text-muted-foreground {
+  color: #64748b !important;
+}
+.theme-forest .text-muted-foreground {
+  color: #6b7280 !important;
+}
+.theme-sunset .text-muted-foreground {
+  color: #a16207 !important;
+}
+.theme-purple .text-muted-foreground {
+  color: #7c3aed !important;
+}
+.theme-rose .text-muted-foreground {
+  color: #be185d !important;
+}
+.dark .text-muted-foreground {
+  color: hsl(215.4 16.3% 56.9%) !important;
+}
 
 /* Page background using CSS custom properties */
-html.theme-ocean, html.theme-ocean body { background-color: var(--ocean-bg) !important; color: var(--ocean-text) !important; }
-html.theme-forest, html.theme-forest body { background-color: var(--forest-bg) !important; color: var(--forest-text) !important; }
-html.theme-sunset, html.theme-sunset body { background-color: var(--sunset-bg) !important; color: var(--sunset-text) !important; }
-html.theme-purple, html.theme-purple body { background-color: var(--purple-bg) !important; color: var(--purple-text) !important; }
-html.theme-rose, html.theme-rose body { background-color: var(--rose-bg) !important; color: var(--rose-text) !important; }
-html.dark, html.dark body { background-color: hsl(222.2 84% 4.9%) !important; color: hsl(210 40% 98%) !important; }
+html.theme-ocean,
+html.theme-ocean body {
+  background-color: var(--ocean-bg) !important;
+  color: var(--ocean-text) !important;
+}
+html.theme-forest,
+html.theme-forest body {
+  background-color: var(--forest-bg) !important;
+  color: var(--forest-text) !important;
+}
+html.theme-sunset,
+html.theme-sunset body {
+  background-color: var(--sunset-bg) !important;
+  color: var(--sunset-text) !important;
+}
+html.theme-purple,
+html.theme-purple body {
+  background-color: var(--purple-bg) !important;
+  color: var(--purple-text) !important;
+}
+html.theme-rose,
+html.theme-rose body {
+  background-color: var(--rose-bg) !important;
+  color: var(--rose-text) !important;
+}
+html.dark,
+html.dark body {
+  background-color: hsl(222.2 84% 4.9%) !important;
+  color: hsl(210 40% 98%) !important;
+}
 
 /* Page containers using CSS custom properties */
-.theme-ocean .min-h-screen, .theme-ocean .bg-background { background-color: var(--ocean-bg) !important; color: var(--ocean-text) !important; }
-.theme-forest .min-h-screen, .theme-forest .bg-background { background-color: var(--forest-bg) !important; color: var(--forest-text) !important; }
-.theme-sunset .min-h-screen, .theme-sunset .bg-background { background-color: var(--sunset-bg) !important; color: var(--sunset-text) !important; }
-.theme-purple .min-h-screen, .theme-purple .bg-background { background-color: var(--purple-bg) !important; color: var(--purple-text) !important; }
-.theme-rose .min-h-screen, .theme-rose .bg-background { background-color: var(--rose-bg) !important; color: var(--rose-text) !important; }
-.dark .min-h-screen, .dark .bg-background { background-color: hsl(222.2 84% 4.9%) !important; color: hsl(210 40% 98%) !important; }
+.theme-ocean .min-h-screen,
+.theme-ocean .bg-background {
+  background-color: var(--ocean-bg) !important;
+  color: var(--ocean-text) !important;
+}
+.theme-forest .min-h-screen,
+.theme-forest .bg-background {
+  background-color: var(--forest-bg) !important;
+  color: var(--forest-text) !important;
+}
+.theme-sunset .min-h-screen,
+.theme-sunset .bg-background {
+  background-color: var(--sunset-bg) !important;
+  color: var(--sunset-text) !important;
+}
+.theme-purple .min-h-screen,
+.theme-purple .bg-background {
+  background-color: var(--purple-bg) !important;
+  color: var(--purple-text) !important;
+}
+.theme-rose .min-h-screen,
+.theme-rose .bg-background {
+  background-color: var(--rose-bg) !important;
+  color: var(--rose-text) !important;
+}
+.dark .min-h-screen,
+.dark .bg-background {
+  background-color: hsl(222.2 84% 4.9%) !important;
+  color: hsl(210 40% 98%) !important;
+}
 
 /* ===== CONSOLIDATED ELEMENT STYLING ===== */
 
 /* Card backgrounds using CSS custom properties */
-.theme-ocean .bg-card { background-color: var(--ocean-surface) !important; color: var(--ocean-text) !important; }
-.theme-forest .bg-card { background-color: var(--forest-surface) !important; color: var(--forest-text) !important; }
-.theme-sunset .bg-card { background-color: var(--sunset-surface) !important; color: var(--sunset-text) !important; }
-.theme-purple .bg-card { background-color: var(--purple-surface) !important; color: var(--purple-text) !important; }
-.theme-rose .bg-card { background-color: var(--rose-surface) !important; color: var(--rose-text) !important; }
-.dark .bg-card { background-color: hsl(222.2 84% 4.9%) !important; color: hsl(210 40% 98%) !important; }
+.theme-ocean .bg-card {
+  background-color: var(--ocean-surface) !important;
+  color: var(--ocean-text) !important;
+}
+.theme-forest .bg-card {
+  background-color: var(--forest-surface) !important;
+  color: var(--forest-text) !important;
+}
+.theme-sunset .bg-card {
+  background-color: var(--sunset-surface) !important;
+  color: var(--sunset-text) !important;
+}
+.theme-purple .bg-card {
+  background-color: var(--purple-surface) !important;
+  color: var(--purple-text) !important;
+}
+.theme-rose .bg-card {
+  background-color: var(--rose-surface) !important;
+  color: var(--rose-text) !important;
+}
+.dark .bg-card {
+  background-color: hsl(222.2 84% 4.9%) !important;
+  color: hsl(210 40% 98%) !important;
+}
 
 /* ===== CONSOLIDATED TABS AND PRIMARY STYLING ===== */
 
 /* Inactive tabs - consolidated */
-.theme-ocean [data-radix-tabs-trigger]:not([data-state="active"]) { color: #64748b !important; background: transparent !important; }
-.theme-forest [data-radix-tabs-trigger]:not([data-state="active"]) { color: #6b7280 !important; background: transparent !important; }
-.theme-sunset [data-radix-tabs-trigger]:not([data-state="active"]) { color: #a16207 !important; background: transparent !important; }
-.theme-purple [data-radix-tabs-trigger]:not([data-state="active"]) { color: #7c3aed !important; background: transparent !important; }
-.theme-rose [data-radix-tabs-trigger]:not([data-state="active"]) { color: #be185d !important; background: transparent !important; }
-.dark [data-radix-tabs-trigger]:not([data-state="active"]) { color: hsl(215.4 16.3% 56.9%) !important; background: transparent !important; }
+.theme-ocean [data-radix-tabs-trigger]:not([data-state="active"]) {
+  color: #64748b !important;
+  background: transparent !important;
+}
+.theme-forest [data-radix-tabs-trigger]:not([data-state="active"]) {
+  color: #6b7280 !important;
+  background: transparent !important;
+}
+.theme-sunset [data-radix-tabs-trigger]:not([data-state="active"]) {
+  color: #a16207 !important;
+  background: transparent !important;
+}
+.theme-purple [data-radix-tabs-trigger]:not([data-state="active"]) {
+  color: #7c3aed !important;
+  background: transparent !important;
+}
+.theme-rose [data-radix-tabs-trigger]:not([data-state="active"]) {
+  color: #be185d !important;
+  background: transparent !important;
+}
+.dark [data-radix-tabs-trigger]:not([data-state="active"]) {
+  color: hsl(215.4 16.3% 56.9%) !important;
+  background: transparent !important;
+}
 
 /* Active tabs - consolidated using CSS custom properties */
-.theme-ocean [data-radix-tabs-trigger][data-state="active"] { color: var(--ocean-text) !important; background: var(--ocean-bg) !important; }
-.theme-forest [data-radix-tabs-trigger][data-state="active"] { color: var(--forest-text) !important; background: var(--forest-bg) !important; }
-.theme-sunset [data-radix-tabs-trigger][data-state="active"] { color: var(--sunset-text) !important; background: var(--sunset-bg) !important; }
-.theme-purple [data-radix-tabs-trigger][data-state="active"] { color: var(--purple-text) !important; background: var(--purple-bg) !important; }
-.theme-rose [data-radix-tabs-trigger][data-state="active"] { color: var(--rose-text) !important; background: var(--rose-bg) !important; }
-.dark [data-radix-tabs-trigger][data-state="active"] { color: hsl(210 40% 98%) !important; background: hsl(222.2 84% 4.9%) !important; }
+.theme-ocean [data-radix-tabs-trigger][data-state="active"] {
+  color: var(--ocean-text) !important;
+  background: var(--ocean-bg) !important;
+}
+.theme-forest [data-radix-tabs-trigger][data-state="active"] {
+  color: var(--forest-text) !important;
+  background: var(--forest-bg) !important;
+}
+.theme-sunset [data-radix-tabs-trigger][data-state="active"] {
+  color: var(--sunset-text) !important;
+  background: var(--sunset-bg) !important;
+}
+.theme-purple [data-radix-tabs-trigger][data-state="active"] {
+  color: var(--purple-text) !important;
+  background: var(--purple-bg) !important;
+}
+.theme-rose [data-radix-tabs-trigger][data-state="active"] {
+  color: var(--rose-text) !important;
+  background: var(--rose-bg) !important;
+}
+.dark [data-radix-tabs-trigger][data-state="active"] {
+  color: hsl(210 40% 98%) !important;
+  background: hsl(222.2 84% 4.9%) !important;
+}
 
 /* Primary colors - consolidated using CSS custom properties */
-.theme-ocean .text-primary { color: var(--ocean-primary) !important; }
-.theme-forest .text-primary { color: var(--forest-primary) !important; }
-.theme-sunset .text-primary { color: var(--sunset-primary) !important; }
-.theme-purple .text-primary { color: var(--purple-primary) !important; }
-.theme-rose .text-primary { color: var(--rose-primary) !important; }
-.dark .text-primary { color: hsl(217.2 91.2% 59.8%) !important; }
+.theme-ocean .text-primary {
+  color: var(--ocean-primary) !important;
+}
+.theme-forest .text-primary {
+  color: var(--forest-primary) !important;
+}
+.theme-sunset .text-primary {
+  color: var(--sunset-primary) !important;
+}
+.theme-purple .text-primary {
+  color: var(--purple-primary) !important;
+}
+.theme-rose .text-primary {
+  color: var(--rose-primary) !important;
+}
+.dark .text-primary {
+  color: hsl(217.2 91.2% 59.8%) !important;
+}
 
 /* ===== CONSOLIDATED EDITOR AND FORM STYLING ===== */
 
 /* Editor textarea - consolidated using CSS custom properties */
-.theme-ocean textarea, .theme-ocean .markdown-editor-textarea { color: var(--ocean-text) !important; background-color: var(--ocean-bg) !important; }
-.theme-forest textarea, .theme-forest .markdown-editor-textarea { color: var(--forest-text) !important; background-color: var(--forest-bg) !important; }
-.theme-sunset textarea, .theme-sunset .markdown-editor-textarea { color: var(--sunset-text) !important; background-color: var(--sunset-bg) !important; }
-.theme-purple textarea, .theme-purple .markdown-editor-textarea { color: var(--purple-text) !important; background-color: var(--purple-bg) !important; }
-.theme-rose textarea, .theme-rose .markdown-editor-textarea { color: var(--rose-text) !important; background-color: var(--rose-bg) !important; }
-
-/* Dark theme editor styling */
-html.dark textarea, html.dark .markdown-editor-textarea, html.dark .ui-textarea, html.dark [data-component="textarea"],
-.dark textarea, .dark .markdown-editor-textarea, .dark .ui-textarea, .dark [data-component="textarea"] {
-  color: #ffffff !important; background-color: #0f172a !important; caret-color: #ffffff !important;
+.theme-ocean textarea,
+.theme-ocean .markdown-editor-textarea {
+  color: var(--ocean-text) !important;
+  background-color: var(--ocean-bg) !important;
+}
+.theme-forest textarea,
+.theme-forest .markdown-editor-textarea {
+  color: var(--forest-text) !important;
+  background-color: var(--forest-bg) !important;
+}
+.theme-sunset textarea,
+.theme-sunset .markdown-editor-textarea {
+  color: var(--sunset-text) !important;
+  background-color: var(--sunset-bg) !important;
+}
+.theme-purple textarea,
+.theme-purple .markdown-editor-textarea {
+  color: var(--purple-text) !important;
+  background-color: var(--purple-bg) !important;
+}
+.theme-rose textarea,
+.theme-rose .markdown-editor-textarea {
+  color: var(--rose-text) !important;
+  background-color: var(--rose-bg) !important;
 }
 
-html.dark textarea::placeholder, html.dark .markdown-editor-textarea::placeholder,
-.dark textarea::placeholder, .dark .markdown-editor-textarea::placeholder { color: #94a3b8 !important; }
+/* Dark theme editor styling */
+html.dark textarea,
+html.dark .markdown-editor-textarea,
+html.dark .ui-textarea,
+html.dark [data-component="textarea"],
+.dark textarea,
+.dark .markdown-editor-textarea,
+.dark .ui-textarea,
+.dark [data-component="textarea"] {
+  color: #ffffff !important;
+  background-color: #0f172a !important;
+  caret-color: #ffffff !important;
+}
+
+html.dark textarea::placeholder,
+html.dark .markdown-editor-textarea::placeholder,
+.dark textarea::placeholder,
+.dark .markdown-editor-textarea::placeholder {
+  color: #94a3b8 !important;
+}
 
 /* ===== CONSOLIDATED BUTTON AND TEXT STYLING ===== */
 
 /* Dark theme buttons - consolidated */
-.dark .writing-mode-button.active, .dark .writing-mode-button[data-state="on"], .dark button[variant="default"],
-.dark .auth-button, .dark [data-component="auth-button"], .dark .signup-button {
-  color: #000000 !important; background-color: #8b5cf6 !important;
+.dark .writing-mode-button.active,
+.dark .writing-mode-button[data-state="on"],
+.dark button[variant="default"],
+.dark .auth-button,
+.dark [data-component="auth-button"],
+.dark .signup-button {
+  color: #000000 !important;
+  background-color: #8b5cf6 !important;
 }
 
-.dark .writing-mode-button:not(.active), .dark .writing-mode-button:not([data-state="on"]), .dark button[variant="ghost"] {
-  color: #f1f5f9 !important; background-color: transparent !important;
+.dark .writing-mode-button:not(.active),
+.dark .writing-mode-button:not([data-state="on"]),
+.dark button[variant="ghost"] {
+  color: #f1f5f9 !important;
+  background-color: transparent !important;
 }
 
-.dark .auth-button:hover, .dark [data-component="auth-button"]:hover, .dark .signup-button:hover {
-  color: #000000 !important; background-color: #7c3aed !important;
+.dark .auth-button:hover,
+.dark [data-component="auth-button"]:hover,
+.dark .signup-button:hover {
+  color: #000000 !important;
+  background-color: #7c3aed !important;
 }
 
 /* Light theme active buttons */
-.theme-ocean .writing-mode-button.active, .theme-forest .writing-mode-button.active, .theme-sunset .writing-mode-button.active,
-.theme-purple .writing-mode-button.active, .theme-rose .writing-mode-button.active { color: #ffffff !important; }
+.theme-ocean .writing-mode-button.active,
+.theme-forest .writing-mode-button.active,
+.theme-sunset .writing-mode-button.active,
+.theme-purple .writing-mode-button.active,
+.theme-rose .writing-mode-button.active {
+  color: #ffffff !important;
+}
 
 /* Headings - consolidated using CSS custom properties */
-.theme-ocean h1, .theme-ocean h2, .theme-ocean h3, .theme-ocean h4, .theme-ocean h5, .theme-ocean h6 { color: var(--ocean-text) !important; }
-.theme-forest h1, .theme-forest h2, .theme-forest h3, .theme-forest h4, .theme-forest h5, .theme-forest h6 { color: var(--forest-text) !important; }
-.theme-sunset h1, .theme-sunset h2, .theme-sunset h3, .theme-sunset h4, .theme-sunset h5, .theme-sunset h6 { color: var(--sunset-text) !important; }
-.theme-purple h1, .theme-purple h2, .theme-purple h3, .theme-purple h4, .theme-purple h5, .theme-purple h6 { color: var(--purple-text) !important; }
-.theme-rose h1, .theme-rose h2, .theme-rose h3, .theme-rose h4, .theme-rose h5, .theme-rose h6 { color: var(--rose-text) !important; }
-.dark h1, .dark h2, .dark h3, .dark h4, .dark h5, .dark h6 { color: hsl(210 40% 98%) !important; }
+.theme-ocean h1,
+.theme-ocean h2,
+.theme-ocean h3,
+.theme-ocean h4,
+.theme-ocean h5,
+.theme-ocean h6 {
+  color: var(--ocean-text) !important;
+}
+.theme-forest h1,
+.theme-forest h2,
+.theme-forest h3,
+.theme-forest h4,
+.theme-forest h5,
+.theme-forest h6 {
+  color: var(--forest-text) !important;
+}
+.theme-sunset h1,
+.theme-sunset h2,
+.theme-sunset h3,
+.theme-sunset h4,
+.theme-sunset h5,
+.theme-sunset h6 {
+  color: var(--sunset-text) !important;
+}
+.theme-purple h1,
+.theme-purple h2,
+.theme-purple h3,
+.theme-purple h4,
+.theme-purple h5,
+.theme-purple h6 {
+  color: var(--purple-text) !important;
+}
+.theme-rose h1,
+.theme-rose h2,
+.theme-rose h3,
+.theme-rose h4,
+.theme-rose h5,
+.theme-rose h6 {
+  color: var(--rose-text) !important;
+}
+.dark h1,
+.dark h2,
+.dark h3,
+.dark h4,
+.dark h5,
+.dark h6 {
+  color: hsl(210 40% 98%) !important;
+}
 
 /* Small text - consolidated */
-.theme-ocean .text-sm { color: #64748b !important; }
-.theme-forest .text-sm { color: #6b7280 !important; }
-.theme-sunset .text-sm { color: #a16207 !important; }
-.theme-purple .text-sm { color: #7c3aed !important; }
-.theme-rose .text-sm { color: #be185d !important; }
-.dark .text-sm { color: hsl(215.4 16.3% 56.9%) !important; }
+.theme-ocean .text-sm {
+  color: #64748b !important;
+}
+.theme-forest .text-sm {
+  color: #6b7280 !important;
+}
+.theme-sunset .text-sm {
+  color: #a16207 !important;
+}
+.theme-purple .text-sm {
+  color: #7c3aed !important;
+}
+.theme-rose .text-sm {
+  color: #be185d !important;
+}
+.dark .text-sm {
+  color: hsl(215.4 16.3% 56.9%) !important;
+}
 
 /* ===== CONSOLIDATED BACKGROUND AND FORM STYLING ===== */
 
 /* Muted backgrounds - consolidated using CSS custom properties */
-.theme-ocean .bg-muted { background-color: var(--ocean-surface) !important; color: #64748b !important; }
-.theme-forest .bg-muted { background-color: var(--forest-surface) !important; color: #6b7280 !important; }
-.theme-sunset .bg-muted { background-color: var(--sunset-surface) !important; color: #a16207 !important; }
-.theme-purple .bg-muted { background-color: var(--purple-surface) !important; color: #7c3aed !important; }
-.theme-rose .bg-muted { background-color: var(--rose-surface) !important; color: #be185d !important; }
-.dark .bg-muted { background-color: hsl(217.2 32.6% 17.5%) !important; color: hsl(215.4 16.3% 56.9%) !important; }
+.theme-ocean .bg-muted {
+  background-color: var(--ocean-surface) !important;
+  color: #64748b !important;
+}
+.theme-forest .bg-muted {
+  background-color: var(--forest-surface) !important;
+  color: #6b7280 !important;
+}
+.theme-sunset .bg-muted {
+  background-color: var(--sunset-surface) !important;
+  color: #a16207 !important;
+}
+.theme-purple .bg-muted {
+  background-color: var(--purple-surface) !important;
+  color: #7c3aed !important;
+}
+.theme-rose .bg-muted {
+  background-color: var(--rose-surface) !important;
+  color: #be185d !important;
+}
+.dark .bg-muted {
+  background-color: hsl(217.2 32.6% 17.5%) !important;
+  color: hsl(215.4 16.3% 56.9%) !important;
+}
 
 /* Badges - consolidated using CSS custom properties */
-.theme-ocean [data-badge="cloud"], .theme-ocean [data-badge="local"] { background-color: var(--ocean-surface) !important; color: var(--ocean-text) !important; border-color: var(--ocean-accent) !important; }
-.theme-forest [data-badge="cloud"], .theme-forest [data-badge="local"] { background-color: var(--forest-surface) !important; color: var(--forest-text) !important; border-color: var(--forest-accent) !important; }
-.theme-sunset [data-badge="cloud"], .theme-sunset [data-badge="local"] { background-color: var(--sunset-surface) !important; color: var(--sunset-text) !important; border-color: var(--sunset-accent) !important; }
-.theme-purple [data-badge="cloud"], .theme-purple [data-badge="local"] { background-color: var(--purple-surface) !important; color: var(--purple-text) !important; border-color: var(--purple-accent) !important; }
-.theme-rose [data-badge="cloud"], .theme-rose [data-badge="local"] { background-color: var(--rose-surface) !important; color: var(--rose-text) !important; border-color: var(--rose-accent) !important; }
-.dark [data-badge="cloud"], .dark [data-badge="local"] { background-color: rgba(30, 41, 59, 0.9) !important; color: hsl(210 40% 98%) !important; border-color: rgba(139, 92, 246, 0.3) !important; }
+.theme-ocean [data-badge="cloud"],
+.theme-ocean [data-badge="local"] {
+  background-color: var(--ocean-surface) !important;
+  color: var(--ocean-text) !important;
+  border-color: var(--ocean-accent) !important;
+}
+.theme-forest [data-badge="cloud"],
+.theme-forest [data-badge="local"] {
+  background-color: var(--forest-surface) !important;
+  color: var(--forest-text) !important;
+  border-color: var(--forest-accent) !important;
+}
+.theme-sunset [data-badge="cloud"],
+.theme-sunset [data-badge="local"] {
+  background-color: var(--sunset-surface) !important;
+  color: var(--sunset-text) !important;
+  border-color: var(--sunset-accent) !important;
+}
+.theme-purple [data-badge="cloud"],
+.theme-purple [data-badge="local"] {
+  background-color: var(--purple-surface) !important;
+  color: var(--purple-text) !important;
+  border-color: var(--purple-accent) !important;
+}
+.theme-rose [data-badge="cloud"],
+.theme-rose [data-badge="local"] {
+  background-color: var(--rose-surface) !important;
+  color: var(--rose-text) !important;
+  border-color: var(--rose-accent) !important;
+}
+.dark [data-badge="cloud"],
+.dark [data-badge="local"] {
+  background-color: rgba(30, 41, 59, 0.9) !important;
+  color: hsl(210 40% 98%) !important;
+  border-color: rgba(139, 92, 246, 0.3) !important;
+}
 
 /* Input styling - consolidated using CSS custom properties */
-.theme-ocean input { background-color: var(--ocean-bg) !important; color: var(--ocean-text) !important; border-color: #bae6fd !important; }
-.theme-forest input { background-color: var(--forest-bg) !important; color: var(--forest-text) !important; border-color: #bbf7d0 !important; }
-.theme-sunset input { background-color: var(--sunset-bg) !important; color: var(--sunset-text) !important; border-color: #fdba74 !important; }
-.theme-purple input { background-color: var(--purple-bg) !important; color: var(--purple-text) !important; border-color: #d8b4fe !important; }
-.theme-rose input { background-color: var(--rose-bg) !important; color: var(--rose-text) !important; border-color: #fda4af !important; }
-.dark input { background-color: hsl(222.2 84% 4.9%) !important; color: hsl(210 40% 98%) !important; border-color: hsl(217.2 32.6% 17.5%) !important; }
+.theme-ocean input {
+  background-color: var(--ocean-bg) !important;
+  color: var(--ocean-text) !important;
+  border-color: #bae6fd !important;
+}
+.theme-forest input {
+  background-color: var(--forest-bg) !important;
+  color: var(--forest-text) !important;
+  border-color: #bbf7d0 !important;
+}
+.theme-sunset input {
+  background-color: var(--sunset-bg) !important;
+  color: var(--sunset-text) !important;
+  border-color: #fdba74 !important;
+}
+.theme-purple input {
+  background-color: var(--purple-bg) !important;
+  color: var(--purple-text) !important;
+  border-color: #d8b4fe !important;
+}
+.theme-rose input {
+  background-color: var(--rose-bg) !important;
+  color: var(--rose-text) !important;
+  border-color: #fda4af !important;
+}
+.dark input {
+  background-color: hsl(222.2 84% 4.9%) !important;
+  color: hsl(210 40% 98%) !important;
+  border-color: hsl(217.2 32.6% 17.5%) !important;
+}
 
 /* ===== CONSOLIDATED EDITOR AND PREVIEW STYLING ===== */
 
 /* Vim mode indicators - consolidated */
-.dark .vim-mode-wrapper .bg-blue-500 { background-color: #3b82f6 !important; color: #ffffff !important; }
-.dark .vim-mode-wrapper .bg-green-500 { background-color: #10b981 !important; color: #ffffff !important; }
-.dark .vim-mode-wrapper .bg-yellow-500 { background-color: #f59e0b !important; color: #000000 !important; }
-.dark .vim-mode-wrapper .bg-red-500 { background-color: #ef4444 !important; color: #ffffff !important; }
-.dark .vim-mode-wrapper .bg-gray-500 { background-color: #6b7280 !important; color: #ffffff !important; }
+.dark .vim-mode-wrapper .bg-blue-500 {
+  background-color: #3b82f6 !important;
+  color: #ffffff !important;
+}
+.dark .vim-mode-wrapper .bg-green-500 {
+  background-color: #10b981 !important;
+  color: #ffffff !important;
+}
+.dark .vim-mode-wrapper .bg-yellow-500 {
+  background-color: #f59e0b !important;
+  color: #000000 !important;
+}
+.dark .vim-mode-wrapper .bg-red-500 {
+  background-color: #ef4444 !important;
+  color: #ffffff !important;
+}
+.dark .vim-mode-wrapper .bg-gray-500 {
+  background-color: #6b7280 !important;
+  color: #ffffff !important;
+}
 
 /* Editor header - consolidated using CSS custom properties */
-.dark .editor-header h3, .dark .editor-header .text-sm { color: #f1f5f9 !important; }
-.theme-ocean .editor-header h3, .theme-ocean .editor-header .text-sm { color: var(--ocean-text) !important; }
-.theme-forest .editor-header h3, .theme-forest .editor-header .text-sm { color: var(--forest-text) !important; }
-.theme-sunset .editor-header h3, .theme-sunset .editor-header .text-sm { color: var(--sunset-text) !important; }
-.theme-purple .editor-header h3, .theme-purple .editor-header .text-sm { color: var(--purple-text) !important; }
-.theme-rose .editor-header h3, .theme-rose .editor-header .text-sm { color: var(--rose-text) !important; }
+.dark .editor-header h3,
+.dark .editor-header .text-sm {
+  color: #f1f5f9 !important;
+}
+.theme-ocean .editor-header h3,
+.theme-ocean .editor-header .text-sm {
+  color: var(--ocean-text) !important;
+}
+.theme-forest .editor-header h3,
+.theme-forest .editor-header .text-sm {
+  color: var(--forest-text) !important;
+}
+.theme-sunset .editor-header h3,
+.theme-sunset .editor-header .text-sm {
+  color: var(--sunset-text) !important;
+}
+.theme-purple .editor-header h3,
+.theme-purple .editor-header .text-sm {
+  color: var(--purple-text) !important;
+}
+.theme-rose .editor-header h3,
+.theme-rose .editor-header .text-sm {
+  color: var(--rose-text) !important;
+}
+
+/* Desktop editor header - specific styling */
+.dark .desktop-editor-header h3,
+.dark .desktop-editor-header .text-sm {
+  color: #f1f5f9 !important;
+}
+.theme-ocean .desktop-editor-header h3,
+.theme-ocean .desktop-editor-header .text-sm {
+  color: var(--ocean-text) !important;
+}
+.theme-forest .desktop-editor-header h3,
+.theme-forest .desktop-editor-header .text-sm {
+  color: var(--forest-text) !important;
+}
+.theme-sunset .desktop-editor-header h3,
+.theme-sunset .desktop-editor-header .text-sm {
+  color: var(--sunset-text) !important;
+}
+.theme-purple .desktop-editor-header h3,
+.theme-purple .desktop-editor-header .text-sm {
+  color: var(--purple-text) !important;
+}
+.theme-rose .desktop-editor-header h3,
+.theme-rose .desktop-editor-header .text-sm {
+  color: var(--rose-text) !important;
+}
 
 /* Zen mode and preview - consolidated */
-.dark .fixed.top-4.right-4 { background-color: rgba(30, 41, 59, 0.9) !important; color: #f1f5f9 !important; border-color: #8b5cf6 !important; }
-.dark .fixed.top-4.right-4:hover { background-color: rgba(30, 41, 59, 1) !important; }
+.dark .fixed.top-4.right-4 {
+  background-color: rgba(30, 41, 59, 0.9) !important;
+  color: #f1f5f9 !important;
+  border-color: #8b5cf6 !important;
+}
+.dark .fixed.top-4.right-4:hover {
+  background-color: rgba(30, 41, 59, 1) !important;
+}
 
-html.dark [data-preview-pane], html.dark [data-preview-pane] *, html.dark .preview-content, html.dark .preview-content *,
-html.dark .dark-preview, html.dark .dark-preview *, html.dark [data-preview-pane] .prose, html.dark [data-preview-pane] .prose *,
-html.dark .preview-content .prose, html.dark .preview-content .prose *, html.dark .dark-preview .prose, html.dark .dark-preview .prose * {
+html.dark [data-preview-pane],
+html.dark [data-preview-pane] *,
+html.dark .preview-content,
+html.dark .preview-content *,
+html.dark .dark-preview,
+html.dark .dark-preview *,
+html.dark [data-preview-pane] .prose,
+html.dark [data-preview-pane] .prose *,
+html.dark .preview-content .prose,
+html.dark .preview-content .prose *,
+html.dark .dark-preview .prose,
+html.dark .dark-preview .prose * {
   color: hsl(210 40% 98%) !important;
 }
 
-html.dark [data-preview-pane] a, html.dark .preview-content a, html.dark .dark-preview a,
-html.dark [data-preview-pane] .prose a, html.dark .preview-content .prose a, html.dark .dark-preview .prose a {
+html.dark [data-preview-pane] a,
+html.dark .preview-content a,
+html.dark .dark-preview a,
+html.dark [data-preview-pane] .prose a,
+html.dark .preview-content .prose a,
+html.dark .dark-preview .prose a {
   color: #60a5fa !important;
 }
-

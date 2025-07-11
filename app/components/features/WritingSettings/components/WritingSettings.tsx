@@ -36,15 +36,19 @@ export const WritingSettings: React.FC<WritingSettingsProps> = memo(
     onZenModeToggle,
     className = '',
     children,
+    forceMobileLayout = false,
   }) => {
     const { breakpoint } = useResponsiveLayout();
 
+    // Override breakpoint if forceMobileLayout is true
+    const effectiveBreakpoint = forceMobileLayout ? 'mobile' : breakpoint;
+
     // Render berdasarkan breakpoint
     const renderContent = () => {
-      switch (breakpoint) {
+      switch (effectiveBreakpoint) {
         case 'mobile':
           return (
-            <ResponsiveLayout breakpoint={breakpoint} className={className}>
+            <ResponsiveLayout breakpoint={effectiveBreakpoint} className={className}>
               {/* Font Size Control */}
               <div className="flex items-center justify-between">
                 <div className="flex items-center space-x-2">
@@ -91,7 +95,7 @@ export const WritingSettings: React.FC<WritingSettingsProps> = memo(
 
         case 'small-tablet':
           return (
-            <ResponsiveLayout breakpoint={breakpoint} className={className}>
+            <ResponsiveLayout breakpoint={effectiveBreakpoint} className={className}>
               <FontSizeControl fontSize={fontSize} onFontSizeChange={onFontSizeChange} size="sm" />
 
               <LineHeightControl
@@ -120,7 +124,7 @@ export const WritingSettings: React.FC<WritingSettingsProps> = memo(
           );
         default:
           return (
-            <ResponsiveLayout breakpoint={breakpoint} className={className}>
+            <ResponsiveLayout breakpoint={effectiveBreakpoint} className={className}>
               <FontSizeControl fontSize={fontSize} onFontSizeChange={onFontSizeChange} size="md" />
 
               <LineHeightControl

@@ -95,7 +95,7 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({
     // Force immediate application with high priority
     setTimeout(() => {
       const buttons = safeQuerySelectorAll<HTMLElement>(
-        'button[data-theme-button="true"], .editor-header button, .toolbar button'
+        'button[data-theme-button="true"], .editor-header button, .desktop-editor-header button, .toolbar button'
       );
       buttons.forEach((button) => {
         button.style.setProperty('color', buttonColor, 'important');
@@ -116,7 +116,7 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({
     const applyButtonColors = () => {
       const buttonColor = buttonColorMap[currentTheme.id] || currentTheme.text;
       const buttons = safeQuerySelectorAll<HTMLElement>(
-        'button[data-theme-button="true"], .editor-header button, .toolbar button'
+        'button[data-theme-button="true"], .editor-header button, .desktop-editor-header button, .toolbar button'
       );
       buttons.forEach((button) => {
         button.style.setProperty('color', buttonColor, 'important');

@@ -14,8 +14,8 @@
     display: block !important;
   }
 
-  /* Hide desktop editor header on small tablet */
-  .editor-header {
+  /* Hide desktop editor header on small tablet - use specific selector */
+  .desktop-editor-header {
     display: none !important;
   }
 
@@ -27,7 +27,7 @@
 
   /* Mobile nav sidebar width for small tablet */
   .mobile-nav-sidebar {
-    width: 20rem !important; /* 320px - wider for tablet */
+    width: 20rem !important; 
   }
 
   /* Undo/Redo buttons in mobile nav header for small tablet */
@@ -42,7 +42,22 @@
   }
 
   /* ===== TOOLBAR STYLES ===== */
-  
+
+  /* Force mobile layout for toolbar in mobile navigation */
+  .mobile-nav-toolbar {
+    /* Force mobile layout regardless of screen size */
+  }
+
+  .mobile-nav-toolbar .hidden.sm\\:block,
+  .mobile-nav-toolbar .hidden.md\\:block,
+  .mobile-nav-toolbar .hidden.xl\\:block {
+    display: none !important;
+  }
+
+  .mobile-nav-toolbar .block.sm\\:hidden {
+    display: block !important;
+  }
+
   /* Toolbar - compact layout dengan scroll horizontal */
   .toolbar-small-tablet-row {
     display: flex;
@@ -62,7 +77,6 @@
   }
 
   /* ===== WRITING SETTINGS ===== */
-  
   /* Writing Settings - compact horizontal layout */
   .writing-settings-small-tablet {
     display: flex;
@@ -80,7 +94,7 @@
   }
 
   /* ===== UNDO/REDO BUTTONS ===== */
-  
+
   /* Undo/Redo - visible dan accessible */
   .undo-redo-small-tablet {
     gap: 0.25rem;
@@ -94,7 +108,7 @@
   }
 
   /* ===== VIM & ZEN MODE BUTTONS ===== */
-  
+
   /* Vim dan Zen mode buttons - pastikan terlihat */
   .vim-zen-buttons-small-tablet {
     display: flex;
@@ -109,16 +123,8 @@
     min-width: auto;
   }
 
-  /* ===== DIALOG STYLES ===== */
-
-  /* Dialog styles handled by dialog-responsive.css utility */
-
-  /* ===== TABS STYLES ===== */
-
-  /* Tabs styles handled by tabs-responsive.css utility */
-
   /* ===== GRID LAYOUTS ===== */
-  
+
   /* Format grid untuk small tablet */
   .export-grid-small-tablet {
     grid-template-columns: repeat(2, 1fr) !important;
@@ -131,7 +137,7 @@
   }
 
   /* ===== PANEL HEIGHTS ===== */
-  
+
   /* Options panel height limit on small tablet */
   .export-options-small-tablet {
     max-height: 50vh !important;

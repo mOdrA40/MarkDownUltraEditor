@@ -140,7 +140,12 @@ export const NavSidebar: React.FC<NavSidebarProps> = ({
             defaultCollapsed={false}
           >
             <div className="space-y-3">
-              <Toolbar onInsertText={(text) => executeAction(() => onInsertText(text))} />
+              <Toolbar
+                onInsertText={(text) => executeAction(() => onInsertText(text))}
+                compact={true}
+                forceMobileLayout={true}
+                className="mobile-nav-toolbar"
+              />
             </div>
           </NavSection>
 
@@ -168,6 +173,8 @@ export const NavSidebar: React.FC<NavSidebarProps> = ({
               onVimModeToggle={onVimModeToggle}
               zenMode={zenMode}
               onZenModeToggle={onZenModeToggle}
+              forceMobileLayout={true}
+              className="mobile-nav-writing-settings"
             />
           </NavSection>
 

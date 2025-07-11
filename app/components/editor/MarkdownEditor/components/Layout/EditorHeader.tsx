@@ -29,6 +29,7 @@ import { WritingSettings } from '../../../../features/WritingSettings';
 import { Toolbar } from '../../../Toolbar';
 import { UndoRedoButtons } from '../../../UndoRedoButtons';
 import type { EditorSettings, ResponsiveState } from '../../types';
+
 /**
  * Props for EditorHeader component
  */
@@ -82,6 +83,7 @@ export interface EditorHeaderProps {
   onToggleToc?: () => void;
   onToggleOutline?: () => void;
 }
+
 /**
  * Editor header component with file controls, theme selector, and toolbar
  */
@@ -118,6 +120,19 @@ export const EditorHeader: React.FC<EditorHeaderProps> = ({
   const { isMobile, isTablet, isSmallTablet } = responsive;
   const [isFullscreen, setIsFullscreen] = React.useState(false);
 
+  
+  const [isDesktop, setIsDesktop] = React.useState(false);
+
+  React.useEffect(() => {
+    const checkDesktop = () => {
+      setIsDesktop(window.innerWidth >= 1200);
+    };
+
+    checkDesktop();
+    window.addEventListener('resize', checkDesktop);
+    return () => window.removeEventListener('resize', checkDesktop);
+  }, []);
+
   // Listen for fullscreen changes
   React.useEffect(() => {
     const handleFullscreenChange = () => {
@@ -140,96 +155,148 @@ export const EditorHeader: React.FC<EditorHeaderProps> = ({
       document.exitFullscreen();
     }
   };
+
   // Get theme-based header styling
   const headerClassName = getHeaderClassName(currentTheme);
   const headerStyles = generateHeaderStyles(currentTheme);
+
   return (
     <div
-      className={`editor-header border-b backdrop-blur-md ${headerClassName}`}
+      className={`desktop-editor-header editor-header border-b backdrop-blur-md ${headerClassName}`}
       style={{
         ...headerStyles,
         backdropFilter: 'blur(12px)',
         WebkitBackdropFilter: 'blur(12px)',
       }}
     >
-      <div className="flex flex-col lg:flex-row lg:items-center justify-between px-2 sm:px-4 py-2 gap-2">
-        {/* File Info Row */}
-        <div
-          className="flex items-center space-x-2 sm:space-x-4 min-w-0 flex-1"
-          data-file-info="true"
-        >
-          <div className="flex items-center space-x-2 min-w-0 flex-1">
-            <FileText
-              className="h-4 w-4 sm:h-5 sm:w-5 flex-shrink-0"
-              style={{ color: currentTheme.primary }}
+      {/* Desktop Layout (1200px+) - Horizontal */}
+      {isDesktop ? (
+        <div className="flex items-center justify-between px-2 sm:px-4 py-2 gap-2">
+          {/* Left Side - File Info */}
+          <div
+            className="flex items-center space-x-2 sm:space-x-4 min-w-0 flex-1"
+            data-file-info="true"
+          >
+            <div className="flex items-center space-x-2 min-w-0 flex-1">
+              <FileText
+                className="h-4 w-4 sm:h-5 sm:w-5 flex-shrink-0"
+                style={{ color: currentTheme.primary }}
+              />
+              <Input
+                value={fileName}
+                onChange={(e) => onFileNameChange(e.target.value)}
+                className="w-24 sm:w-32 md:w-48 h-6 sm:h-8 text-xs sm:text-sm font-medium border-0 bg-transparent"
+                style={{
+                  borderColor: currentTheme.accent,
+                  color: currentTheme.text,
+                }}
+              />
+              {isModified && (
+                <Badge variant="secondary" className="text-xs hidden sm:inline-flex">
+                  Modified
+                </Badge>
+              )}
+            </div>
+          </div>
+
+          {/* Center - Theme Selector */}
+          <div className="flex items-center gap-2" data-theme-selector="true">
+            <ThemeSelector currentTheme={currentTheme} onThemeChange={onThemeChange} />
+          </div>
+
+          {/* Right Side - Controls */}
+          <div className="flex items-center space-x-1 flex-shrink-0">
+            <FileOperations
+              markdown={markdown}
+              fileName={fileName}
+              onLoad={onLoad}
+              currentTheme={currentTheme}
             />
-            <Input
-              value={fileName}
-              onChange={(e) => onFileNameChange(e.target.value)}
-              className="w-24 sm:w-32 md:w-48 h-6 sm:h-8 text-xs sm:text-sm font-medium border-0 bg-transparent"
-              style={{
-                borderColor: currentTheme.accent,
-                color: currentTheme.text,
-              }}
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={onShowAdvancedExport}
+              className="h-6 sm:h-8 px-2 sm:px-3 text-xs sm:text-sm whitespace-nowrap"
+              title="Advanced Export"
+              style={{ color: currentTheme.text }}
+              data-theme-button="true"
+            >
+              Export+
+            </Button>
+
+            <Separator orientation="vertical" className="h-4 sm:h-6 mx-1" />
+
+            <UndoRedoButtons
+              onUndo={onUndo}
+              onRedo={onRedo}
+              canUndo={canUndo}
+              canRedo={canRedo}
+              isMobile={isMobile}
+              isTablet={isTablet}
+              className=""
+              currentTheme={currentTheme}
             />
-            {isModified && (
-              <Badge variant="secondary" className="text-xs hidden sm:inline-flex">
-                Modified
-              </Badge>
-            )}
           </div>
         </div>
-        {/* Theme Selector Row - Only on tablet, placed first to avoid overlap */}
-        {isTablet && (
+      ) : (
+        /* Tablet Layout (768-1199px) - Vertical */
+        <div className="flex flex-col px-2 sm:px-4 py-2 gap-2">
+          {/* File Info Row - Always on top */}
+          <div className="flex items-center space-x-2 sm:space-x-4 min-w-0" data-file-info="true">
+            <div className="flex items-center space-x-2 min-w-0 flex-1">
+              <FileText
+                className="h-4 w-4 sm:h-5 sm:w-5 flex-shrink-0"
+                style={{ color: currentTheme.primary }}
+              />
+              <Input
+                value={fileName}
+                onChange={(e) => onFileNameChange(e.target.value)}
+                className="w-24 sm:w-32 md:w-48 h-6 sm:h-8 text-xs sm:text-sm font-medium border-0 bg-transparent"
+                style={{
+                  borderColor: currentTheme.accent,
+                  color: currentTheme.text,
+                }}
+              />
+              {isModified && (
+                <Badge variant="secondary" className="text-xs hidden sm:inline-flex">
+                  Modified
+                </Badge>
+              )}
+            </div>
+          </div>
+
+          {/* Theme Selector Row - Centered, separate row to prevent overlap */}
           <div
-            className="flex items-center justify-center gap-2 py-2 border-b border-gray-200 dark:border-gray-700"
+            className="flex items-center justify-center gap-2 py-1 border-b border-gray-200/50 dark:border-gray-700/50"
             data-theme-selector="true"
           >
             <ThemeSelector currentTheme={currentTheme} onThemeChange={onThemeChange} />
           </div>
-        )}
 
-        {/* Controls Row - Responsive Layout */}
-        <div
-          className={`
-          ${isTablet ? 'flex flex-col gap-2' : 'flex items-center justify-between gap-1 sm:gap-2'}
-          overflow-x-auto
-        `}
-        >
-          {/* First Row - File Operations */}
-          <div className="flex items-center justify-between gap-1 sm:gap-2">
+          {/* Controls Row - File Operations and Actions */}
+          <div className="flex items-center justify-between gap-1 sm:gap-2 overflow-x-auto">
+            {/* Left Side - File Operations */}
             <div className="flex items-center space-x-1 flex-shrink-0">
-              {/* Theme Selector - Moved to separate row on tablet for better spacing */}
-              {!isTablet && (
-                <ThemeSelector currentTheme={currentTheme} onThemeChange={onThemeChange} />
-              )}
-              {!isTablet && <Separator orientation="vertical" className="h-4 sm:h-6" />}
-
-              <div className="flex items-center space-x-1">
-                <FileOperations
-                  markdown={markdown}
-                  fileName={fileName}
-                  onLoad={onLoad}
-                  currentTheme={currentTheme}
-                />
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={onShowAdvancedExport}
-                  className="h-6 sm:h-8 px-2 sm:px-3 text-xs sm:text-sm whitespace-nowrap transform-none will-change-auto"
-                  title="Advanced Export"
-                  style={{
-                    transform: 'none',
-                    willChange: 'auto',
-                    color: currentTheme.text,
-                  }}
-                  data-theme-button="true"
-                >
-                  Export+
-                </Button>
-              </div>
+              <FileOperations
+                markdown={markdown}
+                fileName={fileName}
+                onLoad={onLoad}
+                currentTheme={currentTheme}
+              />
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={onShowAdvancedExport}
+                className="h-6 sm:h-8 px-2 sm:px-3 text-xs sm:text-sm whitespace-nowrap"
+                title="Advanced Export"
+                style={{ color: currentTheme.text }}
+                data-theme-button="true"
+              >
+                Export+
+              </Button>
             </div>
-            {/* Undo/Redo - Always visible */}
+
+            {/* Right Side - Undo/Redo */}
             <div className={`flex items-center ${isSmallTablet ? 'space-x-0.5' : 'space-x-1'}`}>
               <UndoRedoButtons
                 onUndo={onUndo}
@@ -243,151 +310,173 @@ export const EditorHeader: React.FC<EditorHeaderProps> = ({
               />
             </div>
           </div>
-          {/* Action Buttons Row */}
-          <div
-            className={`
-            flex items-center ${isTablet ? 'justify-center' : 'justify-end'}
-            space-x-1 flex-wrap gap-1
-          `}
-            data-action-buttons="true"
+        </div>
+      )}
+
+      {/* Action Buttons Row - For both desktop and tablet */}
+      <div
+        className={`flex items-center ${
+          isDesktop ? 'justify-end' : 'justify-center'
+        } space-x-1 px-2 sm:px-4 py-1 border-t border-gray-200/50 dark:border-gray-700/50`}
+      >
+        {/* Sidebar Controls - TOC and Outline */}
+        {onToggleToc && (
+          <Button
+            variant={showToc ? 'default' : 'ghost'}
+            size="sm"
+            onClick={onToggleToc}
+            className={`h-6 w-6 sm:h-8 sm:w-8 p-0 sm:p-2 transition-all duration-200 ${
+              showToc
+                ? 'bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 shadow-sm'
+                : 'hover:bg-gray-100 dark:hover:bg-gray-800'
+            }`}
+            title={showToc ? 'Hide Table of Contents' : 'Show Table of Contents'}
+            style={{
+              color: showToc ? undefined : currentTheme.text,
+              borderColor: showToc ? 'rgb(59 130 246 / 0.3)' : 'transparent',
+            }}
+            data-theme-button="true"
           >
-            {/* Sidebar Controls - TOC and Outline */}
-            {onToggleToc && (
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={onToggleToc}
-                className="h-6 w-6 sm:h-8 sm:w-8 p-0 sm:p-2"
-                title={showToc ? 'Hide Table of Contents' : 'Show Table of Contents'}
-                style={{ color: currentTheme.text }}
-                data-theme-button="true"
-              >
-                <List className="h-3 w-3 sm:h-4 sm:w-4" />
-              </Button>
-            )}
+            <List className="h-3 w-3 sm:h-4 sm:w-4" />
+          </Button>
+        )}
 
-            {onToggleOutline && (
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={onToggleOutline}
-                className="h-6 w-6 sm:h-8 sm:w-8 p-0 sm:p-2"
-                title={showOutline ? 'Hide Document Outline' : 'Show Document Outline'}
-                style={{ color: currentTheme.text }}
-                data-theme-button="true"
-              >
-                <PanelLeft className="h-3 w-3 sm:h-4 sm:w-4" />
-              </Button>
-            )}
+        {onToggleOutline && (
+          <Button
+            variant={showOutline ? 'default' : 'ghost'}
+            size="sm"
+            onClick={onToggleOutline}
+            className={`h-6 w-6 sm:h-8 sm:w-8 p-0 sm:p-2 transition-all duration-200 ${
+              showOutline
+                ? 'bg-green-100 dark:bg-green-900/30 text-green-600 dark:text-green-400 shadow-sm'
+                : 'hover:bg-gray-100 dark:hover:bg-gray-800'
+            }`}
+            title={showOutline ? 'Hide Document Outline' : 'Show Document Outline'}
+            style={{
+              color: showOutline ? undefined : currentTheme.text,
+              borderColor: showOutline ? 'rgb(34 197 94 / 0.3)' : 'transparent',
+            }}
+            data-theme-button="true"
+          >
+            <PanelLeft className="h-3 w-3 sm:h-4 sm:w-4" />
+          </Button>
+        )}
 
-            {(onToggleToc || onToggleOutline) && (
-              <Separator orientation="vertical" className="h-4 sm:h-6" />
-            )}
+        {(onToggleToc || onToggleOutline) && (
+          <Separator orientation="vertical" className="h-4 sm:h-6" />
+        )}
 
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={onShowSearch}
-              className="h-6 w-6 sm:h-8 sm:w-8 p-0 sm:p-2"
-              title="Search"
-              style={{ color: currentTheme.text }}
-              data-theme-button="true"
-            >
-              <Search className="h-3 w-3 sm:h-4 sm:w-4" />
-            </Button>
+        <Button
+          variant="ghost"
+          size="sm"
+          onClick={onShowSearch}
+          className="h-6 w-6 sm:h-8 sm:w-8 p-0 sm:p-2"
+          title="Search"
+          style={{ color: currentTheme.text }}
+          data-theme-button="true"
+        >
+          <Search className="h-3 w-3 sm:h-4 sm:w-4" />
+        </Button>
 
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={onTogglePreview}
-              className="h-6 w-6 sm:h-8 sm:w-8 p-0 sm:p-2"
-              title="Toggle Preview"
-              style={{ color: currentTheme.text }}
-              data-theme-button="true"
-            >
-              {showPreview ? (
-                <EyeOff className="h-3 w-3 sm:h-4 sm:w-4" />
-              ) : (
-                <Eye className="h-3 w-3 sm:h-4 sm:w-4" />
-              )}
-            </Button>
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={onShowShortcuts}
-              className="h-6 w-6 sm:h-8 sm:w-8 p-0 sm:p-2"
-              title="Keyboard Shortcuts (Ctrl+?)"
-              style={{ color: currentTheme.text }}
-              data-theme-button="true"
-            >
-              <Keyboard className="h-3 w-3 sm:h-4 sm:w-4" />
-            </Button>
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={toggleFullscreen}
-              className="h-6 w-6 sm:h-8 sm:w-8 p-0 sm:p-2 hidden lg:flex"
-              title={isFullscreen ? 'Exit Fullscreen' : 'Enter Fullscreen'}
-              style={{ color: currentTheme.text }}
-              data-theme-button="true"
-            >
-              {isFullscreen ? (
-                <Minimize2 className="h-3 w-3 sm:h-4 sm:w-4" />
-              ) : (
-                <Maximize2 className="h-3 w-3 sm:h-4 sm:w-4" />
-              )}
-            </Button>
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={onShowTemplates}
-              className="h-6 sm:h-8 px-2 sm:px-3 text-xs sm:text-sm whitespace-nowrap"
-              title="Document Templates"
-              style={{ color: currentTheme.text }}
-              data-theme-button="true"
-            >
-              Templates
-            </Button>
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={() => {
-                onNewFile();
-              }}
-              className="h-6 sm:h-8 px-2 sm:px-3 text-xs sm:text-sm whitespace-nowrap"
-              title="New Document"
-              style={{ color: currentTheme.text }}
-              data-theme-button="true"
-            >
-              New
-            </Button>
+        <Button
+          variant="ghost"
+          size="sm"
+          onClick={onTogglePreview}
+          className="h-6 w-6 sm:h-8 sm:w-8 p-0 sm:p-2"
+          title="Toggle Preview"
+          style={{ color: currentTheme.text }}
+          data-theme-button="true"
+        >
+          {showPreview ? (
+            <EyeOff className="h-3 w-3 sm:h-4 sm:w-4" />
+          ) : (
+            <Eye className="h-3 w-3 sm:h-4 sm:w-4" />
+          )}
+        </Button>
 
-            {/* Authentication Buttons */}
-            <div className="flex items-center">
-              <Separator orientation="vertical" className="h-4 sm:h-6 mx-1" />
-              <AuthButtons
-                responsive={responsive}
-                onViewFiles={() => {
-                  window.location.href = '/files';
-                }}
-                onSettings={() => {
-                  navigate('/settings');
-                }}
-              />
-            </div>
-          </div>
+        <Button
+          variant="ghost"
+          size="sm"
+          onClick={onShowShortcuts}
+          className="h-6 w-6 sm:h-8 sm:w-8 p-0 sm:p-2"
+          title="Keyboard Shortcuts (Ctrl+?)"
+          style={{ color: currentTheme.text }}
+          data-theme-button="true"
+        >
+          <Keyboard className="h-3 w-3 sm:h-4 sm:w-4" />
+        </Button>
+
+        <Button
+          variant="ghost"
+          size="sm"
+          onClick={toggleFullscreen}
+          className="h-6 w-6 sm:h-8 sm:w-8 p-0 sm:p-2"
+          title={isFullscreen ? 'Exit Fullscreen' : 'Enter Fullscreen'}
+          style={{ color: currentTheme.text }}
+          data-theme-button="true"
+        >
+          {isFullscreen ? (
+            <Minimize2 className="h-3 w-3 sm:h-4 sm:w-4" />
+          ) : (
+            <Maximize2 className="h-3 w-3 sm:h-4 sm:w-4" />
+          )}
+        </Button>
+
+        <Button
+          variant="ghost"
+          size="sm"
+          onClick={onShowTemplates}
+          className="h-6 sm:h-8 px-2 sm:px-3 text-xs sm:text-sm whitespace-nowrap"
+          title="Document Templates"
+          style={{ color: currentTheme.text }}
+          data-theme-button="true"
+        >
+          Templates
+        </Button>
+
+        <Button
+          variant="ghost"
+          size="sm"
+          onClick={() => {
+            onNewFile();
+          }}
+          className="h-6 sm:h-8 px-2 sm:px-3 text-xs sm:text-sm whitespace-nowrap"
+          title="New Document"
+          style={{ color: currentTheme.text }}
+          data-theme-button="true"
+        >
+          New
+        </Button>
+
+        {/* Authentication Buttons */}
+        <div className="flex items-center">
+          <Separator orientation="vertical" className="h-4 sm:h-6 mx-1" />
+          <AuthButtons
+            responsive={responsive}
+            onViewFiles={() => {
+              window.location.href = '/files';
+            }}
+            onSettings={() => {
+              navigate('/settings');
+            }}
+          />
         </div>
       </div>
+
       {/* Toolbar - Only on desktop/tablet */}
       <div
-        className={`${isSmallTablet ? 'overflow-x-auto toolbar-small-tablet' : 'overflow-x-hidden'}`}
+        className={`${
+          isSmallTablet ? 'overflow-x-auto toolbar-small-tablet' : 'overflow-x-hidden'
+        }`}
       >
         <Toolbar onInsertText={onInsertText} currentTheme={currentTheme} />
       </div>
 
       {/* Writing Settings - Only on desktop/tablet */}
       <div
-        className={`${isSmallTablet ? 'overflow-x-auto writing-settings-compact' : 'overflow-x-hidden'}`}
+        className={`${
+          isSmallTablet ? 'overflow-x-auto writing-settings-compact' : 'overflow-x-hidden'
+        }`}
       >
         <WritingSettings
           fontSize={settings.fontSize}

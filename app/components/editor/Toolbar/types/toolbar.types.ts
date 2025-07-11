@@ -48,6 +48,8 @@ export interface ToolbarProps {
   customButtons?: FormatButton[];
   /** Current theme (opsional) */
   currentTheme?: Theme;
+  /** Force mobile layout regardless of screen size (opsional) */
+  forceMobileLayout?: boolean;
 }
 
 /**

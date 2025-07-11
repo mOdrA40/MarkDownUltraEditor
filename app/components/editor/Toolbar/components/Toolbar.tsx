@@ -29,12 +29,18 @@ export const Toolbar: React.FC<ToolbarProps> = React.memo(
     disabled = false,
     customButtons = [],
     currentTheme,
+    forceMobileLayout = false,
   }) => {
     // Menggunakan custom hook untuk toolbar logic
     const { filteredButtons, currentBreakpoint, isMobile, isTablet, isDesktop } = useToolbar({
       onInsertText,
       customButtons,
     });
+
+    // Override responsive flags if forceMobileLayout is true
+    const effectiveIsMobile = forceMobileLayout || isMobile;
+    const effectiveIsTablet = !forceMobileLayout && isTablet;
+    const effectiveIsDesktop = !forceMobileLayout && isDesktop;
 
     // Setup keyboard shortcuts
     useKeyboardShortcuts({
@@ -60,8 +66,8 @@ export const Toolbar: React.FC<ToolbarProps> = React.memo(
 
     return (
       <div className={cn('w-full', className)}>
-        {/* Mobile Layout (320px - 499px) */}
-        {isMobile && (
+        {/* Mobile Layout (320px - 499px) or forced mobile */}
+        {effectiveIsMobile && (
           <MobileToolbar
             formatButtons={filteredButtons}
             onInsertText={onInsertText}
@@ -70,7 +76,7 @@ export const Toolbar: React.FC<ToolbarProps> = React.memo(
         )}
 
         {/* Tablet Layout (500px - 1279px) */}
-        {isTablet && (
+        {effectiveIsTablet && (
           <TabletToolbar
             formatButtons={filteredButtons}
             onInsertText={onInsertText}
@@ -80,7 +86,7 @@ export const Toolbar: React.FC<ToolbarProps> = React.memo(
         )}
 
         {/* Desktop Layout (1280px+) */}
-        {isDesktop && (
+        {effectiveIsDesktop && (
           <DesktopToolbar
             formatButtons={filteredButtons}
             onInsertText={onInsertText}
