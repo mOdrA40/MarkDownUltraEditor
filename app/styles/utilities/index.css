@@ -7,39 +7,35 @@
 @import "./theme-dialogs.css";
 @import "./dropdown-fixes.css";
 
-/* Z-index utilities */
+/* Z-index */
 .z-dropdown {
-  z-index: 60;
+  @apply z-[60];
 }
 .z-modal {
-  z-index: 70;
+  @apply z-[70];
 }
 .z-toast {
-  z-index: 80;
+  @apply z-[80];
 }
 .z-tooltip {
-  z-index: 90;
+  @apply z-[90];
 }
 
-/* Utility classes */
+/* Utility */
 .button-reset {
-  transform: none !important;
-  border: none !important;
-  outline: none !important;
-  box-shadow: none !important;
+  @apply transform-none border-none outline-none shadow-none;
 }
 .dropdown-fixed {
-  position: fixed !important;
-  transform: none !important;
+  @apply fixed transform-none;
 }
 .backdrop-blur-light {
-  backdrop-filter: blur(4px);
+  @apply backdrop-blur-sm;
 }
 .backdrop-blur-medium {
-  backdrop-filter: blur(8px);
+  @apply backdrop-blur-md;
 }
 .backdrop-blur-strong {
-  backdrop-filter: blur(16px);
+  @apply backdrop-blur-xl;
 }
 
 .shadow-dropdown {

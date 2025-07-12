@@ -5,7 +5,7 @@
  * @author Axel Modra
  */
 
-/* ===== BASE AUTH BUTTON STYLES ===== */
+/* ===== BASE AUTH BUTTON STYLES  ===== */
 
 .auth-button,
 [data-component="auth-button"] {
@@ -14,7 +14,7 @@
   @apply disabled:pointer-events-none disabled:opacity-50;
   @apply bg-primary text-primary-foreground shadow hover:bg-primary/90;
 
-  /* Base spacing - ukuran default yang lebih responsif */
+  /* Base spacing - default desktop */
   padding: 0.5rem 0.875rem;
   min-width: 4.5rem;
   height: 2rem;
@@ -22,8 +22,6 @@
   font-size: 0.8125rem;
   font-weight: 500;
   box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
-  justify-content: center;
-  align-items: center;
 }
 
 /* ===== RESPONSIVE AUTH BUTTON STYLES ===== */
@@ -41,10 +39,11 @@
   [data-component="auth-button"] .lucide {
     width: 1rem !important;
     height: 1rem !important;
+    margin-right: 0 !important;
   }
 }
 
-/* Tablet range - ukuran lebih kecil dan proporsional */
+/* Tablet range */
 @media (min-width: 768px) and (max-width: 1023px) {
   .auth-button,
   [data-component="auth-button"] {
@@ -52,82 +51,18 @@
     margin: 0 0.375rem !important;
     min-width: 5.5rem !important;
     gap: 0.5rem !important;
-    border-radius: 0.375rem !important;
     height: 2.25rem !important;
-    font-size: 0.8125rem !important;
-    font-weight: 500 !important;
-    justify-content: center !important;
-    align-items: center !important;
   }
 
-  /* Ensure proper icon spacing */
   .auth-button .lucide,
   [data-component="auth-button"] .lucide {
-    margin-right: 0.5rem !important;
-    margin-left: 0 !important;
-    flex-shrink: 0 !important;
     width: 1rem !important;
     height: 1rem !important;
-  }
-
-  /* Text spacing */
-  .auth-button span,
-  [data-component="auth-button"] span {
-    white-space: nowrap !important;
-    font-size: 0.8125rem !important;
-    font-weight: 500 !important;
-    line-height: 1.125rem !important;
-    margin-right: 0 !important;
-    padding-right: 0 !important;
-  }
-
-  /* Container spacing in editor header */
-  .editor-header .auth-button,
-  .editor-header [data-component="auth-button"] {
-    margin-left: 0.5rem !important;
     margin-right: 0.5rem !important;
   }
-
-  /* Badge spacing adjustment */
-  [data-badge="local"] + .auth-button,
-  [data-badge="cloud"] + .auth-button,
-  [data-badge="local"] + [data-component="auth-button"],
-  [data-badge="cloud"] + [data-component="auth-button"] {
-    margin-left: 0.5rem !important;
-  }
 }
 
-/* Small Desktop styles (1024px - 1399px) - ukuran sedang */
-@media (min-width: 1024px) and (max-width: 1399px) {
-  .auth-button,
-  [data-component="auth-button"] {
-    padding: 0.5rem 0.875rem !important;
-    min-width: 4.5rem !important;
-    gap: 0.375rem !important;
-    height: 2rem !important;
-    font-size: 0.8125rem !important;
-    font-weight: 500 !important;
-    justify-content: center !important;
-    align-items: center !important;
-    border-radius: 0.375rem !important;
-  }
-
-  .auth-button .lucide,
-  [data-component="auth-button"] .lucide {
-    width: 0.875rem !important;
-    height: 0.875rem !important;
-    margin-right: 0.375rem !important;
-    margin-left: 0 !important;
-  }
-
-  .auth-button span,
-  [data-component="auth-button"] span {
-    font-size: 0.8125rem !important;
-    line-height: 1.125rem !important;
-  }
-}
-
-/* Large Desktop styles (1400px+) - ukuran normal */
+/* Large Desktop styles (1400px+) */
 @media (min-width: 1400px) {
   .auth-button,
   [data-component="auth-button"] {
@@ -136,9 +71,6 @@
     gap: 0.5rem !important;
     height: 2.25rem !important;
     font-size: 0.875rem !important;
-    font-weight: 500 !important;
-    justify-content: center !important;
-    align-items: center !important;
     border-radius: 0.5rem !important;
   }
 
@@ -147,14 +79,23 @@
     width: 1rem !important;
     height: 1rem !important;
     margin-right: 0.5rem !important;
-    margin-left: 0 !important;
   }
+}
 
-  .auth-button span,
-  [data-component="auth-button"] span {
-    font-size: 0.875rem !important;
-    line-height: 1.25rem !important;
-  }
+/* Text and spacing */
+.auth-button span,
+[data-component="auth-button"] span {
+  white-space: nowrap;
+  font-weight: 500;
+  line-height: 1.125rem;
+}
+
+/* Container and badge spacing */
+[data-badge="local"] + .auth-button,
+[data-badge="cloud"] + .auth-button,
+[data-badge="local"] + [data-component="auth-button"],
+[data-badge="cloud"] + [data-component="auth-button"] {
+  margin-left: 0.5rem;
 }
 
 /* ===== THEME-SPECIFIC AUTH BUTTON STYLES ===== */
@@ -184,7 +125,7 @@
   transform: translateY(1px);
 }
 
-/* ===== INTERNAL SPACING FIXES - ANTI MEPET ===== */
+/* ===== INTERNAL SPACING FIXES ===== */
 
 .auth-button .lucide:first-child,
 [data-component="auth-button"] .lucide:first-child {

@@ -1,5 +1,4 @@
-/* Responsive Utilities */
+/* Responsive */
 .touch-target-minimum {
-  min-height: 44px;
-  min-width: 44px;
+  @apply min-h-11 min-w-11;
 }

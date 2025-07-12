@@ -10,17 +10,12 @@
 .toolbar-button-fix,
 .clean-button,
 .focus-fix {
-  border: none;
-  background: none;
-  padding: 0;
-  margin: 0;
+  @apply border-0 bg-transparent p-0 m-0 cursor-pointer outline-none;
   font: inherit;
-  cursor: pointer;
-  outline: none;
 }
 
 .theme-button-fix {
-  transition: filter 0.2s ease, opacity 0.2s ease;
+  @apply transition-all duration-200 ease-out;
   will-change: filter, opacity;
 }
 
@@ -30,37 +25,35 @@
 
 .theme-button-fix:active {
   filter: brightness(0.9);
-  opacity: 0.9;
+  @apply opacity-90;
 }
 
 .toolbar-button-fix,
 .clean-button {
-  transition: background-color 0.2s ease, color 0.2s ease, opacity 0.2s ease;
+  @apply transition-all duration-200 ease-out;
   will-change: background-color, color, opacity;
 }
 
 .toolbar-button-fix:hover,
 .clean-button:hover {
-  background-color: hsl(var(--accent) / 0.8) !important;
-  color: hsl(var(--accent-foreground)) !important;
+  @apply bg-accent/80 text-accent-foreground;
 }
 
 .toolbar-button-fix:active,
 .clean-button:active {
-  background-color: hsl(var(--accent) / 0.6) !important;
-  opacity: 0.9;
+  @apply bg-accent/60 opacity-90;
 }
 
-/* ===== RESPONSIVE BUTTON FIXES ===== */
+/* ===== RESPONSIVE BUTTON  ===== */
 
-/* Mobile fixes */
+/* Mobile */
 .button-hover-fix,
 .theme-button-fix,
 .toolbar-button-fix {
   @apply md:duration-150 lg:duration-200;
 }
 
-/* Tablet fixes */
+/* Tablet */
 @media (min-width: 768px) and (max-width: 1023px) {
   .auth-button,
   [data-component="auth-button"] {
@@ -83,7 +76,7 @@
   }
 }
 
-/* Desktop fixes */
+/* Desktop  */
 @media (min-width: 1024px) {
   .button-hover-fix,
   .theme-button-fix,
@@ -123,7 +116,7 @@
   }
 }
 
-/* ===== ACCESSIBILITY FIXES ===== */
+/* ===== ACCESSIBILITY  ===== */
 
 /* Reduced motion support */
 @media (prefers-reduced-motion: reduce) {

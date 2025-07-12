@@ -27,24 +27,38 @@
   overflow-x: auto;
 }
 
-/* Apply scrollbar styles berdasarkan breakpoint */
+/* Responsive scrollbar styles */
+.scroll-container-responsive {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(0, 0, 0, 0.1) transparent;
+  overflow-x: auto;
+}
+
+.scroll-container-responsive::-webkit-scrollbar {
+  height: 4px;
+}
+
+.scroll-container-responsive::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.scroll-container-responsive::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.1);
+  border-radius: 2px;
+}
+
+.scroll-container-responsive::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 0, 0, 0.2);
+}
+
+/* Mobile specific scrollbar */
 @media (max-width: 499px) {
   .scroll-container-responsive {
-    scrollbar-width: thin;
     scrollbar-color: rgba(0, 0, 0, 0.2) transparent;
-  }
-
-  .scroll-container-responsive::-webkit-scrollbar {
-    height: 4px;
-  }
-
-  .scroll-container-responsive::-webkit-scrollbar-track {
-    background: transparent;
   }
 
   .scroll-container-responsive::-webkit-scrollbar-thumb {
     background: rgba(0, 0, 0, 0.2);
-    border-radius: 2px;
   }
 
   .scroll-container-responsive::-webkit-scrollbar-thumb:hover {
@@ -52,50 +66,9 @@
   }
 }
 
+/* Tablet specific scrollbar */
 @media (min-width: 500px) and (max-width: 768px) {
-  .scroll-container-responsive {
-    scrollbar-width: thin;
-    scrollbar-color: rgba(0, 0, 0, 0.1) transparent;
-  }
-
   .scroll-container-responsive::-webkit-scrollbar {
     height: 3px;
-  }
-
-  .scroll-container-responsive::-webkit-scrollbar-track {
-    background: transparent;
-  }
-
-  .scroll-container-responsive::-webkit-scrollbar-thumb {
-    background: rgba(0, 0, 0, 0.1);
-    border-radius: 2px;
-  }
-
-  .scroll-container-responsive::-webkit-scrollbar-thumb:hover {
-    background: rgba(0, 0, 0, 0.2);
-  }
-}
-
-@media (min-width: 769px) {
-  .scroll-container-responsive {
-    scrollbar-width: thin;
-    scrollbar-color: rgba(0, 0, 0, 0.1) transparent;
-  }
-
-  .scroll-container-responsive::-webkit-scrollbar {
-    height: 4px;
-  }
-
-  .scroll-container-responsive::-webkit-scrollbar-track {
-    background: transparent;
-  }
-
-  .scroll-container-responsive::-webkit-scrollbar-thumb {
-    background: rgba(0, 0, 0, 0.1);
-    border-radius: 2px;
-  }
-
-  .scroll-container-responsive::-webkit-scrollbar-thumb:hover {
-    background: rgba(0, 0, 0, 0.2);
   }
 }
