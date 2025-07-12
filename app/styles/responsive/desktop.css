@@ -4,7 +4,7 @@
  */
 
 /* Desktop specific styles */
-@media (min-width: 1024px) {
+@media (min-width: 992px) {
   /* Export grid layouts */
   .export-grid-desktop {
     grid-template-columns: repeat(2, 1fr) !important;

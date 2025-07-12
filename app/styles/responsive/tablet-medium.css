@@ -1,9 +1,5 @@
-/**
- * Medium Tablet Responsive Styles
- * @author Axel Modra
- */
 
-@media (min-width: 768px) and (max-width: 1023px) {
+@media (min-width: 768px) and (max-width: 991px) {
   .toolbar-medium-tablet {
     padding-left: 0.75rem;
     padding-right: 0.75rem;
@@ -46,7 +42,6 @@
   }
 }
 
-/* Large tablet portrait mode */
 @media (min-width: 1024px) and (max-width: 1199px) and (orientation: portrait) {
   .desktop-editor-header [data-file-info] {
     margin-bottom: 0.75rem !important;

@@ -3,7 +3,6 @@ AdvancedExport Styles
 @author Axel Modra
  */
 
-/* Desktop TabsList  */
 .advanced-export-tabs-list {
   @apply lg:max-w-72 lg:mx-4 lg:my-3 lg:border lg:rounded-lg lg:bg-muted/30 lg:shadow-sm lg:p-1 lg:gap-0.5 lg:flex lg:items-center lg:h-11;
 }
@@ -16,7 +15,6 @@ AdvancedExport Styles
   @apply lg:bg-background lg:text-foreground lg:shadow-md lg:border-2 lg:border-primary lg:z-10;
 }
 
-/* Active states */
 [data-theme="forest"] .advanced-export-tabs-trigger[data-state="active"] {
   border-color: #10b981;
 }
@@ -33,7 +31,6 @@ AdvancedExport Styles
   @apply lg:bg-muted/50;
 }
 
-/* Mobile tab trigger styling */
 .advanced-export-mobile-tab-trigger[data-state="active"] {
   @apply bg-background text-foreground border-2 border-primary shadow-md;
 }
@@ -54,7 +51,6 @@ AdvancedExport Styles
   @apply bg-muted/50;
 }
 
-/* Icon styling in tabs */
 .advanced-export-tabs-trigger svg,
 .advanced-export-mobile-tab-trigger svg {
   transition: color 0.2s ease;
@@ -65,7 +61,6 @@ AdvancedExport Styles
   color: hsl(var(--primary));
 }
 
-/* Icon colors */
 [data-theme="forest"] .advanced-export-tabs-trigger[data-state="active"] svg,
 [data-theme="forest"]
   .advanced-export-mobile-tab-trigger[data-state="active"]
@@ -108,7 +103,6 @@ AdvancedExport Styles
   color: #60a5fa;
 }
 
-/* Text colors for tabs */
 [data-theme="ocean"] .advanced-export-tabs-trigger,
 [data-theme="ocean"] .advanced-export-mobile-tab-trigger {
   color: var(--ocean-text) !important;
@@ -164,7 +158,6 @@ AdvancedExport Styles
   background-color: var(--rose-accent-bg) !important;
 }
 
-/* Separator */
 .advanced-export-separator {
   border-color: hsl(var(--border));
 }
@@ -181,7 +174,6 @@ AdvancedExport Styles
   border-color: rgba(96, 165, 250, 0.2);
 }
 
-/* Preview content */
 .advanced-export-preview-document .author {
   color: hsl(var(--foreground)) !important;
   opacity: 0.8 !important;
@@ -199,7 +191,6 @@ AdvancedExport Styles
   color: #e5e7eb !important;
 }
 
-/* Title */
 .advanced-export-preview-document .title {
   color: hsl(var(--primary)) !important;
 }
@@ -233,7 +224,6 @@ AdvancedExport Styles
   border-bottom-color: #60a5fa !important;
 }
 
-/* Scrollbar */
 .advanced-export-tabs-content,
 .advanced-export-preview-content {
   scrollbar-width: thin;
@@ -262,7 +252,6 @@ AdvancedExport Styles
   background: rgba(0, 0, 0, 0.3);
 }
 
-/* Focus states */
 .advanced-export-tabs-trigger:focus-visible {
   outline: 2px solid hsl(var(--ring));
   outline-offset: 2px;
@@ -273,7 +262,6 @@ AdvancedExport Styles
   outline-offset: 2px;
 }
 
-/* Animation */
 .advanced-export-fade-in {
   animation: fadeIn 0.2s ease-in-out;
 }
@@ -289,7 +277,6 @@ AdvancedExport Styles
   }
 }
 
-/* Mobile and tablet */
 @media (max-width: 768px) {
   .advanced-export-mobile-tabs {
     margin-bottom: 1.5rem !important;
@@ -302,7 +289,6 @@ AdvancedExport Styles
     margin-top: 0.5rem !important;
   }
 
-  /* First label */
   .advanced-export-tabs-container
     [data-radix-tabs-content]
     > div
@@ -311,7 +297,6 @@ AdvancedExport Styles
     margin-top: 0.75rem;
   }
 
-  /* Export Format label */
   .advanced-export-tabs-container
     [data-radix-tabs-content]
     label[class*="text-xs"]:first-child {
@@ -320,9 +305,50 @@ AdvancedExport Styles
   }
 }
 
-/* Small tablet */
 @media (min-width: 500px) and (max-width: 768px) {
   .advanced-export-tabs-container [data-radix-tabs-content] {
     padding-top: 1rem !important;
+  }
+}
+
+@media (min-width: 769px) and (max-width: 1199px) {
+  .advanced-export-tabs-container {
+    position: relative;
+  }
+
+  .advanced-export-tabs-container [data-radix-tabs-content] {
+    padding-top: 1.5rem;
+    margin-top: 1rem;
+  }
+
+  .advanced-export-tabs-container
+    [data-radix-tabs-content]
+    > div
+    > div:first-child
+    label:first-child,
+  .advanced-export-tabs-container
+    [data-radix-tabs-content]
+    > div
+    label:first-child {
+    margin-top: 1.25rem !important;
+    padding-top: 0.75rem !important;
+  }
+
+  .advanced-export-mobile-tabs {
+    margin-bottom: 2rem !important;
+    position: relative;
+    z-index: 20;
+  }
+
+  .advanced-export-tabs-container
+    [data-radix-tabs-content]
+    > div
+    > div:first-child {
+    margin-top: 0.5rem !important;
+  }
+
+  .advanced-export-tabs-container
+    [data-radix-tabs-content][data-state="active"] {
+    min-height: 3rem;
   }
 }

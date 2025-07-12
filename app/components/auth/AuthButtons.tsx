@@ -157,7 +157,7 @@ export const AuthButtons: React.FC<AuthButtonsProps> = ({
             <DropdownMenuContent
               align="end"
               side="bottom"
-              className="w-56 z-dropdown auth-dropdown-content shadow-dropdown backdrop-blur-medium animate-slide-down dropdown-fixed"
+              className="w-56 z-[60] auth-dropdown-content shadow-dropdown backdrop-blur-md animate-slide-down fixed transform-none"
               sideOffset={8}
               alignOffset={0}
               avoidCollisions={true}

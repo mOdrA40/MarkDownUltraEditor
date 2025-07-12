@@ -1,23 +1,12 @@
-/**
- * Auth Dropdown Styles
- * Styles khusus untuk auth dropdown positioning dan behavior
- * 
- * @author Axel Modra
- */
-
 /* ===== AUTH DROPDOWN POSITIONING ===== */
-
-/* Auth Dropdown Positioning - Force to stay in viewport */
 [data-radix-popper-content-wrapper] {
   max-width: calc(100vw - 16px) !important;
 }
 
-/* Specific for dropdown menus in header */
 .user-dropdown-content {
   max-width: 12rem !important;
 }
 
-/* Auth dropdown specific styling */
 .auth-dropdown-content {
   position: fixed !important;
   transform-origin: top right !important;
@@ -29,8 +18,7 @@
   z-index: 70 !important;
 }
 
-/* Enhanced responsive auth dropdown positioning */
-@media (max-width: 640px) {
+@media (max-width: 575px) {
   .auth-dropdown-content {
     right: 4px !important;
     left: auto !important;
@@ -42,7 +30,7 @@
   }
 }
 
-@media (min-width: 641px) and (max-width: 768px) {
+@media (min-width: 576px) and (max-width: 767px) {
   .auth-dropdown-content {
     right: 8px !important;
     left: auto !important;
@@ -51,18 +39,16 @@
   }
 }
 
-/* Tablet medium range - fix button spacing */
-@media (min-width: 768px) and (max-width: 1023px) {
+@media (min-width: 768px) and (max-width: 991px) {
   .auth-dropdown-content {
     right: 0 !important;
     min-width: 14rem !important;
     max-width: 16rem !important;
   }
 
-  /* Auth button spacing handled by auth-button.css */
 }
 
-@media (min-width: 1024px) {
+@media (min-width: 992px) {
   .auth-dropdown-content {
     right: 0 !important;
     min-width: 14rem !important;
@@ -70,7 +56,6 @@
   }
 }
 
-/* Ensure dropdown content is above other elements */
 .auth-dropdown-content[data-state="open"] {
   z-index: 70 !important;
   animation: fadeInDown 0.15s ease-out !important;
@@ -87,13 +72,11 @@
   }
 }
 
-/* Header z-index management */
 .editor-header {
   z-index: 40 !important;
   position: relative !important;
 }
 
-/* Force dropdown to be above all other elements */
 [data-radix-popper-content-wrapper] .auth-dropdown-content {
   z-index: 70 !important;
 }

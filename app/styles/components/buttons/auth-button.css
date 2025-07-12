@@ -44,7 +44,7 @@
 }
 
 /* Tablet range */
-@media (min-width: 768px) and (max-width: 1023px) {
+@media (min-width: 768px) and (max-width: 991px) {
   .auth-button,
   [data-component="auth-button"] {
     padding: 0.5rem 1rem !important;

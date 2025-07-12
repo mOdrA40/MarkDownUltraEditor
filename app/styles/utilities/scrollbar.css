@@ -1,4 +1,4 @@
-/* Scrollbar Utilities */
+/* ===== SCROLLBAR UTILITIES ===== */
 .scrollbar-thin {
   scrollbar-width: thin;
   scrollbar-color: rgba(0, 0, 0, 0.1) transparent;
@@ -22,12 +22,10 @@
   background: rgba(0, 0, 0, 0.2);
 }
 
-/* Responsive scrollbar */
 .scroll-container-responsive {
   overflow-x: auto;
 }
 
-/* Responsive scrollbar styles */
 .scroll-container-responsive {
   scrollbar-width: thin;
   scrollbar-color: rgba(0, 0, 0, 0.1) transparent;
@@ -51,8 +49,7 @@
   background: rgba(0, 0, 0, 0.2);
 }
 
-/* Mobile specific scrollbar */
-@media (max-width: 499px) {
+@media (max-width: 575px) {
   .scroll-container-responsive {
     scrollbar-color: rgba(0, 0, 0, 0.2) transparent;
   }
@@ -66,8 +63,7 @@
   }
 }
 
-/* Tablet specific scrollbar */
-@media (min-width: 500px) and (max-width: 768px) {
+@media (min-width: 576px) and (max-width: 767px) {
   .scroll-container-responsive::-webkit-scrollbar {
     height: 3px;
   }

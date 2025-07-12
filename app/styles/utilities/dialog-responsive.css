@@ -1,6 +1,6 @@
-/* Dialog Responsive Utilities */
+/* ===== DIALOG RESPONSIVE UTILITIES ===== */
 
-@media (max-width: 499px) {
+@media (max-width: 575px) {
   [data-radix-dialog-content] {
     width: 92vw !important;
     max-width: 92vw !important;
@@ -15,7 +15,7 @@
   }
 }
 
-@media (min-width: 500px) and (max-width: 768px) {
+@media (min-width: 576px) and (max-width: 767px) {
   [data-radix-dialog-content] {
     width: 92vw !important;
     max-width: 92vw !important;

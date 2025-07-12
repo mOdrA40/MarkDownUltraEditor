@@ -7,41 +7,13 @@
 @import "./theme-dialogs.css";
 @import "./dropdown-fixes.css";
 
-/* Z-index */
-.z-dropdown {
-  @apply z-[60];
-}
-.z-modal {
-  @apply z-[70];
-}
-.z-toast {
-  @apply z-[80];
-}
-.z-tooltip {
-  @apply z-[90];
-}
-
-/* Utility */
-.button-reset {
-  @apply transform-none border-none outline-none shadow-none;
-}
-.dropdown-fixed {
-  @apply fixed transform-none;
-}
-.backdrop-blur-light {
-  @apply backdrop-blur-sm;
-}
-.backdrop-blur-medium {
-  @apply backdrop-blur-md;
-}
-.backdrop-blur-strong {
-  @apply backdrop-blur-xl;
-}
-
+/* ===== SHADOW UTILITIES ===== */
 .shadow-dropdown {
   box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1),
     0 10px 20px -6px rgba(0, 0, 0, 0.05), 0 0 0 1px rgba(0, 0, 0, 0.05);
 }
+
+/* ===== ANIMATION UTILITIES ===== */
 .animate-slide-down {
   animation: slideDown 0.15s ease-out;
 }

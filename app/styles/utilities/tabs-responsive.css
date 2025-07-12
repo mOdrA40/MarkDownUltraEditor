@@ -1,9 +1,6 @@
-/**
- * Tabs Responsive Utilities
- * @author Axel Modra
- */
+/* ===== TABS RESPONSIVE UTILITIES ===== */
 
-@media (max-width: 499px) {
+@media (max-width: 575px) {
   [data-radix-tabs-list] {
     padding: 0.5rem !important;
     gap: 0.25rem !important;
@@ -72,7 +69,7 @@
   }
 }
 
-@media (min-width: 500px) and (max-width: 768px) {
+@media (min-width: 576px) and (max-width: 767px) {
   [data-radix-tabs-list] {
     padding: 0.5rem !important;
     gap: 0.25rem !important;
@@ -96,7 +93,7 @@
   }
 }
 
-@media (min-width: 768px) and (max-width: 1023px) {
+@media (min-width: 768px) and (max-width: 991px) {
   [data-radix-tabs-list] {
     padding: 0.75rem !important;
     gap: 0.5rem !important;
@@ -114,7 +111,7 @@
   }
 }
 
-@media (min-width: 1024px) {
+@media (min-width: 992px) {
   [data-radix-tabs-list] {
     padding: 1rem !important;
     gap: 0.75rem !important;

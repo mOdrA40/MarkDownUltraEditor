@@ -1,8 +1,4 @@
-/**
- * Navigation Responsive Styles
- * @author Axel Modra
- */
-
+/* ===== TOC & OUTLINE RESPONSIVE STYLES ===== */
 [data-toc-container],
 [data-outline-container] {
   @apply md:text-sm lg:text-base;
@@ -13,8 +9,7 @@
   @apply md:p-2 md:mb-1 md:min-h-11 md:flex md:items-center;
 }
 
-/* Desktop hover effects */
-@media (min-width: 1024px) {
+@media (min-width: 992px) {
   [data-toc-container] [data-heading-id]:hover,
   [data-outline-container] [data-heading-id]:hover {
     transform: translateX(4px);
