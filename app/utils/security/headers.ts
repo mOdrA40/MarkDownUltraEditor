@@ -22,7 +22,7 @@ export interface SecurityHeadersConfig {
   };
   readonly frameOptions: {
     readonly enabled: boolean;
-    readonly policy: "DENY" | "SAMEORIGIN" | "ALLOW-FROM";
+    readonly policy: 'DENY' | 'SAMEORIGIN' | 'ALLOW-FROM';
     readonly allowFrom?: string;
   };
   readonly contentTypeOptions: {
@@ -46,79 +46,70 @@ export const DEFAULT_SECURITY_CONFIG: SecurityHeadersConfig = {
     enabled: true,
     reportOnly: false,
     directives: {
-      "default-src": ["'self'"],
-      "script-src": [
+      'default-src': ["'self'"],
+      'script-src': [
         "'self'",
         "'unsafe-inline'",
         "'unsafe-eval'",
-        "https://clerk.com",
-        "https://*.clerk.accounts.dev",
-        "https://*.clerk.com",
-        "https://challenges.cloudflare.com",
-        "https://js.stripe.com",
-        "https://checkout.stripe.com",
+        'https://clerk.com',
+        'https://*.clerk.accounts.dev',
+        'https://*.clerk.com',
+        'https://challenges.cloudflare.com',
+        'https://js.stripe.com',
+        'https://checkout.stripe.com',
       ],
-      "style-src": [
+      'style-src': [
         "'self'",
         "'unsafe-inline'",
-        "https://fonts.googleapis.com",
-        "https://clerk.com",
-        "https://*.clerk.accounts.dev",
+        'https://fonts.googleapis.com',
+        'https://clerk.com',
+        'https://*.clerk.accounts.dev',
       ],
-      "img-src": [
+      'img-src': [
         "'self'",
-        "data:",
-        "blob:",
-        "https://*.clerk.com",
-        "https://*.clerk.accounts.dev",
-        "https://img.clerk.com",
-        "https://images.unsplash.com",
-        "https://avatars.githubusercontent.com",
+        'data:',
+        'blob:',
+        'https://*.clerk.com',
+        'https://*.clerk.accounts.dev',
+        'https://img.clerk.com',
+        'https://images.unsplash.com',
+        'https://avatars.githubusercontent.com',
       ],
-      "font-src": [
+      'font-src': ["'self'", 'data:', 'https://fonts.googleapis.com', 'https://fonts.gstatic.com'],
+      'connect-src': [
         "'self'",
-        "data:",
-        "https://fonts.googleapis.com",
-        "https://fonts.gstatic.com",
-      ],
-      "connect-src": [
-        "'self'",
-        "https://*.supabase.co",
-        "https://clerk.com",
-        "https://*.clerk.accounts.dev",
-        "https://*.clerk.com",
-        "wss://*.supabase.co",
-        "wss://*.clerk.com",
-        "https://api.stripe.com",
-        "https://checkout.stripe.com",
+        'https://*.supabase.co',
+        'https://clerk.com',
+        'https://*.clerk.accounts.dev',
+        'https://*.clerk.com',
+        'wss://*.supabase.co',
+        'wss://*.clerk.com',
+        'https://api.stripe.com',
+        'https://checkout.stripe.com',
         // Sentry endpoints
-        "https://*.ingest.sentry.io",
-        "https://*.ingest.us.sentry.io",
-        "https://sentry.io",
+        'https://*.ingest.sentry.io',
+        'https://*.ingest.us.sentry.io',
+        'https://sentry.io',
       ],
-      "media-src": ["'self'", "blob:", "data:"],
-      "object-src": ["'none'"],
-      "child-src": ["'none'"],
-      "worker-src": ["'self'", "blob:"],
-      "frame-src": [
+      'media-src': ["'self'", 'blob:', 'data:'],
+      'object-src': ["'none'"],
+      'child-src': ["'none'"],
+      'worker-src': ["'self'", 'blob:'],
+      'frame-src': [
         "'self'",
-        "https://clerk.com",
-        "https://*.clerk.accounts.dev",
-        "https://*.clerk.com",
-        "https://challenges.cloudflare.com",
-        "https://js.stripe.com",
-        "https://checkout.stripe.com",
+        'https://clerk.com',
+        'https://*.clerk.accounts.dev',
+        'https://*.clerk.com',
+        'https://challenges.cloudflare.com',
+        'https://js.stripe.com',
+        'https://checkout.stripe.com',
       ],
-      "frame-ancestors": ["'none'"],
-      "form-action": [
-        "'self'",
-        "https://clerk.com",
-        "https://*.clerk.accounts.dev",
-      ],
-      "base-uri": ["'self'"],
-      "upgrade-insecure-requests": [],
+      'frame-ancestors': ["'none'"],
+      'form-action': ["'self'", 'https://clerk.com', 'https://*.clerk.accounts.dev'],
+      'base-uri': ["'self'"],
+      'upgrade-insecure-requests': [],
     },
-    reportUri: "/api/csp-report",
+    reportUri: '/api/csp-report',
   },
   strictTransportSecurity: {
     enabled: true,
@@ -128,14 +119,14 @@ export const DEFAULT_SECURITY_CONFIG: SecurityHeadersConfig = {
   },
   frameOptions: {
     enabled: true,
-    policy: "DENY",
+    policy: 'DENY',
   },
   contentTypeOptions: {
     enabled: true,
   },
   referrerPolicy: {
     enabled: true,
-    policy: "strict-origin-when-cross-origin",
+    policy: 'strict-origin-when-cross-origin',
   },
   permissionsPolicy: {
     enabled: true,
@@ -145,10 +136,10 @@ export const DEFAULT_SECURITY_CONFIG: SecurityHeadersConfig = {
       geolocation: ["'none'"],
       payment: ["'self'"],
       fullscreen: ["'self'"],
-      "display-capture": ["'none'"],
-      "web-share": ["'self'"],
-      "clipboard-read": ["'self'"],
-      "clipboard-write": ["'self'"],
+      'display-capture': ["'none'"],
+      'web-share': ["'self'"],
+      'clipboard-read': ["'self'"],
+      'clipboard-write': ["'self'"],
     },
   },
 };
@@ -157,18 +148,18 @@ export const DEFAULT_SECURITY_CONFIG: SecurityHeadersConfig = {
  * Generate Content Security Policy header value
  */
 export const generateCSPHeader = (
-  config: SecurityHeadersConfig["contentSecurityPolicy"]
+  config: SecurityHeadersConfig['contentSecurityPolicy']
 ): string => {
-  if (!config.enabled) return "";
+  if (!config.enabled) return '';
 
   const directives = Object.entries(config.directives)
     .map(([directive, sources]) => {
       if (sources.length === 0) {
         return directive;
       }
-      return `${directive} ${sources.join(" ")}`;
+      return `${directive} ${sources.join(' ')}`;
     })
-    .join("; ");
+    .join('; ');
 
   let csp = directives;
 
@@ -183,18 +174,18 @@ export const generateCSPHeader = (
  * Generate Strict Transport Security header value
  */
 export const generateHSTSHeader = (
-  config: SecurityHeadersConfig["strictTransportSecurity"]
+  config: SecurityHeadersConfig['strictTransportSecurity']
 ): string => {
-  if (!config.enabled) return "";
+  if (!config.enabled) return '';
 
   let hsts = `max-age=${config.maxAge}`;
 
   if (config.includeSubDomains) {
-    hsts += "; includeSubDomains";
+    hsts += '; includeSubDomains';
   }
 
   if (config.preload) {
-    hsts += "; preload";
+    hsts += '; preload';
   }
 
   return hsts;
@@ -204,18 +195,18 @@ export const generateHSTSHeader = (
  * Generate Permissions Policy header value
  */
 export const generatePermissionsPolicyHeader = (
-  config: SecurityHeadersConfig["permissionsPolicy"]
+  config: SecurityHeadersConfig['permissionsPolicy']
 ): string => {
-  if (!config.enabled) return "";
+  if (!config.enabled) return '';
 
   return Object.entries(config.directives)
     .map(([directive, allowlist]) => {
       if (allowlist.length === 0) {
         return `${directive}=()`;
       }
-      return `${directive}=(${allowlist.join(" ")})`;
+      return `${directive}=(${allowlist.join(' ')})`;
     })
-    .join(", ");
+    .join(', ');
 };
 
 /**
@@ -231,8 +222,8 @@ export const generateSecurityHeaders = (
     const cspHeader = generateCSPHeader(config.contentSecurityPolicy);
     if (cspHeader) {
       const headerName = config.contentSecurityPolicy.reportOnly
-        ? "Content-Security-Policy-Report-Only"
-        : "Content-Security-Policy";
+        ? 'Content-Security-Policy-Report-Only'
+        : 'Content-Security-Policy';
       headers[headerName] = cspHeader;
     }
   }
@@ -241,50 +232,45 @@ export const generateSecurityHeaders = (
   if (config.strictTransportSecurity.enabled) {
     const hstsHeader = generateHSTSHeader(config.strictTransportSecurity);
     if (hstsHeader) {
-      headers["Strict-Transport-Security"] = hstsHeader;
+      headers['Strict-Transport-Security'] = hstsHeader;
     }
   }
 
   // X-Frame-Options
   if (config.frameOptions.enabled) {
     let frameOptions = config.frameOptions.policy;
-    if (
-      config.frameOptions.policy === "ALLOW-FROM" &&
-      config.frameOptions.allowFrom
-    ) {
+    if (config.frameOptions.policy === 'ALLOW-FROM' && config.frameOptions.allowFrom) {
       frameOptions += ` ${config.frameOptions.allowFrom}`;
     }
-    headers["X-Frame-Options"] = frameOptions;
+    headers['X-Frame-Options'] = frameOptions;
   }
 
   // X-Content-Type-Options
   if (config.contentTypeOptions.enabled) {
-    headers["X-Content-Type-Options"] = "nosniff";
+    headers['X-Content-Type-Options'] = 'nosniff';
   }
 
   // Referrer Policy
   if (config.referrerPolicy.enabled) {
-    headers["Referrer-Policy"] = config.referrerPolicy.policy;
+    headers['Referrer-Policy'] = config.referrerPolicy.policy;
   }
 
   // Permissions Policy
   if (config.permissionsPolicy.enabled) {
-    const permissionsPolicyHeader = generatePermissionsPolicyHeader(
-      config.permissionsPolicy
-    );
+    const permissionsPolicyHeader = generatePermissionsPolicyHeader(config.permissionsPolicy);
     if (permissionsPolicyHeader) {
-      headers["Permissions-Policy"] = permissionsPolicyHeader;
+      headers['Permissions-Policy'] = permissionsPolicyHeader;
     }
   }
 
   // Additional security headers
-  headers["X-XSS-Protection"] = "1; mode=block";
-  headers["X-DNS-Prefetch-Control"] = "off";
-  headers["X-Download-Options"] = "noopen";
-  headers["X-Permitted-Cross-Domain-Policies"] = "none";
-  headers["Cross-Origin-Embedder-Policy"] = "require-corp";
-  headers["Cross-Origin-Opener-Policy"] = "same-origin";
-  headers["Cross-Origin-Resource-Policy"] = "same-origin";
+  headers['X-XSS-Protection'] = '1; mode=block';
+  headers['X-DNS-Prefetch-Control'] = 'off';
+  headers['X-Download-Options'] = 'noopen';
+  headers['X-Permitted-Cross-Domain-Policies'] = 'none';
+  headers['Cross-Origin-Embedder-Policy'] = 'require-corp';
+  headers['Cross-Origin-Opener-Policy'] = 'same-origin';
+  headers['Cross-Origin-Resource-Policy'] = 'same-origin';
 
   return headers;
 };
@@ -293,7 +279,7 @@ export const generateSecurityHeaders = (
  * Validate CSP configuration
  */
 export const validateCSPConfig = (
-  config: SecurityHeadersConfig["contentSecurityPolicy"]
+  config: SecurityHeadersConfig['contentSecurityPolicy']
 ): {
   isValid: boolean;
   errors: string[];
@@ -303,19 +289,17 @@ export const validateCSPConfig = (
   const warnings: string[] = [];
 
   // Check for unsafe directives
-  const unsafeDirectives = ["unsafe-inline", "unsafe-eval"];
+  const unsafeDirectives = ['unsafe-inline', 'unsafe-eval'];
   for (const [directive, sources] of Object.entries(config.directives)) {
     for (const source of sources) {
       if (unsafeDirectives.some((unsafe) => source.includes(unsafe))) {
-        warnings.push(
-          `Directive '${directive}' contains unsafe source: ${source}`
-        );
+        warnings.push(`Directive '${directive}' contains unsafe source: ${source}`);
       }
     }
   }
 
   // Check for missing essential directives
-  const essentialDirectives = ["default-src", "script-src", "style-src"];
+  const essentialDirectives = ['default-src', 'script-src', 'style-src'];
   for (const directive of essentialDirectives) {
     if (!config.directives[directive]) {
       errors.push(`Missing essential directive: ${directive}`);
@@ -324,10 +308,8 @@ export const validateCSPConfig = (
 
   // Check for overly permissive directives
   for (const [directive, sources] of Object.entries(config.directives)) {
-    if (sources.includes("*")) {
-      warnings.push(
-        `Directive '${directive}' uses wildcard (*) which is overly permissive`
-      );
+    if (sources.includes('*')) {
+      warnings.push(`Directive '${directive}' uses wildcard (*) which is overly permissive`);
     }
   }
 
@@ -341,9 +323,7 @@ export const validateCSPConfig = (
 /**
  * Security headers middleware for React Router
  */
-export const createSecurityHeadersMiddleware = (
-  config: Partial<SecurityHeadersConfig> = {}
-) => {
+export const createSecurityHeadersMiddleware = (config: Partial<SecurityHeadersConfig> = {}) => {
   const mergedConfig: SecurityHeadersConfig = {
     ...DEFAULT_SECURITY_CONFIG,
     ...config,
@@ -387,9 +367,9 @@ export const ENVIRONMENT_CONFIGS = {
       reportOnly: false,
       directives: {
         ...DEFAULT_SECURITY_CONFIG.contentSecurityPolicy.directives,
-        "script-src": DEFAULT_SECURITY_CONFIG.contentSecurityPolicy.directives[
-          "script-src"
-        ].filter((src) => src !== "'unsafe-eval'"),
+        'script-src': DEFAULT_SECURITY_CONFIG.contentSecurityPolicy.directives['script-src'].filter(
+          (src) => src !== "'unsafe-eval'"
+        ),
       },
     },
   },
@@ -400,7 +380,6 @@ export const ENVIRONMENT_CONFIGS = {
  */
 export const getEnvironmentSecurityHeaders = (): Record<string, string> => {
   const environment = process.env.NODE_ENV as keyof typeof ENVIRONMENT_CONFIGS;
-  const config =
-    ENVIRONMENT_CONFIGS[environment] || ENVIRONMENT_CONFIGS.production;
+  const config = ENVIRONMENT_CONFIGS[environment] || ENVIRONMENT_CONFIGS.production;
   return generateSecurityHeaders(config as SecurityHeadersConfig);
 };

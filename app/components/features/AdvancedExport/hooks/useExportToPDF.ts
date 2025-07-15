@@ -44,7 +44,12 @@ export const useExportToPDF = (
         const styledHTML = generateStyledHTML({
           ...options,
           htmlContent,
-          themeConfig: { name: '', primaryColor: '', backgroundColor: '', accentColor: '' }, // Will be set in generateStyledHTML
+          themeConfig: {
+            name: '',
+            primaryColor: '',
+            backgroundColor: '',
+            accentColor: '',
+          }, // Will be set in generateStyledHTML
         });
         setExportProgress(EXPORT_PROGRESS_STEPS.GENERATING);
 
@@ -72,7 +77,9 @@ export const useExportToPDF = (
         setExportProgress(EXPORT_PROGRESS_STEPS.COMPLETE);
         onSuccess?.(SUCCESS_MESSAGES.PDF_EXPORTED);
       } catch (error) {
-        console.error('PDF export error:', error);
+        import('@/utils/console').then(({ safeConsole }) => {
+          safeConsole.error('PDF export error:', error);
+        });
         const errorMessage = error instanceof Error ? error.message : ERROR_MESSAGES.EXPORT_FAILED;
         onError?.(errorMessage);
       } finally {

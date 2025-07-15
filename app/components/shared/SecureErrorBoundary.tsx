@@ -97,9 +97,11 @@ export class SecureErrorBoundary extends Component<
 
     // Log to console in development only
     if (process.env.NODE_ENV === 'development') {
-      console.error('🚨 Error Boundary caught an error:', error);
-      console.error('📍 Component Stack:', errorInfo.componentStack);
-      console.error('🆔 Request ID:', requestId);
+      import('@/utils/console').then(({ safeConsole }) => {
+        safeConsole.error('🚨 Error Boundary caught an error:', error);
+        safeConsole.error('📍 Component Stack:', errorInfo.componentStack);
+        safeConsole.error('🆔 Request ID:', requestId);
+      });
     }
   }
 

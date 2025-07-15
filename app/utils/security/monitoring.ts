@@ -143,11 +143,13 @@ export class SecurityMonitor {
 
     // Log to console in development
     if (process.env.NODE_ENV === 'development') {
-      console.warn('Security Event:', {
-        type: event.type,
-        riskLevel: event.riskLevel,
-        details: event.details,
-        timestamp: event.timestamp,
+      import('@/utils/console').then(({ safeConsole }) => {
+        safeConsole.security('Security Event:', {
+          type: event.type,
+          riskLevel: event.riskLevel,
+          details: event.details,
+          timestamp: event.timestamp,
+        });
       });
     }
   }
@@ -180,7 +182,9 @@ export class SecurityMonitor {
 
     // Log to console in development
     if (process.env.NODE_ENV === 'development') {
-      console.log('Audit Log:', auditLog);
+      import('@/utils/console').then(({ safeConsole }) => {
+        safeConsole.log('Audit Log:', auditLog);
+      });
     }
   }
 
@@ -222,7 +226,9 @@ export class SecurityMonitor {
     this.alerts.push(alert);
 
     // Log alert
-    console.error('Security Alert:', alert);
+    import('@/utils/console').then(({ safeConsole }) => {
+      safeConsole.error('Security Alert:', alert);
+    });
 
     // In production, you would send this to your monitoring service
     if (process.env.NODE_ENV === 'production') {
@@ -378,7 +384,9 @@ export class SecurityMonitor {
   private sendToMonitoringService(alert: SecurityAlert): void {
     // In a real implementation, this would send to your monitoring service
     // e.g., Sentry, DataDog, New Relic, etc.
-    console.log('Sending alert to monitoring service:', alert);
+    import('@/utils/console').then(({ safeConsole }) => {
+      safeConsole.log('Sending alert to monitoring service:', alert);
+    });
   }
 
   /**
@@ -495,11 +503,13 @@ export class SecurityMonitor {
     }
 
     if (process.env.NODE_ENV === 'development') {
-      console.log(
-        `Cleaned up ${eventsBefore - this.events.length} events and ${
-          auditBefore - this.auditLogs.length
-        } audit logs`
-      );
+      import('@/utils/console').then(({ safeConsole }) => {
+        safeConsole.log(
+          `Cleaned up ${eventsBefore - this.events.length} events and ${
+            auditBefore - this.auditLogs.length
+          } audit logs`
+        );
+      });
     }
   }
 

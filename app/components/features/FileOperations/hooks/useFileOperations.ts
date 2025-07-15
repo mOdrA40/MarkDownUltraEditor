@@ -90,9 +90,11 @@ export const useFileOperations = ({ markdown, fileName, onLoad }: UseFileOperati
   const handleExportJson = async (): Promise<void> => {
     // Debug logging (development only)
     if (process.env.NODE_ENV === 'development') {
-      console.log('useFileOperations: handleExportJson called');
-      console.log('  markdown length:', markdown.length);
-      console.log('  fileName:', fileName);
+      import('@/utils/console').then(({ safeConsole }) => {
+        safeConsole.log('useFileOperations: handleExportJson called');
+        safeConsole.log('  markdown length:', markdown.length);
+        safeConsole.log('  fileName:', fileName);
+      });
     }
 
     // Small delay to ensure state is updated

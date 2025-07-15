@@ -6,6 +6,7 @@
 import { AlertTriangle, Bug, Copy, RefreshCw } from 'lucide-react';
 import React, { Component, type ErrorInfo, type ReactNode } from 'react';
 import { Button } from '@/components/ui/button';
+import { safeConsole } from '@/utils/console';
 import type { ErrorBoundaryState } from '../../types';
 
 /**
@@ -45,9 +46,7 @@ export class EditorErrorBoundary extends Component<EditorErrorBoundaryProps, Err
     this.props.onError?.(error, errorInfo);
 
     // Log error to console in development
-    if (process.env.NODE_ENV === 'development') {
-      console.error('Editor Error Boundary caught an error:', error, errorInfo);
-    }
+    safeConsole.error('Editor Error Boundary caught an error:', error, errorInfo);
 
     // Report error to monitoring service if enabled
     if (this.props.enableReporting) {
@@ -62,7 +61,7 @@ export class EditorErrorBoundary extends Component<EditorErrorBoundaryProps, Err
     try {
       // Here you would integrate with your error reporting service
       // e.g., Sentry, LogRocket, Bugsnag, etc.
-      console.log('Reporting error to monitoring service:', {
+      safeConsole.log('Reporting error to monitoring service:', {
         error: error.message,
         stack: error.stack,
         componentStack: errorInfo.componentStack,
@@ -71,7 +70,7 @@ export class EditorErrorBoundary extends Component<EditorErrorBoundaryProps, Err
         url: window.location.href,
       });
     } catch (reportingError) {
-      console.error('Failed to report error:', reportingError);
+      safeConsole.error('Failed to report error:', reportingError);
     }
   };
 
@@ -108,7 +107,9 @@ export class EditorErrorBoundary extends Component<EditorErrorBoundaryProps, Err
       await navigator.clipboard.writeText(JSON.stringify(errorDetails, null, 2));
       alert('Error details copied to clipboard');
     } catch (err) {
-      console.error('Failed to copy error details:', err);
+      import('@/utils/console').then(({ safeConsole }) => {
+        safeConsole.error('Failed to copy error details:', err);
+      });
     }
   };
 

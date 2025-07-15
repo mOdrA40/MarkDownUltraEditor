@@ -265,7 +265,9 @@ export const useSecurityErrorHandler = () => {
 
       // Log to console in development
       if (process.env.NODE_ENV === 'development') {
-        console.error('Security-monitored error:', error, errorInfo);
+        import('@/utils/console').then(({ safeConsole }) => {
+          safeConsole.error('Security-monitored error:', error, errorInfo);
+        });
       }
     },
     [logSecurityEvent]

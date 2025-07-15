@@ -44,11 +44,7 @@ export {
   isFocusable as isNavigationFocusable,
 } from '../utils/keyboardNavigationUtils';
 export { handleOutlineItemClick } from '../utils/outlineUtils';
-export {
-  BREAKPOINTS,
-  getDeviceType,
-  MEDIA_QUERIES,
-} from '../utils/responsive';
+export { BREAKPOINTS, getDeviceType, MEDIA_QUERIES } from '../utils/responsive';
 export {
   formatCategoryName,
   formatDifficultyName,
@@ -64,7 +60,6 @@ export {
   isValidTemplate,
   sortTemplates,
 } from '../utils/templateUtils';
-export * from '../utils/testing';
 export * from '../utils/toastUtils';
 export * from '../utils/vimUtils';
 export {

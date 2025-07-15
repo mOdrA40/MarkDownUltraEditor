@@ -4,13 +4,8 @@
  * @version 1.0.0
  */
 
-import { useCallback } from "react";
-import {
-  ErrorCategory,
-  ErrorSeverity,
-  SentryUtils,
-  secureSentry,
-} from "@/utils/sentry";
+import { useCallback } from 'react';
+import { ErrorCategory, ErrorSeverity, SentryUtils, secureSentry } from '@/utils/sentry';
 
 /**
  * Hook for tracking user interaction errors
@@ -21,15 +16,11 @@ export function useErrorTracking() {
    */
   const trackButtonError = useCallback(
     (buttonName: string, error: Error, context?: Record<string, unknown>) => {
-      return SentryUtils.logUserActionError(
-        `button_click_${buttonName}`,
-        error,
-        {
-          buttonName,
-          interactionType: "click",
-          ...context,
-        }
-      );
+      return SentryUtils.logUserActionError(`button_click_${buttonName}`, error, {
+        buttonName,
+        interactionType: 'click',
+        ...context,
+      });
     },
     []
   );
@@ -39,16 +30,11 @@ export function useErrorTracking() {
    */
   const trackFormError = useCallback(
     (formName: string, error: Error, formData?: Record<string, unknown>) => {
-      return secureSentry.logError(
-        error,
-        ErrorCategory.VALIDATION,
-        ErrorSeverity.MEDIUM,
-        {
-          formName,
-          interactionType: "form_submit",
-          formData: formData ? Object.keys(formData) : undefined, // Only log field names, not values
-        }
-      );
+      return secureSentry.logError(error, ErrorCategory.VALIDATION, ErrorSeverity.MEDIUM, {
+        formName,
+        interactionType: 'form_submit',
+        formData: formData ? Object.keys(formData) : undefined, // Only log field names, not values
+      });
     },
     []
   );
@@ -58,22 +44,17 @@ export function useErrorTracking() {
    */
   const trackFileError = useCallback(
     (
-      operation: "upload" | "download" | "delete" | "save" | "load",
+      operation: 'upload' | 'download' | 'delete' | 'save' | 'load',
       error: Error,
       fileName?: string,
       fileSize?: number
     ) => {
-      return secureSentry.logError(
-        error,
-        ErrorCategory.SYSTEM,
-        ErrorSeverity.HIGH,
-        {
-          operation,
-          fileName: fileName ? fileName.substring(0, 100) : undefined, // Limit filename length
-          fileSize,
-          interactionType: "file_operation",
-        }
-      );
+      return secureSentry.logError(error, ErrorCategory.SYSTEM, ErrorSeverity.HIGH, {
+        operation,
+        fileName: fileName ? fileName.substring(0, 100) : undefined, // Limit filename length
+        fileSize,
+        interactionType: 'file_operation',
+      });
     },
     []
   );
@@ -87,7 +68,7 @@ export function useErrorTracking() {
         url: url.substring(0, 200), // Limit URL length
         method,
         statusCode,
-        interactionType: "network_request",
+        interactionType: 'network_request',
       });
     },
     []
@@ -97,15 +78,11 @@ export function useErrorTracking() {
    * Track authentication errors
    */
   const trackAuthError = useCallback(
-    (
-      action: "login" | "logout" | "signup" | "token_refresh",
-      error: Error,
-      userId?: string
-    ) => {
+    (action: 'login' | 'logout' | 'signup' | 'token_refresh', error: Error, userId?: string) => {
       return SentryUtils.logAuthError(error, {
         action,
         userId: userId ? `user_${userId.substring(0, 8)}` : undefined, // Partial user ID for privacy
-        interactionType: "authentication",
+        interactionType: 'authentication',
       });
     },
     []
@@ -114,29 +91,21 @@ export function useErrorTracking() {
   /**
    * Track validation errors
    */
-  const trackValidationError = useCallback(
-    (field: string, message: string, value?: unknown) => {
-      return SentryUtils.logValidationError(message, {
-        field,
-        valueType: typeof value,
-        interactionType: "validation",
-      });
-    },
-    []
-  );
+  const trackValidationError = useCallback((field: string, message: string, value?: unknown) => {
+    return SentryUtils.logValidationError(message, {
+      field,
+      valueType: typeof value,
+      interactionType: 'validation',
+    });
+  }, []);
 
   /**
    * Track performance issues
    */
   const trackPerformanceIssue = useCallback(
-    (
-      metric: string,
-      value: number,
-      threshold: number,
-      context?: Record<string, unknown>
-    ) => {
+    (metric: string, value: number, threshold: number, context?: Record<string, unknown>) => {
       return secureSentry.logPerformanceIssue(metric, value, threshold, {
-        interactionType: "performance",
+        interactionType: 'performance',
         ...context,
       });
     },
@@ -155,12 +124,12 @@ export function useErrorTracking() {
       context?: Record<string, unknown>
     ) => {
       return secureSentry.logError(
-        typeof error === "string" ? new Error(error) : error,
+        typeof error === 'string' ? new Error(error) : error,
         category,
         severity,
         {
           action,
-          interactionType: "custom_action",
+          interactionType: 'custom_action',
           ...context,
         }
       );
@@ -254,16 +223,10 @@ export function useComponentErrorTracking(componentName: string) {
    */
   const trackMountError = useCallback(
     (error: Error) => {
-      return trackCustomAction(
-        "component_mount",
-        error,
-        ErrorCategory.SYSTEM,
-        ErrorSeverity.HIGH,
-        {
-          componentName,
-          lifecycle: "mount",
-        }
-      );
+      return trackCustomAction('component_mount', error, ErrorCategory.SYSTEM, ErrorSeverity.HIGH, {
+        componentName,
+        lifecycle: 'mount',
+      });
     },
     [componentName, trackCustomAction]
   );
@@ -274,13 +237,13 @@ export function useComponentErrorTracking(componentName: string) {
   const trackUpdateError = useCallback(
     (error: Error, props?: Record<string, unknown>) => {
       return trackCustomAction(
-        "component_update",
+        'component_update',
         error,
         ErrorCategory.SYSTEM,
         ErrorSeverity.MEDIUM,
         {
           componentName,
-          lifecycle: "update",
+          lifecycle: 'update',
           propsKeys: props ? Object.keys(props) : undefined,
         }
       );
@@ -294,11 +257,11 @@ export function useComponentErrorTracking(componentName: string) {
   const trackUnmountError = useCallback(
     (error: Error) => {
       return trackCustomAction(
-        "component_unmount",
+        'component_unmount',
         error,
         ErrorCategory.SYSTEM,
         ErrorSeverity.LOW,
-        { componentName, lifecycle: "unmount" }
+        { componentName, lifecycle: 'unmount' }
       );
     },
     [componentName, trackCustomAction]

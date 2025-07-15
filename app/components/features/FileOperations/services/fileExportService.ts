@@ -3,6 +3,7 @@
  * @author Axel Modra
  */
 
+import { safeConsole } from '@/utils/console';
 import type {
   ExportConfig,
   ExportResult,
@@ -102,13 +103,11 @@ export const exportJson = async (
   callbacks: FileOperationCallbacks
 ): Promise<ExportResult> => {
   try {
-    // Debug logging (can be removed in production)
-    if (process.env.NODE_ENV === 'development') {
-      console.log('JSON Export - Config received:');
-      console.log('  fileName:', config.fileName);
-      console.log('  contentLength:', config.content?.length || 0);
-      console.log('  contentPreview:', config.content?.substring(0, 100) || 'No content');
-    }
+    // Debug logging (development only)
+    safeConsole.log('JSON Export - Config received:');
+    safeConsole.log('  fileName:', config.fileName);
+    safeConsole.log('  contentLength:', config.content?.length || 0);
+    safeConsole.log('  contentPreview:', config.content?.substring(0, 100) || 'No content');
 
     // Validate content
     const content = config.content || '';
@@ -128,9 +127,11 @@ export const exportJson = async (
     const lineCount = content.split('\n').length;
 
     // Debug word count calculation (development only)
-    if (process.env.NODE_ENV === 'development') {
-      console.log('Word count calculation:', { wordCount, characterCount, lineCount });
-    }
+    safeConsole.log('Word count calculation:', {
+      wordCount,
+      characterCount,
+      lineCount,
+    });
 
     // Extract basic metadata from markdown content
     const lines = content.split('\n');
@@ -221,7 +222,7 @@ export const exportJson = async (
       fileName: jsonFileName,
     };
   } catch (error) {
-    console.error('JSON export error:', error);
+    safeConsole.error('JSON export error:', error);
     const errorMessage = 'Failed to export JSON file';
     callbacks.onError(errorMessage);
 

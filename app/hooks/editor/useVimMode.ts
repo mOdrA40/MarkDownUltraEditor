@@ -5,6 +5,7 @@
 
 import { useCallback, useEffect, useRef, useState } from 'react';
 import type { UseVimModeOptions, UseVimModeReturn, VimContext, VimMode } from '@/types/vim';
+
 import { applyCursorStyle, isValidVimCommand, parseVimCommand } from '@/utils/vimUtils';
 import { vimCommandRegistry } from './vim/vimCommands';
 

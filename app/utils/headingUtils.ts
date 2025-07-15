@@ -3,6 +3,8 @@
  * Memastikan konsistensi antara TOC, Outline, dan Preview pane
  */
 
+import { safeConsole } from '@/utils/console';
+
 export interface HeadingItem {
   text: string;
   level: number;
@@ -218,14 +220,18 @@ export const scrollToHeadingGlobal = async (
     const isEditorVisible = editorPane && (editorPane as HTMLElement).offsetParent !== null;
     const isPreviewVisible = previewPane && previewPane.offsetParent !== null;
 
-    console.log(`🎯 Scrolling to: "${text}" (line ${lineNumber})`);
-    console.log(`📱 Editor visible: ${isEditorVisible}, Preview visible: ${isPreviewVisible}`);
+    safeConsole.log(`🎯 Scrolling to: "${text}" (line ${lineNumber})`);
+    safeConsole.log(`📱 Editor visible: ${isEditorVisible}, Preview visible: ${isPreviewVisible}`);
 
     // Strategy 1: Both visible - scroll both simultaneously
     if (isEditorVisible && isPreviewVisible) {
       const [editorSuccess, previewSuccess] = await Promise.all([
         scrollToLineInEditor(lineNumber, { behavior, highlight: true }),
-        scrollToHeading(headingId, { offset, behavior, container: previewPane }),
+        scrollToHeading(headingId, {
+          offset,
+          behavior,
+          container: previewPane,
+        }),
       ]);
 
       console.log(`📜 Dual scroll result: Editor=${editorSuccess}, Preview=${previewSuccess}`);
@@ -234,7 +240,10 @@ export const scrollToHeadingGlobal = async (
 
     // Strategy 2: Only editor visible or preferred
     if ((isEditorVisible && !isPreviewVisible) || preferEditor) {
-      const success = await scrollToLineInEditor(lineNumber, { behavior, highlight: true });
+      const success = await scrollToLineInEditor(lineNumber, {
+        behavior,
+        highlight: true,
+      });
       console.log(`📝 Editor scroll result: ${success}`);
       return success;
     }
@@ -525,34 +534,32 @@ export const getActiveHeadingClasses = (isActive: boolean): string => {
  * Debug function untuk memeriksa heading elements
  */
 export const debugHeadings = (): void => {
-  console.group('🔍 Heading Debug Information');
+  safeConsole.group('🔍 Heading Debug Information', () => {
+    const headings = document.querySelectorAll('h1, h2, h3, h4, h5, h6');
+    safeConsole.log(`Found ${headings.length} heading elements:`);
 
-  const headings = document.querySelectorAll('h1, h2, h3, h4, h5, h6');
-  console.log(`Found ${headings.length} heading elements:`);
+    headings.forEach((heading, index) => {
+      const id = heading.id;
+      const text = heading.textContent?.trim();
+      const level = heading.tagName.toLowerCase();
+      const rect = heading.getBoundingClientRect();
 
-  headings.forEach((heading, index) => {
-    const id = heading.id;
-    const text = heading.textContent?.trim();
-    const level = heading.tagName.toLowerCase();
-    const rect = heading.getBoundingClientRect();
-
-    console.log(`${index + 1}. ${level.toUpperCase()}: "${text}"`);
-    console.log(`   ID: ${id || 'NO ID'}`);
-    console.log(`   Position: top=${Math.round(rect.top)}, left=${Math.round(rect.left)}`);
-    console.log(`   Size: ${Math.round(rect.width)}x${Math.round(rect.height)}`);
-    console.log('---');
+      safeConsole.log(`${index + 1}. ${level.toUpperCase()}: "${text}"`);
+      safeConsole.log(`   ID: ${id || 'NO ID'}`);
+      safeConsole.log(`   Position: top=${Math.round(rect.top)}, left=${Math.round(rect.left)}`);
+      safeConsole.log(`   Size: ${Math.round(rect.width)}x${Math.round(rect.height)}`);
+      safeConsole.log('---');
+    });
   });
 
   const previewPane = document.querySelector('[data-preview-pane]');
   if (previewPane) {
     const rect = previewPane.getBoundingClientRect();
-    console.log('📱 Preview Pane Info:');
-    console.log(`   Position: top=${Math.round(rect.top)}, left=${Math.round(rect.left)}`);
-    console.log(`   Size: ${Math.round(rect.width)}x${Math.round(rect.height)}`);
-    console.log(`   Scroll: top=${previewPane.scrollTop}, left=${previewPane.scrollLeft}`);
+    safeConsole.log('📱 Preview Pane Info:');
+    safeConsole.log(`   Position: top=${Math.round(rect.top)}, left=${Math.round(rect.left)}`);
+    safeConsole.log(`   Size: ${Math.round(rect.width)}x${Math.round(rect.height)}`);
+    safeConsole.log(`   Scroll: top=${previewPane.scrollTop}, left=${previewPane.scrollLeft}`);
   }
-
-  console.groupEnd();
 };
 
 /**
@@ -575,34 +582,34 @@ export const detectViewMode = (): 'editor-only' | 'preview-only' | 'split-view' 
  * Test scroll function untuk debugging
  */
 export const testScrollToHeading = async (headingId: string): Promise<void> => {
-  console.log(`🎯 Testing scroll to heading: ${headingId}`);
+  safeConsole.log(`🎯 Testing scroll to heading: ${headingId}`);
 
   const element = document.getElementById(headingId);
   if (!element) {
-    console.error(`❌ Element with ID "${headingId}" not found`);
+    safeConsole.error(`❌ Element with ID "${headingId}" not found`);
     return;
   }
 
-  console.log(`✅ Element found: ${element.tagName} - "${element.textContent?.trim()}"`);
+  safeConsole.log(`✅ Element found: ${element.tagName} - "${element.textContent?.trim()}"`);
 
   const success = await scrollToHeading(headingId, {
     offset: 120,
     behavior: 'smooth',
   });
 
-  console.log(`📜 Scroll result: ${success ? '✅ Success' : '❌ Failed'}`);
+  safeConsole.log(`📜 Scroll result: ${success ? '✅ Success' : '❌ Failed'}`);
 };
 
 /**
  * Test global scroll function untuk debugging
  */
 export const testGlobalScroll = async (headingId: string): Promise<void> => {
-  console.log(`🌍 Testing global scroll to heading: ${headingId}`);
-  console.log(`📱 Current view mode: ${detectViewMode()}`);
+  safeConsole.log(`🌍 Testing global scroll to heading: ${headingId}`);
+  safeConsole.log(`📱 Current view mode: ${detectViewMode()}`);
 
   const headingInfo = parseHeadingIdToInfo(headingId);
   if (headingInfo) {
-    console.log(`📝 Heading info: Line ${headingInfo.lineNumber}, Text: "${headingInfo.text}"`);
+    safeConsole.log(`📝 Heading info: Line ${headingInfo.lineNumber}, Text: "${headingInfo.text}"`);
   }
 
   const success = await scrollToHeadingGlobal(headingId, {
@@ -610,5 +617,5 @@ export const testGlobalScroll = async (headingId: string): Promise<void> => {
     behavior: 'smooth',
   });
 
-  console.log(`🌍 Global scroll result: ${success ? '✅ Success' : '❌ Failed'}`);
+  safeConsole.log(`🌍 Global scroll result: ${success ? '✅ Success' : '❌ Failed'}`);
 };

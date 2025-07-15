@@ -3,6 +3,8 @@
  * Menggabungkan semua utility functions yang duplikat di berbagai file
  */
 
+import { safeConsole } from '@/utils/console';
+
 /**
  * ===== PERFORMANCE UTILITIES =====
  */
@@ -381,10 +383,10 @@ export const logError = (
   };
 
   if (process.env.NODE_ENV === 'development') {
-    console.error(`Error in ${context}:`, logData);
+    safeConsole.error(`Error in ${context}:`, logData);
   } else {
-    // In production, you might want to send to monitoring service
-    console.error('Application error:', logData);
+    
+    safeConsole.error('Application error:', logData);
   }
 };
 

@@ -106,7 +106,9 @@ export const initializeSecurity = (config?: {
     enableHeaders = true,
   } = config || {};
 
-  console.log('🔒 Initializing enterprise security system...');
+  import('@/utils/console').then(({ safeConsole }) => {
+    safeConsole.log('🔒 Initializing enterprise security system...');
+  });
 
   // Log security initialization
   if (enableMonitoring) {

@@ -15,6 +15,7 @@ import {
   validateNumericRange,
   validateRequiredProperties,
 } from '@/utils/common';
+import { safeConsole } from '@/utils/console';
 
 // Re-export types and constants for convenience
 export type { WritingSettings, WritingSettingsValidation };
@@ -159,7 +160,7 @@ export const saveSettingsToStorage = (
     localStorage.setItem(storageKey, serialized);
     return true;
   } catch (error) {
-    console.error('Failed to save writing settings to storage:', error);
+    safeConsole.error('Failed to save writing settings to storage:', error);
     return false;
   }
 };

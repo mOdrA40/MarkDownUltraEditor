@@ -3,6 +3,8 @@
  * @author Axel Modra
  */
 
+import { safeConsole } from '@/utils/console';
+
 /**
  * Memory info interface
  */
@@ -172,9 +174,7 @@ class PerformanceMonitor {
     this.notifyCallbacks();
 
     // Log to console in development
-    if (process.env.NODE_ENV === 'development') {
-      console.log(`Performance: ${key} = ${value.toFixed(2)}ms`);
-    }
+    safeConsole.perf(`${key}`, value);
   }
 
   /**
@@ -185,7 +185,7 @@ class PerformanceMonitor {
       try {
         callback({ ...this.metrics });
       } catch (error) {
-        console.error('Performance callback error:', error);
+        safeConsole.error('Performance callback error:', error);
       }
     });
   }
@@ -339,7 +339,7 @@ export const performanceUtils = {
     const result = await operation();
     const duration = performance.now() - start;
 
-    console.log(`Performance: ${name} took ${duration.toFixed(2)}ms`);
+    safeConsole.perf(`${name}`, duration);
 
     return { result, duration };
   },
@@ -352,7 +352,7 @@ export const performanceUtils = {
     return (message: string, delay = 1000) => {
       clearTimeout(timeout);
       timeout = setTimeout(() => {
-        console.log(`Performance: ${message}`);
+        safeConsole.perf(message);
       }, delay);
     };
   })(),

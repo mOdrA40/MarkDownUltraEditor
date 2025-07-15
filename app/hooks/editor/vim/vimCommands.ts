@@ -4,6 +4,7 @@
  */
 
 import type { VimCommand, VimCommandRegistry, VimMode } from '@/types/vim';
+
 import {
   deleteCharacter,
   deleteCurrentLine,

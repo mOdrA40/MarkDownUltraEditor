@@ -198,12 +198,19 @@ export { supabaseClient as supabase };
  * Utility function to handle Supabase errors
  */
 export const handleSupabaseError = (error: unknown, operation: string): void => {
-  const errorObj = error as { message?: string; details?: string; hint?: string; code?: string };
-  console.error(`Supabase ${operation} error:`, {
-    message: errorObj?.message,
-    details: errorObj?.details,
-    hint: errorObj?.hint,
-    code: errorObj?.code,
+  const errorObj = error as {
+    message?: string;
+    details?: string;
+    hint?: string;
+    code?: string;
+  };
+  import('@/utils/console').then(({ safeConsole }) => {
+    safeConsole.error(`Supabase ${operation} error:`, {
+      message: errorObj?.message,
+      details: errorObj?.details,
+      hint: errorObj?.hint,
+      code: errorObj?.code,
+    });
   });
 };
 

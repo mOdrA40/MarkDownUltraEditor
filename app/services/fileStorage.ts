@@ -17,6 +17,7 @@ import {
   fileDataToDbInsert,
   handleSupabaseError,
 } from '@/lib/supabase';
+import { safeConsole } from '@/utils/console';
 
 // Storage keys for localStorage
 const STORAGE_KEYS = {
@@ -87,7 +88,7 @@ export class HybridFileStorage implements FileStorageService {
     this.userId = userId;
     this.isAuthenticated = !!(supabaseClient && userId);
 
-    console.log('HybridFileStorage initialized:', {
+    safeConsole.log('HybridFileStorage initialized:', {
       isAuthenticated: this.isAuthenticated,
       userId: userId ? 'present' : 'null',
       supabaseClient: supabaseClient ? 'present' : 'null',
@@ -101,7 +102,7 @@ export class HybridFileStorage implements FileStorageService {
     }
 
     try {
-      console.log('Saving file to cloud:', file.title);
+      safeConsole.log('Saving file to cloud:', file.title);
 
       // Validate file size
       if (file.content.length > STORAGE_LIMITS.MAX_FILE_SIZE) {
@@ -128,7 +129,7 @@ export class HybridFileStorage implements FileStorageService {
           throw error;
         }
 
-        console.log('File updated in cloud:', data.title);
+        safeConsole.log('File updated in cloud:', data.title);
         return dbRowToFileData(data);
       }
       const { data, error } = await this.supabaseClient
@@ -142,10 +143,10 @@ export class HybridFileStorage implements FileStorageService {
         throw error;
       }
 
-      console.log('File created in cloud:', data.title);
+      safeConsole.log('File created in cloud:', data.title);
       return dbRowToFileData(data);
     } catch (error) {
-      console.error('Error saving file to cloud:', error);
+      safeConsole.error('Error saving file to cloud:', error);
       throw error;
     }
   }
@@ -156,7 +157,7 @@ export class HybridFileStorage implements FileStorageService {
     }
 
     try {
-      console.log('Loading file from cloud:', fileId);
+      safeConsole.log('Loading file from cloud:', fileId);
 
       const { data, error } = await this.supabaseClient
         .from('user_files')
@@ -168,17 +169,17 @@ export class HybridFileStorage implements FileStorageService {
 
       if (error) {
         if (error.code === 'PGRST116') {
-          console.log('File not found in cloud:', fileId);
+          safeConsole.log('File not found in cloud:', fileId);
           return null;
         }
         handleSupabaseError(error, 'load file');
         throw error;
       }
 
-      console.log('File loaded from cloud:', data.title);
+      safeConsole.log('File loaded from cloud:', data.title);
       return dbRowToFileData(data);
     } catch (error) {
-      console.error('Error loading file from cloud:', error);
+      safeConsole.error('Error loading file from cloud:', error);
       throw error;
     }
   }
@@ -189,7 +190,7 @@ export class HybridFileStorage implements FileStorageService {
     }
 
     try {
-      console.log('Listing files from cloud');
+      safeConsole.log('Listing files from cloud');
 
       const { data, error } = await this.supabaseClient
         .from('user_files')
@@ -203,10 +204,10 @@ export class HybridFileStorage implements FileStorageService {
         throw error;
       }
 
-      console.log(`Loaded ${data.length} files from cloud`);
+      safeConsole.log(`Loaded ${data.length} files from cloud`);
       return data.map(dbRowToFileData);
     } catch (error) {
-      console.error('Error listing files from cloud:', error);
+      safeConsole.error('Error listing files from cloud:', error);
       throw error;
     }
   }
@@ -217,7 +218,7 @@ export class HybridFileStorage implements FileStorageService {
     }
 
     try {
-      console.log('Deleting file from cloud:', fileId);
+      safeConsole.log('Deleting file from cloud:', fileId);
 
       // Soft delete
       const { error } = await this.supabaseClient
@@ -234,9 +235,9 @@ export class HybridFileStorage implements FileStorageService {
         throw error;
       }
 
-      console.log('File deleted from cloud:', fileId);
+      safeConsole.log('File deleted from cloud:', fileId);
     } catch (error) {
-      console.error('Error deleting file from cloud:', error);
+      safeConsole.error('Error deleting file from cloud:', error);
       throw error;
     }
   }
@@ -244,7 +245,7 @@ export class HybridFileStorage implements FileStorageService {
   // Local operations
   saveToLocal(file: FileData): void {
     try {
-      console.log('Saving file to local storage:', file.title);
+      safeConsole.log('Saving file to local storage:', file.title);
 
       // Get current files list
       const filesList = this.listLocalFiles();
@@ -268,16 +269,16 @@ export class HybridFileStorage implements FileStorageService {
       updatedList.unshift(fileWithId);
       setStorageJSON(STORAGE_KEYS.FILES_LIST, updatedList);
 
-      console.log('File saved to local storage:', file.title);
+      safeConsole.log('File saved to local storage:', file.title);
     } catch (error) {
-      console.error('Error saving file to local storage:', error);
+      safeConsole.error('Error saving file to local storage:', error);
       throw error;
     }
   }
 
   loadFromLocal(fileName: string): FileData | null {
     try {
-      console.log('Loading file from local storage:', fileName);
+      safeConsole.log('Loading file from local storage:', fileName);
 
       // Try to load by ID first
       const fileKey = `${STORAGE_KEYS.FILE_PREFIX}${fileName}`;
@@ -290,14 +291,14 @@ export class HybridFileStorage implements FileStorageService {
       }
 
       if (fileData) {
-        console.log('File loaded from local storage:', fileData.title);
+        safeConsole.log('File loaded from local storage:', fileData.title);
       } else {
-        console.log('File not found in local storage:', fileName);
+        safeConsole.log('File not found in local storage:', fileName);
       }
 
       return fileData;
     } catch (error) {
-      console.error('Error loading file from local storage:', error);
+      safeConsole.error('Error loading file from local storage:', error);
       return null;
     }
   }
@@ -306,20 +307,20 @@ export class HybridFileStorage implements FileStorageService {
     try {
       const filesList = getStorageJSON<FileData[]>(STORAGE_KEYS.FILES_LIST, []);
       if (!filesList) {
-        console.log('No files found in local storage');
+        safeConsole.log('No files found in local storage');
         return [];
       }
-      console.log(`Loaded ${filesList.length} files from local storage`);
+      safeConsole.log(`Loaded ${filesList.length} files from local storage`);
       return filesList;
     } catch (error) {
-      console.error('Error listing files from local storage:', error);
+      safeConsole.error('Error listing files from local storage:', error);
       return [];
     }
   }
 
   deleteFromLocal(fileName: string): void {
     try {
-      console.log('Deleting file from local storage:', fileName);
+      safeConsole.log('Deleting file from local storage:', fileName);
 
       // Remove from files list
       const filesList = this.listLocalFiles();
@@ -333,9 +334,9 @@ export class HybridFileStorage implements FileStorageService {
         removeStorageItem(fileKey);
       }
 
-      console.log('File deleted from local storage:', fileName);
+      safeConsole.log('File deleted from local storage:', fileName);
     } catch (error) {
-      console.error('Error deleting file from local storage:', error);
+      safeConsole.error('Error deleting file from local storage:', error);
       throw error;
     }
   }
@@ -389,7 +390,7 @@ export class HybridFileStorage implements FileStorageService {
 
   async exportAllFiles(): Promise<Blob> {
     try {
-      console.log('Exporting all files');
+      safeConsole.log('Exporting all files');
 
       const files = await this.list();
       const exportData = {
@@ -407,10 +408,10 @@ export class HybridFileStorage implements FileStorageService {
       const jsonString = JSON.stringify(exportData, null, 2);
       const blob = new Blob([jsonString], { type: 'application/json' });
 
-      console.log(`Exported ${files.length} files`);
+      safeConsole.log(`Exported ${files.length} files`);
       return blob;
     } catch (error) {
-      console.error('Error exporting files:', error);
+      safeConsole.error('Error exporting files:', error);
       throw error;
     }
   }

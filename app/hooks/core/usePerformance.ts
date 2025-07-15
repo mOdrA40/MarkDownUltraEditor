@@ -4,6 +4,7 @@
  */
 
 import { useCallback, useEffect, useRef, useState } from 'react';
+import { safeConsole } from '@/utils/console';
 import {
   getPerformanceMonitor,
   type PerformanceMetrics,
@@ -126,7 +127,7 @@ export const useAsyncPerformance = () => {
       const { result, duration } = await measureAsync(operation, name);
 
       if (logResult && process.env.NODE_ENV === 'development') {
-        console.log(`${name} completed in ${duration.toFixed(2)}ms`);
+        safeConsole.log(`${name} completed in ${duration.toFixed(2)}ms`);
       }
 
       return result;
@@ -227,27 +228,27 @@ export const usePerformanceDebug = (enabled = process.env.NODE_ENV === 'developm
     if (typeof window === 'undefined' || !enabled) return;
 
     const logPerformanceInfo = () => {
-      console.group('🚀 Performance Debug Info');
-      console.log('Core Web Vitals:', {
-        FCP: metrics.fcp ? `${metrics.fcp.toFixed(2)}ms` : 'N/A',
-        LCP: metrics.lcp ? `${metrics.lcp.toFixed(2)}ms` : 'N/A',
-        FID: metrics.fid ? `${metrics.fid.toFixed(2)}ms` : 'N/A',
-        CLS: metrics.cls ? metrics.cls.toFixed(4) : 'N/A',
-      });
-      console.log('Performance Score:', score);
-      if (memoryUsage) {
-        const memory = memoryUsage as {
-          usedJSHeapSize: number;
-          totalJSHeapSize: number;
-          jsHeapSizeLimit: number;
-        };
-        console.log('Memory Usage:', {
-          used: `${(memory.usedJSHeapSize / 1024 / 1024).toFixed(2)} MB`,
-          total: `${(memory.totalJSHeapSize / 1024 / 1024).toFixed(2)} MB`,
-          limit: `${(memory.jsHeapSizeLimit / 1024 / 1024).toFixed(2)} MB`,
+      safeConsole.group('🚀 Performance Debug Info', () => {
+        safeConsole.log('Core Web Vitals:', {
+          FCP: metrics.fcp ? `${metrics.fcp.toFixed(2)}ms` : 'N/A',
+          LCP: metrics.lcp ? `${metrics.lcp.toFixed(2)}ms` : 'N/A',
+          FID: metrics.fid ? `${metrics.fid.toFixed(2)}ms` : 'N/A',
+          CLS: metrics.cls ? metrics.cls.toFixed(4) : 'N/A',
         });
-      }
-      console.groupEnd();
+        safeConsole.log('Performance Score:', score);
+        if (memoryUsage) {
+          const memory = memoryUsage as {
+            usedJSHeapSize: number;
+            totalJSHeapSize: number;
+            jsHeapSizeLimit: number;
+          };
+          safeConsole.log('Memory Usage:', {
+            used: `${(memory.usedJSHeapSize / 1024 / 1024).toFixed(2)} MB`,
+            total: `${(memory.totalJSHeapSize / 1024 / 1024).toFixed(2)} MB`,
+            limit: `${(memory.jsHeapSizeLimit / 1024 / 1024).toFixed(2)} MB`,
+          });
+        }
+      });
     };
 
     // Log every 10 seconds

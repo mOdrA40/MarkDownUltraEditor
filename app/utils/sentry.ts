@@ -4,8 +4,8 @@
  * @version 1.0.0
  */
 
-import * as Sentry from "@sentry/react";
-import { generateSecureToken } from "./security/core";
+import * as Sentry from '@sentry/react';
+import { generateSecureToken } from './security/core';
 
 /**
  * Sentry configuration interface
@@ -39,22 +39,22 @@ interface RequestContext {
  * Error severity levels
  */
 export enum ErrorSeverity {
-  LOW = "info",
-  MEDIUM = "warning",
-  HIGH = "error",
-  CRITICAL = "fatal",
+  LOW = 'info',
+  MEDIUM = 'warning',
+  HIGH = 'error',
+  CRITICAL = 'fatal',
 }
 
 /**
  * Error categories for better organization
  */
 export enum ErrorCategory {
-  SECURITY = "security",
-  PERFORMANCE = "performance",
-  USER_ACTION = "user_action",
-  SYSTEM = "system",
-  NETWORK = "network",
-  VALIDATION = "validation",
+  SECURITY = 'security',
+  PERFORMANCE = 'performance',
+  USER_ACTION = 'user_action',
+  SYSTEM = 'system',
+  NETWORK = 'network',
+  VALIDATION = 'validation',
 }
 
 /**
@@ -67,19 +67,17 @@ export class SecureSentryIntegration {
 
   constructor(config: Partial<SentryConfig>) {
     // Use import.meta.env for Vite environment variables
-    const dsn =
-      import.meta.env?.VITE_SENTRY_DSN || process.env.VITE_SENTRY_DSN || "";
-    const environment =
-      import.meta.env?.MODE || process.env.NODE_ENV || "development";
+    const dsn = import.meta.env?.VITE_SENTRY_DSN || process.env.VITE_SENTRY_DSN || '';
+    const environment = import.meta.env?.MODE || process.env.NODE_ENV || 'development';
 
     this.config = {
       dsn,
       environment,
-      tracesSampleRate: environment === "production" ? 0.05 : 1.0, // Reduced for production
-      enableInDevelopment: environment === "development",
+      tracesSampleRate: environment === 'production' ? 0.05 : 1.0, // Reduced for production
+      enableInDevelopment: environment === 'development',
       enableRequestId: true,
-      enableUserContext: environment === "production", // Only in production
-      enablePerformanceMonitoring: environment === "production", // Only in production
+      enableUserContext: environment === 'production', // Only in production
+      enablePerformanceMonitoring: environment === 'production', // Only in production
       ...config,
     };
   }
@@ -92,16 +90,13 @@ export class SecureSentryIntegration {
 
     // Skip initialization if DSN is not provided
     if (!this.config.dsn) {
-      console.warn("🚨 Sentry DSN not provided - Error tracking disabled");
+      console.warn('🚨 Sentry DSN not provided - Error tracking disabled');
       return;
     }
 
     // Skip in development unless explicitly enabled
-    if (
-      this.config.environment === "development" &&
-      !this.config.enableInDevelopment
-    ) {
-      console.info("📊 Sentry disabled in development mode");
+    if (this.config.environment === 'development' && !this.config.enableInDevelopment) {
+      console.info('📊 Sentry disabled in development mode');
       return;
     }
 
@@ -117,7 +112,7 @@ export class SecureSentryIntegration {
       ...(this.config.enablePerformanceMonitoring && {
         integrations: [
           Sentry.browserTracingIntegration(),
-          ...(this.config.environment === "production"
+          ...(this.config.environment === 'production'
             ? [
                 Sentry.replayIntegration({
                   maskAllText: true,
@@ -131,20 +126,20 @@ export class SecureSentryIntegration {
       // Privacy settings
       initialScope: {
         tags: {
-          component: "MarkDownUltraRemix",
-          version: "1.0.0",
+          component: 'MarkDownUltraRemix',
+          version: '1.0.0',
         },
       },
 
       // Production optimizations
-      ...(this.config.environment === "production" && {
+      ...(this.config.environment === 'production' && {
         debug: false,
         maxBreadcrumbs: 20, // Reduced from default 100
         attachStacktrace: false, // Reduce payload size
       }),
 
       // Development settings
-      ...(this.config.environment === "development" && {
+      ...(this.config.environment === 'development' && {
         debug: true,
         maxBreadcrumbs: 100,
         attachStacktrace: true,
@@ -152,7 +147,7 @@ export class SecureSentryIntegration {
     });
 
     this.isInitialized = true;
-    console.info("📊 Sentry initialized successfully");
+    console.info('📊 Sentry initialized successfully');
   }
 
   /**
@@ -184,9 +179,7 @@ export class SecureSentryIntegration {
     if (event.exception?.values) {
       event.exception.values = event.exception.values.map((exception) => ({
         ...exception,
-        value: exception.value
-          ? this.sanitizeMessage(exception.value)
-          : exception.value,
+        value: exception.value ? this.sanitizeMessage(exception.value) : exception.value,
       }));
     }
 
@@ -224,7 +217,7 @@ export class SecureSentryIntegration {
 
     let sanitized = message;
     sensitivePatterns.forEach((pattern) => {
-      sanitized = sanitized.replace(pattern, "[REDACTED]");
+      sanitized = sanitized.replace(pattern, '[REDACTED]');
     });
 
     return sanitized;
@@ -233,10 +226,7 @@ export class SecureSentryIntegration {
   /**
    * Generate and set request context
    */
-  public setRequestContext(
-    route: string,
-    additionalContext?: Record<string, unknown>
-  ): string {
+  public setRequestContext(route: string, additionalContext?: Record<string, unknown>): string {
     const requestId = generateSecureToken(16);
     const sessionId = this.getOrCreateSessionId();
 
@@ -245,12 +235,11 @@ export class SecureSentryIntegration {
       sessionId,
       timestamp: new Date().toISOString(),
       route,
-      userAgent:
-        typeof navigator !== "undefined" ? navigator.userAgent : "unknown",
+      userAgent: typeof navigator !== 'undefined' ? navigator.userAgent : 'unknown',
     };
 
     // Set Sentry context
-    Sentry.setContext("request", {
+    Sentry.setContext('request', {
       ...this.currentRequestContext,
       ...additionalContext,
     });
@@ -262,12 +251,12 @@ export class SecureSentryIntegration {
    * Get or create session ID
    */
   private getOrCreateSessionId(): string {
-    if (typeof window === "undefined") return "server";
+    if (typeof window === 'undefined') return 'server';
 
-    let sessionId = sessionStorage.getItem("sentry_session_id");
+    let sessionId = sessionStorage.getItem('sentry_session_id');
     if (!sessionId) {
       sessionId = generateSecureToken(12);
-      sessionStorage.setItem("sentry_session_id", sessionId);
+      sessionStorage.setItem('sentry_session_id', sessionId);
     }
     return sessionId;
   }
@@ -283,12 +272,10 @@ export class SecureSentryIntegration {
   ): string | null {
     if (!this.isInitialized) return null;
 
-    const requestId =
-      this.currentRequestContext?.requestId ||
-      this.setRequestContext("unknown");
+    const requestId = this.currentRequestContext?.requestId || this.setRequestContext('unknown');
 
     Sentry.withScope((scope) => {
-      scope.setTag("category", category);
+      scope.setTag('category', category);
       scope.setLevel(severity as Sentry.SeverityLevel);
 
       if (context) {
@@ -297,7 +284,7 @@ export class SecureSentryIntegration {
         });
       }
 
-      if (typeof error === "string") {
+      if (typeof error === 'string') {
         Sentry.captureMessage(error);
       } else {
         Sentry.captureException(error);
@@ -315,12 +302,7 @@ export class SecureSentryIntegration {
     details: Record<string, unknown>,
     severity: ErrorSeverity = ErrorSeverity.HIGH
   ): string | null {
-    return this.logError(
-      `Security Event: ${event}`,
-      ErrorCategory.SECURITY,
-      severity,
-      details
-    );
+    return this.logError(`Security Event: ${event}`, ErrorCategory.SECURITY, severity, details);
   }
 
   /**
@@ -397,7 +379,7 @@ export class SecureSentryIntegration {
   } {
     return {
       initialized: this.isInitialized,
-      dsn: this.config.dsn ? "[CONFIGURED]" : "[NOT_CONFIGURED]",
+      dsn: this.config.dsn ? '[CONFIGURED]' : '[NOT_CONFIGURED]',
       environment: this.config.environment,
       currentRequestId: this.getCurrentRequestId(),
     };
@@ -434,55 +416,31 @@ export const SentryUtils = {
    * Log authentication error
    */
   logAuthError: (error: Error, context?: Record<string, unknown>) => {
-    return secureSentry.logError(
-      error,
-      ErrorCategory.SECURITY,
-      ErrorSeverity.HIGH,
-      context
-    );
+    return secureSentry.logError(error, ErrorCategory.SECURITY, ErrorSeverity.HIGH, context);
   },
 
   /**
    * Log validation error
    */
   logValidationError: (message: string, context?: Record<string, unknown>) => {
-    return secureSentry.logError(
-      message,
-      ErrorCategory.VALIDATION,
-      ErrorSeverity.MEDIUM,
-      context
-    );
+    return secureSentry.logError(message, ErrorCategory.VALIDATION, ErrorSeverity.MEDIUM, context);
   },
 
   /**
    * Log network error
    */
   logNetworkError: (error: Error, context?: Record<string, unknown>) => {
-    return secureSentry.logError(
-      error,
-      ErrorCategory.NETWORK,
-      ErrorSeverity.MEDIUM,
-      context
-    );
+    return secureSentry.logError(error, ErrorCategory.NETWORK, ErrorSeverity.MEDIUM, context);
   },
 
   /**
    * Log user action error
    */
-  logUserActionError: (
-    action: string,
-    error: Error,
-    context?: Record<string, unknown>
-  ) => {
-    return secureSentry.logError(
-      error,
-      ErrorCategory.USER_ACTION,
-      ErrorSeverity.LOW,
-      {
-        action,
-        ...context,
-      }
-    );
+  logUserActionError: (action: string, error: Error, context?: Record<string, unknown>) => {
+    return secureSentry.logError(error, ErrorCategory.USER_ACTION, ErrorSeverity.LOW, {
+      action,
+      ...context,
+    });
   },
 };
 

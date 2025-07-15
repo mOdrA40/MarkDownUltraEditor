@@ -11,6 +11,7 @@ import type {
   UseToastOptions,
   UseToastReturn,
 } from '@/types/toast';
+import { safeConsole } from '@/utils/console';
 import {
   clearAllToastTimeouts,
   generateToastId,
@@ -35,7 +36,7 @@ function dispatch(action: Parameters<typeof toastReducer>[1]) {
       listener(memoryState);
     });
   } catch (error) {
-    console.error('Toast dispatch error:', error);
+    safeConsole.error('Toast dispatch error:', error);
   }
 }
 

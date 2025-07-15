@@ -42,6 +42,7 @@ import { useFileStorage } from '@/hooks/files';
 import { useResponsiveDetection } from '@/hooks/ui/useResponsive';
 import type { FileData } from '@/lib/supabase';
 import { formatBytes, formatRelativeDate } from '@/utils/common';
+import { safeConsole } from '@/utils/console';
 import { FilesTable } from './FilesTable';
 import { FilesTableToolbar } from './FilesTableToolbar';
 import { VirtualizedFileList } from './VirtualizedFileList';
@@ -128,7 +129,7 @@ export const FilesManager: React.FC = () => {
       try {
         await deleteFile(file.id || file.title);
       } catch (error) {
-        console.error('Error deleting file:', error);
+        safeConsole.error('Error deleting file:', error);
       }
     }
   };
@@ -164,7 +165,7 @@ export const FilesManager: React.FC = () => {
     try {
       await exportAllFiles();
     } catch (error) {
-      console.error('Error exporting files:', error);
+      safeConsole.error('Error exporting files:', error);
     }
   };
 

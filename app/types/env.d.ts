@@ -10,7 +10,7 @@ declare namespace NodeJS {
     SENTRY_AUTH_TOKEN: string;
     SENTRY_ORG: string;
     SENTRY_PROJECT: string;
-    NODE_ENV: "development" | "production" | "test";
+    NODE_ENV: 'development' | 'production' | 'test';
   }
 }
 
