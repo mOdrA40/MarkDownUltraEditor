@@ -5,7 +5,8 @@
  */
 
 import { useAuth } from '@clerk/react-router';
-import { useCallback, useEffect, useMemo } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
+import { getSecurityIPInfo, type IPInfo } from '@/utils/ipDetection';
 import {
   getSecurityPreset,
   initializeSecurity,
@@ -53,6 +54,18 @@ export const useSecurityContext = (): SecurityContext & {
   checkSuspiciousActivity: (input: string) => boolean;
 } => {
   const { isSignedIn, userId, sessionId } = useAuth();
+  const [ipInfo, setIpInfo] = useState<IPInfo>({ ip: 'unknown' });
+
+  // Get IP information on mount
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      getSecurityIPInfo()
+        .then(setIpInfo)
+        .catch(() => {
+          setIpInfo({ ip: 'unknown' });
+        });
+    }
+  }, []);
 
   // Create security context
   const securityContext = useMemo((): SecurityContext => {
@@ -64,11 +77,11 @@ export const useSecurityContext = (): SecurityContext & {
       lastActivity: new Date(),
       isAuthenticated: isSignedIn || false,
       isSuspicious: false,
-      // These would typically come from request headers in a real app
-      ipAddress: typeof window !== 'undefined' ? 'client' : 'unknown',
+      // Use detected IP information
+      ipAddress: ipInfo.ip,
       userAgent: typeof window !== 'undefined' ? navigator.userAgent : 'unknown',
     };
-  }, [isSignedIn, userId, sessionId]);
+  }, [isSignedIn, userId, sessionId, ipInfo.ip]);
 
   // Security event logging function
   const logSecurityEvent = useCallback(

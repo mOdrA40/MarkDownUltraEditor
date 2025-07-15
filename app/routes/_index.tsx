@@ -2,7 +2,6 @@ import { QueryClientProvider } from '@tanstack/react-query';
 import type { LoaderFunctionArgs, MetaFunction } from 'react-router';
 import { MarkdownEditor } from '@/components/editor/MarkdownEditor';
 import SecureErrorBoundary from '@/components/shared/SecureErrorBoundary';
-import { UpdateNotification } from '@/components/shared/UpdateNotification';
 import { Toaster as Sonner } from '@/components/ui/sonner';
 import { Toaster } from '@/components/ui/toaster';
 import { TooltipProvider } from '@/components/ui/tooltip';
@@ -43,7 +42,6 @@ export const meta: MetaFunction = () => {
   ];
 };
 
-
 export async function loader(args: LoaderFunctionArgs) {
   // Apply minimal security middleware for public route (guest access allowed)
   const security = await securityMiddleware.public(args);
@@ -59,7 +57,6 @@ export default function Index() {
           <Sonner />
           <div className="min-h-screen w-full bg-gradient-to-br from-slate-50 to-blue-50">
             <MarkdownEditor />
-            <UpdateNotification />
           </div>
         </TooltipProvider>
       </QueryClientProvider>

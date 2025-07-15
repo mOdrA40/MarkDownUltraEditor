@@ -120,17 +120,8 @@ export const EditorHeader: React.FC<EditorHeaderProps> = ({
   const { isMobile, isTablet, isSmallTablet } = responsive;
   const [isFullscreen, setIsFullscreen] = React.useState(false);
 
-  const [isDesktop, setIsDesktop] = React.useState(false);
-
-  React.useEffect(() => {
-    const checkDesktop = () => {
-      setIsDesktop(window.innerWidth >= 1200);
-    };
-
-    checkDesktop();
-    window.addEventListener('resize', checkDesktop);
-    return () => window.removeEventListener('resize', checkDesktop);
-  }, []);
+  // Compute desktop state from responsive props to avoid race condition
+  const isDesktop = !isMobile && !isTablet && !isSmallTablet;
 
   React.useEffect(() => {
     const handleFullscreenChange = () => {

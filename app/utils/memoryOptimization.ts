@@ -187,12 +187,11 @@ export function useMemoryMonitor(threshold = 80) {
 
       if (memoryInfo && memoryInfo.percentage > threshold) {
         // Report high memory usage to Sentry
-        import('@/utils/sentry').then(({ secureSentry }) => {
-          // biome-ignore lint/suspicious/noExplicitAny: Sentry types need proper enum import
+        import('@/utils/sentry').then(({ secureSentry, ErrorCategory, ErrorSeverity }) => {
           secureSentry.logError(
             `High memory usage detected: ${memoryInfo.percentage.toFixed(2)}%`,
-            'PERFORMANCE' as any,
-            'MEDIUM' as any,
+            ErrorCategory.PERFORMANCE,
+            ErrorSeverity.MEDIUM,
             memoryInfo
           );
         });

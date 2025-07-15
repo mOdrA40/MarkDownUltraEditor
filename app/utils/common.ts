@@ -385,7 +385,6 @@ export const logError = (
   if (process.env.NODE_ENV === 'development') {
     safeConsole.error(`Error in ${context}:`, logData);
   } else {
-    
     safeConsole.error('Application error:', logData);
   }
 };

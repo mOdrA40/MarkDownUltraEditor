@@ -141,17 +141,18 @@ export class SecurityMonitor {
     // Check for alert conditions
     this.checkAlertConditions(event);
 
-    // Log to console in development
-    if (process.env.NODE_ENV === 'development') {
-      import('@/utils/console').then(({ safeConsole }) => {
-        safeConsole.security('Security Event:', {
-          type: event.type,
-          riskLevel: event.riskLevel,
-          details: event.details,
-          timestamp: event.timestamp,
-        });
-      });
-    }
+    // Security logging disabled for production-ready deployment
+    // Log to console in development - DISABLED
+    // if (process.env.NODE_ENV === 'development') {
+    //   import('@/utils/console').then(({ safeConsole }) => {
+    //     safeConsole.security('Security Event:', {
+    //       type: event.type,
+    //       riskLevel: event.riskLevel,
+    //       details: event.details,
+    //       timestamp: event.timestamp,
+    //     });
+    //   });
+    // }
   }
 
   /**
@@ -180,12 +181,12 @@ export class SecurityMonitor {
 
     this.auditLogs.push(auditLog);
 
-    // Log to console in development
-    if (process.env.NODE_ENV === 'development') {
-      import('@/utils/console').then(({ safeConsole }) => {
-        safeConsole.log('Audit Log:', auditLog);
-      });
-    }
+    // Log to console in development - DISABLED for production
+    // if (process.env.NODE_ENV === "development") {
+    //   import("@/utils/console").then(({ safeConsole }) => {
+    //     safeConsole.log("Audit Log:", auditLog);
+    //   });
+    // }
   }
 
   /**
@@ -225,10 +226,10 @@ export class SecurityMonitor {
 
     this.alerts.push(alert);
 
-    // Log alert
-    import('@/utils/console').then(({ safeConsole }) => {
-      safeConsole.error('Security Alert:', alert);
-    });
+    // Log alert - DISABLED for production
+    // import("@/utils/console").then(({ safeConsole }) => {
+    //   safeConsole.error("Security Alert:", alert);
+    // });
 
     // In production, you would send this to your monitoring service
     if (process.env.NODE_ENV === 'production') {
@@ -381,12 +382,13 @@ export class SecurityMonitor {
   /**
    * Send alert to monitoring service
    */
-  private sendToMonitoringService(alert: SecurityAlert): void {
+  private sendToMonitoringService(_alert: SecurityAlert): void {
     // In a real implementation, this would send to your monitoring service
     // e.g., Sentry, DataDog, New Relic, etc.
-    import('@/utils/console').then(({ safeConsole }) => {
-      safeConsole.log('Sending alert to monitoring service:', alert);
-    });
+    // Console logging disabled for production
+    // import("@/utils/console").then(({ safeConsole }) => {
+    //   safeConsole.log("Sending alert to monitoring service:", alert);
+    // });
   }
 
   /**

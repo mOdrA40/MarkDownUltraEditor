@@ -51,11 +51,11 @@ export function useRenderPerformance(componentName: string): PerformanceMetrics 
     // In production, only track critical performance issues
     if (process.env.NODE_ENV === 'production' && renderTime > 100) {
       // Report to Sentry only for very slow renders
-      import('@/utils/sentry').then(({ secureSentry }) => {
+      import('@/utils/sentry').then(({ secureSentry, ErrorCategory, ErrorSeverity }) => {
         secureSentry.logError(
           `Critical slow render: ${componentName} took ${renderTime.toFixed(2)}ms`,
-          'PERFORMANCE' as any,
-          'HIGH' as any,
+          ErrorCategory.PERFORMANCE,
+          ErrorSeverity.HIGH,
           { componentName, renderTime }
         );
       });
@@ -330,8 +330,9 @@ export function useCoreWebVitals() {
       // FCP
       const fcpObserver = new PerformanceObserver((list) => {
         const entries = list.getEntries();
-        // biome-ignore lint/suspicious/noExplicitAny: PerformanceEntry types are not fully typed
-        const fcpEntry = entries.find((entry) => entry.name === 'first-contentful-paint') as any;
+        const fcpEntry = entries.find((entry) => entry.name === 'first-contentful-paint') as
+          | PerformanceEntry
+          | undefined;
         if (fcpEntry) {
           vitals.current.FCP = fcpEntry.startTime;
         }

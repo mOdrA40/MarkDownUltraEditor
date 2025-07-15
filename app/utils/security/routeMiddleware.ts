@@ -7,6 +7,7 @@
 import { getAuth } from '@clerk/react-router/ssr.server';
 import type { LoaderFunctionArgs } from 'react-router';
 import { redirect } from 'react-router';
+import { extractIPFromHeaders } from '@/utils/ipDetection';
 import { createSecurityEvent } from './core';
 import { securityMonitor } from './monitoring';
 import { rateLimiters } from './rateLimiter';
@@ -45,12 +46,12 @@ export function createSecurityMiddleware(options: SecurityMiddlewareOptions = {}
     const { request } = args;
     const url = new URL(request.url);
 
-    // Create security request object
+    // Create security request object with improved IP detection
     const securityRequest: SecurityRequest = {
       method: request.method,
       url: url.pathname,
       headers: Object.fromEntries(request.headers.entries()),
-      ip: request.headers.get('x-forwarded-for') || request.headers.get('x-real-ip') || 'unknown',
+      ip: extractIPFromHeaders(request.headers),
       userAgent: request.headers.get('user-agent') || 'unknown',
       timestamp: new Date(),
     };

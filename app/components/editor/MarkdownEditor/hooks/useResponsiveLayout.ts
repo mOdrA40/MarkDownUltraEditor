@@ -19,18 +19,31 @@ import { BREAKPOINTS } from '../utils/constants';
  * Handles device detection, breakpoint management, and layout configuration
  */
 export const useResponsiveLayout = (): UseResponsiveLayoutReturn => {
-  // Responsive state
+  // Get initial dimensions safely
+  const getInitialDimensions = () => {
+    if (typeof window === 'undefined') return { width: 1200, height: 800 }; // Default desktop size for SSR
+    return { width: window.innerWidth, height: window.innerHeight };
+  };
+
+  const initialDimensions = getInitialDimensions();
+  const initialDeviceInfo = detectDevice(initialDimensions.width, initialDimensions.height);
+
+  // Responsive state with proper initial values
   const [responsiveState, setResponsiveState] = useState<ResponsiveState>({
-    isMobile: false,
-    isTablet: false,
-    isSmallTablet: false,
+    isMobile: initialDimensions.width < 500,
+    isSmallTablet: initialDimensions.width >= 500 && initialDimensions.width <= 768,
+    isTablet: initialDimensions.width >= 500 && initialDimensions.width < 1024,
   });
 
-  // Additional responsive configuration
-  const [screenWidth, setScreenWidth] = useState(0);
-  const [screenHeight, setScreenHeight] = useState(0);
-  const [deviceType, setDeviceType] = useState<DeviceType>(DeviceType.DESKTOP_SMALL);
-  const [orientation, setOrientation] = useState<'portrait' | 'landscape'>('landscape');
+  // Additional responsive configuration with proper initial values
+  const [screenWidth, setScreenWidth] = useState(initialDimensions.width);
+  const [screenHeight, setScreenHeight] = useState(initialDimensions.height);
+  const [deviceType, setDeviceType] = useState<DeviceType>(
+    initialDeviceInfo.deviceType as DeviceType
+  );
+  const [orientation, setOrientation] = useState<'portrait' | 'landscape'>(
+    initialDimensions.width > initialDimensions.height ? 'landscape' : 'portrait'
+  );
   const [isTouchDevice, setIsTouchDevice] = useState(false);
 
   /**
