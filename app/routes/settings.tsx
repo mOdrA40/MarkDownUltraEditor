@@ -14,10 +14,11 @@ import {
   Zap,
 } from 'lucide-react';
 import { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router';
+import { type LoaderFunctionArgs, useNavigate } from 'react-router';
 import { AuthButtons } from '@/components/auth/AuthButtons';
 import { type Theme, ThemeSelector, themes, useTheme } from '@/components/features/ThemeSelector';
 import { WritingSettings } from '@/components/features/WritingSettings';
+import SecureErrorBoundary from '@/components/shared/SecureErrorBoundary';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -30,9 +31,17 @@ import {
   DEFAULT_WRITING_SETTINGS,
   type WritingSettings as WritingSettingsType,
 } from '@/types/writingSettings';
+import { securityMiddleware } from '@/utils/security/routeMiddleware';
+import { ErrorCategory } from '@/utils/sentry';
 import { loadSettingsFromStorage, saveSettingsToStorage } from '@/utils/writingSettingsUtils';
 
 // Using global optimized QueryClient from lib/queryClient.ts
+
+export async function loader(args: LoaderFunctionArgs) {
+  // Apply security middleware for settings page
+  const security = await securityMiddleware.protected(args);
+  return security;
+}
 
 export interface AppPreferences {
   theme: Theme;
@@ -495,8 +504,10 @@ function SettingsPageContent() {
 
 export default function SettingsPage() {
   return (
-    <QueryClientProvider client={queryClient}>
-      <SettingsPageContent />
-    </QueryClientProvider>
+    <SecureErrorBoundary category={ErrorCategory.USER_ACTION}>
+      <QueryClientProvider client={queryClient}>
+        <SettingsPageContent />
+      </QueryClientProvider>
+    </SecureErrorBoundary>
   );
 }

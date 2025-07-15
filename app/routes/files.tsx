@@ -3,15 +3,16 @@
  * @author Axel Modra
  */
 
-import { getAuth } from '@clerk/react-router/ssr.server';
 import { QueryClientProvider } from '@tanstack/react-query';
-import type { MetaFunction } from 'react-router';
-import { type LoaderFunctionArgs, redirect } from 'react-router';
+import type { LoaderFunctionArgs, MetaFunction } from 'react-router';
 import { FilesManager } from '@/components/files/FilesManager';
+import SecureErrorBoundary from '@/components/shared/SecureErrorBoundary';
 import { Toaster as Sonner } from '@/components/ui/sonner';
 import { Toaster } from '@/components/ui/toaster';
 import { TooltipProvider } from '@/components/ui/tooltip';
 import { queryClient } from '@/lib/queryClient';
+import { securityMiddleware } from '@/utils/security/routeMiddleware';
+import { ErrorCategory } from '@/utils/sentry';
 
 export const meta: MetaFunction = () => {
   return [
@@ -39,25 +40,23 @@ export const meta: MetaFunction = () => {
 // Using global optimized QueryClient from lib/queryClient.ts
 
 export async function loader(args: LoaderFunctionArgs) {
-  const { userId } = await getAuth(args);
-
-  if (!userId) {
-    return redirect('/sign-in');
-  }
-
-  return { userId };
+  // Apply security middleware with file-specific protections
+  const security = await securityMiddleware.protected(args);
+  return security;
 }
 
 export default function FilesPage() {
   return (
-    <QueryClientProvider client={queryClient}>
-      <TooltipProvider>
-        <Toaster />
-        <Sonner />
-        <div className="min-h-screen w-full bg-background" data-files-page>
-          <FilesManager />
-        </div>
-      </TooltipProvider>
-    </QueryClientProvider>
+    <SecureErrorBoundary category={ErrorCategory.SYSTEM}>
+      <QueryClientProvider client={queryClient}>
+        <TooltipProvider>
+          <Toaster />
+          <Sonner />
+          <div className="min-h-screen w-full bg-background" data-files-page>
+            <FilesManager />
+          </div>
+        </TooltipProvider>
+      </QueryClientProvider>
+    </SecureErrorBoundary>
   );
 }

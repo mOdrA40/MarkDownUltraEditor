@@ -110,10 +110,7 @@ export const useRenderPerformance = (componentName: string) => {
     renderMeasure.current.start();
 
     return () => {
-      const duration = renderMeasure.current.end();
-      if (duration && process.env.NODE_ENV === 'development') {
-        console.log(`${componentName} render time: ${duration.toFixed(2)}ms`);
-      }
+      renderMeasure.current.end();
     };
   });
 };

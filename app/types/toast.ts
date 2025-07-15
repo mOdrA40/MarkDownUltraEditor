@@ -23,6 +23,7 @@ export const TOAST_ACTION_TYPES = {
   UPDATE_TOAST: 'UPDATE_TOAST',
   DISMISS_TOAST: 'DISMISS_TOAST',
   REMOVE_TOAST: 'REMOVE_TOAST',
+  SYNC_STATE: 'SYNC_STATE',
 } as const;
 
 export type ToastActionType = typeof TOAST_ACTION_TYPES;
@@ -46,6 +47,10 @@ export type ToastAction =
   | {
       type: ToastActionType['REMOVE_TOAST'];
       toastId?: ToasterToast['id'];
+    }
+  | {
+      type: ToastActionType['SYNC_STATE'];
+      payload: ToastState;
     };
 
 /**

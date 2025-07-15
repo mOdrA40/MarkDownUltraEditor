@@ -1,11 +1,12 @@
 /**
- * @fileoverview Base Form Component - Reusable form wrapper
+ * @fileoverview Enhanced Base Form Component with enterprise security
  * @author Axel Modra
  */
 
 import type React from 'react';
 import { useCallback, useState } from 'react';
 import { cn } from '@/lib/utils';
+import { useSecureFormValidation } from '@/utils/security/integration';
 import { BaseButton, ButtonGroup } from '../BaseButton';
 
 export interface FormField {
@@ -65,6 +66,9 @@ export const BaseForm: React.FC<BaseFormProps> = ({
   showCancelButton = true,
   validateForm,
 }) => {
+  // Initialize security validation
+  const { validateForm: validateFormSecurity } = useSecureFormValidation();
+
   const [values, setValues] = useState<Record<string, string | boolean>>(() => {
     const defaultValues: Record<string, string | boolean> = {};
     fields.forEach((field) => {
@@ -107,9 +111,15 @@ export const BaseForm: React.FC<BaseFormProps> = ({
     [fields, values]
   );
 
-  // Validate all fields
+  // Validate all fields with security checks
   const validateAllFields = useCallback(() => {
     const newErrors: Record<string, string> = {};
+
+    // First run security validation
+    const securityResult = validateFormSecurity(values);
+    if (securityResult.hasSecurityIssues) {
+      Object.assign(newErrors, securityResult.errors);
+    }
 
     fields.forEach((field) => {
       const value = values[field.name];
@@ -138,7 +148,7 @@ export const BaseForm: React.FC<BaseFormProps> = ({
     }
 
     return newErrors;
-  }, [fields, values, validateForm]);
+  }, [fields, values, validateForm, validateFormSecurity]);
 
   // Handle form submission
   const handleSubmit = useCallback(

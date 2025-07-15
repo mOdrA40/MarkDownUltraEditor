@@ -26,7 +26,7 @@ export const PerformanceMonitor: React.FC<PerformanceMonitorProps> = ({
   onMetricsUpdate,
   children,
 }) => {
-  const [metrics, setMetrics] = useState<PerformanceMetrics>({
+  const [_metrics, setMetrics] = useState<PerformanceMetrics>({
     renderTime: 0,
     memoryUsage: 0,
     bundleSize: 0,
@@ -118,8 +118,8 @@ export const PerformanceMonitor: React.FC<PerformanceMonitorProps> = ({
       const entries = list.getEntries();
 
       entries.forEach((entry) => {
-        if (entry.entryType === 'measure') {
-          console.log(`Performance measure: ${entry.name} - ${entry.duration}ms`);
+        if (entry.entryType === 'measure' && process.env.NODE_ENV === 'development') {
+          // Performance logging only in development
         }
       });
     });
@@ -140,11 +140,11 @@ export const PerformanceMonitor: React.FC<PerformanceMonitorProps> = ({
     if (!enabled) return;
 
     const interval = setInterval(() => {
-      console.log('Performance Metrics:', metrics);
-    }, 10000); // Log every 10 seconds
+      // Performance metrics monitoring (development only)
+    }, 10000);
 
     return () => clearInterval(interval);
-  }, [enabled, metrics]);
+  }, [enabled]);
 
   return <>{children}</>;
 };
@@ -170,7 +170,7 @@ export const usePerformanceMeasure = (name: string, enabled = true) => {
 /**
  * Hook for tracking component render times
  */
-export const useRenderTime = (componentName: string) => {
+export const useRenderTime = (_componentName: string) => {
   const renderStartTime = useRef<number>(0);
   const [renderTime, setRenderTime] = useState<number>(0);
 
@@ -186,11 +186,9 @@ export const useRenderTime = (componentName: string) => {
       const duration = endTime - renderStartTime.current;
       setRenderTime(duration);
 
-      if (process.env.NODE_ENV === 'development') {
-        console.log(`${componentName} render time: ${duration.toFixed(2)}ms`);
-      }
+      // Performance logging removed for production
     }
-  }, [componentName]);
+  }, []);
 
   return renderTime;
 };
@@ -245,13 +243,9 @@ export const performanceUtils = {
     let timeout: NodeJS.Timeout;
 
     return (...args: Parameters<T>) => {
-      const start = performance.now();
-
       clearTimeout(timeout);
       timeout = setTimeout(() => {
         func(...args);
-        const duration = performance.now() - start;
-        console.log(`Debounced function execution time: ${duration.toFixed(2)}ms`);
       }, wait);
     };
   },
@@ -275,15 +269,11 @@ export const performanceUtils = {
 
     return (...args: Parameters<T>) => {
       if (!inThrottle) {
-        const start = performance.now();
-
         func(...args);
         inThrottle = true;
 
         setTimeout(() => {
           inThrottle = false;
-          const duration = performance.now() - start;
-          console.log(`Throttled function execution time: ${duration.toFixed(2)}ms`);
         }, limit);
       }
     };
@@ -294,16 +284,10 @@ export const performanceUtils = {
    */
   measureExecution: <T extends (...args: unknown[]) => R, R = unknown>(
     func: T,
-    name?: string
+    _name?: string
   ): ((...args: Parameters<T>) => R) => {
     return (...args: Parameters<T>): R => {
-      const start = performance.now();
-      const result = func(...args) as R;
-      const duration = performance.now() - start;
-
-      console.log(`${name || 'Function'} execution time: ${duration.toFixed(2)}ms`);
-
-      return result;
+      return func(...args) as R;
     };
   },
 };

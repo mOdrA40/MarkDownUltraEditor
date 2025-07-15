@@ -3,8 +3,8 @@
  * @author Axel Modra
  */
 
-import { useCallback, useEffect, useRef } from 'react';
-import { useDeepMemo } from './useMemoization';
+import { useCallback, useEffect, useRef } from "react";
+import { useDeepMemo } from "./useMemoization";
 
 /**
  * Performance metrics interface
@@ -20,7 +20,9 @@ interface PerformanceMetrics {
 /**
  * Hook for monitoring component render performance
  */
-export function useRenderPerformance(componentName: string): PerformanceMetrics {
+export function useRenderPerformance(
+  componentName: string
+): PerformanceMetrics {
   const renderCount = useRef(0);
   const renderTimes = useRef<number[]>([]);
   const lastRenderStart = useRef(performance.now());
@@ -41,16 +43,35 @@ export function useRenderPerformance(componentName: string): PerformanceMetrics 
       renderTimes.current = renderTimes.current.slice(-100);
     }
 
-    // Log slow renders in development
-    if (process.env.NODE_ENV === 'development' && renderTime > 16) {
-      console.warn(`Slow render detected in ${componentName}: ${renderTime.toFixed(2)}ms`);
+    // Log slow renders in development only
+    if (process.env.NODE_ENV === "development" && renderTime > 16) {
+      console.warn(
+        `Slow render detected in ${componentName}: ${renderTime.toFixed(2)}ms`
+      );
+    }
+
+    // In production, only track critical performance issues
+    if (process.env.NODE_ENV === "production" && renderTime > 100) {
+      // Report to Sentry only for very slow renders
+      import("@/utils/sentry").then(({ secureSentry }) => {
+        secureSentry.logError(
+          `Critical slow render: ${componentName} took ${renderTime.toFixed(
+            2
+          )}ms`,
+          "PERFORMANCE" as any,
+          "HIGH" as any,
+          { componentName, renderTime }
+        );
+      });
     }
   });
 
   return useDeepMemo(() => {
     const times = renderTimes.current;
     const averageRenderTime =
-      times.length > 0 ? times.reduce((sum, time) => sum + time, 0) / times.length : 0;
+      times.length > 0
+        ? times.reduce((sum, time) => sum + time, 0) / times.length
+        : 0;
 
     return {
       renderTime: renderStart - lastRenderStart.current,
@@ -74,7 +95,7 @@ export function useMemoryMonitoring(intervalMs = 5000) {
   } | null>(null);
 
   useEffect(() => {
-    if (!('memory' in performance)) return;
+    if (!("memory" in performance)) return;
 
     const updateMemoryInfo = () => {
       // biome-ignore lint/suspicious/noExplicitAny: Performance.memory is not in standard types
@@ -87,8 +108,9 @@ export function useMemoryMonitoring(intervalMs = 5000) {
       };
 
       // Log memory warnings in development
-      if (process.env.NODE_ENV === 'development') {
-        const usagePercent = (memory.usedJSHeapSize / memory.jsHeapSizeLimit) * 100;
+      if (process.env.NODE_ENV === "development") {
+        const usagePercent =
+          (memory.usedJSHeapSize / memory.jsHeapSizeLimit) * 100;
         if (usagePercent > 80) {
           console.warn(`High memory usage: ${usagePercent.toFixed(1)}%`);
         }
@@ -120,12 +142,14 @@ export function useFPSMonitoring() {
       frameCount.current++;
 
       if (now - lastTime.current >= 1000) {
-        fps.current = Math.round((frameCount.current * 1000) / (now - lastTime.current));
+        fps.current = Math.round(
+          (frameCount.current * 1000) / (now - lastTime.current)
+        );
         frameCount.current = 0;
         lastTime.current = now;
 
         // Log FPS warnings in development
-        if (process.env.NODE_ENV === 'development' && fps.current < 30) {
+        if (process.env.NODE_ENV === "development" && fps.current < 30) {
           console.warn(`Low FPS detected: ${fps.current}`);
         }
       }
@@ -165,8 +189,12 @@ export function useOperationTiming() {
       timings.current.set(operationName, operationTimings);
 
       // Log slow operations in development
-      if (process.env.NODE_ENV === 'development' && duration > 100) {
-        console.warn(`Slow operation detected: ${operationName} took ${duration.toFixed(2)}ms`);
+      if (process.env.NODE_ENV === "development" && duration > 100) {
+        console.warn(
+          `Slow operation detected: ${operationName} took ${duration.toFixed(
+            2
+          )}ms`
+        );
       }
 
       return duration;
@@ -212,22 +240,23 @@ export function usePerformanceBottleneckDetection() {
   });
 
   const reportBottleneck = useCallback(
-    (type: 'render' | 'memory' | 'operation', details: string) => {
+    (type: "render" | "memory" | "operation", details: string) => {
       switch (type) {
-        case 'render':
+        case "render":
           bottlenecks.current.slowRenders.push(details);
           break;
-        case 'memory':
+        case "memory":
           bottlenecks.current.memoryLeaks.push(details);
           break;
-        case 'operation':
+        case "operation":
           bottlenecks.current.slowOperations.push(details);
           break;
       }
 
       // Keep only last 20 bottlenecks per type
       Object.keys(bottlenecks.current).forEach((key) => {
-        const arr = bottlenecks.current[key as keyof typeof bottlenecks.current];
+        const arr =
+          bottlenecks.current[key as keyof typeof bottlenecks.current];
         if (arr.length > 20) {
           arr.splice(0, arr.length - 20);
         }
@@ -264,7 +293,7 @@ export function useBundleAnalysis() {
   useEffect(() => {
     // This would typically be populated by webpack-bundle-analyzer or similar
     // For now, we'll use a placeholder
-    if (process.env.NODE_ENV === 'development') {
+    if (process.env.NODE_ENV === "development") {
       bundleInfo.current = {
         totalSize: 0, // Would be populated by build tools
         gzippedSize: 0,
@@ -296,7 +325,7 @@ export function useCoreWebVitals() {
 
   useEffect(() => {
     // Use web-vitals library if available
-    if (typeof window !== 'undefined' && 'PerformanceObserver' in window) {
+    if (typeof window !== "undefined" && "PerformanceObserver" in window) {
       // LCP
       const lcpObserver = new PerformanceObserver((list) => {
         const entries = list.getEntries();
@@ -304,18 +333,20 @@ export function useCoreWebVitals() {
         const lastEntry = entries[entries.length - 1] as any;
         vitals.current.LCP = lastEntry.startTime;
       });
-      lcpObserver.observe({ entryTypes: ['largest-contentful-paint'] });
+      lcpObserver.observe({ entryTypes: ["largest-contentful-paint"] });
 
       // FCP
       const fcpObserver = new PerformanceObserver((list) => {
         const entries = list.getEntries();
         // biome-ignore lint/suspicious/noExplicitAny: PerformanceEntry types are not fully typed
-        const fcpEntry = entries.find((entry) => entry.name === 'first-contentful-paint') as any;
+        const fcpEntry = entries.find(
+          (entry) => entry.name === "first-contentful-paint"
+        ) as any;
         if (fcpEntry) {
           vitals.current.FCP = fcpEntry.startTime;
         }
       });
-      fcpObserver.observe({ entryTypes: ['paint'] });
+      fcpObserver.observe({ entryTypes: ["paint"] });
 
       // CLS
       let clsValue = 0;
@@ -328,7 +359,7 @@ export function useCoreWebVitals() {
           }
         }
       });
-      clsObserver.observe({ entryTypes: ['layout-shift'] });
+      clsObserver.observe({ entryTypes: ["layout-shift"] });
 
       return () => {
         lcpObserver.disconnect();

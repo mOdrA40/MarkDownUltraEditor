@@ -1,57 +1,94 @@
-import { QueryClientProvider } from '@tanstack/react-query';
-import type { MetaFunction } from 'react-router';
-import { MarkdownEditor } from '@/components/editor/MarkdownEditor';
-import { UpdateNotification } from '@/components/shared/UpdateNotification';
-import { Toaster as Sonner } from '@/components/ui/sonner';
-import { Toaster } from '@/components/ui/toaster';
-import { TooltipProvider } from '@/components/ui/tooltip';
-import { queryClient } from '@/lib/queryClient';
+import { QueryClientProvider } from "@tanstack/react-query";
+import { lazy, Suspense } from "react";
+import type { LoaderFunctionArgs, MetaFunction } from "react-router";
+import { MarkdownEditor } from "@/components/editor/MarkdownEditor";
+import SecureErrorBoundary from "@/components/shared/SecureErrorBoundary";
+import { UpdateNotification } from "@/components/shared/UpdateNotification";
+import { Toaster as Sonner } from "@/components/ui/sonner";
+import { Toaster } from "@/components/ui/toaster";
+import { TooltipProvider } from "@/components/ui/tooltip";
+
+// Lazy load debug components - only loaded in development
+const EnvDebugPanel = lazy(() => import("@/components/debug/EnvDebugPanel"));
+const ErrorBoundaryTest = lazy(
+  () => import("@/components/debug/ErrorBoundaryTest")
+);
+const SentryTestPanel = lazy(
+  () => import("@/components/debug/SentryTestPanel")
+);
+
+import { queryClient } from "@/lib/queryClient";
+import { securityMiddleware } from "@/utils/security/routeMiddleware";
+import { ErrorCategory } from "@/utils/sentry";
 
 export const meta: MetaFunction = () => {
   return [
-    { title: 'MarkDown Ultra Editor' },
+    { title: "MarkDown Ultra Editor" },
     {
-      name: 'description',
+      name: "description",
       content:
-        'Editor markdown modern dengan fitur live preview, syntax highlighting, dan berbagai tema yang dapat disesuaikan',
+        "Editor markdown modern dengan fitur live preview, syntax highlighting, dan berbagai tema yang dapat disesuaikan",
     },
-    { name: 'author', content: 'MarkDown Ultra' },
+    { name: "author", content: "MarkDown Ultra" },
     {
-      name: 'keywords',
-      content: 'markdown, editor, live preview, syntax highlighting, react, typescript',
-    },
-    { property: 'og:title', content: 'MarkDown Ultra Editor' },
-    {
-      property: 'og:description',
+      name: "keywords",
       content:
-        'Editor markdown modern dengan fitur live preview, syntax highlighting, dan berbagai tema yang dapat disesuaikan',
+        "markdown, editor, live preview, syntax highlighting, react, typescript",
     },
-    { property: 'og:type', content: 'website' },
-    { property: 'og:image', content: '/placeholder.svg' },
-    { name: 'twitter:card', content: 'summary_large_image' },
-    { name: 'twitter:title', content: 'MarkDown Ultra Editor' },
+    { property: "og:title", content: "MarkDown Ultra Editor" },
     {
-      name: 'twitter:description',
+      property: "og:description",
       content:
-        'Editor markdown modern dengan fitur live preview, syntax highlighting, dan berbagai tema yang dapat disesuaikan',
+        "Editor markdown modern dengan fitur live preview, syntax highlighting, dan berbagai tema yang dapat disesuaikan",
     },
-    { name: 'twitter:image', content: '/placeholder.svg' },
+    { property: "og:type", content: "website" },
+    { property: "og:image", content: "/placeholder.svg" },
+    { name: "twitter:card", content: "summary_large_image" },
+    { name: "twitter:title", content: "MarkDown Ultra Editor" },
+    {
+      name: "twitter:description",
+      content:
+        "Editor markdown modern dengan fitur live preview, syntax highlighting, dan berbagai tema yang dapat disesuaikan",
+    },
+    { name: "twitter:image", content: "/placeholder.svg" },
   ];
 };
 
 // Using global optimized QueryClient from lib/queryClient.ts
 
+export async function loader(args: LoaderFunctionArgs) {
+  // Apply minimal security middleware for public route (guest access allowed)
+  const security = await securityMiddleware.public(args);
+  return security;
+}
+
 export default function Index() {
   return (
-    <QueryClientProvider client={queryClient}>
-      <TooltipProvider>
-        <Toaster />
-        <Sonner />
-        <div className="min-h-screen w-full bg-gradient-to-br from-slate-50 to-blue-50">
-          <MarkdownEditor />
-          <UpdateNotification />
-        </div>
-      </TooltipProvider>
-    </QueryClientProvider>
+    <SecureErrorBoundary category={ErrorCategory.USER_ACTION}>
+      <QueryClientProvider client={queryClient}>
+        <TooltipProvider>
+          <Toaster />
+          <Sonner />
+          <div className="min-h-screen w-full bg-gradient-to-br from-slate-50 to-blue-50">
+            <MarkdownEditor />
+            <UpdateNotification />
+            {/* Debug Panels - Development Only */}
+            {process.env.NODE_ENV === "development" && (
+              <div className="fixed bottom-4 right-4 z-50 space-y-4">
+                <Suspense
+                  fallback={
+                    <div className="w-4 h-4 animate-spin rounded-full border-2 border-blue-500 border-t-transparent" />
+                  }
+                >
+                  <EnvDebugPanel />
+                  <ErrorBoundaryTest />
+                  <SentryTestPanel />
+                </Suspense>
+              </div>
+            )}
+          </div>
+        </TooltipProvider>
+      </QueryClientProvider>
+    </SecureErrorBoundary>
   );
 }

@@ -53,6 +53,14 @@ export const toastReducer = (
       };
     }
 
+    case TOAST_ACTION_TYPES.SYNC_STATE: {
+      // Handle state synchronization for global toast management
+      return {
+        ...state,
+        toasts: action.payload.toasts || [],
+      };
+    }
+
     case TOAST_ACTION_TYPES.DISMISS_TOAST: {
       const { toastId } = action;
 

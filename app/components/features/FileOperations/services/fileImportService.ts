@@ -1,8 +1,9 @@
 /**
- * @fileoverview File import service for handling file uploads
+ * @fileoverview Enhanced file import service with enterprise security
  * @author Axel Modra
  */
 
+import { inputValidator } from '@/utils/security';
 import type { FileImportResult, FileOperationCallbacks } from '../types/fileOperations.types';
 
 /**
@@ -21,10 +22,10 @@ type SupportedFileType = (typeof SUPPORTED_FILE_TYPES)[number];
 export const MAX_FILE_SIZE = 5 * 1024 * 1024;
 
 /**
- * Validate file before import
+ * Enhanced file validation with enterprise security
  */
 export const validateFile = (file: File): { valid: boolean; error?: string } => {
-  // Check file size
+  // 1. Check file size first
   if (file.size > MAX_FILE_SIZE) {
     return {
       valid: false,
@@ -32,9 +33,60 @@ export const validateFile = (file: File): { valid: boolean; error?: string } => 
     };
   }
 
-  // Check file type
-  const fileExtension = `.${file.name.split('.').pop()?.toLowerCase()}` as SupportedFileType;
-  if (!SUPPORTED_FILE_TYPES.includes(fileExtension)) {
+  // 2. Validate file extension and name
+  const fileName = file.name.toLowerCase();
+  const fileExtension = fileName.split('.').pop() || '';
+
+  // Block dangerous file extensions
+  const dangerousExtensions = [
+    'exe',
+    'bat',
+    'cmd',
+    'com',
+    'pif',
+    'scr',
+    'vbs',
+    'js',
+    'jar',
+    'php',
+    'asp',
+    'aspx',
+    'jsp',
+    'py',
+    'rb',
+    'pl',
+    'sh',
+    'ps1',
+  ];
+
+  if (dangerousExtensions.includes(fileExtension)) {
+    return {
+      valid: false,
+      error: `File type .${fileExtension} is not allowed for security reasons`,
+    };
+  }
+
+  // 3. Block path traversal attempts
+  if (fileName.includes('..') || fileName.includes('/') || fileName.includes('\\')) {
+    return {
+      valid: false,
+      error: 'File name contains invalid characters',
+    };
+  }
+
+  // 4. Use enterprise security validation
+  const securityResult = inputValidator.validateFileUpload(file);
+
+  if (!securityResult.isValid) {
+    return {
+      valid: false,
+      error: securityResult.errors.join('; '),
+    };
+  }
+
+  // 5. Check supported file types
+  const supportedExtension = `.${fileExtension}` as SupportedFileType;
+  if (!SUPPORTED_FILE_TYPES.includes(supportedExtension)) {
     return {
       valid: false,
       error: `Unsupported file type. Supported types: ${SUPPORTED_FILE_TYPES.join(', ')}`,
@@ -73,7 +125,9 @@ export const importFile = async (
 
     return result;
   } catch (error) {
-    const errorMessage = `Failed to load file: ${error instanceof Error ? error.message : 'Unknown error'}`;
+    const errorMessage = `Failed to load file: ${
+      error instanceof Error ? error.message : 'Unknown error'
+    }`;
     callbacks.onError(errorMessage);
     return null;
   }
