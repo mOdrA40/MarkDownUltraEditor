@@ -69,7 +69,7 @@ export const MARKDOWN_TEMPLATES: Record<string, MarkdownTemplate> = {
   image: {
     name: 'Image',
     template: '![alt](url)',
-    description: 'Image embed',
+    description: 'Image upload and embed',
     category: 'media',
   },
   quote: {

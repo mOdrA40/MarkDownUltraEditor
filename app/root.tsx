@@ -1,42 +1,48 @@
-import { ClerkProvider } from '@clerk/react-router';
-import { rootAuthLoader } from '@clerk/react-router/ssr.server';
-import type React from 'react';
-import type { HeadersFunction, LinksFunction } from 'react-router';
-import { Links, Meta, Outlet, Scripts, ScrollRestoration } from 'react-router';
-import { ThemeProvider } from '@/components/features/ThemeSelector';
-import type { Route } from './+types/root';
+import { ClerkProvider } from "@clerk/react-router";
+import { rootAuthLoader } from "@clerk/react-router/ssr.server";
+import type React from "react";
+import { useEffect } from "react";
+import type { HeadersFunction, LinksFunction } from "react-router";
+import { Links, Meta, Outlet, Scripts, ScrollRestoration } from "react-router";
+import { ThemeProvider } from "@/components/features/ThemeSelector";
+import { fixRedirectLoop } from "@/utils/auth/redirects";
+import type { Route } from "./+types/root";
 
-import './tailwind.css';
+import "./tailwind.css";
 
 // Initialize performance optimizations
-if (typeof window !== 'undefined') {
-  import('@/utils/performance').then(({ initializePerformanceOptimizations }) => {
-    initializePerformanceOptimizations();
-  });
+if (typeof window !== "undefined") {
+  import("@/utils/performance").then(
+    ({ initializePerformanceOptimizations }) => {
+      initializePerformanceOptimizations();
+    }
+  );
 
   // Initialize memory optimization for production
-  import('@/utils/memoryOptimization').then(({ initializeMemoryOptimization }) => {
-    initializeMemoryOptimization();
-  });
+  import("@/utils/memoryOptimization").then(
+    ({ initializeMemoryOptimization }) => {
+      initializeMemoryOptimization();
+    }
+  );
 }
 
 // Initialize security system
-if (typeof window !== 'undefined') {
-  import('@/utils/security/integration').then(({ initializeAppSecurity }) => {
+if (typeof window !== "undefined") {
+  import("@/utils/security/integration").then(({ initializeAppSecurity }) => {
     initializeAppSecurity();
   });
 }
 
 // Initialize console protection
-if (typeof window !== 'undefined') {
-  import('@/utils/console').then(({ initializeConsoleProtection }) => {
+if (typeof window !== "undefined") {
+  import("@/utils/console").then(({ initializeConsoleProtection }) => {
     initializeConsoleProtection();
   });
 }
 
 // Initialize Sentry error tracking
-if (typeof window !== 'undefined') {
-  import('@/utils/sentry').then(({ initializeSentry }) => {
+if (typeof window !== "undefined") {
+  import("@/utils/sentry").then(({ initializeSentry }) => {
     initializeSentry();
   });
 }
@@ -48,20 +54,20 @@ export async function loader(args: Route.LoaderArgs) {
 
 export const links: LinksFunction = () => [
   // 🎨 Custom favicon - dengan cache busting
-  { rel: 'icon', href: '/markdownlogo.svg?v=2024', type: 'image/svg+xml' },
-  { rel: 'apple-touch-icon', href: '/markdownlogo.svg?v=2024' },
-  { rel: 'manifest', href: '/site.webmanifest' },
+  { rel: "icon", href: "/markdownlogo.svg?v=2024", type: "image/svg+xml" },
+  { rel: "apple-touch-icon", href: "/markdownlogo.svg?v=2024" },
+  { rel: "manifest", href: "/site.webmanifest" },
 
   // Fonts
-  { rel: 'preconnect', href: 'https://fonts.googleapis.com' },
+  { rel: "preconnect", href: "https://fonts.googleapis.com" },
   {
-    rel: 'preconnect',
-    href: 'https://fonts.gstatic.com',
-    crossOrigin: 'anonymous',
+    rel: "preconnect",
+    href: "https://fonts.gstatic.com",
+    crossOrigin: "anonymous",
   },
   {
-    rel: 'stylesheet',
-    href: 'https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap',
+    rel: "stylesheet",
+    href: "https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap",
   },
 ];
 
@@ -69,19 +75,20 @@ export const links: LinksFunction = () => [
 export const headers: HeadersFunction = () => {
   return {
     // HSTS - HTTP Strict Transport Security
-    'Strict-Transport-Security': 'max-age=31536000; includeSubDomains; preload',
+    "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
     // Prevent MIME type sniffing
-    'X-Content-Type-Options': 'nosniff',
+    "X-Content-Type-Options": "nosniff",
     // Prevent clickjacking
-    'X-Frame-Options': 'DENY',
+    "X-Frame-Options": "DENY",
     // XSS Protection
-    'X-XSS-Protection': '1; mode=block',
+    "X-XSS-Protection": "1; mode=block",
     // Referrer Policy
-    'Referrer-Policy': 'strict-origin-when-cross-origin',
+    "Referrer-Policy": "strict-origin-when-cross-origin",
     // Permissions Policy
-    'Permissions-Policy': 'camera=(), microphone=(), geolocation=(), interest-cohort=()',
+    "Permissions-Policy":
+      "camera=(), microphone=(), geolocation=(), interest-cohort=()",
     // Content Security Policy - Optimized for your app
-    'Content-Security-Policy': [
+    "Content-Security-Policy": [
       "default-src 'self'",
       "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://clerk.com https://*.clerk.accounts.dev https://*.clerk.com https://challenges.cloudflare.com",
       "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://clerk.com https://*.clerk.accounts.dev https://cdnjs.cloudflare.com",
@@ -96,8 +103,8 @@ export const headers: HeadersFunction = () => {
       "frame-ancestors 'none'",
       "form-action 'self' https://clerk.com https://*.clerk.accounts.dev",
       "base-uri 'self'",
-      'upgrade-insecure-requests',
-    ].join('; '),
+      "upgrade-insecure-requests",
+    ].join("; "),
   };
 };
 
@@ -112,11 +119,18 @@ export function Layout({ children }: { children: React.ReactNode }) {
         <meta httpEquiv="X-Content-Type-Options" content="nosniff" />
         <meta httpEquiv="X-Frame-Options" content="DENY" />
         <meta httpEquiv="X-XSS-Protection" content="1; mode=block" />
-        <meta httpEquiv="Referrer-Policy" content="strict-origin-when-cross-origin" />
+        <meta
+          httpEquiv="Referrer-Policy"
+          content="strict-origin-when-cross-origin"
+        />
 
         {/* 🎨 Force favicon override - dengan cache busting */}
         <link rel="icon" href="/markdownlogo.svg?v=2024" type="image/svg+xml" />
-        <link rel="shortcut icon" href="/markdownlogo.svg?v=2024" type="image/svg+xml" />
+        <link
+          rel="shortcut icon"
+          href="/markdownlogo.svg?v=2024"
+          type="image/svg+xml"
+        />
         <Meta />
         <Links />
       </head>
@@ -124,10 +138,10 @@ export function Layout({ children }: { children: React.ReactNode }) {
         style={{
           margin: 0,
           padding: 0,
-          overflowX: 'hidden',
-          position: 'relative',
-          width: '100%',
-          minHeight: '100vh',
+          overflowX: "hidden",
+          position: "relative",
+          width: "100%",
+          minHeight: "100vh",
         }}
       >
         {children}
@@ -142,9 +156,12 @@ export function ErrorBoundary() {
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-50 to-blue-50">
       <div className="text-center">
-        <h1 className="text-4xl font-bold text-gray-900 mb-4">Oops! Something went wrong</h1>
+        <h1 className="text-4xl font-bold text-gray-900 mb-4">
+          Oops! Something went wrong
+        </h1>
         <p className="text-gray-600 mb-8">
-          We&apos;re sorry, but something unexpected happened. Please try refreshing the page.
+          We&apos;re sorry, but something unexpected happened. Please try
+          refreshing the page.
         </p>
         <button
           type="button"
@@ -161,8 +178,14 @@ export function ErrorBoundary() {
 export default function App({ loaderData }: Route.ComponentProps) {
   const publishableKey = process.env.VITE_CLERK_PUBLISHABLE_KEY;
 
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      fixRedirectLoop();
+    }
+  }, []);
+
   if (!publishableKey) {
-    throw new Error('Missing Clerk Publishable Key');
+    throw new Error("Missing Clerk Publishable Key");
   }
 
   return (
@@ -175,7 +198,7 @@ export default function App({ loaderData }: Route.ComponentProps) {
       signUpFallbackRedirectUrl="/"
       appearance={{
         elements: {
-          formButtonPrimary: 'normal-case',
+          formButtonPrimary: "normal-case",
         },
       }}
     >

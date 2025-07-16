@@ -239,7 +239,7 @@ export const AuthButtons: React.FC<AuthButtonsProps> = ({
       </Badge>
 
       {/* Single Auth Button - defaults to Sign In with Sign Up option */}
-      <SignInButton mode="redirect">
+      <SignInButton mode="redirect" fallbackRedirectUrl="/" forceRedirectUrl="/">
         <Button
           variant="default"
           size="sm"

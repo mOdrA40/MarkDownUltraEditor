@@ -3,9 +3,9 @@
  * @author Security Team
  */
 
-import { createClient } from "@supabase/supabase-js";
-import { safeConsole } from "@/utils/console";
-import { getSecurityIPInfo } from "@/utils/ipDetection";
+import { createClient } from '@supabase/supabase-js';
+import { safeConsole } from '@/utils/console';
+import { getSecurityIPInfo } from '@/utils/ipDetection';
 
 export interface SessionData {
   id?: string;
@@ -47,7 +47,7 @@ export class SessionManager {
     const supabaseKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
 
     if (!supabaseUrl || !supabaseKey) {
-      throw new Error("Supabase environment variables are required");
+      throw new Error('Supabase environment variables are required');
     }
 
     this.supabaseClient = createClient(supabaseUrl, supabaseKey);
@@ -56,20 +56,16 @@ export class SessionManager {
   /**
    * Create or update session
    */
-  async createSession(
-    userId: string,
-    sessionId: string
-  ): Promise<SessionData | null> {
+  async createSession(userId: string, sessionId: string): Promise<SessionData | null> {
     try {
       // Get IP and device info
       const ipInfo = await getSecurityIPInfo();
-      const userAgent =
-        typeof navigator !== "undefined" ? navigator.userAgent : "";
+      const userAgent = typeof navigator !== 'undefined' ? navigator.userAgent : '';
 
       // Parse device info
       const deviceInfo = this.parseUserAgent(userAgent);
 
-      const sessionData: Omit<SessionData, "id"> = {
+      const sessionData: Omit<SessionData, 'id'> = {
         user_id: userId,
         session_id: sessionId,
         ip_address: ipInfo.ip,
@@ -92,22 +88,22 @@ export class SessionManager {
       };
 
       const { data, error } = await this.supabaseClient
-        .from("user_sessions")
+        .from('user_sessions')
         .upsert(sessionData, {
-          onConflict: "session_id",
+          onConflict: 'session_id',
           ignoreDuplicates: false,
         })
         .select()
         .single();
 
       if (error) {
-        safeConsole.error("Failed to create session:", error);
+        safeConsole.error('Failed to create session:', error);
         return null;
       }
 
       return data;
     } catch (error) {
-      safeConsole.error("Session creation error:", error);
+      safeConsole.error('Session creation error:', error);
       return null;
     }
   }
@@ -118,13 +114,13 @@ export class SessionManager {
   async updateActivity(sessionId: string): Promise<void> {
     try {
       await this.supabaseClient
-        .from("user_sessions")
+        .from('user_sessions')
         .update({
           last_activity: new Date().toISOString(),
         })
-        .eq("session_id", sessionId);
+        .eq('session_id', sessionId);
     } catch (error) {
-      safeConsole.error("Failed to update session activity:", error);
+      safeConsole.error('Failed to update session activity:', error);
     }
   }
 
@@ -134,20 +130,20 @@ export class SessionManager {
   async getUserSessions(userId: string): Promise<SessionData[]> {
     try {
       const { data, error } = await this.supabaseClient
-        .from("user_sessions")
-        .select("*")
-        .eq("user_id", userId)
-        .eq("is_active", true)
-        .order("last_activity", { ascending: false });
+        .from('user_sessions')
+        .select('*')
+        .eq('user_id', userId)
+        .eq('is_active', true)
+        .order('last_activity', { ascending: false });
 
       if (error) {
-        safeConsole.error("Failed to get user sessions:", error);
+        safeConsole.error('Failed to get user sessions:', error);
         return [];
       }
 
       return data || [];
     } catch (error) {
-      safeConsole.error("Get sessions error:", error);
+      safeConsole.error('Get sessions error:', error);
       return [];
     }
   }
@@ -176,7 +172,7 @@ export class SessionManager {
         suspiciousActivity,
       };
     } catch (error) {
-      safeConsole.error("Failed to get session stats:", error);
+      safeConsole.error('Failed to get session stats:', error);
       return {
         totalSessions: 0,
         activeSessions: 0,
@@ -193,13 +189,13 @@ export class SessionManager {
   async terminateSession(sessionId: string): Promise<boolean> {
     try {
       const { error } = await this.supabaseClient
-        .from("user_sessions")
+        .from('user_sessions')
         .update({ is_active: false })
-        .eq("session_id", sessionId);
+        .eq('session_id', sessionId);
 
       return !error;
     } catch (error) {
-      safeConsole.error("Failed to terminate session:", error);
+      safeConsole.error('Failed to terminate session:', error);
       return false;
     }
   }
@@ -207,20 +203,17 @@ export class SessionManager {
   /**
    * Terminate all sessions except current
    */
-  async terminateAllOtherSessions(
-    userId: string,
-    currentSessionId: string
-  ): Promise<boolean> {
+  async terminateAllOtherSessions(userId: string, currentSessionId: string): Promise<boolean> {
     try {
       const { error } = await this.supabaseClient
-        .from("user_sessions")
+        .from('user_sessions')
         .update({ is_active: false })
-        .eq("user_id", userId)
-        .neq("session_id", currentSessionId);
+        .eq('user_id', userId)
+        .neq('session_id', currentSessionId);
 
       return !error;
     } catch (error) {
-      safeConsole.error("Failed to terminate other sessions:", error);
+      safeConsole.error('Failed to terminate other sessions:', error);
       return false;
     }
   }
@@ -231,11 +224,11 @@ export class SessionManager {
   async cleanExpiredSessions(): Promise<void> {
     try {
       await this.supabaseClient
-        .from("user_sessions")
+        .from('user_sessions')
         .update({ is_active: false })
-        .lt("expires_at", new Date().toISOString());
+        .lt('expires_at', new Date().toISOString());
     } catch (error) {
-      safeConsole.error("Failed to clean expired sessions:", error);
+      safeConsole.error('Failed to clean expired sessions:', error);
     }
   }
 
@@ -245,10 +238,10 @@ export class SessionManager {
   private async isNewLocation(userId: string, ip: string): Promise<boolean> {
     try {
       const { data } = await this.supabaseClient
-        .from("user_sessions")
-        .select("ip_address")
-        .eq("user_id", userId)
-        .eq("ip_address", ip)
+        .from('user_sessions')
+        .select('ip_address')
+        .eq('user_id', userId)
+        .eq('ip_address', ip)
         .limit(1);
 
       return !data || data.length === 0;
@@ -266,9 +259,9 @@ export class SessionManager {
   ): Promise<boolean> {
     try {
       const { data } = await this.supabaseClient
-        .from("user_sessions")
-        .select("device_info")
-        .eq("user_id", userId)
+        .from('user_sessions')
+        .select('device_info')
+        .eq('user_id', userId)
         .limit(10);
 
       if (!data || data.length === 0) return true;
@@ -292,33 +285,33 @@ export class SessionManager {
     device: string;
   } {
     // Simple user agent parsing
-    const browser = userAgent.includes("Chrome")
-      ? "Chrome"
-      : userAgent.includes("Firefox")
-      ? "Firefox"
-      : userAgent.includes("Safari")
-      ? "Safari"
-      : userAgent.includes("Edge")
-      ? "Edge"
-      : "Unknown";
+    const browser = userAgent.includes('Chrome')
+      ? 'Chrome'
+      : userAgent.includes('Firefox')
+        ? 'Firefox'
+        : userAgent.includes('Safari')
+          ? 'Safari'
+          : userAgent.includes('Edge')
+            ? 'Edge'
+            : 'Unknown';
 
-    const os = userAgent.includes("Windows")
-      ? "Windows"
-      : userAgent.includes("Mac")
-      ? "macOS"
-      : userAgent.includes("Linux")
-      ? "Linux"
-      : userAgent.includes("Android")
-      ? "Android"
-      : userAgent.includes("iOS")
-      ? "iOS"
-      : "Unknown";
+    const os = userAgent.includes('Windows')
+      ? 'Windows'
+      : userAgent.includes('Mac')
+        ? 'macOS'
+        : userAgent.includes('Linux')
+          ? 'Linux'
+          : userAgent.includes('Android')
+            ? 'Android'
+            : userAgent.includes('iOS')
+              ? 'iOS'
+              : 'Unknown';
 
-    const device = userAgent.includes("Mobile")
-      ? "Mobile"
-      : userAgent.includes("Tablet")
-      ? "Tablet"
-      : "Desktop";
+    const device = userAgent.includes('Mobile')
+      ? 'Mobile'
+      : userAgent.includes('Tablet')
+        ? 'Tablet'
+        : 'Desktop';
 
     return { browser, os, device };
   }

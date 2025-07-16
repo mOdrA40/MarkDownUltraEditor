@@ -180,7 +180,11 @@ export const toggleMarkdownFormat = (
     bold: { prefix: '**', suffix: '**', placeholder: 'bold text' },
     italic: { prefix: '*', suffix: '*', placeholder: 'italic text' },
     code: { prefix: '`', suffix: '`', placeholder: 'code' },
-    strikethrough: { prefix: '~~', suffix: '~~', placeholder: 'strikethrough text' },
+    strikethrough: {
+      prefix: '~~',
+      suffix: '~~',
+      placeholder: 'strikethrough text',
+    },
   };
 
   const config = formatMap[format];

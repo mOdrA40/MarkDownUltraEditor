@@ -7,6 +7,7 @@
 
 import { FileText } from 'lucide-react';
 import React from 'react';
+import { ImageUploadButton } from '@/components/editor/ImageUpload';
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
 import { cn } from '@/lib/utils';
@@ -29,12 +30,18 @@ export const DesktopToolbar: React.FC<DesktopToolbarProps> = React.memo(
       .slice(0, 2);
     const codeButtons = formatButtons.filter((btn) => btn.category === 'code').slice(0, 1);
     const contentButtons = formatButtons.filter(
-      (btn) => btn.category === 'content' || btn.category === 'list' || btn.category === 'media'
+      (btn) => btn.category === 'content' || btn.category === 'list'
     );
+    const _mediaButtons = formatButtons.filter((btn) => btn.category === 'media');
 
     // Action untuk code block
     const insertCodeBlock = () => {
       onInsertText('```javascript\n// Your code here\nconsole.log("Hello World!");\n```');
+    };
+
+    // Handle image insertion
+    const handleImageInsert = (imageUrl: string, altText = 'Image') => {
+      onInsertText(`![${altText}](${imageUrl})`);
     };
 
     return (
@@ -111,6 +118,14 @@ export const DesktopToolbar: React.FC<DesktopToolbarProps> = React.memo(
               currentTheme={currentTheme}
             />
           ))}
+
+          {/* Image Upload Button */}
+          <ImageUploadButton
+            onImageInsert={handleImageInsert}
+            variant="ghost"
+            size="sm"
+            showLabel={true}
+          />
         </div>
       </div>
     );
