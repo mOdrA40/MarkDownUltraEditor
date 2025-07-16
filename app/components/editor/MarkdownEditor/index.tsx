@@ -4,6 +4,7 @@ MarkdownEditor
  */
 
 import React from 'react';
+import { useSearchParams } from 'react-router';
 import { usePerformanceDebug, useRenderPerformance } from '@/hooks/core/usePerformance';
 import { useFileStorage } from '@/hooks/files';
 import { useWelcomeDialog, WelcomeDialog } from '../../auth/WelcomeDialog';
@@ -39,8 +40,45 @@ export const MarkdownEditor: React.FC<MarkdownEditorProps> = ({
   className = '',
   style = {},
 }) => {
+  // Direct URL parameters handling to avoid race conditions
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  // Process URL parameters immediately
+  const urlTitle = searchParams.get('title');
+  const urlContent = searchParams.get('content');
+  const urlFile = searchParams.get('file');
+  const isNewFileRequest = searchParams.get('new') === 'true';
+
+  // Determine initial content based on URL parameters
+  const getInitialContent = () => {
+    if (isNewFileRequest) {
+      return ''; // Empty content for new files from /files
+    }
+    if (urlContent) {
+      return urlContent; // Content from URL parameters
+    }
+    return initialMarkdown; // Default or passed initial content
+  };
+
+  const getInitialFileName = () => {
+    if (isNewFileRequest) {
+      return 'untitled.md'; // Default name for new files
+    }
+    if (urlTitle) {
+      return urlTitle; // Title from URL parameters
+    }
+    return initialFileName; // Default or passed initial filename
+  };
+
+  // Clear URL parameters after processing
+  React.useEffect(() => {
+    if (urlTitle || urlContent || urlFile || isNewFileRequest) {
+      setSearchParams({}, { replace: true });
+    }
+  }, [urlTitle, urlContent, urlFile, isNewFileRequest, setSearchParams]);
+
   // State management hooks
-  const editorState = useEditorState(initialMarkdown, initialFileName);
+  const editorState = useEditorState(getInitialContent(), getInitialFileName());
   const responsiveLayout = useResponsiveLayout();
   const globalTheme = useTheme();
   const dialogManager = useDialogManager();

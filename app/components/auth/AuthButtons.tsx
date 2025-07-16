@@ -3,10 +3,10 @@
  * @author Axel Modra
  */
 
-import { SignInButton, UserButton, useAuth, useUser } from '@clerk/react-router';
-import { Cloud, Files, HardDrive, Settings, User } from 'lucide-react';
+import { SignInButton, useAuth, useClerk, useUser } from '@clerk/react-router';
+import { Cloud, Files, HardDrive, LogOut, Settings, User } from 'lucide-react';
 import type React from 'react';
-import { useLocation } from 'react-router';
+import { useLocation, useNavigate } from 'react-router';
 import { useTheme } from '@/components/features/ThemeSelector';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -46,6 +46,8 @@ export const AuthButtons: React.FC<AuthButtonsProps> = ({
 }) => {
   const { isSignedIn, isLoaded } = useAuth();
   const { user } = useUser();
+  const { signOut } = useClerk();
+  const navigate = useNavigate();
   const { isMobile, isSmallTablet } = responsive;
   const location = useLocation();
   const { currentTheme } = useTheme();
@@ -200,17 +202,21 @@ export const AuthButtons: React.FC<AuthButtonsProps> = ({
 
               <DropdownMenuSeparator />
 
-              {/* Sign out - using Clerk's UserButton for proper sign out */}
-              <div className="p-1">
-                <UserButton
-                  appearance={{
-                    elements: {
-                      userButtonAvatarBox: 'w-0 h-0 hidden',
-                      userButtonTrigger: 'w-full justify-start p-2 hover:bg-gray-100 rounded-sm',
-                    },
-                  }}
-                />
-              </div>
+              {/* Sign out */}
+              <DropdownMenuItem
+                onClick={async () => {
+                  try {
+                    await signOut();
+                    navigate('/');
+                  } catch (error) {
+                    console.error('Error signing out:', error);
+                  }
+                }}
+                className="text-red-600 focus:text-red-600 focus:bg-red-50"
+              >
+                <LogOut className="mr-2 h-4 w-4" />
+                <span>Sign Out</span>
+              </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
         </div>

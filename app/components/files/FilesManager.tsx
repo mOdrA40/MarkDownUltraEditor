@@ -299,7 +299,11 @@ export const FilesManager: React.FC = () => {
             </Button>
 
             {/* New file */}
-            <Button size="sm" onClick={() => navigate('/')} className="flex items-center gap-2">
+            <Button
+              size="sm"
+              onClick={() => navigate('/?new=true')}
+              className="flex items-center gap-2"
+            >
               <Plus className="w-4 h-4" />
               New File
             </Button>
@@ -362,7 +366,7 @@ export const FilesManager: React.FC = () => {
                 ? 'Try adjusting your search terms'
                 : 'Create your first markdown file to get started'}
             </p>
-            <Button onClick={() => navigate('/')}>
+            <Button onClick={() => navigate('/?new=true')}>
               <Plus className="w-4 h-4 mr-2" />
               Create New File
             </Button>
@@ -378,7 +382,7 @@ export const FilesManager: React.FC = () => {
               onSortByChange={setSortBy}
               sortDirection={sortDirection}
               onSortDirectionChange={setSortDirection}
-              onNewFile={() => navigate('/')}
+              onNewFile={() => navigate('/?new=true')}
               onExportAll={exportAllFiles}
               isLoading={isLoadingFiles}
               totalFiles={filteredAndSortedFiles.length}

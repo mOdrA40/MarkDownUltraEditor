@@ -19,10 +19,12 @@ export const useEditorState = (
 ): UseEditorStateReturn => {
   const { toast } = useToast();
 
-  // Get initial content from localStorage or use default
+  // Get initial content - prioritize passed initialMarkdown over localStorage
   const getInitialContent = () => {
-    if (initialMarkdown) return initialMarkdown;
+    // If initialMarkdown is explicitly provided (including empty string), use it
+    if (initialMarkdown !== undefined) return initialMarkdown;
 
+    // Only check localStorage if no initialMarkdown was provided
     if (typeof localStorage !== 'undefined') {
       const savedContent = localStorage.getItem(STORAGE_KEYS.CONTENT);
       if (savedContent !== null) return savedContent;
@@ -31,10 +33,12 @@ export const useEditorState = (
     return DEFAULT_FILE.CONTENT;
   };
 
-  // Get initial filename from localStorage or use default
+  // Get initial filename - prioritize passed initialFileName over localStorage
   const getInitialFileName = () => {
-    if (initialFileName) return initialFileName;
+    // If initialFileName is explicitly provided, use it
+    if (initialFileName !== undefined) return initialFileName;
 
+    // Only check localStorage if no initialFileName was provided
     if (typeof localStorage !== 'undefined') {
       const savedFileName = localStorage.getItem(STORAGE_KEYS.FILE_NAME);
       if (savedFileName !== null) return savedFileName;

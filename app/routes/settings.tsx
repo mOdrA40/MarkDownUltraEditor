@@ -1,8 +1,10 @@
-import { useAuth, useUser } from '@clerk/react-router';
-import { QueryClientProvider } from '@tanstack/react-query';
+import { useAuth, useUser } from "@clerk/react-router";
+import { QueryClientProvider } from "@tanstack/react-query";
 import {
   ArrowLeft,
+  Cloud,
   Database,
+  Edit,
   Eye,
   Monitor,
   Palette,
@@ -11,29 +13,52 @@ import {
   Settings as SettingsIcon,
   Type,
   User,
+  X,
   Zap,
-} from 'lucide-react';
-import { useEffect, useState } from 'react';
-import { type LoaderFunctionArgs, useNavigate } from 'react-router';
-import { AuthButtons } from '@/components/auth/AuthButtons';
-import { type Theme, ThemeSelector, themes, useTheme } from '@/components/features/ThemeSelector';
-import { WritingSettings } from '@/components/features/WritingSettings';
-import SecureErrorBoundary from '@/components/shared/SecureErrorBoundary';
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Separator } from '@/components/ui/separator';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { useToast } from '@/hooks/core/useToast';
-import { useResponsiveDetection } from '@/hooks/ui/useResponsive';
-import { queryClient } from '@/lib/queryClient';
+} from "lucide-react";
+import { useEffect, useState } from "react";
+import { type LoaderFunctionArgs, useNavigate } from "react-router";
+import { AuthButtons } from "@/components/auth/AuthButtons";
+import {
+  type Theme,
+  ThemeSelector,
+  themes,
+  useTheme,
+} from "@/components/features/ThemeSelector";
+import { WritingSettings } from "@/components/features/WritingSettings";
+import SecureErrorBoundary from "@/components/shared/SecureErrorBoundary";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Separator } from "@/components/ui/separator";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { useToast } from "@/hooks/core/useToast";
+import { useFileStorage } from "@/hooks/files";
+import { useResponsiveDetection } from "@/hooks/ui/useResponsive";
+import { queryClient } from "@/lib/queryClient";
+import {
+  type SessionData,
+  type SessionStats,
+  sessionManager,
+} from "@/services/sessionManager";
 import {
   DEFAULT_WRITING_SETTINGS,
   type WritingSettings as WritingSettingsType,
-} from '@/types/writingSettings';
-import { securityMiddleware } from '@/utils/security/routeMiddleware';
-import { ErrorCategory } from '@/utils/sentry';
-import { loadSettingsFromStorage, saveSettingsToStorage } from '@/utils/writingSettingsUtils';
+} from "@/types/writingSettings";
+import { safeConsole } from "@/utils/console";
+import { securityMiddleware } from "@/utils/security/routeMiddleware";
+import { ErrorCategory } from "@/utils/sentry";
+import {
+  loadSettingsFromStorage,
+  saveSettingsToStorage,
+} from "@/utils/writingSettingsUtils";
 
 // Using global optimized QueryClient from lib/queryClient.ts
 
@@ -70,14 +95,64 @@ function SettingsPageContent() {
   const { toast } = useToast();
   const responsive = useResponsiveDetection();
   const { currentTheme, setTheme: setGlobalTheme } = useTheme();
+  const fileStorage = useFileStorage();
 
   const [preferences, setPreferences] = useState<AppPreferences>({
     ...DEFAULT_PREFERENCES,
     theme: currentTheme,
   });
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
-  const [activeTab, setActiveTab] = useState('appearance');
+  const [activeTab, setActiveTab] = useState("appearance");
   const [isLoading, setIsLoading] = useState(true);
+  const [sessionStats, setSessionStats] = useState<SessionStats | null>(null);
+  const [userSessions, setUserSessions] = useState<SessionData[]>([]);
+  const [isEditingName, setIsEditingName] = useState(false);
+  const [editFirstName, setEditFirstName] = useState("");
+  const [editLastName, setEditLastName] = useState("");
+
+  // Load sessions when user is signed in
+  useEffect(() => {
+    const loadSessions = async () => {
+      if (isSignedIn && user?.id) {
+        try {
+          // Create current session if not exists
+          const currentSessionId = `session_${user.id}_${Date.now()}`;
+          await sessionManager.createSession(user.id, currentSessionId);
+
+          // Load session stats and list
+          const stats = await sessionManager.getSessionStats(user.id);
+          const sessions = await sessionManager.getUserSessions(user.id);
+          setSessionStats(stats);
+          setUserSessions(sessions);
+        } catch (error) {
+          safeConsole.error("Failed to load sessions:", error);
+        }
+      }
+    };
+
+    loadSessions();
+  }, [isSignedIn, user?.id]);
+
+  // Update session activity periodically
+  useEffect(() => {
+    if (!isSignedIn || !user?.id) return;
+
+    const currentSessionId = `session_${user.id}_${Date.now()}`;
+
+    // Update activity every 5 minutes
+    const activityInterval = setInterval(async () => {
+      try {
+        await sessionManager.updateActivity(currentSessionId);
+      } catch (error) {
+        safeConsole.error("Failed to update session activity:", error);
+      }
+    }, 5 * 60 * 1000); // 5 minutes
+
+    // Cleanup on unmount
+    return () => {
+      clearInterval(activityInterval);
+    };
+  }, [isSignedIn, user?.id]);
 
   useEffect(() => {
     const loadPreferences = async () => {
@@ -85,7 +160,9 @@ function SettingsPageContent() {
         setIsLoading(true);
 
         const savedWritingSettings = loadSettingsFromStorage();
-        const savedPreferences = localStorage.getItem('markdownEditor_preferences');
+        const savedPreferences = localStorage.getItem(
+          "markdownEditor_preferences"
+        );
 
         let loadedPrefs = {
           ...DEFAULT_PREFERENCES,
@@ -99,17 +176,17 @@ function SettingsPageContent() {
             const parsed = JSON.parse(savedPreferences);
             loadedPrefs = { ...loadedPrefs, ...parsed };
           } catch (error) {
-            console.warn('Failed to parse saved preferences:', error);
+            console.warn("Failed to parse saved preferences:", error);
           }
         }
 
         setPreferences(loadedPrefs);
       } catch (error) {
-        console.error('Error loading preferences:', error);
+        console.error("Error loading preferences:", error);
         toast({
-          title: 'Settings Load Error',
-          description: 'Failed to load your settings. Using defaults.',
-          variant: 'destructive',
+          title: "Settings Load Error",
+          description: "Failed to load your settings. Using defaults.",
+          variant: "destructive",
         });
       } finally {
         setIsLoading(false);
@@ -119,36 +196,69 @@ function SettingsPageContent() {
     loadPreferences();
   }, [toast, currentTheme]);
 
-  const updatePreference = <K extends keyof AppPreferences>(key: K, value: AppPreferences[K]) => {
+  const updatePreference = <K extends keyof AppPreferences>(
+    key: K,
+    value: AppPreferences[K]
+  ) => {
     setPreferences((prev) => ({ ...prev, [key]: value }));
     setHasUnsavedChanges(true);
 
     // Apply theme immediately when changed
-    if (key === 'theme') {
+    if (key === "theme") {
       setGlobalTheme(value as Theme);
     }
   };
 
   const savePreferences = async () => {
     try {
-      localStorage.setItem('markdownEditor_theme', preferences.theme.id);
+      // Save app preferences
+      localStorage.setItem("markdownEditor_theme", preferences.theme.id);
       saveSettingsToStorage(preferences.writingSettings);
 
-      const { theme: _theme, writingSettings: _writingSettings, ...appPrefs } = preferences;
-      localStorage.setItem('markdownEditor_preferences', JSON.stringify(appPrefs));
+      const {
+        theme: _theme,
+        writingSettings: _writingSettings,
+        ...appPrefs
+      } = preferences;
+      localStorage.setItem(
+        "markdownEditor_preferences",
+        JSON.stringify(appPrefs)
+      );
+
+      // Save name changes if in editing mode
+      if (isEditingName && user) {
+        try {
+          await user.update({
+            firstName: editFirstName,
+            lastName: editLastName,
+          });
+          setIsEditingName(false);
+        } catch (nameError) {
+          safeConsole.error("Failed to update name:", nameError);
+          toast({
+            title: "Name Update Failed",
+            description:
+              "Settings saved but name update failed. Please try again.",
+            variant: "destructive",
+          });
+          return;
+        }
+      }
 
       setHasUnsavedChanges(false);
 
       toast({
-        title: 'Settings Saved',
-        description: 'Your preferences have been saved successfully.',
+        title: "Settings Saved",
+        description: isEditingName
+          ? "Your preferences and name have been saved successfully."
+          : "Your preferences have been saved successfully.",
       });
     } catch (error) {
-      console.error('Error saving preferences:', error);
+      safeConsole.error("Error saving preferences:", error);
       toast({
-        title: 'Save Error',
-        description: 'Failed to save your settings. Please try again.',
-        variant: 'destructive',
+        title: "Save Error",
+        description: "Failed to save your settings. Please try again.",
+        variant: "destructive",
       });
     }
   };
@@ -156,14 +266,14 @@ function SettingsPageContent() {
   const resetToDefaults = () => {
     if (
       window.confirm(
-        'Are you sure you want to reset all settings to defaults? This cannot be undone.'
+        "Are you sure you want to reset all settings to defaults? This cannot be undone."
       )
     ) {
       setPreferences(DEFAULT_PREFERENCES);
       setHasUnsavedChanges(true);
       toast({
-        title: 'Settings Reset',
-        description: 'All settings have been reset to defaults.',
+        title: "Settings Reset",
+        description: "All settings have been reset to defaults.",
       });
     }
   };
@@ -180,7 +290,10 @@ function SettingsPageContent() {
   }
 
   return (
-    <div className="min-h-screen bg-background text-foreground" data-settings-page>
+    <div
+      className="min-h-screen bg-background text-foreground"
+      data-settings-page
+    >
       <div className="border-b bg-card/80 backdrop-blur-md sticky top-0 z-40">
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
@@ -188,7 +301,7 @@ function SettingsPageContent() {
               <Button
                 variant="ghost"
                 size="sm"
-                onClick={() => navigate('/')}
+                onClick={() => navigate("/")}
                 className="flex items-center gap-2"
               >
                 <ArrowLeft className="w-4 h-4" />
@@ -219,7 +332,7 @@ function SettingsPageContent() {
                   isTablet: responsive.isTablet,
                   isSmallTablet: responsive.windowWidth <= 640,
                 }}
-                onViewFiles={() => navigate('/files')}
+                onViewFiles={() => navigate("/files")}
                 onSettings={() => {
                   // Already on settings page - no action needed
                 }}
@@ -231,9 +344,16 @@ function SettingsPageContent() {
 
       <div className="container mx-auto px-4 py-8">
         <div className="max-w-4xl mx-auto">
-          <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
+          <Tabs
+            value={activeTab}
+            onValueChange={setActiveTab}
+            className="space-y-6"
+          >
             <TabsList className="grid w-full grid-cols-2 md:grid-cols-5 gap-1">
-              <TabsTrigger value="appearance" className="flex items-center gap-2">
+              <TabsTrigger
+                value="appearance"
+                className="flex items-center gap-2"
+              >
                 <Palette className="w-4 h-4" />
                 <span className="hidden sm:inline">Appearance</span>
               </TabsTrigger>
@@ -262,15 +382,21 @@ function SettingsPageContent() {
                     <Palette className="w-5 h-5" />
                     Theme & Visual Settings
                   </CardTitle>
-                  <CardDescription>Customize the visual appearance of your editor</CardDescription>
+                  <CardDescription>
+                    Customize the visual appearance of your editor
+                  </CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-6">
                   <div>
-                    <div className="text-sm font-medium mb-3 block">Color Theme</div>
+                    <div className="text-sm font-medium mb-3 block">
+                      Color Theme
+                    </div>
                     <div className="p-4 border rounded-lg bg-muted/50">
                       <ThemeSelector
                         currentTheme={preferences.theme}
-                        onThemeChange={(theme) => updatePreference('theme', theme)}
+                        onThemeChange={(theme) =>
+                          updatePreference("theme", theme)
+                        }
                       />
                     </div>
                   </div>
@@ -289,7 +415,12 @@ function SettingsPageContent() {
                           type="checkbox"
                           id="showLineNumbers"
                           checked={preferences.showLineNumbers}
-                          onChange={(e) => updatePreference('showLineNumbers', e.target.checked)}
+                          onChange={(e) =>
+                            updatePreference(
+                              "showLineNumbers",
+                              e.target.checked
+                            )
+                          }
                           className="rounded"
                         />
                         <label htmlFor="showLineNumbers" className="text-sm">
@@ -302,7 +433,9 @@ function SettingsPageContent() {
                           type="checkbox"
                           id="showWordCount"
                           checked={preferences.showWordCount}
-                          onChange={(e) => updatePreference('showWordCount', e.target.checked)}
+                          onChange={(e) =>
+                            updatePreference("showWordCount", e.target.checked)
+                          }
                           className="rounded"
                         />
                         <label htmlFor="showWordCount" className="text-sm">
@@ -315,7 +448,12 @@ function SettingsPageContent() {
                           type="checkbox"
                           id="showCharacterCount"
                           checked={preferences.showCharacterCount}
-                          onChange={(e) => updatePreference('showCharacterCount', e.target.checked)}
+                          onChange={(e) =>
+                            updatePreference(
+                              "showCharacterCount",
+                              e.target.checked
+                            )
+                          }
                           className="rounded"
                         />
                         <label htmlFor="showCharacterCount" className="text-sm">
@@ -335,7 +473,9 @@ function SettingsPageContent() {
                           type="checkbox"
                           id="reducedMotion"
                           checked={preferences.reducedMotion}
-                          onChange={(e) => updatePreference('reducedMotion', e.target.checked)}
+                          onChange={(e) =>
+                            updatePreference("reducedMotion", e.target.checked)
+                          }
                           className="rounded"
                         />
                         <label htmlFor="reducedMotion" className="text-sm">
@@ -348,7 +488,9 @@ function SettingsPageContent() {
                           type="checkbox"
                           id="soundEffects"
                           checked={preferences.soundEffects}
-                          onChange={(e) => updatePreference('soundEffects', e.target.checked)}
+                          onChange={(e) =>
+                            updatePreference("soundEffects", e.target.checked)
+                          }
                           className="rounded"
                         />
                         <label htmlFor="soundEffects" className="text-sm">
@@ -377,49 +519,52 @@ function SettingsPageContent() {
                     <WritingSettings
                       fontSize={preferences.writingSettings.fontSize}
                       onFontSizeChange={(size) =>
-                        updatePreference('writingSettings', {
+                        updatePreference("writingSettings", {
                           ...preferences.writingSettings,
                           fontSize: size,
                         })
                       }
                       lineHeight={preferences.writingSettings.lineHeight}
                       onLineHeightChange={(height) =>
-                        updatePreference('writingSettings', {
+                        updatePreference("writingSettings", {
                           ...preferences.writingSettings,
                           lineHeight: height,
                         })
                       }
                       focusMode={preferences.writingSettings.focusMode}
                       onFocusModeToggle={() =>
-                        updatePreference('writingSettings', {
+                        updatePreference("writingSettings", {
                           ...preferences.writingSettings,
                           focusMode: !preferences.writingSettings.focusMode,
                         })
                       }
-                      typewriterMode={preferences.writingSettings.typewriterMode}
+                      typewriterMode={
+                        preferences.writingSettings.typewriterMode
+                      }
                       onTypewriterModeToggle={() =>
-                        updatePreference('writingSettings', {
+                        updatePreference("writingSettings", {
                           ...preferences.writingSettings,
-                          typewriterMode: !preferences.writingSettings.typewriterMode,
+                          typewriterMode:
+                            !preferences.writingSettings.typewriterMode,
                         })
                       }
                       wordWrap={preferences.writingSettings.wordWrap}
                       onWordWrapToggle={() =>
-                        updatePreference('writingSettings', {
+                        updatePreference("writingSettings", {
                           ...preferences.writingSettings,
                           wordWrap: !preferences.writingSettings.wordWrap,
                         })
                       }
                       vimMode={preferences.writingSettings.vimMode}
                       onVimModeToggle={() =>
-                        updatePreference('writingSettings', {
+                        updatePreference("writingSettings", {
                           ...preferences.writingSettings,
                           vimMode: !preferences.writingSettings.vimMode,
                         })
                       }
                       zenMode={preferences.writingSettings.zenMode}
                       onZenModeToggle={() =>
-                        updatePreference('writingSettings', {
+                        updatePreference("writingSettings", {
                           ...preferences.writingSettings,
                           zenMode: !preferences.writingSettings.zenMode,
                         })
@@ -442,23 +587,626 @@ function SettingsPageContent() {
             <TabsContent value="storage" className="space-y-6">
               <Card>
                 <CardHeader>
-                  <CardTitle>Storage Management</CardTitle>
-                  <CardDescription>Coming soon...</CardDescription>
+                  <CardTitle className="flex items-center gap-2">
+                    <Database className="w-5 h-5" />
+                    Storage Management
+                  </CardTitle>
+                  <CardDescription>
+                    Manage your local and cloud storage settings
+                  </CardDescription>
                 </CardHeader>
+                <CardContent className="space-y-6">
+                  {/* Storage Status */}
+                  <div className="space-y-4">
+                    <h3 className="text-lg font-medium">Storage Status</h3>
+                    <div className="grid gap-4 md:grid-cols-2">
+                      <div className="p-4 border rounded-lg">
+                        <div className="flex items-center gap-2 mb-2">
+                          <Database className="w-4 h-4" />
+                          <span className="font-medium">Local Storage</span>
+                        </div>
+                        <p className="text-sm text-muted-foreground mb-2">
+                          Browser storage for offline access
+                        </p>
+                        <div className="space-y-2">
+                          <div className="flex justify-between text-sm">
+                            <span>Used</span>
+                            <span>~2.3 MB</span>
+                          </div>
+                          <div className="w-full bg-gray-200 rounded-full h-2">
+                            <div
+                              className="bg-blue-600 h-2 rounded-full"
+                              style={{ width: "15%" }}
+                            />
+                          </div>
+                        </div>
+                      </div>
+
+                      {isSignedIn && (
+                        <div className="p-4 border rounded-lg">
+                          <div className="flex items-center gap-2 mb-2">
+                            <Cloud className="w-4 h-4" />
+                            <span className="font-medium">Cloud Storage</span>
+                          </div>
+                          <p className="text-sm text-muted-foreground mb-2">
+                            Synced across all your devices
+                          </p>
+                          <div className="space-y-2">
+                            <div className="flex justify-between text-sm">
+                              <span>Used</span>
+                              <span>~1.8 MB</span>
+                            </div>
+                            <div className="w-full bg-gray-200 rounded-full h-2">
+                              <div
+                                className="bg-green-600 h-2 rounded-full"
+                                style={{ width: "12%" }}
+                              />
+                            </div>
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+
+                  {/* Storage Actions */}
+                  <div className="space-y-4">
+                    <h3 className="text-lg font-medium">Storage Actions</h3>
+                    <div className="flex flex-wrap gap-3">
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={async () => {
+                          try {
+                            // Clear localStorage
+                            const keysToRemove = [
+                              "markdownEditor_content",
+                              "markdownEditor_fileName",
+                              "markdownEditor_theme",
+                              "markdownEditor_preferences",
+                              "markdownEditor_writingSettings",
+                              "markdownEditor_hasVisited",
+                            ];
+
+                            keysToRemove.forEach((key) => {
+                              localStorage.removeItem(key);
+                            });
+
+                            toast({
+                              title: "Cache Cleared",
+                              description:
+                                "Local storage cache has been cleared successfully.",
+                            });
+                          } catch (error) {
+                            safeConsole.error("Failed to clear cache:", error);
+                            toast({
+                              title: "Clear Failed",
+                              description:
+                                "Failed to clear cache. Please try again.",
+                              variant: "destructive",
+                            });
+                          }
+                        }}
+                      >
+                        Clear Cache
+                      </Button>
+
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={async () => {
+                          try {
+                            const files = fileStorage.files;
+                            const exportData = {
+                              files,
+                              preferences,
+                              exportedAt: new Date().toISOString(),
+                              version: "1.0.0",
+                            };
+
+                            const blob = new Blob(
+                              [JSON.stringify(exportData, null, 2)],
+                              {
+                                type: "application/json",
+                              }
+                            );
+                            const url = URL.createObjectURL(blob);
+                            const link = document.createElement("a");
+                            link.href = url;
+                            link.download = `storage-export-${
+                              new Date().toISOString().split("T")[0]
+                            }.json`;
+                            document.body.appendChild(link);
+                            link.click();
+                            document.body.removeChild(link);
+                            URL.revokeObjectURL(url);
+
+                            toast({
+                              title: "Data Exported",
+                              description:
+                                "Your data has been exported successfully.",
+                            });
+                          } catch (error) {
+                            safeConsole.error("Failed to export data:", error);
+                            toast({
+                              title: "Export Failed",
+                              description:
+                                "Failed to export data. Please try again.",
+                              variant: "destructive",
+                            });
+                          }
+                        }}
+                      >
+                        Export Data
+                      </Button>
+
+                      {isSignedIn && (
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={async () => {
+                            try {
+                              // Force refresh files from cloud
+                              fileStorage.refreshFiles();
+
+                              toast({
+                                title: "Sync Complete",
+                                description:
+                                  "Your data has been synced with the cloud.",
+                              });
+                            } catch (error) {
+                              safeConsole.error("Failed to sync data:", error);
+                              toast({
+                                title: "Sync Failed",
+                                description:
+                                  "Failed to sync data. Please try again.",
+                                variant: "destructive",
+                              });
+                            }
+                          }}
+                        >
+                          Sync Now
+                        </Button>
+                      )}
+                    </div>
+                  </div>
+                </CardContent>
               </Card>
             </TabsContent>
 
             <TabsContent value="account" className="space-y-6">
-              <Card>
-                <CardHeader>
-                  <CardTitle>Account Information</CardTitle>
-                  <CardDescription>
-                    {isSignedIn && user
-                      ? `Welcome back, ${user.fullName || 'User'}!`
-                      : 'Please sign in to manage your account.'}
-                  </CardDescription>
-                </CardHeader>
-              </Card>
+              {isSignedIn && user ? (
+                <div className="space-y-6">
+                  {/* Account Information */}
+                  <Card>
+                    <CardHeader>
+                      <CardTitle className="flex items-center gap-2">
+                        <User className="w-5 h-5" />
+                        Account Information
+                      </CardTitle>
+                      <CardDescription>
+                        Manage your account details and preferences
+                      </CardDescription>
+                    </CardHeader>
+                    <CardContent className="space-y-6">
+                      <div className="flex items-center gap-4">
+                        {user.imageUrl && (
+                          <img
+                            src={user.imageUrl}
+                            alt={user.fullName || "User"}
+                            className="w-16 h-16 rounded-full"
+                          />
+                        )}
+                        <div>
+                          <h3 className="text-lg font-medium">
+                            {user.fullName || "User"}
+                          </h3>
+                          <p className="text-sm text-muted-foreground">
+                            {user.primaryEmailAddress?.emailAddress}
+                          </p>
+                          <Badge variant="secondary" className="mt-1">
+                            {(user.publicMetadata?.role as string) || "User"}
+                          </Badge>
+                        </div>
+                      </div>
+
+                      {/* Name Fields - Properly Aligned */}
+                      <div className="space-y-4">
+                        <div className="flex items-center justify-between">
+                          <h4 className="text-sm font-medium">
+                            Name Information
+                          </h4>
+                          {!isEditingName ? (
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              onClick={() => {
+                                setIsEditingName(true);
+                                setEditFirstName(user.firstName || "");
+                                setEditLastName(user.lastName || "");
+                              }}
+                            >
+                              <Edit className="w-3 h-3 mr-1" />
+                              Edit
+                            </Button>
+                          ) : (
+                            <div className="flex gap-1">
+                              <Button
+                                variant="ghost"
+                                size="sm"
+                                onClick={() => {
+                                  setIsEditingName(false);
+                                  setEditFirstName("");
+                                  setEditLastName("");
+                                  setHasUnsavedChanges(false);
+                                }}
+                              >
+                                <X className="w-3 h-3" />
+                              </Button>
+                            </div>
+                          )}
+                        </div>
+
+                        <div className="grid gap-4 md:grid-cols-2">
+                          <div className="space-y-2">
+                            <label
+                              htmlFor="firstName"
+                              className="text-sm font-medium"
+                            >
+                              First Name
+                            </label>
+                            {isEditingName ? (
+                              <Input
+                                id="firstName"
+                                value={editFirstName}
+                                onChange={(
+                                  e: React.ChangeEvent<HTMLInputElement>
+                                ) => {
+                                  setEditFirstName(e.target.value);
+                                  setHasUnsavedChanges(true);
+                                }}
+                                placeholder="Enter first name"
+                              />
+                            ) : (
+                              <p className="text-sm text-muted-foreground py-2">
+                                {user.firstName || "Not set"}
+                              </p>
+                            )}
+                          </div>
+
+                          <div className="space-y-2">
+                            <label
+                              htmlFor="lastName"
+                              className="text-sm font-medium"
+                            >
+                              Last Name
+                            </label>
+                            {isEditingName ? (
+                              <Input
+                                id="lastName"
+                                value={editLastName}
+                                onChange={(
+                                  e: React.ChangeEvent<HTMLInputElement>
+                                ) => {
+                                  setEditLastName(e.target.value);
+                                  setHasUnsavedChanges(true);
+                                }}
+                                placeholder="Enter last name"
+                              />
+                            ) : (
+                              <p className="text-sm text-muted-foreground py-2">
+                                {user.lastName || "Not set"}
+                              </p>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Other Account Information */}
+                      <div className="grid gap-4 md:grid-cols-2">
+                        <div>
+                          <div className="text-sm font-medium">
+                            Member Since
+                          </div>
+                          <p className="text-sm text-muted-foreground mt-1">
+                            {user.createdAt
+                              ? new Date(user.createdAt).toLocaleDateString()
+                              : "Unknown"}
+                          </p>
+                        </div>
+                        <div>
+                          <div className="text-sm font-medium">
+                            Last Sign In
+                          </div>
+                          <p className="text-sm text-muted-foreground mt-1">
+                            {user.lastSignInAt
+                              ? new Date(user.lastSignInAt).toLocaleDateString()
+                              : "Unknown"}
+                          </p>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+
+                  {/* Account Management */}
+                  <Card>
+                    <CardHeader>
+                      <CardTitle className="flex items-center gap-2">
+                        <User className="w-5 h-5" />
+                        Account Information
+                      </CardTitle>
+                      <CardDescription>
+                        View and edit your account details. Use "Save Settings"
+                        button to save changes.
+                      </CardDescription>
+                    </CardHeader>
+                    <CardContent className="space-y-4">
+                      <div className="flex items-center justify-between">
+                        <div>
+                          <p className="font-medium">Data Export</p>
+                          <p className="text-sm text-muted-foreground">
+                            Download a copy of your data
+                          </p>
+                        </div>
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={async () => {
+                            try {
+                              // Export user data
+                              const userData = {
+                                profile: {
+                                  id: user?.id,
+                                  email:
+                                    user?.primaryEmailAddress?.emailAddress,
+                                  name: user?.fullName,
+                                  createdAt: user?.createdAt,
+                                },
+                                files: fileStorage.files,
+                                exportedAt: new Date().toISOString(),
+                              };
+
+                              const blob = new Blob(
+                                [JSON.stringify(userData, null, 2)],
+                                {
+                                  type: "application/json",
+                                }
+                              );
+                              const url = URL.createObjectURL(blob);
+                              const link = document.createElement("a");
+                              link.href = url;
+                              link.download = `user-data-export-${
+                                new Date().toISOString().split("T")[0]
+                              }.json`;
+                              document.body.appendChild(link);
+                              link.click();
+                              document.body.removeChild(link);
+                              URL.revokeObjectURL(url);
+                            } catch (error) {
+                              console.error("Export failed:", error);
+                            }
+                          }}
+                        >
+                          Export Data
+                        </Button>
+                      </div>
+                    </CardContent>
+                  </Card>
+
+                  {/* Session Management */}
+                  <Card>
+                    <CardHeader>
+                      <CardTitle className="flex items-center gap-2">
+                        <Monitor className="w-5 h-5" />
+                        Session Management
+                      </CardTitle>
+                      <CardDescription>
+                        View and manage your active sessions across devices
+                      </CardDescription>
+                    </CardHeader>
+                    <CardContent className="space-y-4">
+                      {sessionStats && (
+                        <div className="grid gap-4 md:grid-cols-3">
+                          <div className="text-center p-3 bg-muted rounded-lg">
+                            <div className="text-2xl font-bold">
+                              {sessionStats.activeSessions}
+                            </div>
+                            <div className="text-sm text-muted-foreground">
+                              Active Sessions
+                            </div>
+                          </div>
+                          <div className="text-center p-3 bg-muted rounded-lg">
+                            <div className="text-2xl font-bold">
+                              {sessionStats.uniqueIPs}
+                            </div>
+                            <div className="text-sm text-muted-foreground">
+                              Unique Locations
+                            </div>
+                          </div>
+                          <div className="text-center p-3 bg-muted rounded-lg">
+                            <div className="text-2xl font-bold">
+                              {sessionStats.suspiciousActivity.length}
+                            </div>
+                            <div className="text-sm text-muted-foreground">
+                              Security Alerts
+                            </div>
+                          </div>
+                        </div>
+                      )}
+
+                      <div className="space-y-3">
+                        <div className="flex items-center justify-between">
+                          <h4 className="font-medium">Recent Sessions</h4>
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={async () => {
+                              if (user?.id) {
+                                try {
+                                  await sessionManager.terminateAllOtherSessions(
+                                    user.id,
+                                    "current"
+                                  );
+                                  // Reload sessions
+                                  const stats =
+                                    await sessionManager.getSessionStats(
+                                      user.id
+                                    );
+                                  const sessions =
+                                    await sessionManager.getUserSessions(
+                                      user.id
+                                    );
+                                  setSessionStats(stats);
+                                  setUserSessions(sessions);
+
+                                  toast({
+                                    title: "Sessions Terminated",
+                                    description:
+                                      "All other sessions have been terminated.",
+                                  });
+                                } catch (error) {
+                                  safeConsole.error(
+                                    "Failed to terminate sessions:",
+                                    error
+                                  );
+                                  toast({
+                                    title: "Termination Failed",
+                                    description:
+                                      "Failed to terminate sessions. Please try again.",
+                                    variant: "destructive",
+                                  });
+                                }
+                              }
+                            }}
+                          >
+                            Terminate All Others
+                          </Button>
+                        </div>
+
+                        <div className="space-y-2 max-h-60 overflow-y-auto">
+                          {userSessions.length > 0 ? (
+                            userSessions.slice(0, 5).map((session, index) => (
+                              <div
+                                key={session.id || index}
+                                className="flex items-center justify-between p-3 border rounded-lg"
+                              >
+                                <div className="flex-1">
+                                  <div className="flex items-center gap-2">
+                                    <div className="text-sm font-medium">
+                                      {session.device_info?.browser} on{" "}
+                                      {session.device_info?.os}
+                                    </div>
+                                    {Boolean(
+                                      (
+                                        session.security_flags as Record<
+                                          string,
+                                          unknown
+                                        >
+                                      )?.new_location
+                                    ) && (
+                                      <Badge
+                                        variant="outline"
+                                        className="text-xs"
+                                      >
+                                        New Location
+                                      </Badge>
+                                    )}
+                                    {Boolean(
+                                      (
+                                        session.security_flags as Record<
+                                          string,
+                                          unknown
+                                        >
+                                      )?.new_device
+                                    ) && (
+                                      <Badge
+                                        variant="outline"
+                                        className="text-xs"
+                                      >
+                                        New Device
+                                      </Badge>
+                                    )}
+                                  </div>
+                                  <div className="text-xs text-muted-foreground">
+                                    {session.location?.city},{" "}
+                                    {session.location?.country} •{" "}
+                                    {session.ip_address}
+                                  </div>
+                                  <div className="text-xs text-muted-foreground">
+                                    Last active:{" "}
+                                    {session.last_activity
+                                      ? new Date(
+                                          session.last_activity
+                                        ).toLocaleString()
+                                      : "Unknown"}
+                                  </div>
+                                </div>
+                                <Button
+                                  variant="ghost"
+                                  size="sm"
+                                  onClick={async () => {
+                                    try {
+                                      await sessionManager.terminateSession(
+                                        session.session_id
+                                      );
+                                      // Remove from local state
+                                      setUserSessions((prev) =>
+                                        prev.filter((s) => s.id !== session.id)
+                                      );
+
+                                      toast({
+                                        title: "Session Terminated",
+                                        description:
+                                          "Session has been terminated successfully.",
+                                      });
+                                    } catch (error) {
+                                      safeConsole.error(
+                                        "Failed to terminate session:",
+                                        error
+                                      );
+                                      toast({
+                                        title: "Termination Failed",
+                                        description:
+                                          "Failed to terminate session. Please try again.",
+                                        variant: "destructive",
+                                      });
+                                    }
+                                  }}
+                                >
+                                  Terminate
+                                </Button>
+                              </div>
+                            ))
+                          ) : (
+                            <div className="text-center py-4 text-muted-foreground">
+                              No active sessions found
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+                </div>
+              ) : (
+                <Card>
+                  <CardHeader>
+                    <CardTitle>Account Information</CardTitle>
+                    <CardDescription>
+                      Please sign in to manage your account settings
+                    </CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <AuthButtons
+                      responsive={{
+                        isMobile: responsive.isMobile,
+                        isTablet: responsive.isTablet,
+                        isSmallTablet: responsive.windowWidth <= 640,
+                      }}
+                      onViewFiles={() => navigate("/files")}
+                      onSettings={() => navigate("/settings")}
+                    />
+                  </CardContent>
+                </Card>
+              )}
             </TabsContent>
 
             <Card className="sticky bottom-4 bg-card/95 backdrop-blur-md border shadow-lg">
