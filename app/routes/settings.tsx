@@ -17,7 +17,7 @@ import {
   Zap,
 } from 'lucide-react';
 import { useEffect, useState } from 'react';
-import { type LoaderFunctionArgs, useNavigate } from 'react-router';
+import { type LoaderFunctionArgs, type MetaFunction, useNavigate } from 'react-router';
 import { AuthButtons } from '@/components/auth/AuthButtons';
 import { type Theme, ThemeSelector, themes, useTheme } from '@/components/features/ThemeSelector';
 import { WritingSettings } from '@/components/features/WritingSettings';
@@ -42,10 +42,33 @@ import { securityMiddleware } from '@/utils/security/routeMiddleware';
 import { ErrorCategory } from '@/utils/sentry';
 import { loadSettingsFromStorage, saveSettingsToStorage } from '@/utils/writingSettingsUtils';
 
-// Using global optimized QueryClient from lib/queryClient.ts
+export const meta: MetaFunction = () => {
+  return [
+    { title: 'Settings - MarkDown Ultra Editor' },
+    {
+      name: 'description',
+      content:
+        'Customize your markdown editor experience with themes, writing settings, and account management',
+    },
+    { name: 'viewport', content: 'width=device-width, initial-scale=1' },
+    { property: 'og:title', content: 'Settings - MarkDown Ultra Editor' },
+    {
+      property: 'og:description',
+      content:
+        'Customize your markdown editor experience with themes, writing settings, and account management',
+    },
+    { property: 'og:type', content: 'website' },
+    { name: 'twitter:card', content: 'summary' },
+    { name: 'twitter:title', content: 'Settings - MarkDown Ultra Editor' },
+    {
+      name: 'twitter:description',
+      content:
+        'Customize your markdown editor experience with themes, writing settings, and account management',
+    },
+  ];
+};
 
 export async function loader(args: LoaderFunctionArgs) {
-  // Apply security middleware for settings page
   const security = await securityMiddleware.protected(args);
   return security;
 }
@@ -92,16 +115,13 @@ function SettingsPageContent() {
   const [editFirstName, setEditFirstName] = useState('');
   const [editLastName, setEditLastName] = useState('');
 
-  // Load sessions when user is signed in
   useEffect(() => {
     const loadSessions = async () => {
       if (isSignedIn && user?.id) {
         try {
-          // Create current session if not exists
           const currentSessionId = `session_${user.id}_${Date.now()}`;
           await sessionManager.createSession(user.id, currentSessionId);
 
-          // Load session stats and list
           const stats = await sessionManager.getSessionStats(user.id);
           const sessions = await sessionManager.getUserSessions(user.id);
           setSessionStats(stats);
@@ -115,7 +135,6 @@ function SettingsPageContent() {
     loadSessions();
   }, [isSignedIn, user?.id]);
 
-  // Update session activity periodically
   useEffect(() => {
     if (!isSignedIn || !user?.id) return;
 
@@ -149,7 +168,7 @@ function SettingsPageContent() {
 
         let loadedPrefs = {
           ...DEFAULT_PREFERENCES,
-          theme: currentTheme, // Use global theme
+          theme: currentTheme, 
         };
 
         loadedPrefs.writingSettings = savedWritingSettings;
@@ -183,7 +202,6 @@ function SettingsPageContent() {
     setPreferences((prev) => ({ ...prev, [key]: value }));
     setHasUnsavedChanges(true);
 
-    // Apply theme immediately when changed
     if (key === 'theme') {
       setGlobalTheme(value as Theme);
     }

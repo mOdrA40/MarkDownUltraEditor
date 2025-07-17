@@ -51,9 +51,8 @@ export const VirtualizedFileList: React.FC<VirtualizedFileListProps> = ({
     count: files.length,
     getScrollElement: () => parentRef.current,
     estimateSize: () => itemHeight,
-    overscan, // Number of items to render outside visible area
-    // Performance optimizations
-    measureElement: undefined, // Use estimated size for better performance
+    overscan, 
+    measureElement: undefined, 
     scrollMargin: 0,
     gap: 0,
   });
@@ -74,9 +73,9 @@ export const VirtualizedFileList: React.FC<VirtualizedFileListProps> = ({
   return (
     <div
       ref={parentRef}
-      className={`h-[600px] overflow-auto ${className}`}
+      className={`h-[600px] overflow-auto mt-2 ${className}`}
       style={{
-        contain: 'strict', // CSS containment for better performance
+        contain: 'strict', 
       }}
     >
       <div

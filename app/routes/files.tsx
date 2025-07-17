@@ -37,11 +37,8 @@ export const meta: MetaFunction = () => {
   ];
 };
 
-// Using global optimized QueryClient from lib/queryClient.ts
-
 export async function loader(args: LoaderFunctionArgs) {
-  // Apply security middleware with file-specific protections
-  const security = await securityMiddleware.protected(args);
+  const security = await securityMiddleware.public(args);
   return security;
 }
 

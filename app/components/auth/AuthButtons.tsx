@@ -3,13 +3,13 @@
  * @author Axel Modra
  */
 
-import { SignInButton, useAuth, useClerk, useUser } from '@clerk/react-router';
-import { Cloud, Files, HardDrive, LogOut, Settings, User } from 'lucide-react';
-import type React from 'react';
-import { useLocation, useNavigate } from 'react-router';
-import { useTheme } from '@/components/features/ThemeSelector';
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
+import { SignInButton, useAuth, useClerk, useUser } from "@clerk/react-router";
+import { Cloud, Files, HardDrive, LogOut, Settings, User } from "lucide-react";
+import type React from "react";
+import { useNavigate } from "react-router";
+import { useTheme } from "@/components/features/ThemeSelector";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -17,7 +17,7 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
+} from "@/components/ui/dropdown-menu";
 
 /**
  * Props for AuthButtons component
@@ -42,19 +42,14 @@ export const AuthButtons: React.FC<AuthButtonsProps> = ({
   onViewFiles,
   onSettings,
   responsive,
-  className = '',
+  className = "",
 }) => {
   const { isSignedIn, isLoaded } = useAuth();
   const { user } = useUser();
   const { signOut } = useClerk();
   const navigate = useNavigate();
-  const { isMobile, isSmallTablet } = responsive;
-  const location = useLocation();
+  const { isSmallTablet } = responsive;
   const { currentTheme } = useTheme();
-
-  // Determine current page for navigation logic
-  const isFilesPage = location.pathname === '/files';
-  const isSettingsPage = location.pathname === '/settings';
 
   // Get theme-aware badge styles
   const getCloudBadgeStyles = () => {
@@ -91,45 +86,6 @@ export const AuthButtons: React.FC<AuthButtonsProps> = ({
           Cloud
         </Badge>
 
-        {/* Navigation button - shows opposite of current page */}
-        {!isMobile && (
-          <>
-            {isFilesPage && onSettings && (
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={onSettings}
-                className="hidden md:flex items-center gap-2"
-              >
-                <Settings className="w-4 h-4" />
-                Settings
-              </Button>
-            )}
-            {isSettingsPage && onViewFiles && (
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={onViewFiles}
-                className="hidden md:flex items-center gap-2"
-              >
-                <Files className="w-4 h-4" />
-                Files
-              </Button>
-            )}
-            {!isFilesPage && !isSettingsPage && onViewFiles && (
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={onViewFiles}
-                className="hidden md:flex items-center gap-2"
-              >
-                <Files className="w-4 h-4" />
-                Files
-              </Button>
-            )}
-          </>
-        )}
-
         {/* User menu */}
         <div className="relative">
           <DropdownMenu>
@@ -142,7 +98,7 @@ export const AuthButtons: React.FC<AuthButtonsProps> = ({
                 {user.imageUrl ? (
                   <img
                     src={user.imageUrl}
-                    alt={user.fullName || 'User'}
+                    alt={user.fullName || "User"}
                     className="w-6 h-6 rounded-full"
                   />
                 ) : (
@@ -150,7 +106,7 @@ export const AuthButtons: React.FC<AuthButtonsProps> = ({
                 )}
                 {!isSmallTablet && (
                   <span className="text-sm font-medium truncate max-w-24">
-                    {user.firstName || user.fullName || 'User'}
+                    {user.firstName || user.fullName || "User"}
                   </span>
                 )}
               </Button>
@@ -167,7 +123,9 @@ export const AuthButtons: React.FC<AuthButtonsProps> = ({
             >
               <DropdownMenuLabel className="font-normal">
                 <div className="flex flex-col space-y-1">
-                  <p className="text-sm font-medium leading-none">{user.fullName || 'User'}</p>
+                  <p className="text-sm font-medium leading-none">
+                    {user.fullName || "User"}
+                  </p>
                   <p className="text-xs leading-none text-muted-foreground">
                     {user.primaryEmailAddress?.emailAddress}
                   </p>
@@ -178,7 +136,13 @@ export const AuthButtons: React.FC<AuthButtonsProps> = ({
 
               {/* Files option - always visible in menu */}
               {onViewFiles && (
-                <DropdownMenuItem onClick={onViewFiles}>
+                <DropdownMenuItem
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    window.location.href = "/files";
+                  }}
+                >
                   <Files className="mr-2 h-4 w-4" />
                   <span>My Files</span>
                 </DropdownMenuItem>
@@ -186,7 +150,13 @@ export const AuthButtons: React.FC<AuthButtonsProps> = ({
 
               {/* Settings option */}
               {onSettings && (
-                <DropdownMenuItem onClick={onSettings}>
+                <DropdownMenuItem
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    window.location.href = "/settings";
+                  }}
+                >
                   <Settings className="mr-2 h-4 w-4" />
                   <span>Settings</span>
                 </DropdownMenuItem>
@@ -207,9 +177,9 @@ export const AuthButtons: React.FC<AuthButtonsProps> = ({
                 onClick={async () => {
                   try {
                     await signOut();
-                    navigate('/');
+                    navigate("/");
                   } catch (error) {
-                    console.error('Error signing out:', error);
+                    console.error("Error signing out:", error);
                   }
                 }}
                 className="text-red-600 focus:text-red-600 focus:bg-red-50"
@@ -239,7 +209,11 @@ export const AuthButtons: React.FC<AuthButtonsProps> = ({
       </Badge>
 
       {/* Single Auth Button - defaults to Sign In with Sign Up option */}
-      <SignInButton mode="redirect" fallbackRedirectUrl="/" forceRedirectUrl="/">
+      <SignInButton
+        mode="redirect"
+        fallbackRedirectUrl="/"
+        forceRedirectUrl="/"
+      >
         <Button
           variant="default"
           size="sm"

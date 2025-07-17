@@ -3,11 +3,19 @@
  * @author Axel Modra
  */
 
-import { useCallback, useEffect, useState } from 'react';
-import { useToast, useUndoRedo } from '@/hooks/core';
-import { cleanupStorage, formatBytes, getStorageInfo } from '@/utils/storageUtils';
-import type { EditorState, UseEditorStateReturn } from '../types';
-import { DEFAULT_FILE, STORAGE_KEYS, SUCCESS_MESSAGES } from '../utils/constants';
+import { useCallback, useEffect, useState } from "react";
+import { useToast, useUndoRedo } from "@/hooks/core";
+import {
+  cleanupStorage,
+  formatBytes,
+  getStorageInfo,
+} from "@/utils/storageUtils";
+import type { EditorState, UseEditorStateReturn } from "../types";
+import {
+  DEFAULT_FILE,
+  STORAGE_KEYS,
+  SUCCESS_MESSAGES,
+} from "../utils/constants";
 
 /**
  * Custom hook for managing editor state
@@ -21,11 +29,10 @@ export const useEditorState = (
 
   // Get initial content - prioritize passed initialMarkdown over localStorage
   const getInitialContent = () => {
-    // If initialMarkdown is explicitly provided (including empty string), use it
     if (initialMarkdown !== undefined) return initialMarkdown;
 
     // Only check localStorage if no initialMarkdown was provided
-    if (typeof localStorage !== 'undefined') {
+    if (typeof localStorage !== "undefined") {
       const savedContent = localStorage.getItem(STORAGE_KEYS.CONTENT);
       if (savedContent !== null) return savedContent;
     }
@@ -35,11 +42,10 @@ export const useEditorState = (
 
   // Get initial filename - prioritize passed initialFileName over localStorage
   const getInitialFileName = () => {
-    // If initialFileName is explicitly provided, use it
     if (initialFileName !== undefined) return initialFileName;
 
     // Only check localStorage if no initialFileName was provided
-    if (typeof localStorage !== 'undefined') {
+    if (typeof localStorage !== "undefined") {
       const savedFileName = localStorage.getItem(STORAGE_KEYS.FILE_NAME);
       if (savedFileName !== null) return savedFileName;
     }
@@ -96,24 +102,24 @@ export const useEditorState = (
    * Create a new file
    */
   const handleNewFile = useCallback(() => {
-    console.log('handleNewFile called - isModified:', isModified);
+    console.log("handleNewFile called - isModified:", isModified);
 
     if (isModified) {
       const confirmed = window.confirm(
-        'You have unsaved changes. Are you sure you want to create a new file?'
+        "You have unsaved changes. Are you sure you want to create a new file?"
       );
       if (!confirmed) {
-        console.log('User cancelled new file creation');
+        console.log("User cancelled new file creation");
         return;
       }
     }
 
     // Create empty file for "New" button
-    const newFileContent = '';
-    const newFileName = 'untitled.md';
+    const newFileContent = "";
+    const newFileName = "untitled.md";
 
-    console.log('Creating new file with content:', newFileContent);
-    console.log('Setting filename to:', newFileName);
+    console.log("Creating new file with content:", newFileContent);
+    console.log("Setting filename to:", newFileName);
 
     // Clear history first with the new content to prevent race conditions
     clearHistory(newFileContent);
@@ -124,56 +130,69 @@ export const useEditorState = (
     setIsModified(false);
 
     // Immediately update localStorage to prevent race conditions
-    if (typeof localStorage !== 'undefined') {
+    if (typeof localStorage !== "undefined") {
       try {
         localStorage.setItem(STORAGE_KEYS.CONTENT, newFileContent);
         localStorage.setItem(STORAGE_KEYS.FILE_NAME, newFileName);
       } catch (error) {
-        console.warn('Failed to save to localStorage:', error);
+        console.warn("Failed to save to localStorage:", error);
       }
     }
 
     toast({
-      title: 'New file created',
-      description: 'Ready to start writing!',
+      title: "New file created",
+      description: "Ready to start writing!",
     });
 
-    console.log('New file created successfully');
+    console.log("New file created successfully");
   }, [isModified, setMarkdown, clearHistory, toast]);
 
   /**
    * Load file content
    */
   const handleLoadFile = useCallback(
-    (content: string, name: string) => {
-      if (isModified) {
+    (content: string, name: string, bypassDialog = false) => {
+      if (!bypassDialog && isModified) {
         const confirmed = window.confirm(
-          'You have unsaved changes. Are you sure you want to load a new file?'
+          "You have unsaved changes. Are you sure you want to load a new file?"
         );
         if (!confirmed) return;
       }
 
       // Debug logging (development only)
-      if (process.env.NODE_ENV === 'development') {
-        console.log('Loading file:', name, 'with content length:', content.length);
+      if (process.env.NODE_ENV === "development") {
+        console.log(
+          "Loading file:",
+          name,
+          "with content length:",
+          content.length
+        );
       }
 
-      // Clear history first with the new content to prevent conflicts
+      // Clear history first with the new content to prevent race conditions
       clearHistory(content);
 
       // Update state - setMarkdown will handle the content update
       setMarkdown(content);
       setFileName(name);
-      setIsModified(false);
 
-      // Immediately update localStorage to prevent race conditions
-      if (typeof localStorage !== 'undefined') {
+      const isTemplate =
+        name.includes("Template") ||
+        name.includes("template") ||
+        content.includes("# Template") ||
+        content.includes("# API Documentation");
+      setIsModified(isTemplate);
+
+      // Only update localStorage for guest users to prevent conflict with Supabase
+      // For authenticated users, let auto-save handle the Supabase storage
+      if (typeof localStorage !== "undefined") {
         try {
+          // Always update current editor state in localStorage for editor functionality
           localStorage.setItem(STORAGE_KEYS.CONTENT, content);
           localStorage.setItem(STORAGE_KEYS.FILE_NAME, name);
-          console.log('Saved to localStorage:', name);
+          console.log("Updated editor state in localStorage:", name);
         } catch (error) {
-          console.warn('Failed to save to localStorage:', error);
+          console.warn("Failed to update localStorage:", error);
         }
       }
 
@@ -182,7 +201,7 @@ export const useEditorState = (
         description: `${name} has been loaded successfully.`,
       });
 
-      console.log('File loaded successfully:', name);
+      console.log("File loaded successfully:", name);
     },
     [isModified, setMarkdown, clearHistory, toast]
   );
@@ -191,7 +210,7 @@ export const useEditorState = (
    * Auto-save functionality with memory leak prevention
    */
   useEffect(() => {
-    if (typeof localStorage === 'undefined') return;
+    if (typeof localStorage === "undefined") return;
 
     if (autoSave && isModified) {
       const timer = setTimeout(() => {
@@ -225,11 +244,11 @@ export const useEditorState = (
             duration: 2000,
           });
         } catch (error) {
-          console.warn('Auto-save failed:', error);
+          console.warn("Auto-save failed:", error);
           toast({
-            title: 'Auto-save Warning',
-            description: 'Storage limit reached. Consider exporting your work.',
-            variant: 'destructive',
+            title: "Auto-save Warning",
+            description: "Storage limit reached. Consider exporting your work.",
+            variant: "destructive",
             duration: 5000,
           });
         }

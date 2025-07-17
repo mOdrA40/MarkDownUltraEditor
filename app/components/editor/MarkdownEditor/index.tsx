@@ -60,6 +60,10 @@ export const MarkdownEditor: React.FC<MarkdownEditorProps> = ({
     if (urlContent) {
       return urlContent; // Content from URL parameters
     }
+    // If there's a file parameter, don't use initial content - let useEffect handle it
+    if (urlFile) {
+      return undefined; // Let useEditorState check localStorage first
+    }
     return initialMarkdown; // Default or passed initial content
   };
 
@@ -69,6 +73,10 @@ export const MarkdownEditor: React.FC<MarkdownEditorProps> = ({
     }
     if (urlTitle) {
       return urlTitle; // Title from URL parameters
+    }
+    // If there's a file parameter, don't use initial filename - let useEffect handle it
+    if (urlFile) {
+      return undefined; // Let useEditorState check localStorage first
     }
     return initialFileName; // Default or passed initial filename
   };
@@ -209,8 +217,22 @@ export const MarkdownEditor: React.FC<MarkdownEditorProps> = ({
       undo: undoRedo.undo,
       redo: undoRedo.redo,
       newFile: editorActions.newFile,
-      saveFile: () => {
-        // TODO: Implement save functionality
+      saveFile: async () => {
+        // Manual save functionality
+        if (editor.markdown && editor.fileName && fileStorage.saveFile) {
+          try {
+            console.log("Manual save triggered:", editor.fileName);
+            await fileStorage.saveFile({
+              title: editor.fileName,
+              content: editor.markdown,
+              fileType: "markdown",
+              tags: [],
+            });
+            console.log("Manual save successful");
+          } catch (error) {
+            console.warn("Manual save failed:", error);
+          }
+        }
       },
       openFile: () => {
         // TODO: Implement open functionality
@@ -223,6 +245,9 @@ export const MarkdownEditor: React.FC<MarkdownEditorProps> = ({
       dialogActions,
       undoRedo,
       editorActions,
+      editor.markdown,
+      editor.fileName,
+      fileStorage.saveFile,
     ]
   );
 
@@ -267,21 +292,24 @@ export const MarkdownEditor: React.FC<MarkdownEditorProps> = ({
     setShowOutline((prev) => !prev);
   }, []);
 
-  // Auto-save functionality
+  // Auto-save functionality for both authenticated and guest users
   React.useEffect(() => {
     if (!editor.markdown || !editor.fileName || !editor.isModified) return;
 
     const autoSaveTimer = setTimeout(async () => {
-      if (fileStorage.isAuthenticated && fileStorage.saveFile) {
+      if (fileStorage.saveFile) {
         try {
-          console.log("Auto-saving file to cloud:", editor.fileName);
+          const storageType = fileStorage.isAuthenticated ? "cloud" : "local";
+          console.log(`Auto-saving file to ${storageType}:`, editor.fileName);
+
           await fileStorage.saveFile({
             title: editor.fileName,
             content: editor.markdown,
             fileType: "markdown",
             tags: [],
           });
-          console.log("Auto-save successful");
+
+          console.log(`Auto-save to ${storageType} successful`);
         } catch (error) {
           console.warn("Auto-save failed:", error);
         }
@@ -290,6 +318,67 @@ export const MarkdownEditor: React.FC<MarkdownEditorProps> = ({
 
     return () => clearTimeout(autoSaveTimer);
   }, [editor.markdown, editor.fileName, editor.isModified, fileStorage]);
+
+  // Use ref to store latest functions to avoid dependency issues
+  const loadFileRef = React.useRef(editorActions.loadFile);
+  const fileStorageRef = React.useRef(fileStorage.loadFile);
+
+  // Track if we're loading a file from URL parameter
+  const [isLoadingFromUrl, setIsLoadingFromUrl] = React.useState(!!urlFile);
+
+  // Update refs when functions change
+  React.useEffect(() => {
+    loadFileRef.current = editorActions.loadFile;
+    fileStorageRef.current = fileStorage.loadFile;
+  });
+
+  // Handle file loading from URL parameter - run immediately and only once
+  React.useEffect(() => {
+    if (urlFile && fileStorageRef.current) {
+      const loadFileFromStorage = async () => {
+        try {
+          console.log("Loading file from storage:", urlFile);
+          const fileData = await fileStorageRef.current?.(urlFile);
+          if (fileData) {
+            console.log(
+              "File loaded from storage:",
+              fileData.title,
+              "content length:",
+              fileData.content.length
+            );
+            (
+              loadFileRef.current as (
+                content: string,
+                name: string,
+                bypassDialog?: boolean
+              ) => void
+            )(fileData.content, fileData.title, true);
+          } else {
+            console.warn("File not found in storage:", urlFile);
+          }
+        } catch (error) {
+          console.error("Error loading file from storage:", error);
+        } finally {
+          setIsLoadingFromUrl(false);
+        }
+      };
+      loadFileFromStorage();
+    } else if (!urlFile) {
+      setIsLoadingFromUrl(false);
+    }
+  }, [urlFile]);
+
+  // Show loading state while loading file from URL
+  if (isLoadingFromUrl) {
+    return (
+      <div className="h-full flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900 mx-auto mb-4" />
+          <p>Loading file...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <EditorErrorBoundary

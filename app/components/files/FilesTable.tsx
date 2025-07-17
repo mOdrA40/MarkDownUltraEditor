@@ -23,7 +23,7 @@ import {
   Trash2,
 } from 'lucide-react';
 import type React from 'react';
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
@@ -56,6 +56,9 @@ interface FilesTableProps {
   formatDate: (date: string) => string;
   formatFileSize: (bytes: number) => string;
   isLoading?: boolean;
+  onTableReady?: (table: ReturnType<typeof useReactTable<FileData>>) => void; 
+  rowSelection: Record<string, boolean>;
+  setRowSelection: React.Dispatch<React.SetStateAction<Record<string, boolean>>>;
 }
 
 /**
@@ -75,29 +78,31 @@ export const FilesTable: React.FC<FilesTableProps> = ({
   formatDate,
   formatFileSize,
   isLoading = false,
+  onTableReady,
+  rowSelection,
+  setRowSelection,
 }) => {
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
-  const [rowSelection, setRowSelection] = useState({});
 
-  // Memoized columns definition for performance
   const columns = useMemo<ColumnDef<FileData>[]>(
     () => [
-      // Selection column
       {
         id: 'select',
         header: ({ table }) => (
           <Checkbox
             checked={table.getIsAllPageRowsSelected()}
             onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-            aria-label="Select all files"
+            aria-label="Select all"
+            className="translate-y-[2px]"
           />
         ),
         cell: ({ row }) => (
           <Checkbox
             checked={row.getIsSelected()}
             onCheckedChange={(value) => row.toggleSelected(!!value)}
-            aria-label="Select file"
+            aria-label="Select row"
+            className="translate-y-[2px]"
           />
         ),
         enableSorting: false,
@@ -112,7 +117,7 @@ export const FilesTable: React.FC<FilesTableProps> = ({
         cell: ({ row }) => {
           const file = row.original;
           return (
-            <div className="flex items-center space-x-2">
+            <div className="flex items-center space-x-2 text-left w-full">
               <FileText className="h-4 w-4 text-muted-foreground" />
               <div className="flex flex-col">
                 <span className="font-medium truncate max-w-[200px]">{file.title}</span>
@@ -184,26 +189,60 @@ export const FilesTable: React.FC<FilesTableProps> = ({
           return (
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button variant="ghost" className="h-8 w-8 p-0">
+                <Button
+                  variant="ghost"
+                  className="h-8 w-8 p-0"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                  }}
+                >
                   <span className="sr-only">Open menu</span>
                   <MoreHorizontal className="h-4 w-4" />
                 </Button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent align="end">
-                <DropdownMenuItem onClick={() => onOpen(file)}>
+              <DropdownMenuContent
+                align="end"
+                side="bottom"
+                sideOffset={4}
+                className="z-50 min-w-[120px]"
+                onCloseAutoFocus={(e) => e.preventDefault()}
+                avoidCollisions={true}
+              >
+                <DropdownMenuItem
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    onOpen(file);
+                  }}
+                >
                   <ExternalLink className="mr-2 h-4 w-4" />
                   Open
                 </DropdownMenuItem>
-                <DropdownMenuItem onClick={() => onDuplicate(file)}>
+                <DropdownMenuItem
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    onDuplicate(file);
+                  }}
+                >
                   <Copy className="mr-2 h-4 w-4" />
                   Duplicate
                 </DropdownMenuItem>
-                <DropdownMenuItem onClick={() => onExport(file)}>
+                <DropdownMenuItem
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    onExport(file);
+                  }}
+                >
                   <Download className="mr-2 h-4 w-4" />
                   Export
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem onClick={() => onDelete(file)} className="text-destructive">
+                <DropdownMenuItem
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    onDelete(file);
+                  }}
+                  className="text-destructive"
+                >
                   <Trash2 className="mr-2 h-4 w-4" />
                   Delete
                 </DropdownMenuItem>
@@ -216,43 +255,55 @@ export const FilesTable: React.FC<FilesTableProps> = ({
         size: 60,
       },
     ],
-    [onOpen, onDelete, onDuplicate, onExport, formatDate, formatFileSize]
+    [
+      onOpen,
+      onDelete,
+      onDuplicate,
+      onExport,
+      formatDate,
+      formatFileSize,
+    ]
   );
 
-  // Initialize table with optimized configuration
   const table = useReactTable({
     data: files,
     columns,
+    state: {
+      sorting,
+      columnFilters,
+      rowSelection,
+    },
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,
     onRowSelectionChange: setRowSelection,
     getCoreRowModel: getCoreRowModel(),
     getSortedRowModel: getSortedRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
-    state: {
-      sorting,
-      columnFilters,
-      rowSelection,
-    },
-    // Performance optimizations
     enableRowSelection: true,
-    enableMultiRowSelection: true,
-    enableSorting: true,
-    enableColumnFilters: true,
-    // Disable features we don't need for better performance
-    enableGlobalFilter: false,
-    enableColumnResizing: false,
+    meta: {
+      onOpen,
+      onDelete,
+      onDuplicate,
+      onExport,
+    },
   });
 
+  useEffect(() => {
+    if (onTableReady) {
+      onTableReady(table);
+    }
+  }, [table, onTableReady]);
+
+  // Loading state handling
   if (isLoading) {
     return (
-      <div className="rounded-md border">
+      <div className="rounded-md border mt-2">
         <Table>
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id}>
                 {headerGroup.headers.map((header) => (
-                  <TableHead key={header.id}>
+                  <TableHead key={header.id} className="py-4">
                     {header.isPlaceholder
                       ? null
                       : flexRender(header.column.columnDef.header, header.getContext())}
@@ -266,8 +317,11 @@ export const FilesTable: React.FC<FilesTableProps> = ({
               // biome-ignore lint/suspicious/noArrayIndexKey: Loading skeleton rows don't have meaningful IDs
               <TableRow key={`loading-row-${index}`}>
                 {columns.map((_, colIndex) => (
-                  // biome-ignore lint/suspicious/noArrayIndexKey: Loading skeleton cells don't have meaningful IDs
-                  <TableCell key={`loading-cell-${index}-${colIndex}`}>
+                  <TableCell
+                    // biome-ignore lint/suspicious/noArrayIndexKey: Loading skeleton cells don't have meaningful IDs
+                    key={`loading-cell-${index}-${colIndex}`}
+                    className="py-3"
+                  >
                     <div className="h-4 bg-muted animate-pulse rounded" />
                   </TableCell>
                 ))}
@@ -280,13 +334,13 @@ export const FilesTable: React.FC<FilesTableProps> = ({
   }
 
   return (
-    <div className="rounded-md border">
+    <div className="rounded-md border mt-2">
       <Table>
         <TableHeader>
           {table.getHeaderGroups().map((headerGroup) => (
             <TableRow key={headerGroup.id}>
               {headerGroup.headers.map((header) => (
-                <TableHead key={header.id} style={{ width: header.getSize() }}>
+                <TableHead key={header.id} style={{ width: header.getSize() }} className="py-4">
                   {header.isPlaceholder
                     ? null
                     : flexRender(header.column.columnDef.header, header.getContext())}
@@ -301,11 +355,23 @@ export const FilesTable: React.FC<FilesTableProps> = ({
               <TableRow
                 key={row.id}
                 data-state={row.getIsSelected() && 'selected'}
-                className="cursor-pointer hover:bg-muted/50"
-                onClick={() => onOpen(row.original)}
+                className={`hover:bg-muted/50 transition-colors cursor-pointer ${
+                  row.getIsSelected() ? 'bg-muted/30 border-l-2 border-l-primary' : ''
+                }`}
+                onClick={(e) => {
+                  // Only trigger row click if not clicking on checkbox or dropdown
+                  const target = e.target as HTMLElement;
+                  const isCheckbox = target.closest('[role="checkbox"]');
+                  const isDropdown =
+                    target.closest('[role="button"]') || target.closest('.dropdown-trigger');
+
+                  if (!isCheckbox && !isDropdown) {
+                    onOpen(row.original);
+                  }
+                }}
               >
                 {row.getVisibleCells().map((cell) => (
-                  <TableCell key={cell.id}>
+                  <TableCell key={cell.id} className="py-3">
                     {flexRender(cell.column.columnDef.cell, cell.getContext())}
                   </TableCell>
                 ))}

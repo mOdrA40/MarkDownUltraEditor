@@ -35,7 +35,7 @@ type SortDirection = 'asc' | 'desc';
  * Props interface for FilesTableToolbar
  */
 interface FilesTableToolbarProps {
-  table?: Table<FileData>; // Optional for now
+  table?: Table<FileData>; 
   searchQuery: string;
   onSearchChange: (query: string) => void;
   viewMode: ViewMode;
@@ -48,7 +48,8 @@ interface FilesTableToolbarProps {
   onExportAll: () => void;
   onDeleteSelected?: () => void;
   isLoading?: boolean;
-  totalFiles?: number; // Add total files count
+  totalFiles?: number; 
+  selectedRowCount?: number;
 }
 
 /**
@@ -69,16 +70,14 @@ export const FilesTableToolbar: React.FC<FilesTableToolbarProps> = ({
   onDeleteSelected,
   isLoading = false,
   totalFiles = 0,
+  selectedRowCount = 0,
 }) => {
-  const selectedRows = table?.getFilteredSelectedRowModel().rows || [];
-  const hasSelection = selectedRows.length > 0;
+  const hasSelection = selectedRowCount > 0;
 
-  // Clear search
   const clearSearch = () => {
     onSearchChange('');
   };
 
-  // Clear all filters
   const clearFilters = () => {
     table?.resetColumnFilters();
     onSearchChange('');
@@ -222,7 +221,7 @@ export const FilesTableToolbar: React.FC<FilesTableToolbarProps> = ({
           {hasSelection && (
             <>
               <Badge variant="outline" className="text-xs">
-                {selectedRows.length} selected
+                {selectedRowCount} selected
               </Badge>
 
               {onDeleteSelected && (

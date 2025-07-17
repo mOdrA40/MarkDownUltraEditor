@@ -141,42 +141,42 @@ const createHeadingComponent = (level: number) => {
     const getHeadingStyles = (level: number) => {
       const baseStyles = {
         color: theme?.text || "inherit",
-        scrollMarginTop: "6rem", // scroll-mt-24
+        scrollMarginTop: "6rem",
       };
 
       switch (level) {
         case 1:
           return {
             ...baseStyles,
-            fontSize: "1.875rem", // text-3xl
+            fontSize: "1.875rem",
             fontWeight: "bold",
-            marginBottom: "1.5rem", // mb-6
-            paddingBottom: "0.75rem", // pb-3
+            marginBottom: "1.5rem",
+            paddingBottom: "0.75rem", 
             borderBottom: `1px solid ${theme?.accent || "#e5e7eb"}`,
           };
         case 2:
           return {
             ...baseStyles,
-            fontSize: "1.5rem", // text-2xl
+            fontSize: "1.5rem", 
             fontWeight: "bold",
-            marginBottom: "1rem", // mb-4
-            marginTop: "2rem", // mt-8
+            marginBottom: "1rem",
+            marginTop: "2rem",
           };
         case 3:
           return {
             ...baseStyles,
-            fontSize: "1.25rem", // text-xl
+            fontSize: "1.25rem",
             fontWeight: "bold",
-            marginBottom: "0.75rem", // mb-3
-            marginTop: "1.5rem", // mt-6
+            marginBottom: "0.75rem",
+            marginTop: "1.5rem",
           };
         case 4:
           return {
             ...baseStyles,
-            fontSize: "1.125rem", // text-lg
+            fontSize: "1.125rem",
             fontWeight: "bold",
-            marginBottom: "0.5rem", // mb-2
-            marginTop: "1.25rem", // mt-5
+            marginBottom: "0.5rem",
+            marginTop: "1.25rem",
           };
         case 5:
           return {

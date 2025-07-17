@@ -4,6 +4,7 @@
  */
 
 import { useAuth } from '@clerk/react-router';
+import type { Table } from '@tanstack/react-table';
 import { formatDistanceToNow } from 'date-fns';
 import {
   ArrowLeft,
@@ -13,19 +14,13 @@ import {
   Download,
   Edit,
   FileText,
-  Grid3X3,
   HardDrive,
-  List,
   MoreVertical,
   Plus,
   RefreshCw,
-  Search,
-  SortAsc,
-  SortDesc,
   Trash2,
 } from 'lucide-react';
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router';
 import { AuthButtons } from '@/components/auth/AuthButtons';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -37,13 +32,12 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { Input } from '@/components/ui/input';
 import { useFileStorage } from '@/hooks/files';
 import { useResponsiveDetection } from '@/hooks/ui/useResponsive';
 import type { FileData } from '@/lib/supabase';
 import { formatBytes, formatRelativeDate } from '@/utils/common';
 import { safeConsole } from '@/utils/console';
-import { FilesTable } from './FilesTable';
+import { ClientOnlyFilesTable } from './ClientOnlyFilesTable';
 import { FilesTableToolbar } from './FilesTableToolbar';
 import { VirtualizedFileList } from './VirtualizedFileList';
 
@@ -62,7 +56,6 @@ type SortDirection = 'asc' | 'desc';
  * Files manager component
  */
 export const FilesManager: React.FC = () => {
-  const navigate = useNavigate();
   const { isSignedIn: _isSignedIn } = useAuth();
   const responsive = useResponsiveDetection();
   const {
@@ -71,16 +64,18 @@ export const FilesManager: React.FC = () => {
     storageInfo,
     deleteFile,
     exportAllFiles,
-    refreshFiles,
     isAuthenticated: _isAuthenticated,
   } = useFileStorage();
 
   // UI state
-  const [viewMode, setViewMode] = useState<ViewMode>('table'); // Default to table for better performance
+  const [viewMode, setViewMode] = useState<ViewMode>('table');
   const [searchQuery, setSearchQuery] = useState('');
   const [sortBy, setSortBy] = useState<SortOption>('date');
   const [sortDirection, setSortDirection] = useState<SortDirection>('desc');
-  const [_selectedFiles, _setSelectedFiles] = useState<Set<string>>(new Set());
+  const [rowSelection, setRowSelection] = useState({});
+  const [tableInstance, setTableInstance] = useState<Table<FileData> | undefined>(undefined); 
+
+  const selectedRowCount = Object.keys(rowSelection).length;
 
   // Filter and sort files
   const filteredAndSortedFiles = React.useMemo(() => {
@@ -120,8 +115,7 @@ export const FilesManager: React.FC = () => {
 
   // Handle file operations
   const handleOpenFile = (file: FileData) => {
-    // Navigate back to editor with file loaded
-    navigate(`/?file=${file.id || file.title}`);
+    window.location.href = `/?file=${file.id || file.title}`;
   };
 
   const handleDeleteFile = async (file: FileData) => {
@@ -134,19 +128,47 @@ export const FilesManager: React.FC = () => {
     }
   };
 
+  const handleTableReady = (table: Table<FileData>) => {
+    setTableInstance(table);
+  };
+
+  const handleBulkDeleteFromTable = async () => {
+    if (!tableInstance) return;
+
+    const selectedRows = tableInstance.getFilteredSelectedRowModel().rows;
+    if (selectedRows.length === 0) return;
+
+    const selectedFiles = selectedRows.map((row) => row.original);
+    const fileNames = selectedFiles.map((f) => f.title).join(', ');
+    const confirmMessage =
+      selectedFiles.length === 1
+        ? `Are you sure you want to delete "${fileNames}"?`
+        : `Are you sure you want to delete ${selectedFiles.length} files?\n\nFiles: ${fileNames}`;
+
+    if (window.confirm(confirmMessage)) {
+      try {
+        await Promise.all(selectedFiles.map((file) => deleteFile(file.id || file.title)));
+        safeConsole.log(`Successfully deleted ${selectedFiles.length} files`);
+
+        tableInstance.resetRowSelection();
+      } catch (error) {
+        safeConsole.error('Error deleting files:', error);
+      }
+    }
+  };
+
   const handleDuplicateFile = (file: FileData) => {
     const duplicatedFile = {
       ...file,
       title: `${file.title} (Copy)`,
-      id: undefined, // Will get new ID when saved
+      id: undefined, 
     };
 
-    // Navigate to editor with duplicated content
     const params = new URLSearchParams({
       title: duplicatedFile.title,
       content: duplicatedFile.content,
     });
-    navigate(`/?${params.toString()}`);
+    window.location.href = `/?${params.toString()}`;
   };
 
   const handleExportFile = (file: FileData) => {
@@ -169,13 +191,10 @@ export const FilesManager: React.FC = () => {
     }
   };
 
-  // Format file size - using centralized utility
   const formatFileSize = (bytes: number) => {
-    // Use centralized formatBytes from common utils
     return formatBytes(bytes);
   };
 
-  // Format date - using centralized utility
   const formatDate = (dateString: string) => {
     return formatRelativeDate(dateString, formatDistanceToNow);
   };
@@ -190,7 +209,9 @@ export const FilesManager: React.FC = () => {
               <Button
                 variant="ghost"
                 size="sm"
-                onClick={() => navigate('/')}
+                onClick={() => {
+                  window.location.href = '/';
+                }}
                 className="flex items-center gap-2"
               >
                 <ArrowLeft className="w-4 h-4" />
@@ -214,12 +235,8 @@ export const FilesManager: React.FC = () => {
               responsive={{
                 isMobile: responsive.isMobile,
                 isTablet: responsive.isTablet,
-                isSmallTablet: responsive.windowWidth <= 640, // sm breakpoint
+                isSmallTablet: responsive.windowWidth <= 640, 
               }}
-              onViewFiles={() => {
-                // Already on files page - no action needed
-              }}
-              onSettings={() => navigate('/settings')}
             />
           </div>
         </div>
@@ -227,89 +244,6 @@ export const FilesManager: React.FC = () => {
 
       {/* Main content */}
       <div className="container mx-auto px-4 py-6">
-        {/* Controls */}
-        <div className="flex flex-col sm:flex-row gap-4 mb-6">
-          {/* Search */}
-          <div className="relative flex-1">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-            <Input
-              placeholder="Search files..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="pl-10"
-            />
-          </div>
-
-          {/* Controls */}
-          <div className="flex items-center gap-2">
-            {/* View mode toggle */}
-            <div className="flex border rounded-md">
-              <Button
-                variant={viewMode === 'grid' ? 'default' : 'ghost'}
-                size="sm"
-                onClick={() => setViewMode('grid')}
-                className="rounded-r-none"
-              >
-                <Grid3X3 className="w-4 h-4" />
-              </Button>
-              <Button
-                variant={viewMode === 'list' ? 'default' : 'ghost'}
-                size="sm"
-                onClick={() => setViewMode('list')}
-                className="rounded-l-none"
-              >
-                <List className="w-4 h-4" />
-              </Button>
-            </div>
-
-            {/* Sort */}
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button variant="outline" size="sm">
-                  {sortDirection === 'asc' ? (
-                    <SortAsc className="w-4 h-4" />
-                  ) : (
-                    <SortDesc className="w-4 h-4" />
-                  )}
-                  Sort
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent>
-                <DropdownMenuItem onClick={() => setSortBy('name')}>
-                  Name {sortBy === 'name' && '✓'}
-                </DropdownMenuItem>
-                <DropdownMenuItem onClick={() => setSortBy('date')}>
-                  Date {sortBy === 'date' && '✓'}
-                </DropdownMenuItem>
-                <DropdownMenuItem onClick={() => setSortBy('size')}>
-                  Size {sortBy === 'size' && '✓'}
-                </DropdownMenuItem>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem
-                  onClick={() => setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc')}
-                >
-                  {sortDirection === 'asc' ? 'Descending' : 'Ascending'}
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
-
-            {/* Refresh */}
-            <Button variant="outline" size="sm" onClick={refreshFiles} disabled={isLoadingFiles}>
-              <RefreshCw className={`w-4 h-4 ${isLoadingFiles ? 'animate-spin' : ''}`} />
-            </Button>
-
-            {/* New file */}
-            <Button
-              size="sm"
-              onClick={() => navigate('/?new=true')}
-              className="flex items-center gap-2"
-            >
-              <Plus className="w-4 h-4" />
-              New File
-            </Button>
-          </div>
-        </div>
-
         {/* Storage info */}
         {storageInfo && (
           <Card className="mb-6">
@@ -349,45 +283,60 @@ export const FilesManager: React.FC = () => {
           </Card>
         )}
 
-        {/* Files display */}
-        {isLoadingFiles ? (
-          <div className="text-center py-12">
-            <RefreshCw className="w-8 h-8 animate-spin mx-auto mb-4 text-muted-foreground" />
-            <p className="text-muted-foreground">Loading files...</p>
-          </div>
-        ) : filteredAndSortedFiles.length === 0 ? (
-          <div className="text-center py-12">
-            <FileText className="w-12 h-12 mx-auto mb-4 text-muted-foreground" />
-            <h3 className="text-lg font-medium mb-2">
-              {searchQuery ? 'No files found' : 'No files yet'}
-            </h3>
-            <p className="text-muted-foreground mb-4">
-              {searchQuery
-                ? 'Try adjusting your search terms'
-                : 'Create your first markdown file to get started'}
-            </p>
-            <Button onClick={() => navigate('/?new=true')}>
-              <Plus className="w-4 h-4 mr-2" />
-              Create New File
-            </Button>
-          </div>
-        ) : viewMode === 'table' ? (
-          <div className="space-y-4">
+        {/* Files Toolbar - Always show for all view modes */}
+        {!isLoadingFiles && filteredAndSortedFiles.length > 0 && (
+          <div className="mt-4">
             <FilesTableToolbar
-              searchQuery={searchQuery}
-              onSearchChange={setSearchQuery}
+              table={tableInstance}
               viewMode={viewMode}
               onViewModeChange={setViewMode}
+              searchQuery={searchQuery}
+              onSearchChange={setSearchQuery}
               sortBy={sortBy}
               onSortByChange={setSortBy}
               sortDirection={sortDirection}
               onSortDirectionChange={setSortDirection}
-              onNewFile={() => navigate('/?new=true')}
-              onExportAll={exportAllFiles}
+              onNewFile={() => {
+                window.location.href = '/?new=true';
+              }}
+              onExportAll={handleExportAll}
+              onDeleteSelected={handleBulkDeleteFromTable}
               isLoading={isLoadingFiles}
               totalFiles={filteredAndSortedFiles.length}
+              selectedRowCount={selectedRowCount}
             />
-            <FilesTable
+          </div>
+        )}
+
+        {/* Files display - Added proper spacing from toolbar */}
+        <div className="mt-6">
+          {isLoadingFiles ? (
+            <div className="text-center py-12">
+              <RefreshCw className="w-8 h-8 animate-spin mx-auto mb-4 text-muted-foreground" />
+              <p className="text-muted-foreground">Loading files...</p>
+            </div>
+          ) : filteredAndSortedFiles.length === 0 ? (
+            <div className="text-center py-12">
+              <FileText className="w-12 h-12 mx-auto mb-4 text-muted-foreground" />
+              <h3 className="text-lg font-medium mb-2">
+                {searchQuery ? 'No files found' : 'No files yet'}
+              </h3>
+              <p className="text-muted-foreground mb-4">
+                {searchQuery
+                  ? 'Try adjusting your search terms'
+                  : 'Create your first markdown file to get started'}
+              </p>
+              <Button
+                onClick={() => {
+                  window.location.href = '/?new=true';
+                }}
+              >
+                <Plus className="w-4 h-4 mr-2" />
+                Create New File
+              </Button>
+            </div>
+          ) : viewMode === 'table' ? (
+            <ClientOnlyFilesTable
               files={filteredAndSortedFiles}
               onOpen={handleOpenFile}
               onDelete={handleDeleteFile}
@@ -396,41 +345,44 @@ export const FilesManager: React.FC = () => {
               formatDate={formatDate}
               formatFileSize={formatFileSize}
               isLoading={isLoadingFiles}
+              onTableReady={handleTableReady}
+              rowSelection={rowSelection}
+              setRowSelection={setRowSelection}
             />
-          </div>
-        ) : shouldUseVirtualization && viewMode === 'list' ? (
-          <VirtualizedFileList
-            files={filteredAndSortedFiles}
-            onOpen={handleOpenFile}
-            onDelete={handleDeleteFile}
-            onDuplicate={handleDuplicateFile}
-            onExport={handleExportFile}
-            formatDate={formatDate}
-            formatFileSize={formatFileSize}
-          />
-        ) : (
-          <div
-            className={
-              viewMode === 'grid'
-                ? 'grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4'
-                : 'space-y-2'
-            }
-          >
-            {filteredAndSortedFiles.map((file) => (
-              <FileCard
-                key={file.id || file.title}
-                file={file}
-                viewMode={viewMode}
-                onOpen={() => handleOpenFile(file)}
-                onDelete={() => handleDeleteFile(file)}
-                onDuplicate={() => handleDuplicateFile(file)}
-                onExport={() => handleExportFile(file)}
-                formatDate={formatDate}
-                formatFileSize={formatFileSize}
-              />
-            ))}
-          </div>
-        )}
+          ) : shouldUseVirtualization && viewMode === 'list' ? (
+            <VirtualizedFileList
+              files={filteredAndSortedFiles}
+              onOpen={handleOpenFile}
+              onDelete={handleDeleteFile}
+              onDuplicate={handleDuplicateFile}
+              onExport={handleExportFile}
+              formatDate={formatDate}
+              formatFileSize={formatFileSize}
+            />
+          ) : (
+            <div
+              className={
+                viewMode === 'grid'
+                  ? 'grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 mt-2'
+                  : 'space-y-3 mt-2'
+              }
+            >
+              {filteredAndSortedFiles.map((file) => (
+                <FileCard
+                  key={file.id || file.title}
+                  file={file}
+                  viewMode={viewMode}
+                  onOpen={() => handleOpenFile(file)}
+                  onDelete={() => handleDeleteFile(file)}
+                  onDuplicate={() => handleDuplicateFile(file)}
+                  onExport={() => handleExportFile(file)}
+                  formatDate={formatDate}
+                  formatFileSize={formatFileSize}
+                />
+              ))}
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );
@@ -463,7 +415,7 @@ const FileCard: React.FC<FileCardProps> = ({
   if (viewMode === 'list') {
     return (
       <Card className="hover:shadow-md transition-shadow cursor-pointer">
-        <CardContent className="p-4">
+        <CardContent className="p-5">
           <div className="flex items-center justify-between">
             <button
               type="button"
@@ -472,7 +424,7 @@ const FileCard: React.FC<FileCardProps> = ({
             >
               <FileText className="w-5 h-5 text-primary flex-shrink-0" />
               <div className="min-w-0 flex-1">
-                <h3 className="font-medium truncate">{file.title}</h3>
+                <h3 className="font-medium truncate mb-1">{file.title}</h3>
                 <div className="flex items-center gap-4 text-sm text-muted-foreground">
                   <span className="flex items-center gap-1">
                     <Clock className="w-3 h-3" />
