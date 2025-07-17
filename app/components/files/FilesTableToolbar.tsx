@@ -35,7 +35,7 @@ type SortDirection = 'asc' | 'desc';
  * Props interface for FilesTableToolbar
  */
 interface FilesTableToolbarProps {
-  table?: Table<FileData>; 
+  table?: Table<FileData>;
   searchQuery: string;
   onSearchChange: (query: string) => void;
   viewMode: ViewMode;
@@ -48,7 +48,7 @@ interface FilesTableToolbarProps {
   onExportAll: () => void;
   onDeleteSelected?: () => void;
   isLoading?: boolean;
-  totalFiles?: number; 
+  totalFiles?: number;
   selectedRowCount?: number;
 }
 

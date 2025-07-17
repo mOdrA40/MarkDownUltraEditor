@@ -3,18 +3,21 @@
  * @author Axel Modra
  */
 
-import { useAuth } from '@clerk/react-router';
-import { useMutation, useQuery } from '@tanstack/react-query';
-import { useCallback, useEffect, useMemo, useState } from 'react';
-import { useToast } from '@/hooks/core/useToast';
-import { invalidateQueries, queryKeys } from '@/lib/queryClient';
-import { createAuthenticatedSupabaseClient, type FileData } from '@/lib/supabase';
+import { useAuth } from "@clerk/react-router";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import { useCallback, useEffect, useMemo, useState } from "react";
+import { useToast } from "@/hooks/core/useToast";
+import { invalidateQueries, queryKeys } from "@/lib/queryClient";
+import {
+  createAuthenticatedSupabaseClient,
+  type FileData,
+} from "@/lib/supabase";
 import {
   createFileStorageService,
   type FileStorageService,
   type StorageInfo,
-} from '@/services/fileStorage';
-import { safeConsole } from '@/utils/console';
+} from "@/services/fileStorage";
+import { safeConsole } from "@/utils/console";
 
 /**
  * Hook return interface
@@ -52,7 +55,8 @@ export const useFileStorage = (): UseFileStorageReturn => {
   const { toast } = useToast();
   // Using global queryClient from invalidateQueries helper functions
 
-  const [storageService, setStorageService] = useState<FileStorageService | null>(null);
+  const [storageService, setStorageService] =
+    useState<FileStorageService | null>(null);
   const [isInitialized, setIsInitialized] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -60,7 +64,7 @@ export const useFileStorage = (): UseFileStorageReturn => {
   useEffect(() => {
     const initializeStorageService = async () => {
       try {
-        safeConsole.log('Initializing file storage service...');
+        safeConsole.log("Initializing file storage service...");
         setError(null);
 
         let supabaseClient = null;
@@ -68,29 +72,35 @@ export const useFileStorage = (): UseFileStorageReturn => {
 
         if (isSignedIn && userId) {
           try {
-            const token = await getToken({ template: 'supabase' });
+            // NEW: Use native third-party auth integration (no template needed)
+            const token = await getToken();
             if (token) {
               supabaseClient = createAuthenticatedSupabaseClient(token);
               currentUserId = userId;
-              safeConsole.log('Authenticated storage service initialized');
+              safeConsole.log(
+                "✓ Authenticated storage service initialized with third-party auth"
+              );
             } else {
-              safeConsole.log('Failed to get Supabase token, using local storage');
+              safeConsole.log("Failed to get Clerk token, using local storage");
             }
           } catch (tokenError) {
-            safeConsole.log('Error getting token, falling back to local storage:', tokenError);
+            safeConsole.log(
+              "Error getting token, falling back to local storage:",
+              tokenError
+            );
           }
         } else {
-          safeConsole.log('User not signed in, using local storage');
+          safeConsole.log("User not signed in, using local storage");
         }
 
         const service = createFileStorageService(supabaseClient, currentUserId);
         setStorageService(service);
         setIsInitialized(true);
 
-        safeConsole.log('File storage service initialized successfully');
+        safeConsole.log("File storage service initialized successfully");
       } catch (initError) {
-        safeConsole.error('Error initializing storage service:', initError);
-        setError('Failed to initialize storage service');
+        safeConsole.error("Error initializing storage service:", initError);
+        setError("Failed to initialize storage service");
 
         // Fallback to local storage
         const fallbackService = createFileStorageService(null, null);
@@ -108,24 +118,26 @@ export const useFileStorage = (): UseFileStorageReturn => {
     isLoading: isLoadingFiles,
     refetch: refreshFiles,
   } = useQuery<FileData[]>({
-    queryKey: queryKeys.files.list(userId || 'anonymous'),
+    queryKey: queryKeys.files.list(userId || "anonymous"),
     queryFn: async () => {
       if (!storageService) {
-        safeConsole.log('Storage service not initialized, returning empty files list');
+        safeConsole.log(
+          "Storage service not initialized, returning empty files list"
+        );
         return [];
       }
 
       try {
-        safeConsole.log('Fetching files list...');
+        safeConsole.log("Fetching files list...");
         const filesList = await storageService.list();
         safeConsole.log(`Fetched ${filesList.length} files`);
         return filesList;
       } catch (error) {
-        safeConsole.error('Error fetching files:', error);
+        safeConsole.error("Error fetching files:", error);
         toast({
-          title: 'Error Loading Files',
-          description: 'Failed to load your files. Please try again.',
-          variant: 'destructive',
+          title: "Error Loading Files",
+          description: "Failed to load your files. Please try again.",
+          variant: "destructive",
         });
         return [];
       }
@@ -136,54 +148,66 @@ export const useFileStorage = (): UseFileStorageReturn => {
   });
 
   // Storage info query with optimized keys
-  const { data: storageInfo = null, isLoading: isLoadingStorageInfo } = useQuery({
-    queryKey: queryKeys.storage.info(userId || 'anonymous'),
-    queryFn: () => {
-      if (!storageService) return null;
+  const { data: storageInfo = null, isLoading: isLoadingStorageInfo } =
+    useQuery({
+      queryKey: queryKeys.storage.info(userId || "anonymous"),
+      queryFn: async () => {
+        if (!storageService) return null;
 
-      try {
-        safeConsole.log('Fetching storage info...');
-        const info = storageService.getStorageInfo();
-        safeConsole.log('Storage info:', info);
-        return info;
-      } catch (error) {
-        safeConsole.error('Error getting storage info:', error);
-        return null;
-      }
-    },
-    enabled: isInitialized && !!storageService,
-    staleTime: 2 * 60 * 1000, // 2 minutes
-  });
+        try {
+          safeConsole.log("Fetching storage info...");
+          // Use async method for more accurate data
+          const info = await storageService.getStorageInfoAsync();
+          safeConsole.log("Storage info:", info);
+          return info;
+        } catch (error) {
+          safeConsole.error("Error getting storage info:", error);
+          // Fallback to sync method
+          try {
+            return storageService.getStorageInfo();
+          } catch (fallbackError) {
+            safeConsole.error(
+              "Error getting fallback storage info:",
+              fallbackError
+            );
+            return null;
+          }
+        }
+      },
+      enabled: isInitialized && !!storageService,
+      staleTime: 2 * 60 * 1000, // 2 minutes
+    });
 
   // Save file mutation
   const saveFileMutation = useMutation({
     mutationFn: async (file: FileData) => {
       if (!storageService) {
-        throw new Error('Storage service not initialized');
+        throw new Error("Storage service not initialized");
       }
 
-      safeConsole.log('Saving file:', file.title);
+      safeConsole.log("Saving file:", file.title);
       return await storageService.save(file);
     },
     onSuccess: (savedFile) => {
-      safeConsole.log('File saved successfully:', savedFile.title);
+      safeConsole.log("File saved successfully:", savedFile.title);
 
       // Optimized invalidation using helper functions
       invalidateQueries.files.all();
       invalidateQueries.storage.all();
 
       toast({
-        title: 'File Saved',
+        title: "File Saved",
         description: `${savedFile.title} has been saved successfully.`,
       });
     },
     onError: (error: unknown) => {
-      safeConsole.error('Error saving file:', error);
+      safeConsole.error("Error saving file:", error);
       const errorObj = error as { message?: string };
       toast({
-        title: 'Save Failed',
-        description: errorObj.message || 'Failed to save file. Please try again.',
-        variant: 'destructive',
+        title: "Save Failed",
+        description:
+          errorObj.message || "Failed to save file. Please try again.",
+        variant: "destructive",
       });
     },
   });
@@ -192,31 +216,32 @@ export const useFileStorage = (): UseFileStorageReturn => {
   const deleteFileMutation = useMutation({
     mutationFn: async (identifier: string) => {
       if (!storageService) {
-        throw new Error('Storage service not initialized');
+        throw new Error("Storage service not initialized");
       }
 
-      safeConsole.log('Deleting file:', identifier);
+      safeConsole.log("Deleting file:", identifier);
       await storageService.delete(identifier);
     },
     onSuccess: (_, identifier) => {
-      safeConsole.log('File deleted successfully:', identifier);
+      safeConsole.log("File deleted successfully:", identifier);
 
       // Optimized invalidation using helper functions
       invalidateQueries.files.all();
       invalidateQueries.storage.all();
 
       toast({
-        title: 'File Deleted',
-        description: 'File has been deleted successfully.',
+        title: "File Deleted",
+        description: "File has been deleted successfully.",
       });
     },
     onError: (error: unknown) => {
-      safeConsole.error('Error deleting file:', error);
+      safeConsole.error("Error deleting file:", error);
       const errorObj = error as { message?: string };
       toast({
-        title: 'Delete Failed',
-        description: errorObj.message || 'Failed to delete file. Please try again.',
-        variant: 'destructive',
+        title: "Delete Failed",
+        description:
+          errorObj.message || "Failed to delete file. Please try again.",
+        variant: "destructive",
       });
     },
   });
@@ -225,27 +250,27 @@ export const useFileStorage = (): UseFileStorageReturn => {
   const loadFile = useCallback(
     async (identifier: string): Promise<FileData | null> => {
       if (!storageService) {
-        safeConsole.error('Storage service not initialized');
+        safeConsole.error("Storage service not initialized");
         return null;
       }
 
       try {
-        safeConsole.log('Loading file:', identifier);
+        safeConsole.log("Loading file:", identifier);
         const file = await storageService.load(identifier);
 
         if (file) {
-          safeConsole.log('File loaded successfully:', file.title);
+          safeConsole.log("File loaded successfully:", file.title);
         } else {
-          safeConsole.log('File not found:', identifier);
+          safeConsole.log("File not found:", identifier);
         }
 
         return file;
       } catch (error) {
-        safeConsole.error('Error loading file:', error);
+        safeConsole.error("Error loading file:", error);
         toast({
-          title: 'Load Failed',
-          description: 'Failed to load file. Please try again.',
-          variant: 'destructive',
+          title: "Load Failed",
+          description: "Failed to load file. Please try again.",
+          variant: "destructive",
         });
         return null;
       }
@@ -257,38 +282,40 @@ export const useFileStorage = (): UseFileStorageReturn => {
   const exportAllFiles = useCallback(async (): Promise<void> => {
     if (!storageService) {
       toast({
-        title: 'Export Failed',
-        description: 'Storage service not initialized.',
-        variant: 'destructive',
+        title: "Export Failed",
+        description: "Storage service not initialized.",
+        variant: "destructive",
       });
       return;
     }
 
     try {
-      safeConsole.log('Exporting all files...');
+      safeConsole.log("Exporting all files...");
       const blob = await storageService.exportAllFiles();
 
       // Create download link
       const url = URL.createObjectURL(blob);
-      const link = document.createElement('a');
+      const link = document.createElement("a");
       link.href = url;
-      link.download = `markdown-files-export-${new Date().toISOString().split('T')[0]}.json`;
+      link.download = `markdown-files-export-${
+        new Date().toISOString().split("T")[0]
+      }.json`;
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
       URL.revokeObjectURL(url);
 
-      safeConsole.log('Files exported successfully');
+      safeConsole.log("Files exported successfully");
       toast({
-        title: 'Export Complete',
-        description: 'All files have been exported successfully.',
+        title: "Export Complete",
+        description: "All files have been exported successfully.",
       });
     } catch (error) {
-      safeConsole.error('Error exporting files:', error);
+      safeConsole.error("Error exporting files:", error);
       toast({
-        title: 'Export Failed',
-        description: 'Failed to export files. Please try again.',
-        variant: 'destructive',
+        title: "Export Failed",
+        description: "Failed to export files. Please try again.",
+        variant: "destructive",
       });
     }
   }, [storageService, toast]);

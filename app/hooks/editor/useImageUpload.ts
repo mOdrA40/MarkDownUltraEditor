@@ -3,21 +3,28 @@
  * @author Axel Modra
  */
 
-import { useAuth } from '@clerk/react-router';
-import { useCallback, useState } from 'react';
-import { useToast } from '@/hooks/core/useToast';
-import { createAuthenticatedSupabaseClient } from '@/lib/supabase';
+import { useAuth } from "@clerk/react-router";
+import { useCallback, useState } from "react";
+import { useToast } from "@/hooks/core/useToast";
+import { createAuthenticatedSupabaseClient } from "@/lib/supabase";
 import {
   createImageUploadService,
   type ImageUploadOptions,
   type ImageUploadResult,
-} from '@/services/imageUploadService';
-import { safeConsole } from '@/utils/console';
+} from "@/services/imageUploadService";
+import { safeConsole } from "@/utils/console";
 
 export interface UseImageUploadReturn {
-  uploadImage: (file: File, options?: ImageUploadOptions) => Promise<ImageUploadResult>;
-  uploadFromClipboard: (clipboardData: DataTransfer) => Promise<ImageUploadResult | null>;
-  uploadFromDrop: (dataTransfer: DataTransfer) => Promise<ImageUploadResult | null>;
+  uploadImage: (
+    file: File,
+    options?: ImageUploadOptions
+  ) => Promise<ImageUploadResult>;
+  uploadFromClipboard: (
+    clipboardData: DataTransfer
+  ) => Promise<ImageUploadResult | null>;
+  uploadFromDrop: (
+    dataTransfer: DataTransfer
+  ) => Promise<ImageUploadResult | null>;
   isUploading: boolean;
   error: string | null;
 }
@@ -40,13 +47,17 @@ export const useImageUpload = (): UseImageUploadReturn => {
 
     if (isSignedIn && userId) {
       try {
-        const token = await getToken({ template: 'supabase' });
+        // NEW: Use native third-party auth integration (no template needed)
+        const token = await getToken();
         if (token) {
           supabaseClient = createAuthenticatedSupabaseClient(token);
           currentUserId = userId;
         }
       } catch (tokenError) {
-        safeConsole.log('Error getting token, using base64 fallback:', tokenError);
+        safeConsole.log(
+          "Error getting token, using base64 fallback:",
+          tokenError
+        );
       }
     }
 
@@ -57,7 +68,10 @@ export const useImageUpload = (): UseImageUploadReturn => {
    * Upload single image file
    */
   const uploadImage = useCallback(
-    async (file: File, options: ImageUploadOptions = {}): Promise<ImageUploadResult> => {
+    async (
+      file: File,
+      options: ImageUploadOptions = {}
+    ): Promise<ImageUploadResult> => {
       setIsUploading(true);
       setError(null);
 
@@ -72,26 +86,29 @@ export const useImageUpload = (): UseImageUploadReturn => {
 
         if (result.success) {
           toast({
-            title: 'Image Uploaded',
-            description: `Image uploaded successfully${result.isBase64 ? ' (stored locally)' : ' (stored in cloud)'}`,
+            title: "Image Uploaded",
+            description: `Image uploaded successfully${
+              result.isBase64 ? " (stored locally)" : " (stored in cloud)"
+            }`,
           });
         } else {
-          setError(result.error || 'Upload failed');
+          setError(result.error || "Upload failed");
           toast({
-            title: 'Upload Failed',
-            description: result.error || 'Failed to upload image',
-            variant: 'destructive',
+            title: "Upload Failed",
+            description: result.error || "Failed to upload image",
+            variant: "destructive",
           });
         }
 
         return result;
       } catch (uploadError) {
-        const errorMessage = uploadError instanceof Error ? uploadError.message : 'Upload failed';
+        const errorMessage =
+          uploadError instanceof Error ? uploadError.message : "Upload failed";
         setError(errorMessage);
         toast({
-          title: 'Upload Error',
+          title: "Upload Error",
           description: errorMessage,
-          variant: 'destructive',
+          variant: "destructive",
         });
         return { success: false, error: errorMessage };
       } finally {
@@ -107,7 +124,7 @@ export const useImageUpload = (): UseImageUploadReturn => {
   const uploadFromClipboard = useCallback(
     async (clipboardData: DataTransfer): Promise<ImageUploadResult | null> => {
       const items = Array.from(clipboardData.items);
-      const imageItem = items.find((item) => item.type.startsWith('image/'));
+      const imageItem = items.find((item) => item.type.startsWith("image/"));
 
       if (!imageItem) {
         return null;
@@ -118,7 +135,7 @@ export const useImageUpload = (): UseImageUploadReturn => {
         return null;
       }
 
-      safeConsole.log('Uploading image from clipboard:', file.name);
+      safeConsole.log("Uploading image from clipboard:", file.name);
       return await uploadImage(file);
     },
     [uploadImage]
@@ -130,13 +147,13 @@ export const useImageUpload = (): UseImageUploadReturn => {
   const uploadFromDrop = useCallback(
     async (dataTransfer: DataTransfer): Promise<ImageUploadResult | null> => {
       const files = Array.from(dataTransfer.files);
-      const imageFile = files.find((file) => file.type.startsWith('image/'));
+      const imageFile = files.find((file) => file.type.startsWith("image/"));
 
       if (!imageFile) {
         return null;
       }
 
-      safeConsole.log('Uploading image from drop:', imageFile.name);
+      safeConsole.log("Uploading image from drop:", imageFile.name);
       return await uploadImage(imageFile);
     },
     [uploadImage]

@@ -8,37 +8,38 @@
  */
 export function cleanRedirectUrl(url: string | null): string {
   // Default to home page
-  if (!url) return '/';
+  if (!url) return "/";
 
   try {
     const parsed = new URL(url, window.location.origin);
 
     // Only allow same-origin redirects
     if (parsed.origin !== window.location.origin) {
-      return '/';
+      return "/";
     }
 
     // Prevent redirect loops by checking for auth-related paths
-    const authPaths = ['/sign-in', '/sign-up'];
+    const authPaths = ["/sign-in", "/sign-up"];
     if (authPaths.includes(parsed.pathname)) {
-      return '/';
+      return "/";
     }
 
     // Clean up query parameters that might cause loops
     const cleanParams = new URLSearchParams();
     for (const [key, value] of parsed.searchParams) {
       // Skip redirect-related parameters that might cause loops
-      if (!key.includes('redirect') && !key.includes('fallback')) {
+      if (!key.includes("redirect") && !key.includes("fallback")) {
         cleanParams.set(key, value);
       }
     }
 
     const cleanPath =
-      parsed.pathname + (cleanParams.toString() ? `?${cleanParams.toString()}` : '');
+      parsed.pathname +
+      (cleanParams.toString() ? `?${cleanParams.toString()}` : "");
     return cleanPath;
   } catch {
     // If URL parsing fails, return home
-    return '/';
+    return "/";
   }
 }
 
@@ -47,21 +48,22 @@ export function cleanRedirectUrl(url: string | null): string {
  */
 export function getPostAuthRedirect(): string {
   // Check for intended destination in sessionStorage
-  const intended = sessionStorage.getItem('intended_destination');
+  const intended = sessionStorage.getItem("intended_destination");
   if (intended) {
-    sessionStorage.removeItem('intended_destination');
+    sessionStorage.removeItem("intended_destination");
     return cleanRedirectUrl(intended);
   }
 
   // Check URL parameters
   const urlParams = new URLSearchParams(window.location.search);
-  const redirectParam = urlParams.get('redirect_url') || urlParams.get('return_to');
+  const redirectParam =
+    urlParams.get("redirect_url") || urlParams.get("return_to");
   if (redirectParam) {
     return cleanRedirectUrl(redirectParam);
   }
 
   // Default to home
-  return '/';
+  return "/";
 }
 
 /**
@@ -71,8 +73,8 @@ export function storeIntendedDestination(path?: string): void {
   const destination = path || window.location.pathname + window.location.search;
 
   // Don't store auth pages as intended destination
-  if (!destination.includes('/sign-in') && !destination.includes('/sign-up')) {
-    sessionStorage.setItem('intended_destination', destination);
+  if (!destination.includes("/sign-in") && !destination.includes("/sign-up")) {
+    sessionStorage.setItem("intended_destination", destination);
   }
 }
 
@@ -80,7 +82,7 @@ export function storeIntendedDestination(path?: string): void {
  * Clear any stored redirect information
  */
 export function clearRedirectData(): void {
-  sessionStorage.removeItem('intended_destination');
+  sessionStorage.removeItem("intended_destination");
 }
 
 /**
@@ -101,8 +103,8 @@ export function hasRedirectLoop(): boolean {
  */
 export function fixRedirectLoop(): void {
   if (hasRedirectLoop()) {
-    console.warn('Redirect loop detected, redirecting to home');
+    console.warn("Redirect loop detected, redirecting to home");
     clearRedirectData();
-    window.location.href = '/';
+    window.location.href = "/";
   }
 }

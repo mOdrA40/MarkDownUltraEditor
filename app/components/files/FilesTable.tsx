@@ -56,7 +56,7 @@ interface FilesTableProps {
   formatDate: (date: string) => string;
   formatFileSize: (bytes: number) => string;
   isLoading?: boolean;
-  onTableReady?: (table: ReturnType<typeof useReactTable<FileData>>) => void; 
+  onTableReady?: (table: ReturnType<typeof useReactTable<FileData>>) => void;
   rowSelection: Record<string, boolean>;
   setRowSelection: React.Dispatch<React.SetStateAction<Record<string, boolean>>>;
 }
@@ -255,14 +255,7 @@ export const FilesTable: React.FC<FilesTableProps> = ({
         size: 60,
       },
     ],
-    [
-      onOpen,
-      onDelete,
-      onDuplicate,
-      onExport,
-      formatDate,
-      formatFileSize,
-    ]
+    [onOpen, onDelete, onDuplicate, onExport, formatDate, formatFileSize]
   );
 
   const table = useReactTable({

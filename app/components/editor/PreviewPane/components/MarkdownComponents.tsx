@@ -3,11 +3,11 @@
  * @author Axel Modra
  */
 
-import React, { useState } from "react";
-import type { Components } from "react-markdown";
-import { useHeadingCache } from "../hooks/useHeadingCache";
-import type { MarkdownComponentsProps } from "../types/preview.types";
-import { CodeBlock, InlineCode } from "./CodeBlock";
+import React, { useState } from 'react';
+import type { Components } from 'react-markdown';
+import { useHeadingCache } from '../hooks/useHeadingCache';
+import type { MarkdownComponentsProps } from '../types/preview.types';
+import { CodeBlock, InlineCode } from './CodeBlock';
 
 /**
  * Props untuk heading component
@@ -37,12 +37,7 @@ interface ImageComponentProps {
 /**
  * Custom image component dengan error handling dan responsive design
  */
-const ImageComponent: React.FC<ImageComponentProps> = ({
-  src,
-  alt,
-  title,
-  theme,
-}) => {
+const ImageComponent: React.FC<ImageComponentProps> = ({ src, alt, title, theme }) => {
   const [isLoading, setIsLoading] = useState(true);
   const [hasError, setHasError] = useState(false);
 
@@ -61,8 +56,8 @@ const ImageComponent: React.FC<ImageComponentProps> = ({
       <div
         className="flex items-center justify-center p-4 border-2 border-dashed rounded-lg"
         style={{
-          borderColor: theme?.accent || "#d1d5db",
-          backgroundColor: theme?.surface || "#f8fafc",
+          borderColor: theme?.accent || '#d1d5db',
+          backgroundColor: theme?.surface || '#f8fafc',
         }}
       >
         <span className="text-sm text-gray-500">No image source provided</span>
@@ -75,15 +70,13 @@ const ImageComponent: React.FC<ImageComponentProps> = ({
       <div
         className="flex items-center justify-center p-4 border-2 border-dashed rounded-lg"
         style={{
-          borderColor: theme?.accent || "#ef4444",
-          backgroundColor: theme?.surface || "#fef2f2",
+          borderColor: theme?.accent || '#ef4444',
+          backgroundColor: theme?.surface || '#fef2f2',
         }}
       >
         <div className="text-center">
-          <span className="text-sm text-red-500 block">
-            Failed to load image
-          </span>
-          <span className="text-xs text-gray-500 mt-1">{alt || "Image"}</span>
+          <span className="text-sm text-red-500 block">Failed to load image</span>
+          <span className="text-xs text-gray-500 mt-1">{alt || 'Image'}</span>
         </div>
       </div>
     );
@@ -95,8 +88,8 @@ const ImageComponent: React.FC<ImageComponentProps> = ({
         <div
           className="flex items-center justify-center p-8 border rounded-lg animate-pulse"
           style={{
-            borderColor: theme?.accent || "#d1d5db",
-            backgroundColor: theme?.surface || "#f8fafc",
+            borderColor: theme?.accent || '#d1d5db',
+            backgroundColor: theme?.surface || '#f8fafc',
           }}
         >
           <span className="text-sm text-gray-500">Loading image...</span>
@@ -104,15 +97,15 @@ const ImageComponent: React.FC<ImageComponentProps> = ({
       )}
       <img
         src={src}
-        alt={alt || "Image"}
+        alt={alt || 'Image'}
         title={title}
         onLoad={handleLoad}
         onError={handleError}
         className={`max-w-full h-auto rounded-lg shadow-sm transition-opacity duration-200 ${
-          isLoading ? "opacity-0 absolute" : "opacity-100"
+          isLoading ? 'opacity-0 absolute' : 'opacity-100'
         }`}
         style={{
-          border: `1px solid ${theme?.accent || "#e5e7eb"}`,
+          border: `1px solid ${theme?.accent || '#e5e7eb'}`,
         }}
       />
       {alt && !isLoading && !hasError && (
@@ -126,13 +119,9 @@ const ImageComponent: React.FC<ImageComponentProps> = ({
  * Custom heading component factory
  */
 const createHeadingComponent = (level: number) => {
-  const HeadingComponent: React.FC<HeadingComponentProps> = ({
-    children,
-    markdown,
-    theme,
-  }) => {
+  const HeadingComponent: React.FC<HeadingComponentProps> = ({ children, markdown, theme }) => {
     const { getOrCreateHeadingId } = useHeadingCache(markdown);
-    const headingText = React.Children.toArray(children).join("");
+    const headingText = React.Children.toArray(children).join('');
     const id = getOrCreateHeadingId(headingText);
 
     const HeadingTag = `h${level}` as keyof JSX.IntrinsicElements;
@@ -140,59 +129,59 @@ const createHeadingComponent = (level: number) => {
     // Styling berdasarkan level
     const getHeadingStyles = (level: number) => {
       const baseStyles = {
-        color: theme?.text || "inherit",
-        scrollMarginTop: "6rem",
+        color: theme?.text || 'inherit',
+        scrollMarginTop: '6rem',
       };
 
       switch (level) {
         case 1:
           return {
             ...baseStyles,
-            fontSize: "1.875rem",
-            fontWeight: "bold",
-            marginBottom: "1.5rem",
-            paddingBottom: "0.75rem", 
-            borderBottom: `1px solid ${theme?.accent || "#e5e7eb"}`,
+            fontSize: '1.875rem',
+            fontWeight: 'bold',
+            marginBottom: '1.5rem',
+            paddingBottom: '0.75rem',
+            borderBottom: `1px solid ${theme?.accent || '#e5e7eb'}`,
           };
         case 2:
           return {
             ...baseStyles,
-            fontSize: "1.5rem", 
-            fontWeight: "bold",
-            marginBottom: "1rem",
-            marginTop: "2rem",
+            fontSize: '1.5rem',
+            fontWeight: 'bold',
+            marginBottom: '1rem',
+            marginTop: '2rem',
           };
         case 3:
           return {
             ...baseStyles,
-            fontSize: "1.25rem",
-            fontWeight: "bold",
-            marginBottom: "0.75rem",
-            marginTop: "1.5rem",
+            fontSize: '1.25rem',
+            fontWeight: 'bold',
+            marginBottom: '0.75rem',
+            marginTop: '1.5rem',
           };
         case 4:
           return {
             ...baseStyles,
-            fontSize: "1.125rem",
-            fontWeight: "bold",
-            marginBottom: "0.5rem",
-            marginTop: "1.25rem",
+            fontSize: '1.125rem',
+            fontWeight: 'bold',
+            marginBottom: '0.5rem',
+            marginTop: '1.25rem',
           };
         case 5:
           return {
             ...baseStyles,
-            fontSize: "1rem",
-            fontWeight: "bold",
-            marginBottom: "0.5rem",
-            marginTop: "1rem",
+            fontSize: '1rem',
+            fontWeight: 'bold',
+            marginBottom: '0.5rem',
+            marginTop: '1rem',
           };
         case 6:
           return {
             ...baseStyles,
-            fontSize: "0.875rem",
-            fontWeight: "bold",
-            marginBottom: "0.5rem",
-            marginTop: "0.75rem",
+            fontSize: '0.875rem',
+            fontWeight: 'bold',
+            marginBottom: '0.5rem',
+            marginTop: '0.75rem',
           };
         default:
           return baseStyles;
@@ -204,8 +193,8 @@ const createHeadingComponent = (level: number) => {
       {
         id,
         style: getHeadingStyles(level),
-        "data-heading-level": level,
-        "data-heading-text": headingText,
+        'data-heading-level': level,
+        'data-heading-text': headingText,
       },
       children
     );
@@ -228,27 +217,21 @@ export const createMarkdownComponents = ({
 }: MarkdownComponentsProps): Components => {
   return {
     // Heading components
-    h1: ({ children }) =>
-      createHeadingComponent(1)({ children, markdown, theme }),
-    h2: ({ children }) =>
-      createHeadingComponent(2)({ children, markdown, theme }),
-    h3: ({ children }) =>
-      createHeadingComponent(3)({ children, markdown, theme }),
-    h4: ({ children }) =>
-      createHeadingComponent(4)({ children, markdown, theme }),
-    h5: ({ children }) =>
-      createHeadingComponent(5)({ children, markdown, theme }),
-    h6: ({ children }) =>
-      createHeadingComponent(6)({ children, markdown, theme }),
+    h1: ({ children }) => createHeadingComponent(1)({ children, markdown, theme }),
+    h2: ({ children }) => createHeadingComponent(2)({ children, markdown, theme }),
+    h3: ({ children }) => createHeadingComponent(3)({ children, markdown, theme }),
+    h4: ({ children }) => createHeadingComponent(4)({ children, markdown, theme }),
+    h5: ({ children }) => createHeadingComponent(5)({ children, markdown, theme }),
+    h6: ({ children }) => createHeadingComponent(6)({ children, markdown, theme }),
 
     // Blockquote component
     blockquote: ({ children }) => (
       <blockquote
         className="border-l-4 pl-4 py-2 my-4 italic rounded-r-lg"
         style={{
-          borderColor: theme?.primary || "#3b82f6",
-          backgroundColor: theme?.surface ? `${theme.surface}40` : "#eff6ff",
-          color: theme?.text || "inherit",
+          borderColor: theme?.primary || '#3b82f6',
+          backgroundColor: theme?.surface ? `${theme.surface}40` : '#eff6ff',
+          color: theme?.text || 'inherit',
         }}
       >
         {children}
@@ -257,7 +240,7 @@ export const createMarkdownComponents = ({
 
     // Code components
     code: ({ children, className, ...props }) => {
-      const match = /language-(\w+)/.exec(className || "");
+      const match = /language-(\w+)/.exec(className || '');
       const isInline = !match;
 
       return isInline ? (
@@ -275,16 +258,16 @@ export const createMarkdownComponents = ({
       const codeElement = React.Children.toArray(children).find(
         (child): child is React.ReactElement =>
           React.isValidElement(child) &&
-          typeof child.props === "object" &&
+          typeof child.props === 'object' &&
           child.props !== null &&
-          "className" in child.props &&
-          typeof child.props.className === "string" &&
-          child.props.className.includes("language-")
+          'className' in child.props &&
+          typeof child.props.className === 'string' &&
+          child.props.className.includes('language-')
       );
 
-      const className = (codeElement?.props?.className as string) || "";
+      const className = (codeElement?.props?.className as string) || '';
       const match = className.match(/language-(\w+)/);
-      const language = match ? match[1] : "";
+      const language = match ? match[1] : '';
 
       return (
         <CodeBlock
@@ -304,7 +287,7 @@ export const createMarkdownComponents = ({
       <div className="overflow-x-auto my-6">
         <table
           className="w-full border-collapse rounded-lg overflow-hidden shadow-sm"
-          style={{ borderColor: theme?.accent || "#d1d5db" }}
+          style={{ borderColor: theme?.accent || '#d1d5db' }}
         >
           {children}
         </table>
@@ -315,9 +298,9 @@ export const createMarkdownComponents = ({
       <th
         className="border px-4 py-3 font-semibold text-left"
         style={{
-          borderColor: theme?.accent || "#d1d5db",
-          backgroundColor: theme?.surface || "#f8fafc",
-          color: theme?.text || "inherit",
+          borderColor: theme?.accent || '#d1d5db',
+          backgroundColor: theme?.surface || '#f8fafc',
+          color: theme?.text || 'inherit',
         }}
       >
         {children}
@@ -328,8 +311,8 @@ export const createMarkdownComponents = ({
       <td
         className="border px-4 py-3"
         style={{
-          borderColor: theme?.accent || "#d1d5db",
-          color: theme?.text || "inherit",
+          borderColor: theme?.accent || '#d1d5db',
+          color: theme?.text || 'inherit',
         }}
       >
         {children}
@@ -341,7 +324,7 @@ export const createMarkdownComponents = ({
       <a
         href={href}
         className="hover:underline transition-colors"
-        style={{ color: theme?.primary || "#3b82f6" }}
+        style={{ color: theme?.primary || '#3b82f6' }}
         {...props}
       >
         {children}
@@ -349,21 +332,14 @@ export const createMarkdownComponents = ({
     ),
 
     // List components
-    ul: ({ children }) => (
-      <ul className="list-disc list-inside space-y-1 my-4 ml-4">{children}</ul>
-    ),
+    ul: ({ children }) => <ul className="list-disc list-inside space-y-1 my-4 ml-4">{children}</ul>,
 
     ol: ({ children }) => (
-      <ol className="list-decimal list-inside space-y-1 my-4 ml-4">
-        {children}
-      </ol>
+      <ol className="list-decimal list-inside space-y-1 my-4 ml-4">{children}</ol>
     ),
 
     li: ({ children }) => (
-      <li
-        className="leading-relaxed"
-        style={{ color: theme?.text || "inherit" }}
-      >
+      <li className="leading-relaxed" style={{ color: theme?.text || 'inherit' }}>
         {children}
       </li>
     ),

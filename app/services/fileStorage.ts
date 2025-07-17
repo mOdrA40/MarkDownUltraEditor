@@ -58,6 +58,7 @@ export interface FileStorageService {
 
   // Utility operations
   getStorageInfo(): StorageInfo;
+  getStorageInfoAsync(): Promise<StorageInfo>;
   syncLocalToCloud?(): Promise<void>;
   exportAllFiles(): Promise<Blob>;
 }
@@ -374,18 +375,57 @@ export class HybridFileStorage implements FileStorageService {
 
   // Utility operations
   getStorageInfo(): StorageInfo {
-    const files = this.isAuthenticated ? [] : this.listLocalFiles(); // For local, we can get immediate info
-    const totalSize = files.reduce((sum, file) => sum + (file.content?.length || 0), 0);
+    // For local storage, we can get immediate info
+    if (!this.isAuthenticated) {
+      const files = this.listLocalFiles();
+      const totalSize = files.reduce((sum, file) => sum + (file.content?.length || 0), 0);
 
+      return {
+        isAuthenticated: false,
+        storageType: 'local',
+        totalFiles: files.length,
+        totalSize,
+        lastSync: getStorageItem(STORAGE_KEYS.LAST_SYNC) || undefined,
+        quotaUsed: totalSize,
+        quotaLimit: STORAGE_LIMITS.MAX_TOTAL_SIZE,
+      };
+    }
+
+    // For cloud storage, return basic info (detailed info will be fetched async)
     return {
-      isAuthenticated: this.isAuthenticated,
-      storageType: this.isAuthenticated ? 'cloud' : 'local',
-      totalFiles: files.length,
-      totalSize,
+      isAuthenticated: true,
+      storageType: 'cloud',
+      totalFiles: 0, // Will be updated by the hook with actual data
+      totalSize: 0, // Will be updated by the hook with actual data
       lastSync: getStorageItem(STORAGE_KEYS.LAST_SYNC) || undefined,
-      quotaUsed: this.isAuthenticated ? undefined : totalSize,
-      quotaLimit: this.isAuthenticated ? STORAGE_LIMITS.MAX_TOTAL_SIZE : undefined,
+      quotaUsed: undefined,
+      quotaLimit: undefined,
     };
+  }
+
+  // New async method to get complete storage info for cloud
+  async getStorageInfoAsync(): Promise<StorageInfo> {
+    if (!this.isAuthenticated) {
+      return this.getStorageInfo();
+    }
+
+    try {
+      const files = await this.listCloudFiles();
+      const totalSize = files.reduce((sum, file) => sum + (file.content?.length || 0), 0);
+
+      return {
+        isAuthenticated: true,
+        storageType: 'cloud',
+        totalFiles: files.length,
+        totalSize,
+        lastSync: new Date().toISOString(),
+        quotaUsed: totalSize,
+        quotaLimit: undefined, // Cloud storage doesn't have a hard limit for now
+      };
+    } catch (error) {
+      safeConsole.error('Error getting cloud storage info:', error);
+      return this.getStorageInfo(); // Fallback to basic info
+    }
   }
 
   async exportAllFiles(): Promise<Blob> {

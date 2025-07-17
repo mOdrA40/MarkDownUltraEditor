@@ -20,7 +20,7 @@ import {
   RefreshCw,
   Trash2,
 } from 'lucide-react';
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { AuthButtons } from '@/components/auth/AuthButtons';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -73,9 +73,22 @@ export const FilesManager: React.FC = () => {
   const [sortBy, setSortBy] = useState<SortOption>('date');
   const [sortDirection, setSortDirection] = useState<SortDirection>('desc');
   const [rowSelection, setRowSelection] = useState({});
-  const [tableInstance, setTableInstance] = useState<Table<FileData> | undefined>(undefined); 
+  const [tableInstance, setTableInstance] = useState<Table<FileData> | undefined>(undefined);
 
   const selectedRowCount = Object.keys(rowSelection).length;
+
+  // Compute accurate storage info using actual files data
+  const computedStorageInfo = useMemo(() => {
+    if (!storageInfo) return null;
+
+    const totalSize = files.reduce((sum, file) => sum + (file.content?.length || 0), 0);
+
+    return {
+      ...storageInfo,
+      totalFiles: files.length,
+      totalSize,
+    };
+  }, [storageInfo, files]);
 
   // Filter and sort files
   const filteredAndSortedFiles = React.useMemo(() => {
@@ -161,7 +174,7 @@ export const FilesManager: React.FC = () => {
     const duplicatedFile = {
       ...file,
       title: `${file.title} (Copy)`,
-      id: undefined, 
+      id: undefined,
     };
 
     const params = new URLSearchParams({
@@ -221,10 +234,10 @@ export const FilesManager: React.FC = () => {
               <div>
                 <h1 className="text-2xl font-bold">My Files</h1>
                 <p className="text-sm text-muted-foreground">
-                  {storageInfo && (
+                  {computedStorageInfo && (
                     <>
-                      {storageInfo.totalFiles} files •{' '}
-                      {storageInfo.storageType === 'cloud' ? 'Cloud' : 'Local'} storage
+                      {computedStorageInfo.totalFiles} files •{' '}
+                      {computedStorageInfo.storageType === 'cloud' ? 'Cloud' : 'Local'} storage
                     </>
                   )}
                 </p>
@@ -235,7 +248,7 @@ export const FilesManager: React.FC = () => {
               responsive={{
                 isMobile: responsive.isMobile,
                 isTablet: responsive.isTablet,
-                isSmallTablet: responsive.windowWidth <= 640, 
+                isSmallTablet: responsive.windowWidth <= 640,
               }}
             />
           </div>
@@ -245,22 +258,25 @@ export const FilesManager: React.FC = () => {
       {/* Main content */}
       <div className="container mx-auto px-4 py-6">
         {/* Storage info */}
-        {storageInfo && (
+        {computedStorageInfo && (
           <Card className="mb-6">
             <CardContent className="p-4">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
-                  {storageInfo.storageType === 'cloud' ? (
+                  {computedStorageInfo.storageType === 'cloud' ? (
                     <Cloud className="w-5 h-5 text-primary" />
                   ) : (
                     <HardDrive className="w-5 h-5 text-muted-foreground" />
                   )}
                   <div>
                     <p className="font-medium">
-                      {storageInfo.storageType === 'cloud' ? 'Cloud Storage' : 'Local Storage'}
+                      {computedStorageInfo.storageType === 'cloud'
+                        ? 'Cloud Storage'
+                        : 'Local Storage'}
                     </p>
                     <p className="text-sm text-muted-foreground">
-                      {storageInfo.totalFiles} files • {formatFileSize(storageInfo.totalSize)}
+                      {computedStorageInfo.totalFiles} files •{' '}
+                      {formatFileSize(computedStorageInfo.totalSize)}
                     </p>
                   </div>
                 </div>

@@ -168,7 +168,7 @@ function SettingsPageContent() {
 
         let loadedPrefs = {
           ...DEFAULT_PREFERENCES,
-          theme: currentTheme, 
+          theme: currentTheme,
         };
 
         loadedPrefs.writingSettings = savedWritingSettings;
