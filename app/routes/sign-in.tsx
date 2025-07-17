@@ -1,4 +1,4 @@
-import { SignIn } from "@clerk/react-router";
+import { SignIn } from '@clerk/react-router';
 
 export default function SignInPage() {
   return (
@@ -6,14 +6,12 @@ export default function SignInPage() {
       <SignIn
         appearance={{
           elements: {
-            rootBox: "mx-auto",
-            card: "shadow-xl",
-            footerActionLink: "text-blue-600 hover:text-blue-800 font-medium",
+            rootBox: 'mx-auto',
+            card: 'shadow-xl',
+            footerActionLink: 'text-blue-600 hover:text-blue-800 font-medium',
           },
         }}
         signUpUrl="/sign-up"
-        fallbackRedirectUrl="/"
-        forceRedirectUrl="/"
       />
     </div>
   );

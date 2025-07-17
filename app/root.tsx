@@ -179,8 +179,6 @@ export default function App({ loaderData }: Route.ComponentProps) {
       publishableKey={publishableKey}
       signInUrl="/sign-in"
       signUpUrl="/sign-up"
-      signInFallbackRedirectUrl="/"
-      signUpFallbackRedirectUrl="/"
       appearance={{
         elements: {
           formButtonPrimary: 'normal-case',

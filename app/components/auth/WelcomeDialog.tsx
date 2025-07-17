@@ -3,20 +3,12 @@
  * @author Axel Modra
  */
 
-import { SignUpButton, useAuth } from "@clerk/react-router";
-import {
-  Check,
-  Cloud,
-  HardDrive,
-  Shield,
-  Smartphone,
-  X,
-  Zap,
-} from "lucide-react";
-import type React from "react";
-import { useEffect, useState } from "react";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
+import { SignUpButton, useAuth } from '@clerk/react-router';
+import { Check, Cloud, HardDrive, Shield, Smartphone, X, Zap } from 'lucide-react';
+import type React from 'react';
+import { useEffect, useState } from 'react';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
 import {
   Dialog,
   DialogContent,
@@ -24,12 +16,8 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-} from "@/components/ui/dialog";
-import {
-  getStorageItem,
-  removeStorageItem,
-  setStorageItem,
-} from "@/utils/common";
+} from '@/components/ui/dialog';
+import { getStorageItem, removeStorageItem, setStorageItem } from '@/utils/common';
 
 /**
  * Props for WelcomeDialog component
@@ -55,15 +43,14 @@ export const WelcomeDialog: React.FC<WelcomeDialogProps> = ({
 
   // Check if this is first visit
   useEffect(() => {
-    const hasVisited = getStorageItem("markdownEditor_hasVisited");
+    const hasVisited = getStorageItem('markdownEditor_hasVisited');
     if (!hasVisited && controlledIsOpen === undefined) {
       setInternalIsOpen(true);
-      setStorageItem("markdownEditor_hasVisited", "true");
+      setStorageItem('markdownEditor_hasVisited', 'true');
     }
   }, [controlledIsOpen]);
 
-  const isOpen =
-    controlledIsOpen !== undefined ? controlledIsOpen : internalIsOpen;
+  const isOpen = controlledIsOpen !== undefined ? controlledIsOpen : internalIsOpen;
 
   const handleClose = () => {
     if (controlledIsOpen === undefined) {
@@ -101,9 +88,7 @@ export const WelcomeDialog: React.FC<WelcomeDialogProps> = ({
           <div className="border rounded-lg p-4 bg-blue-50 border-blue-200">
             <div className="flex items-center gap-2 mb-3">
               <Cloud className="w-5 h-5 text-blue-600" />
-              <h3 className="font-semibold text-blue-900">
-                Sign Up for Cloud Storage
-              </h3>
+              <h3 className="font-semibold text-blue-900">Sign Up for Cloud Storage</h3>
               <Badge variant="default" className="bg-blue-600">
                 Recommended
               </Badge>
@@ -128,11 +113,7 @@ export const WelcomeDialog: React.FC<WelcomeDialogProps> = ({
               </div>
             </div>
 
-            <SignUpButton
-              mode="redirect"
-              fallbackRedirectUrl="/"
-              forceRedirectUrl="/"
-            >
+            <SignUpButton mode="redirect" fallbackRedirectUrl="/" forceRedirectUrl="/">
               <Button
                 size="lg"
                 onClick={handleSignUp}
@@ -170,11 +151,7 @@ export const WelcomeDialog: React.FC<WelcomeDialogProps> = ({
               </div>
             </div>
 
-            <Button
-              variant="outline"
-              className="w-full"
-              onClick={handleContinueAsGuest}
-            >
+            <Button variant="outline" className="w-full" onClick={handleContinueAsGuest}>
               <HardDrive className="w-4 h-4 mr-2" />
               Continue as Guest
             </Button>
@@ -212,12 +189,7 @@ export const WelcomeDialog: React.FC<WelcomeDialogProps> = ({
           <p className="text-xs text-gray-500 text-center sm:text-left flex-1">
             You can always sign up later to enable cloud storage
           </p>
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={handleClose}
-            className="text-gray-500"
-          >
+          <Button variant="ghost" size="sm" onClick={handleClose} className="text-gray-500">
             Maybe Later
           </Button>
         </DialogFooter>
@@ -248,7 +220,7 @@ export const useWelcomeDialog = () => {
     }
 
     // Check if first-time visitor (guest user)
-    const hasVisited = getStorageItem("markdownEditor_hasVisited");
+    const hasVisited = getStorageItem('markdownEditor_hasVisited');
     if (!hasVisited) {
       // Small delay to ensure page is loaded
       const timer = setTimeout(() => {
@@ -267,7 +239,7 @@ export const useWelcomeDialog = () => {
   }, [isSignedIn, isOpen]);
 
   const handleClose = () => {
-    setStorageItem("markdownEditor_hasVisited", "true");
+    setStorageItem('markdownEditor_hasVisited', 'true');
     setIsOpen(false);
   };
 
@@ -288,7 +260,7 @@ export const useWelcomeDialog = () => {
         setWasSignedIn(true);
       } else if (wasSignedIn && !isSignedIn) {
         // User just logged out, reset hasVisited flag for future guest sessions
-        removeStorageItem("markdownEditor_hasVisited");
+        removeStorageItem('markdownEditor_hasVisited');
         setWasSignedIn(false);
       }
     }
