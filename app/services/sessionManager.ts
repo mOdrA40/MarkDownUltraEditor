@@ -4,6 +4,7 @@
  */
 
 import { createClient } from '@supabase/supabase-js';
+import { getDeviceInfo } from '@/utils/browserFingerprint';
 import { safeConsole } from '@/utils/console';
 import { getSecurityIPInfo } from '@/utils/ipDetection';
 
@@ -62,8 +63,8 @@ export class SessionManager {
       const ipInfo = await getSecurityIPInfo();
       const userAgent = typeof navigator !== 'undefined' ? navigator.userAgent : '';
 
-      // Parse device info
-      const deviceInfo = this.parseUserAgent(userAgent);
+      // Parse device info using improved detection
+      const deviceInfo = getDeviceInfo();
 
       const sessionData: Omit<SessionData, 'id'> = {
         user_id: userId,
@@ -276,45 +277,7 @@ export class SessionManager {
     }
   }
 
-  /**
-   * Parse user agent for device info
-   */
-  private parseUserAgent(userAgent: string): {
-    browser: string;
-    os: string;
-    device: string;
-  } {
-    // Simple user agent parsing
-    const browser = userAgent.includes('Chrome')
-      ? 'Chrome'
-      : userAgent.includes('Firefox')
-        ? 'Firefox'
-        : userAgent.includes('Safari')
-          ? 'Safari'
-          : userAgent.includes('Edge')
-            ? 'Edge'
-            : 'Unknown';
-
-    const os = userAgent.includes('Windows')
-      ? 'Windows'
-      : userAgent.includes('Mac')
-        ? 'macOS'
-        : userAgent.includes('Linux')
-          ? 'Linux'
-          : userAgent.includes('Android')
-            ? 'Android'
-            : userAgent.includes('iOS')
-              ? 'iOS'
-              : 'Unknown';
-
-    const device = userAgent.includes('Mobile')
-      ? 'Mobile'
-      : userAgent.includes('Tablet')
-        ? 'Tablet'
-        : 'Desktop';
-
-    return { browser, os, device };
-  }
+  // Using improved device detection from browserFingerprint.ts
 }
 
 // Export singleton instance

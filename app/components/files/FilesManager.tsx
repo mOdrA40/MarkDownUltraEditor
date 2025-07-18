@@ -245,6 +245,12 @@ export const FilesManager: React.FC = () => {
             </div>
 
             <AuthButtons
+              onViewFiles={() => {
+                window.location.href = '/files';
+              }}
+              onSettings={() => {
+                window.location.href = '/settings';
+              }}
               responsive={{
                 isMobile: responsive.isMobile,
                 isTablet: responsive.isTablet,

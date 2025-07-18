@@ -21,6 +21,7 @@ import { type LoaderFunctionArgs, type MetaFunction, useNavigate } from 'react-r
 import { AuthButtons } from '@/components/auth/AuthButtons';
 import { type Theme, ThemeSelector, themes, useTheme } from '@/components/features/ThemeSelector';
 import { WritingSettings } from '@/components/features/WritingSettings';
+import { DeleteAccount } from '@/components/settings/DeleteAccount';
 import SecureErrorBoundary from '@/components/shared/SecureErrorBoundary';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -37,6 +38,7 @@ import {
   DEFAULT_WRITING_SETTINGS,
   type WritingSettings as WritingSettingsType,
 } from '@/types/writingSettings';
+import { getBrowserFingerprint } from '@/utils/browserFingerprint';
 import { safeConsole } from '@/utils/console';
 import { securityMiddleware } from '@/utils/security/routeMiddleware';
 import { ErrorCategory } from '@/utils/sentry';
@@ -119,7 +121,10 @@ function SettingsPageContent() {
     const loadSessions = async () => {
       if (isSignedIn && user?.id) {
         try {
-          const currentSessionId = `session_${user.id}_${Date.now()}`;
+          // Create a consistent session ID based on browser fingerprint and user ID
+          const browserFingerprint = getBrowserFingerprint();
+          const currentSessionId = `session_${user.id}_${browserFingerprint}`;
+
           await sessionManager.createSession(user.id, currentSessionId);
 
           const stats = await sessionManager.getSessionStats(user.id);
@@ -1060,6 +1065,9 @@ function SettingsPageContent() {
                       </div>
                     </CardContent>
                   </Card>
+
+                  {/* Delete Account Section */}
+                  <DeleteAccount />
                 </div>
               ) : (
                 <Card>
