@@ -21,3 +21,4 @@ app/routes/debug.*.tsx
 app/utils/storageAnalyzer.ts
 scripts/build-production.js
 .kiro/settings/mcp.json
+test-image.txt

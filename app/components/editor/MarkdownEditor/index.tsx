@@ -78,12 +78,14 @@ export const MarkdownEditor: React.FC<MarkdownEditorProps> = ({
     return initialFileName; // Default or passed initial filename
   };
 
-  // Clear URL parameters after processing
+  // Clear URL parameters after processing - but only after file loading is complete
   React.useEffect(() => {
-    if (urlTitle || urlContent || urlFile || isNewFileRequest) {
+    // Only clear URL parameters if we're not currently loading a file from URL
+    if ((urlTitle || urlContent || isNewFileRequest) && !urlFile) {
       setSearchParams({}, { replace: true });
     }
-  }, [urlTitle, urlContent, urlFile, isNewFileRequest, setSearchParams]);
+    // For urlFile, we'll clear it after the file loading is complete
+  }, [urlTitle, urlContent, isNewFileRequest, setSearchParams, urlFile]);
 
   // State management hooks
   const editorState = useEditorState(getInitialContent(), getInitialFileName());
@@ -324,13 +326,19 @@ export const MarkdownEditor: React.FC<MarkdownEditorProps> = ({
     fileStorageRef.current = fileStorage.loadFile;
   });
 
-  // Handle file loading from URL parameter - run immediately and only once
+  // Handle file loading from URL parameter - wait for storage service to be ready
   React.useEffect(() => {
-    if (urlFile && fileStorageRef.current) {
+    if (urlFile && fileStorage.isInitialized && fileStorage.storageService) {
       const loadFileFromStorage = async () => {
         try {
           console.log('Loading file from storage:', urlFile);
-          const fileData = await fileStorageRef.current?.(urlFile);
+          console.log('Storage service initialized:', fileStorage.isInitialized);
+          console.log('Storage service authenticated:', fileStorage.isAuthenticated);
+
+          // Wait a bit more to ensure service is fully ready
+          await new Promise((resolve) => setTimeout(resolve, 200));
+
+          const fileData = await fileStorage.loadFile(urlFile);
           if (fileData) {
             console.log(
               'File loaded from storage:',
@@ -341,11 +349,23 @@ export const MarkdownEditor: React.FC<MarkdownEditorProps> = ({
             (
               loadFileRef.current as (content: string, name: string, bypassDialog?: boolean) => void
             )(fileData.content, fileData.title, true);
+
+            // Clear URL parameter after successful file loading
+            console.log('File loaded successfully, clearing URL parameter');
+            setSearchParams({}, { replace: true });
           } else {
             console.warn('File not found in storage:', urlFile);
+            // If file not found and user is authenticated, show error
+            if (fileStorage.isAuthenticated) {
+              console.error('File not found in cloud storage:', urlFile);
+            }
+            // Clear URL parameter even if file not found
+            setSearchParams({}, { replace: true });
           }
         } catch (error) {
           console.error('Error loading file from storage:', error);
+          // Clear URL parameter on error
+          setSearchParams({}, { replace: true });
         } finally {
           setIsLoadingFromUrl(false);
         }
@@ -353,8 +373,18 @@ export const MarkdownEditor: React.FC<MarkdownEditorProps> = ({
       loadFileFromStorage();
     } else if (!urlFile) {
       setIsLoadingFromUrl(false);
+    } else if (urlFile && !fileStorage.isInitialized) {
+      // Keep loading state if we have a file to load but service isn't ready
+      console.log('Waiting for storage service to initialize...');
     }
-  }, [urlFile]);
+  }, [
+    urlFile,
+    fileStorage.isInitialized,
+    fileStorage.storageService,
+    fileStorage.isAuthenticated,
+    fileStorage.loadFile,
+    setSearchParams,
+  ]);
 
   // Show loading state while loading file from URL
   if (isLoadingFromUrl) {

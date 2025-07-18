@@ -114,6 +114,7 @@ export class HybridFileStorage implements FileStorageService {
 
       // Check if file exists (update) or create new
       if (file.id) {
+        // Update existing file by ID
         const { data, error } = await this.supabaseClient
           .from('user_files')
           .update({
@@ -133,6 +134,38 @@ export class HybridFileStorage implements FileStorageService {
         safeConsole.log('File updated in cloud:', data.title);
         return dbRowToFileData(data);
       }
+
+      // No ID provided - check if file with same title exists (for auto-save)
+      const { data: existingFile } = await this.supabaseClient
+        .from('user_files')
+        .select('id, title')
+        .eq('user_id', this.userId)
+        .eq('title', file.title)
+        .single();
+
+      if (existingFile) {
+        // File exists - update it
+        const { data, error } = await this.supabaseClient
+          .from('user_files')
+          .update({
+            ...dbInsert,
+            updated_at: new Date().toISOString(),
+          })
+          .eq('id', existingFile.id)
+          .eq('user_id', this.userId)
+          .select()
+          .single();
+
+        if (error) {
+          handleSupabaseError(error, 'update existing file');
+          throw error;
+        }
+
+        safeConsole.log('Existing file updated in cloud:', data.title);
+        return dbRowToFileData(data);
+      }
+
+      // File doesn't exist - create new
       const { data, error } = await this.supabaseClient
         .from('user_files')
         .insert(dbInsert)
@@ -342,10 +375,18 @@ export class HybridFileStorage implements FileStorageService {
     }
   }
 
-  // Unified operations
+  // Unified operations with improved error handling
   async save(file: FileData): Promise<FileData> {
     if (this.isAuthenticated) {
-      return await this.saveToCloud(file);
+      try {
+        return await this.saveToCloud(file);
+      } catch (error) {
+        safeConsole.error(
+          'Failed to save to cloud, not falling back to local for authenticated users:',
+          error
+        );
+        throw error; // Don't fallback to local for authenticated users
+      }
     }
     this.saveToLocal(file);
     return file;
@@ -353,21 +394,54 @@ export class HybridFileStorage implements FileStorageService {
 
   async load(identifier: string): Promise<FileData | null> {
     if (this.isAuthenticated) {
-      return await this.loadFromCloud(identifier);
+      try {
+        const result = await this.loadFromCloud(identifier);
+        if (result) {
+          safeConsole.log('Successfully loaded file from cloud:', result.title);
+        } else {
+          safeConsole.log('File not found in cloud storage:', identifier);
+        }
+        return result;
+      } catch (error) {
+        safeConsole.error(
+          'Failed to load from cloud, not falling back to local for authenticated users:',
+          error
+        );
+        throw error; // Don't fallback to local for authenticated users
+      }
     }
     return this.loadFromLocal(identifier);
   }
 
   async list(): Promise<FileData[]> {
     if (this.isAuthenticated) {
-      return await this.listCloudFiles();
+      try {
+        const files = await this.listCloudFiles();
+        safeConsole.log(`Loaded ${files.length} files from cloud`);
+        return files;
+      } catch (error) {
+        safeConsole.error(
+          'Failed to list cloud files, not falling back to local for authenticated users:',
+          error
+        );
+        throw error; // Don't fallback to local for authenticated users
+      }
     }
     return this.listLocalFiles();
   }
 
   async delete(identifier: string): Promise<void> {
     if (this.isAuthenticated) {
-      await this.deleteFromCloud(identifier);
+      try {
+        await this.deleteFromCloud(identifier);
+        safeConsole.log('Successfully deleted file from cloud:', identifier);
+      } catch (error) {
+        safeConsole.error(
+          'Failed to delete from cloud, not falling back to local for authenticated users:',
+          error
+        );
+        throw error; // Don't fallback to local for authenticated users
+      }
     } else {
       this.deleteFromLocal(identifier);
     }

@@ -8,7 +8,7 @@ import { useMutation, useQuery } from '@tanstack/react-query';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useToast } from '@/hooks/core/useToast';
 import { invalidateQueries, queryKeys } from '@/lib/queryClient';
-import { createAuthenticatedSupabaseClient, type FileData } from '@/lib/supabase';
+import { createClerkSupabaseClient, type FileData } from '@/lib/supabase';
 import {
   createFileStorageService,
   type FileStorageService,
@@ -56,38 +56,61 @@ export const useFileStorage = (): UseFileStorageReturn => {
   const [isInitialized, setIsInitialized] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  // Initialize storage service
+  // Initialize storage service with proper race condition handling
   useEffect(() => {
     const initializeStorageService = async () => {
       try {
         safeConsole.log('Initializing file storage service...');
         setError(null);
+        setIsInitialized(false); // Ensure we start with false
 
         let supabaseClient = null;
         let currentUserId = null;
 
         if (isSignedIn && userId) {
           try {
-            // NEW: Use native third-party auth integration (no template needed)
+            // NEW: Use native third-party auth integration with accessToken() function
+            safeConsole.log('✓ Initializing authenticated storage with native Third Party Auth');
+
+            // Wait for token to be available
             const token = await getToken();
-            if (token) {
-              supabaseClient = createAuthenticatedSupabaseClient(token);
-              currentUserId = userId;
-              safeConsole.log('✓ Authenticated storage service initialized with third-party auth');
-            } else {
-              safeConsole.log('Failed to get Clerk token, using local storage');
+            if (!token) {
+              throw new Error('No authentication token available');
             }
+
+            supabaseClient = createClerkSupabaseClient(getToken);
+            currentUserId = userId;
+
+            // Test the connection to ensure it's working
+            const testQuery = await supabaseClient.from('user_files').select('id').limit(1);
+
+            if (testQuery.error && testQuery.error.code !== 'PGRST116') {
+              throw testQuery.error;
+            }
+
+            safeConsole.log('✓ Authenticated storage service initialized with native integration');
           } catch (tokenError) {
-            safeConsole.log('Error getting token, falling back to local storage:', tokenError);
+            safeConsole.log(
+              'Error setting up authenticated client, falling back to local storage:',
+              tokenError
+            );
+            // Reset to use local storage
+            supabaseClient = null;
+            currentUserId = null;
           }
         } else {
           safeConsole.log('User not signed in, using local storage');
         }
 
         const service = createFileStorageService(supabaseClient, currentUserId);
-        setStorageService(service);
-        setIsInitialized(true);
 
+        // Set service first, then mark as initialized
+        setStorageService(service);
+
+        // Small delay to ensure service is fully ready
+        await new Promise((resolve) => setTimeout(resolve, 100));
+
+        setIsInitialized(true);
         safeConsole.log('File storage service initialized successfully');
       } catch (initError) {
         safeConsole.error('Error initializing storage service:', initError);
@@ -229,22 +252,56 @@ export const useFileStorage = (): UseFileStorageReturn => {
     },
   });
 
-  // Load file function
+  // Load file function with improved error handling
   const loadFile = useCallback(
     async (identifier: string): Promise<FileData | null> => {
       if (!storageService) {
         safeConsole.error('Storage service not initialized');
+        toast({
+          title: 'Service Not Ready',
+          description: 'Storage service is still initializing. Please wait a moment.',
+          variant: 'destructive',
+        });
+        return null;
+      }
+
+      if (!isInitialized) {
+        safeConsole.error('Storage service not fully initialized');
+        toast({
+          title: 'Service Not Ready',
+          description: 'Storage service is still initializing. Please wait a moment.',
+          variant: 'destructive',
+        });
         return null;
       }
 
       try {
         safeConsole.log('Loading file:', identifier);
+        safeConsole.log('Storage service authenticated:', isSignedIn);
+        safeConsole.log('Storage service type:', isSignedIn ? 'cloud' : 'local');
+
         const file = await storageService.load(identifier);
 
         if (file) {
-          safeConsole.log('File loaded successfully:', file.title);
+          safeConsole.log(
+            'File loaded successfully:',
+            file.title,
+            'content length:',
+            file.content.length
+          );
+          // Verify content is not empty
+          if (!file.content || file.content.trim().length === 0) {
+            safeConsole.log('Warning: Loaded file has empty content:', file.title);
+          }
         } else {
           safeConsole.log('File not found:', identifier);
+          if (isSignedIn) {
+            toast({
+              title: 'File Not Found',
+              description: 'The requested file could not be found in your cloud storage.',
+              variant: 'destructive',
+            });
+          }
         }
 
         return file;
@@ -252,13 +309,15 @@ export const useFileStorage = (): UseFileStorageReturn => {
         safeConsole.error('Error loading file:', error);
         toast({
           title: 'Load Failed',
-          description: 'Failed to load file. Please try again.',
+          description: isSignedIn
+            ? 'Failed to load file from cloud storage. Please check your connection and try again.'
+            : 'Failed to load file from local storage. Please try again.',
           variant: 'destructive',
         });
         return null;
       }
     },
-    [storageService, toast]
+    [storageService, toast, isInitialized, isSignedIn]
   );
 
   // Export all files function

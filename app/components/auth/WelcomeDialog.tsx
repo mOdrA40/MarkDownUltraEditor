@@ -113,7 +113,7 @@ export const WelcomeDialog: React.FC<WelcomeDialogProps> = ({
               </div>
             </div>
 
-            <SignUpButton mode="redirect" fallbackRedirectUrl="/" forceRedirectUrl="/">
+            <SignUpButton mode="modal">
               <Button
                 size="lg"
                 onClick={handleSignUp}

@@ -6,7 +6,7 @@
 import { useAuth } from '@clerk/react-router';
 import { useCallback, useState } from 'react';
 import { useToast } from '@/hooks/core/useToast';
-import { createAuthenticatedSupabaseClient } from '@/lib/supabase';
+import { createClerkSupabaseClient } from '@/lib/supabase';
 import {
   createImageUploadService,
   type ImageUploadOptions,
@@ -40,14 +40,15 @@ export const useImageUpload = (): UseImageUploadReturn => {
 
     if (isSignedIn && userId) {
       try {
-        // NEW: Use native third-party auth integration (no template needed)
-        const token = await getToken();
-        if (token) {
-          supabaseClient = createAuthenticatedSupabaseClient(token);
-          currentUserId = userId;
-        }
+        // NEW: Use native third-party auth integration with accessToken() function
+        safeConsole.log('✓ Initializing image upload with native Third Party Auth');
+        supabaseClient = createClerkSupabaseClient(getToken);
+        currentUserId = userId;
       } catch (tokenError) {
-        safeConsole.log('Error getting token, using base64 fallback:', tokenError);
+        safeConsole.log(
+          'Error setting up authenticated client, using base64 fallback:',
+          tokenError
+        );
       }
     }
 

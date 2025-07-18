@@ -100,23 +100,9 @@ export const useFileOperations = ({ markdown, fileName, onLoad }: UseFileOperati
     // Small delay to ensure state is updated
     await new Promise((resolve) => setTimeout(resolve, 100));
 
-    // Fallback: if markdown is empty, try to get from localStorage
-    let contentToExport = markdown;
-    if (!contentToExport || contentToExport.trim().length === 0) {
-      console.log('  markdown is empty, trying localStorage fallback');
-      try {
-        const savedContent = localStorage.getItem('markdownEditor_content');
-        if (savedContent) {
-          contentToExport = savedContent;
-          console.log('  fallback content length:', contentToExport.length);
-          console.log('  fallback content preview:', contentToExport.substring(0, 100));
-        } else {
-          console.log('  no content found in localStorage');
-        }
-      } catch (error) {
-        console.warn('  failed to get fallback content:', error);
-      }
-    }
+    // Use current markdown content for export
+    // Note: localStorage fallback removed to ensure authenticated users only use cloud storage
+    const contentToExport = markdown;
 
     const config: ExportConfig = {
       content: contentToExport,
