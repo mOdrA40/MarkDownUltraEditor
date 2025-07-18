@@ -33,7 +33,12 @@ import { useToast } from '@/hooks/core/useToast';
 import { useFileStorage } from '@/hooks/files';
 import { useResponsiveDetection } from '@/hooks/ui/useResponsive';
 import { queryClient } from '@/lib/queryClient';
-import { type SessionData, type SessionStats, sessionManager } from '@/services/sessionManager';
+import { createClerkSupabaseClient } from '@/lib/supabase';
+import {
+  createSessionManager,
+  type SessionData,
+  type SessionStats,
+} from '@/services/sessionManager';
 import {
   DEFAULT_WRITING_SETTINGS,
   type WritingSettings as WritingSettingsType,
@@ -97,7 +102,7 @@ const DEFAULT_PREFERENCES: AppPreferences = {
 
 function SettingsPageContent() {
   const navigate = useNavigate();
-  const { isSignedIn } = useAuth();
+  const { isSignedIn, getToken } = useAuth();
   const { user } = useUser();
   const { toast } = useToast();
   const responsive = useResponsiveDetection();
@@ -119,8 +124,12 @@ function SettingsPageContent() {
 
   useEffect(() => {
     const loadSessions = async () => {
-      if (isSignedIn && user?.id) {
+      if (isSignedIn && user?.id && getToken) {
         try {
+          // Create Clerk-integrated Supabase client
+          const supabaseClient = createClerkSupabaseClient(getToken);
+          const sessionManager = createSessionManager(supabaseClient);
+
           // Create a consistent session ID based on browser fingerprint and user ID
           const browserFingerprint = getBrowserFingerprint();
           const currentSessionId = `session_${user.id}_${browserFingerprint}`;
@@ -138,30 +147,32 @@ function SettingsPageContent() {
     };
 
     loadSessions();
-  }, [isSignedIn, user?.id]);
+  }, [isSignedIn, user?.id, getToken]);
 
   useEffect(() => {
-    if (!isSignedIn || !user?.id) return;
+    if (!isSignedIn || !user?.id || !getToken) return;
 
     const currentSessionId = `session_${user.id}_${Date.now()}`;
 
-    // Update activity every 5 minutes
+    // Optimized: Update activity every 15 minutes instead of 5 minutes
     const activityInterval = setInterval(
       async () => {
         try {
+          const supabaseClient = createClerkSupabaseClient(getToken);
+          const sessionManager = createSessionManager(supabaseClient);
           await sessionManager.updateActivity(currentSessionId);
         } catch (error) {
           safeConsole.error('Failed to update session activity:', error);
         }
       },
-      5 * 60 * 1000
-    ); // 5 minutes
+      15 * 60 * 1000
+    ); // 15 minutes - reduced frequency for better performance
 
     // Cleanup on unmount
     return () => {
       clearInterval(activityInterval);
     };
-  }, [isSignedIn, user?.id]);
+  }, [isSignedIn, user?.id, getToken]);
 
   useEffect(() => {
     const loadPreferences = async () => {
@@ -955,8 +966,11 @@ function SettingsPageContent() {
                             variant="outline"
                             size="sm"
                             onClick={async () => {
-                              if (user?.id) {
+                              if (user?.id && getToken) {
                                 try {
+                                  const supabaseClient = createClerkSupabaseClient(getToken);
+                                  const sessionManager = createSessionManager(supabaseClient);
+
                                   await sessionManager.terminateAllOtherSessions(
                                     user.id,
                                     'current'
@@ -1031,7 +1045,11 @@ function SettingsPageContent() {
                                   size="sm"
                                   onClick={async () => {
                                     try {
-                                      await sessionManager.terminateSession(session.session_id);
+                                      if (getToken) {
+                                        const supabaseClient = createClerkSupabaseClient(getToken);
+                                        const sessionManager = createSessionManager(supabaseClient);
+                                        await sessionManager.terminateSession(session.session_id);
+                                      }
                                       // Remove from local state
                                       setUserSessions((prev) =>
                                         prev.filter((s) => s.id !== session.id)

@@ -3,7 +3,7 @@
  * @author Security Team
  */
 
-import { createClient } from '@supabase/supabase-js';
+import type { SupabaseClient } from '@supabase/supabase-js';
 import { getDeviceInfo } from '@/utils/browserFingerprint';
 import { safeConsole } from '@/utils/console';
 import { getSecurityIPInfo } from '@/utils/ipDetection';
@@ -41,17 +41,10 @@ export interface SessionStats {
 }
 
 export class SessionManager {
-  private supabaseClient;
+  private supabaseClient: SupabaseClient;
 
-  constructor() {
-    const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
-    const supabaseKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
-
-    if (!supabaseUrl || !supabaseKey) {
-      throw new Error('Supabase environment variables are required');
-    }
-
-    this.supabaseClient = createClient(supabaseUrl, supabaseKey);
+  constructor(supabaseClient: SupabaseClient) {
+    this.supabaseClient = supabaseClient;
   }
 
   /**
@@ -66,9 +59,10 @@ export class SessionManager {
       // Parse device info using improved detection
       const deviceInfo = getDeviceInfo();
 
-      const sessionData: Omit<SessionData, 'id'> = {
+      const sessionData = {
         user_id: userId,
         session_id: sessionId,
+        session_token: sessionId, // Use sessionId as session_token for now
         ip_address: ipInfo.ip,
         user_agent: userAgent,
         location: {
@@ -280,5 +274,7 @@ export class SessionManager {
   // Using improved device detection from browserFingerprint.ts
 }
 
-// Export singleton instance
-export const sessionManager = new SessionManager();
+// Export factory function to create SessionManager with Clerk-integrated client
+export const createSessionManager = (supabaseClient: SupabaseClient) => {
+  return new SessionManager(supabaseClient);
+};

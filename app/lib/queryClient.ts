@@ -16,16 +16,17 @@ export const createOptimizedQueryClient = () => {
   return new QueryClient({
     defaultOptions: {
       queries: {
-        // Cache optimization
-        staleTime: 5 * 60 * 1000, // 5 minutes - data considered fresh
-        gcTime: 10 * 60 * 1000, // 10 minutes - garbage collection time
+        // Enhanced cache optimization for better performance
+        staleTime: 10 * 60 * 1000, // 10 minutes - increased from 5 minutes
+        gcTime: 30 * 60 * 1000, // 30 minutes - increased from 10 minutes for better memory management
 
-        // Network optimization
+        // Network optimization - more conservative approach
         refetchOnWindowFocus: false, // Prevent unnecessary refetches
         refetchOnReconnect: 'always', // Always refetch on reconnect
-        refetchOnMount: true, // Refetch on component mount
+        refetchOnMount: false, // Changed: Only refetch if data is stale
+        refetchInterval: false, // Disable automatic polling
 
-        // Retry strategy - exponential backoff
+        // Enhanced retry strategy with better error handling
         retry: (failureCount, error) => {
           // Don't retry on 4xx errors (client errors)
           if (error && typeof error === 'object' && 'status' in error) {
@@ -33,13 +34,16 @@ export const createOptimizedQueryClient = () => {
             if (status >= 400 && status < 500) return false;
           }
 
-          // Retry up to 3 times with exponential backoff
-          return failureCount < 3;
+          // More conservative retry - only 2 attempts instead of 3
+          return failureCount < 2;
         },
-        retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 30000),
+        retryDelay: (attemptIndex) => Math.min(1500 * 2 ** attemptIndex, 45000), // Slightly longer delays
 
-        // Performance optimization
+        // Performance optimization - reduce unnecessary re-renders
         notifyOnChangeProps: ['data', 'error', 'isLoading'], // Only notify on specific prop changes
+
+        // Enhanced deduplication
+        structuralSharing: true, // Enable structural sharing for better performance
       },
       mutations: {
         // Mutation retry strategy
@@ -108,20 +112,67 @@ export const invalidateQueries = {
   files: {
     all: () => queryClient.invalidateQueries({ queryKey: queryKeys.files.all }),
     list: (userId: string) =>
-      queryClient.invalidateQueries({ queryKey: queryKeys.files.list(userId) }),
-    detail: (id: string) => queryClient.invalidateQueries({ queryKey: queryKeys.files.detail(id) }),
+      queryClient.invalidateQueries({
+        queryKey: queryKeys.files.list(userId),
+        exact: true, // Only invalidate exact match for better performance
+      }),
+    detail: (id: string) =>
+      queryClient.invalidateQueries({
+        queryKey: queryKeys.files.detail(id),
+        exact: true,
+      }),
   },
 
   storage: {
     all: () => queryClient.invalidateQueries({ queryKey: queryKeys.storage.all }),
     info: (userId: string) =>
-      queryClient.invalidateQueries({ queryKey: queryKeys.storage.info(userId) }),
+      queryClient.invalidateQueries({
+        queryKey: queryKeys.storage.info(userId),
+        exact: true,
+      }),
   },
 
   templates: {
     all: () => queryClient.invalidateQueries({ queryKey: queryKeys.templates.all }),
     list: (category?: string) =>
-      queryClient.invalidateQueries({ queryKey: queryKeys.templates.list(category) }),
+      queryClient.invalidateQueries({
+        queryKey: queryKeys.templates.list(category),
+        exact: true,
+      }),
+  },
+} as const;
+
+/**
+ * Batch invalidation helpers for multiple operations
+ */
+export const batchInvalidateQueries = {
+  fileOperations: (userId: string) => {
+    // Batch invalidate related queries in one operation
+    return Promise.all([
+      queryClient.invalidateQueries({
+        queryKey: queryKeys.files.list(userId),
+        exact: true,
+      }),
+      queryClient.invalidateQueries({
+        queryKey: queryKeys.storage.info(userId),
+        exact: true,
+      }),
+    ]);
+  },
+
+  userDataRefresh: (userId: string) => {
+    // Comprehensive refresh for user data
+    return Promise.all([
+      queryClient.invalidateQueries({
+        queryKey: queryKeys.files.list(userId),
+        exact: true,
+      }),
+      queryClient.invalidateQueries({
+        queryKey: queryKeys.storage.info(userId),
+        exact: true,
+      }),
+      queryClient.invalidateQueries({ queryKey: queryKeys.templates.all }),
+    ]);
   },
 } as const;
 

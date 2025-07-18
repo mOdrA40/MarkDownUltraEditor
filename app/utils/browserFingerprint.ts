@@ -1,7 +1,9 @@
 /**
- * @fileoverview Browser fingerprinting utilities for session management
+ * @fileoverview Enhanced browser fingerprinting utilities for session management
  * @author Axel Modra
  */
+
+import { UAParser } from 'ua-parser-js';
 
 /**
  * Generate a consistent browser fingerprint based on browser characteristics
@@ -66,6 +68,37 @@ export const getBrowserFingerprint = (): string => {
 };
 
 /**
+ * Enhanced device information detection using UAParser
+ */
+export const getDeviceInfo = () => {
+  if (typeof window === 'undefined') {
+    return {
+      browser: 'Unknown',
+      os: 'Unknown',
+      device: 'Unknown',
+    };
+  }
+
+  try {
+    const parser = new UAParser();
+    const result = parser.getResult();
+
+    return {
+      browser: `${result.browser.name || 'Unknown'} ${result.browser.version || ''}`.trim(),
+      os: `${result.os.name || 'Unknown'} ${result.os.version || ''}`.trim(),
+      device: result.device.type || 'Desktop',
+    };
+  } catch (error) {
+    console.warn('Error parsing user agent:', error);
+    return {
+      browser: 'Unknown',
+      os: 'Unknown',
+      device: 'Unknown',
+    };
+  }
+};
+
+/**
  * Simple hash function for generating consistent fingerprints
  */
 const simpleHash = (str: string): number => {
@@ -79,63 +112,6 @@ const simpleHash = (str: string): number => {
   }
 
   return Math.abs(hash);
-};
-
-/**
- * Get device information for session tracking
- */
-export const getDeviceInfo = () => {
-  if (typeof window === 'undefined') {
-    return {
-      browser: 'server',
-      os: 'server',
-      device: 'server',
-    };
-  }
-
-  const userAgent = navigator.userAgent;
-
-  // Detect browser
-  let browser = 'Unknown';
-  if (userAgent.includes('Chrome') && !userAgent.includes('Edg')) {
-    browser = 'Chrome';
-  } else if (userAgent.includes('Firefox')) {
-    browser = 'Firefox';
-  } else if (userAgent.includes('Safari') && !userAgent.includes('Chrome')) {
-    browser = 'Safari';
-  } else if (userAgent.includes('Edg')) {
-    browser = 'Edge';
-  } else if (userAgent.includes('Opera') || userAgent.includes('OPR')) {
-    browser = 'Opera';
-  }
-
-  // Detect OS
-  let os = 'Unknown';
-  if (userAgent.includes('Windows')) {
-    os = 'Windows';
-  } else if (userAgent.includes('Mac')) {
-    os = 'macOS';
-  } else if (userAgent.includes('Linux')) {
-    os = 'Linux';
-  } else if (userAgent.includes('Android')) {
-    os = 'Android';
-  } else if (userAgent.includes('iOS')) {
-    os = 'iOS';
-  }
-
-  // Detect device type
-  let device = 'Desktop';
-  if (userAgent.includes('Mobile')) {
-    device = 'Mobile';
-  } else if (userAgent.includes('Tablet')) {
-    device = 'Tablet';
-  }
-
-  return {
-    browser,
-    os,
-    device,
-  };
 };
 
 /**

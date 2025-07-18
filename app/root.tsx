@@ -89,7 +89,7 @@ export const headers: HeadersFunction = () => {
       "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://clerk.com https://*.clerk.accounts.dev https://cdnjs.cloudflare.com",
       "img-src 'self' data: blob: https://*.clerk.com https://*.clerk.accounts.dev https://img.clerk.com",
       "font-src 'self' data: https://fonts.googleapis.com https://fonts.gstatic.com",
-      "connect-src 'self' https://*.supabase.co https://clerk.com https://*.clerk.accounts.dev https://*.clerk.com wss://*.supabase.co wss://*.clerk.com https://*.ingest.sentry.io https://*.ingest.us.sentry.io https://sentry.io",
+      "connect-src 'self' https://*.supabase.co https://clerk.com https://*.clerk.accounts.dev https://*.clerk.com wss://*.supabase.co wss://*.clerk.com https://*.ingest.sentry.io https://*.ingest.us.sentry.io https://sentry.io https://api.ipify.org https://ipapi.co https://ipinfo.io https://api.ip.sb",
       "media-src 'self'",
       "object-src 'none'",
       "child-src 'none'",
