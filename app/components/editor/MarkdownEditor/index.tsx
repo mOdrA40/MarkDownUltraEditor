@@ -3,17 +3,14 @@ MarkdownEditor
 @author Axel Modra
  */
 
-import React from "react";
-import { useSearchParams } from "react-router";
-import {
-  usePerformanceDebug,
-  useRenderPerformance,
-} from "@/hooks/core/usePerformance";
-import { useFileStorage } from "@/hooks/files";
-import { useWelcomeDialog, WelcomeDialog } from "../../auth/WelcomeDialog";
-import { type Theme, useTheme } from "../../features/ThemeSelector";
-import { MobileNav } from "../../layout/MobileNav";
-import { DialogContainer, EditorContainer } from "./components";
+import React from 'react';
+import { useSearchParams } from 'react-router';
+import { usePerformanceDebug, useRenderPerformance } from '@/hooks/core/usePerformance';
+import { useFileStorage } from '@/hooks/files';
+import { useWelcomeDialog, WelcomeDialog } from '../../auth/WelcomeDialog';
+import { type Theme, useTheme } from '../../features/ThemeSelector';
+import { MobileNav } from '../../layout/MobileNav';
+import { DialogContainer, EditorContainer } from './components';
 import {
   EditorErrorBoundary,
   MemoizedEditorFooter,
@@ -21,16 +18,16 @@ import {
   MemoizedEditorMainContent,
   MemoizedEditorSidebar,
   PerformanceMonitor,
-} from "./components/Performance";
+} from './components/Performance';
 import {
   useDialogManager,
   useEditorSettings,
   useEditorState,
   useKeyboardShortcuts,
   useResponsiveLayout,
-} from "./hooks";
-import type { MarkdownEditorProps } from "./types";
-import { DEFAULT_FILE } from "./utils/constants";
+} from './hooks';
+import type { MarkdownEditorProps } from './types';
+import { DEFAULT_FILE } from './utils/constants';
 
 /**
  * Main MarkdownEditor component
@@ -40,22 +37,22 @@ export const MarkdownEditor: React.FC<MarkdownEditorProps> = ({
   initialFileName = DEFAULT_FILE.NAME,
   initialTheme: _initialTheme,
   eventHandlers = {},
-  className = "",
+  className = '',
   style = {},
 }) => {
   // Direct URL parameters handling to avoid race conditions
   const [searchParams, setSearchParams] = useSearchParams();
 
   // Process URL parameters immediately
-  const urlTitle = searchParams.get("title");
-  const urlContent = searchParams.get("content");
-  const urlFile = searchParams.get("file");
-  const isNewFileRequest = searchParams.get("new") === "true";
+  const urlTitle = searchParams.get('title');
+  const urlContent = searchParams.get('content');
+  const urlFile = searchParams.get('file');
+  const isNewFileRequest = searchParams.get('new') === 'true';
 
   // Determine initial content based on URL parameters
   const getInitialContent = () => {
     if (isNewFileRequest) {
-      return ""; // Empty content for new files from /files
+      return ''; // Empty content for new files from /files
     }
     if (urlContent) {
       return urlContent; // Content from URL parameters
@@ -69,7 +66,7 @@ export const MarkdownEditor: React.FC<MarkdownEditorProps> = ({
 
   const getInitialFileName = () => {
     if (isNewFileRequest) {
-      return "untitled.md"; // Default name for new files
+      return 'untitled.md'; // Default name for new files
     }
     if (urlTitle) {
       return urlTitle; // Title from URL parameters
@@ -100,22 +97,22 @@ export const MarkdownEditor: React.FC<MarkdownEditorProps> = ({
   const fileStorage = useFileStorage();
 
   // Performance monitoring
-  useRenderPerformance("MarkdownEditor");
+  useRenderPerformance('MarkdownEditor');
   usePerformanceDebug();
 
   // Test Supabase connection on mount
   React.useEffect(() => {
     const testConnection = async () => {
       try {
-        const { testSupabaseConnection } = await import("@/lib/supabase");
+        const { testSupabaseConnection } = await import('@/lib/supabase');
         const isConnected = await testSupabaseConnection();
         if (isConnected) {
-          console.log("✓ Supabase connection test successful");
+          console.log('✓ Supabase connection test successful');
         } else {
-          console.warn("⚠️ Supabase connection test failed");
+          console.warn('⚠️ Supabase connection test failed');
         }
       } catch (error) {
-        console.error("Error testing Supabase connection:", error);
+        console.error('Error testing Supabase connection:', error);
       }
     };
 
@@ -160,17 +157,12 @@ export const MarkdownEditor: React.FC<MarkdownEditorProps> = ({
         insertTextAtCursor(text, false);
       } else {
         // Fallback to direct textarea manipulation
-        const textarea = document.querySelector(
-          ".markdown-editor-textarea"
-        ) as HTMLTextAreaElement;
+        const textarea = document.querySelector('.markdown-editor-textarea') as HTMLTextAreaElement;
         if (textarea) {
           const start = textarea.selectionStart;
           const end = textarea.selectionEnd;
           const currentValue = textarea.value;
-          const newValue =
-            currentValue.substring(0, start) +
-            text +
-            currentValue.substring(end);
+          const newValue = currentValue.substring(0, start) + text + currentValue.substring(end);
 
           // Update both textarea value and editor state
           textarea.value = newValue;
@@ -182,7 +174,7 @@ export const MarkdownEditor: React.FC<MarkdownEditorProps> = ({
           textarea.focus();
 
           // Trigger input event to ensure all handlers are called
-          const inputEvent = new Event("input", { bubbles: true });
+          const inputEvent = new Event('input', { bubbles: true });
           textarea.dispatchEvent(inputEvent);
         } else {
           // Last resort: append to end of content
@@ -215,7 +207,7 @@ export const MarkdownEditor: React.FC<MarkdownEditorProps> = ({
       insertText,
       togglePreview: () => setShowPreview(!showPreview),
       toggleZenMode: () => settingsActions.toggleZenMode(),
-      showShortcuts: () => dialogActions.showDialog("showShortcuts"),
+      showShortcuts: () => dialogActions.showDialog('showShortcuts'),
       undo: undoRedo.undo,
       redo: undoRedo.redo,
       newFile: editorActions.newFile,
@@ -223,16 +215,16 @@ export const MarkdownEditor: React.FC<MarkdownEditorProps> = ({
         // Manual save functionality
         if (editor.markdown && editor.fileName && fileStorage.saveFile) {
           try {
-            console.log("Manual save triggered:", editor.fileName);
+            console.log('Manual save triggered:', editor.fileName);
             await fileStorage.saveFile({
               title: editor.fileName,
               content: editor.markdown,
-              fileType: "markdown",
+              fileType: 'markdown',
               tags: [],
             });
-            console.log("Manual save successful");
+            console.log('Manual save successful');
           } catch (error) {
-            console.warn("Manual save failed:", error);
+            console.warn('Manual save failed:', error);
           }
         }
       },
@@ -302,7 +294,7 @@ export const MarkdownEditor: React.FC<MarkdownEditorProps> = ({
     const autoSaveTimer = setTimeout(async () => {
       if (fileStorage.saveFile) {
         try {
-          const storageType = fileStorage.isAuthenticated ? "cloud" : "local";
+          const storageType = fileStorage.isAuthenticated ? 'cloud' : 'local';
           console.log(`Auto-saving file to ${storageType}:`, editor.fileName);
 
           // Optimistic update - mark as saved immediately for better UX
@@ -312,13 +304,13 @@ export const MarkdownEditor: React.FC<MarkdownEditorProps> = ({
           await fileStorage.saveFile({
             title: currentFileName,
             content: currentContent,
-            fileType: "markdown",
+            fileType: 'markdown',
             tags: [],
           });
 
           console.log(`Auto-save to ${storageType} successful`);
         } catch (error) {
-          console.warn("Auto-save failed:", error);
+          console.warn('Auto-save failed:', error);
         }
       }
     }, 8000); // Optimized: Auto-save after 8 seconds of inactivity
@@ -344,15 +336,9 @@ export const MarkdownEditor: React.FC<MarkdownEditorProps> = ({
     if (urlFile && fileStorage.isInitialized && fileStorage.storageService) {
       const loadFileFromStorage = async () => {
         try {
-          console.log("Loading file from storage:", urlFile);
-          console.log(
-            "Storage service initialized:",
-            fileStorage.isInitialized
-          );
-          console.log(
-            "Storage service authenticated:",
-            fileStorage.isAuthenticated
-          );
+          console.log('Loading file from storage:', urlFile);
+          console.log('Storage service initialized:', fileStorage.isInitialized);
+          console.log('Storage service authenticated:', fileStorage.isAuthenticated);
 
           // Wait a bit more to ensure service is fully ready
           await new Promise((resolve) => setTimeout(resolve, 200));
@@ -360,33 +346,29 @@ export const MarkdownEditor: React.FC<MarkdownEditorProps> = ({
           const fileData = await fileStorage.loadFile(urlFile);
           if (fileData) {
             console.log(
-              "File loaded from storage:",
+              'File loaded from storage:',
               fileData.title,
-              "content length:",
+              'content length:',
               fileData.content.length
             );
             (
-              loadFileRef.current as (
-                content: string,
-                name: string,
-                bypassDialog?: boolean
-              ) => void
+              loadFileRef.current as (content: string, name: string, bypassDialog?: boolean) => void
             )(fileData.content, fileData.title, true);
 
             // Clear URL parameter after successful file loading
-            console.log("File loaded successfully, clearing URL parameter");
+            console.log('File loaded successfully, clearing URL parameter');
             setSearchParams({}, { replace: true });
           } else {
-            console.warn("File not found in storage:", urlFile);
+            console.warn('File not found in storage:', urlFile);
             // If file not found and user is authenticated, show error
             if (fileStorage.isAuthenticated) {
-              console.error("File not found in cloud storage:", urlFile);
+              console.error('File not found in cloud storage:', urlFile);
             }
             // Clear URL parameter even if file not found
             setSearchParams({}, { replace: true });
           }
         } catch (error) {
-          console.error("Error loading file from storage:", error);
+          console.error('Error loading file from storage:', error);
           // Clear URL parameter on error
           setSearchParams({}, { replace: true });
         } finally {
@@ -398,7 +380,7 @@ export const MarkdownEditor: React.FC<MarkdownEditorProps> = ({
       setIsLoadingFromUrl(false);
     } else if (urlFile && !fileStorage.isInitialized) {
       // Keep loading state if we have a file to load but service isn't ready
-      console.log("Waiting for storage service to initialize...");
+      console.log('Waiting for storage service to initialize...');
     }
   }, [
     urlFile,
@@ -422,10 +404,8 @@ export const MarkdownEditor: React.FC<MarkdownEditorProps> = ({
   }
 
   return (
-    <EditorErrorBoundary
-      enableReporting={process.env.NODE_ENV === "production"}
-    >
-      <PerformanceMonitor enabled={process.env.NODE_ENV === "development"}>
+    <EditorErrorBoundary enableReporting={process.env.NODE_ENV === 'production'}>
+      <PerformanceMonitor enabled={process.env.NODE_ENV === 'development'}>
         <EditorContainer
           theme={currentTheme}
           responsive={responsive}
@@ -442,7 +422,7 @@ export const MarkdownEditor: React.FC<MarkdownEditorProps> = ({
               showPreview={showPreview}
               onTogglePreview={() => setShowPreview(!showPreview)}
               onToggleZen={settingsActions.toggleZenMode}
-              onSearch={() => dialogActions.showDialog("showSearch")}
+              onSearch={() => dialogActions.showDialog('showSearch')}
               onNewFile={editorActions.newFile}
               markdown={editor.markdown}
               fileName={editor.fileName}
@@ -450,9 +430,7 @@ export const MarkdownEditor: React.FC<MarkdownEditorProps> = ({
               onFileNameChange={editorActions.setFileName}
               onInsertText={insertText}
               fontSize={settings.fontSize}
-              onFontSizeChange={(size) =>
-                settingsActions.updateSettings({ fontSize: size })
-              }
+              onFontSizeChange={(size) => settingsActions.updateSettings({ fontSize: size })}
               lineHeight={settings.lineHeight}
               onLineHeightChange={(height) =>
                 settingsActions.updateSettings({ lineHeight: height })
@@ -471,10 +449,8 @@ export const MarkdownEditor: React.FC<MarkdownEditorProps> = ({
               onRedo={undoRedo.redo}
               canUndo={undoRedo.canUndo}
               canRedo={undoRedo.canRedo}
-              onShowAdvancedExport={() =>
-                dialogActions.showDialog("showAdvancedExport")
-              }
-              onShowTemplates={() => dialogActions.showDialog("showTemplates")}
+              onShowAdvancedExport={() => dialogActions.showDialog('showAdvancedExport')}
+              onShowTemplates={() => dialogActions.showDialog('showTemplates')}
             />
           )}
 
@@ -491,12 +467,10 @@ export const MarkdownEditor: React.FC<MarkdownEditorProps> = ({
               onNewFile={editorActions.newFile}
               showPreview={showPreview}
               onTogglePreview={() => setShowPreview(!showPreview)}
-              onShowSearch={() => dialogActions.showDialog("showSearch")}
-              onShowTemplates={() => dialogActions.showDialog("showTemplates")}
-              onShowAdvancedExport={() =>
-                dialogActions.showDialog("showAdvancedExport")
-              }
-              onShowShortcuts={() => dialogActions.showDialog("showShortcuts")}
+              onShowSearch={() => dialogActions.showDialog('showSearch')}
+              onShowTemplates={() => dialogActions.showDialog('showTemplates')}
+              onShowAdvancedExport={() => dialogActions.showDialog('showAdvancedExport')}
+              onShowShortcuts={() => dialogActions.showDialog('showShortcuts')}
               onInsertText={insertText}
               settings={settings}
               onSettingsChange={settingsActions.updateSettings}
