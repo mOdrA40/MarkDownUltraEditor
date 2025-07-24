@@ -4,6 +4,7 @@ import type React from 'react';
 import { useEffect } from 'react';
 import type { HeadersFunction, LinksFunction } from 'react-router';
 import { Links, Meta, Outlet, Scripts, ScrollRestoration } from 'react-router';
+import SessionManager from '@/components/auth/SessionManager';
 import { ThemeProvider } from '@/components/features/ThemeSelector';
 import { fixRedirectLoop } from '@/utils/auth/redirects';
 import type { Route } from './+types/root';
@@ -186,6 +187,7 @@ export default function App({ loaderData }: Route.ComponentProps) {
       }}
     >
       <ThemeProvider>
+        <SessionManager />
         <Outlet />
       </ThemeProvider>
     </ClerkProvider>

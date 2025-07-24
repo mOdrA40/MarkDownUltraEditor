@@ -3,9 +3,9 @@
  * @author Axel Modra
  */
 
-import type { SupabaseClient } from "@supabase/supabase-js";
-import type { Database } from "@/lib/supabase";
-import { safeConsole } from "@/utils/console";
+import type { SupabaseClient } from '@supabase/supabase-js';
+import type { Database } from '@/lib/supabase';
+import { safeConsole } from '@/utils/console';
 
 export interface UserCleanupResult {
   success: boolean;
@@ -34,7 +34,7 @@ export class UserCleanupService {
     };
 
     try {
-      safeConsole.log("Starting user data cleanup for user:", userId);
+      safeConsole.log('Starting user data cleanup for user:', userId);
 
       // 1. Delete user files
       const filesResult = await this.deleteUserFiles(userId);
@@ -60,17 +60,15 @@ export class UserCleanupService {
       // 4. Delete file versions
       const versionsResult = await this.deleteFileVersions(userId);
       if (versionsResult.error) {
-        result.errors.push(
-          `File versions cleanup error: ${versionsResult.error}`
-        );
+        result.errors.push(`File versions cleanup error: ${versionsResult.error}`);
       }
 
       result.success = result.errors.length === 0;
 
-      safeConsole.log("User data cleanup completed:", result);
+      safeConsole.log('User data cleanup completed:', result);
       return result;
     } catch (error) {
-      safeConsole.error("User cleanup service error:", error);
+      safeConsole.error('User cleanup service error:', error);
       result.errors.push(`General cleanup error: ${error}`);
       return result;
     }
@@ -79,15 +77,13 @@ export class UserCleanupService {
   /**
    * Delete all user files
    */
-  private async deleteUserFiles(
-    userId: string
-  ): Promise<{ count: number; error?: string }> {
+  private async deleteUserFiles(userId: string): Promise<{ count: number; error?: string }> {
     try {
       const { data, error } = await this.supabaseClient
-        .from("user_files")
+        .from('user_files')
         .delete()
-        .eq("user_id", userId)
-        .select("id");
+        .eq('user_id', userId)
+        .select('id');
 
       if (error) {
         return { count: 0, error: error.message };
@@ -102,15 +98,13 @@ export class UserCleanupService {
   /**
    * Delete all user sessions
    */
-  private async deleteUserSessions(
-    userId: string
-  ): Promise<{ count: number; error?: string }> {
+  private async deleteUserSessions(userId: string): Promise<{ count: number; error?: string }> {
     try {
       const { data, error } = await this.supabaseClient
-        .from("user_sessions")
+        .from('user_sessions')
         .delete()
-        .eq("user_id", userId)
-        .select("id");
+        .eq('user_id', userId)
+        .select('id');
 
       if (error) {
         return { count: 0, error: error.message };
@@ -125,9 +119,7 @@ export class UserCleanupService {
   /**
    * Delete user statistics and analytics data
    */
-  private async deleteUserStats(
-    _userId: string
-  ): Promise<{ count: number; error?: string }> {
+  private async deleteUserStats(_userId: string): Promise<{ count: number; error?: string }> {
     try {
       return { count: 0 };
     } catch (error) {
@@ -138,15 +130,13 @@ export class UserCleanupService {
   /**
    * Delete file versions for user files
    */
-  private async deleteFileVersions(
-    userId: string
-  ): Promise<{ count: number; error?: string }> {
+  private async deleteFileVersions(userId: string): Promise<{ count: number; error?: string }> {
     try {
       // First get all file IDs for the user
       const { data: userFiles, error: filesError } = await this.supabaseClient
-        .from("user_files")
-        .select("id")
-        .eq("user_id", userId);
+        .from('user_files')
+        .select('id')
+        .eq('user_id', userId);
 
       if (filesError) {
         return { count: 0, error: filesError.message };
@@ -160,10 +150,10 @@ export class UserCleanupService {
 
       // Delete file versions for these files
       const { data, error } = await this.supabaseClient
-        .from("file_versions")
+        .from('file_versions')
         .delete()
-        .in("file_id", fileIds)
-        .select("id");
+        .in('file_id', fileIds)
+        .select('id');
 
       if (error) {
         return { count: 0, error: error.message };
@@ -179,8 +169,6 @@ export class UserCleanupService {
 /**
  * Create user cleanup service instance
  */
-export const createUserCleanupService = (
-  supabaseClient: SupabaseClient<Database>
-) => {
+export const createUserCleanupService = (supabaseClient: SupabaseClient<Database>) => {
   return new UserCleanupService(supabaseClient);
 };

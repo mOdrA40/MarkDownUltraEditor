@@ -24,6 +24,7 @@ import {
 } from 'lucide-react';
 import type React from 'react';
 import { useEffect, useMemo, useState } from 'react';
+
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
@@ -109,8 +110,6 @@ export const FilesTable: React.FC<FilesTableProps> = ({
         enableHiding: false,
         size: 40,
       },
-
-      // File name column
       {
         accessorKey: 'title',
         header: 'Name',
@@ -142,8 +141,6 @@ export const FilesTable: React.FC<FilesTableProps> = ({
         enableSorting: true,
         sortingFn: 'alphanumeric',
       },
-
-      // File size column
       {
         accessorKey: 'fileSize',
         header: 'Size',
@@ -158,8 +155,6 @@ export const FilesTable: React.FC<FilesTableProps> = ({
         enableSorting: true,
         sortingFn: 'basic',
       },
-
-      // Last modified column
       {
         accessorKey: 'updatedAt',
         header: 'Modified',
@@ -178,8 +173,6 @@ export const FilesTable: React.FC<FilesTableProps> = ({
         enableSorting: true,
         sortingFn: 'datetime',
       },
-
-      // Actions column
       {
         id: 'actions',
         header: 'Actions',
@@ -273,6 +266,8 @@ export const FilesTable: React.FC<FilesTableProps> = ({
     getSortedRowModel: getSortedRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
     enableRowSelection: true,
+    // Use file ID as row ID to maintain consistent selection state
+    getRowId: (row) => row.id || row.title,
     meta: {
       onOpen,
       onDelete,
@@ -287,53 +282,14 @@ export const FilesTable: React.FC<FilesTableProps> = ({
     }
   }, [table, onTableReady]);
 
-  // Loading state handling
-  if (isLoading) {
-    return (
-      <div className="rounded-md border mt-2">
-        <Table>
-          <TableHeader>
-            {table.getHeaderGroups().map((headerGroup) => (
-              <TableRow key={headerGroup.id}>
-                {headerGroup.headers.map((header) => (
-                  <TableHead key={header.id} className="py-4">
-                    {header.isPlaceholder
-                      ? null
-                      : flexRender(header.column.columnDef.header, header.getContext())}
-                  </TableHead>
-                ))}
-              </TableRow>
-            ))}
-          </TableHeader>
-          <TableBody>
-            {Array.from({ length: 5 }).map((_, index) => (
-              // biome-ignore lint/suspicious/noArrayIndexKey: Loading skeleton rows don't have meaningful IDs
-              <TableRow key={`loading-row-${index}`}>
-                {columns.map((_, colIndex) => (
-                  <TableCell
-                    // biome-ignore lint/suspicious/noArrayIndexKey: Loading skeleton cells don't have meaningful IDs
-                    key={`loading-cell-${index}-${colIndex}`}
-                    className="py-3"
-                  >
-                    <div className="h-4 bg-muted animate-pulse rounded" />
-                  </TableCell>
-                ))}
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </div>
-    );
-  }
-
-  return (
+  const loadingSkeleton = (
     <div className="rounded-md border mt-2">
       <Table>
         <TableHeader>
           {table.getHeaderGroups().map((headerGroup) => (
             <TableRow key={headerGroup.id}>
               {headerGroup.headers.map((header) => (
-                <TableHead key={header.id} style={{ width: header.getSize() }} className="py-4">
+                <TableHead key={header.id} className="py-4">
                   {header.isPlaceholder
                     ? null
                     : flexRender(header.column.columnDef.header, header.getContext())}
@@ -343,42 +299,80 @@ export const FilesTable: React.FC<FilesTableProps> = ({
           ))}
         </TableHeader>
         <TableBody>
-          {table.getRowModel().rows?.length ? (
-            table.getRowModel().rows.map((row) => (
-              <TableRow
-                key={row.id}
-                data-state={row.getIsSelected() && 'selected'}
-                className={`hover:bg-muted/50 transition-colors cursor-pointer ${
-                  row.getIsSelected() ? 'bg-muted/30 border-l-2 border-l-primary' : ''
-                }`}
-                onClick={(e) => {
-                  // Only trigger row click if not clicking on checkbox or dropdown
-                  const target = e.target as HTMLElement;
-                  const isCheckbox = target.closest('[role="checkbox"]');
-                  const isDropdown =
-                    target.closest('[role="button"]') || target.closest('.dropdown-trigger');
-
-                  if (!isCheckbox && !isDropdown) {
-                    onOpen(row.original);
-                  }
-                }}
-              >
-                {row.getVisibleCells().map((cell) => (
-                  <TableCell key={cell.id} className="py-3">
-                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                  </TableCell>
-                ))}
-              </TableRow>
-            ))
-          ) : (
-            <TableRow>
-              <TableCell colSpan={columns.length} className="h-24 text-center">
-                No files found.
-              </TableCell>
+          {Array.from({ length: 5 }).map((_, index) => (
+            <TableRow key={`loading-row-${index}`}>
+              {columns.map((_, colIndex) => (
+                <TableCell key={`loading-cell-${index}-${colIndex}`} className="py-3">
+                  <div className="h-4 bg-muted animate-pulse rounded" />
+                </TableCell>
+              ))}
             </TableRow>
-          )}
+          ))}
         </TableBody>
       </Table>
     </div>
   );
+
+  return (
+    <>
+      {isLoading ? (
+        loadingSkeleton
+      ) : (
+        <div className="rounded-md border mt-2">
+          <Table>
+            <TableHeader>
+              {table.getHeaderGroups().map((headerGroup) => (
+                <TableRow key={headerGroup.id}>
+                  {headerGroup.headers.map((header) => (
+                    <TableHead key={header.id} style={{ width: header.getSize() }} className="py-4">
+                      {header.isPlaceholder
+                        ? null
+                        : flexRender(header.column.columnDef.header, header.getContext())}
+                    </TableHead>
+                  ))}
+                </TableRow>
+              ))}
+            </TableHeader>
+            <TableBody>
+              {table.getRowModel().rows?.length ? (
+                table.getRowModel().rows.map((row) => (
+                  <TableRow
+                    key={row.id}
+                    data-state={row.getIsSelected() && 'selected'}
+                    className={`hover:bg-muted/50 transition-colors cursor-pointer ${
+                      row.getIsSelected() ? 'bg-muted/30 border-l-2 border-l-primary' : ''
+                    }`}
+                    onClick={(e) => {
+                      const target = e.target as HTMLElement;
+                      const isCheckbox = target.closest('[role="checkbox"]');
+                      const isDropdown =
+                        target.closest('[role="button"]') || target.closest('.dropdown-trigger');
+
+                      if (!isCheckbox && !isDropdown) {
+                        onOpen(row.original);
+                      }
+                    }}
+                  >
+                    {row.getVisibleCells().map((cell) => (
+                      <TableCell key={cell.id} className="py-3">
+                        {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                      </TableCell>
+                    ))}
+                  </TableRow>
+                ))
+              ) : (
+                <TableRow>
+                  <TableCell colSpan={columns.length} className="h-24 text-center">
+                    No files found.
+                  </TableCell>
+                </TableRow>
+              )}
+            </TableBody>
+          </Table>
+        </div>
+      )}
+    </>
+  );
 };
+
+export default FilesTable;

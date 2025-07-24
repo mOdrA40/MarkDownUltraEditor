@@ -29,6 +29,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Input } from '@/components/ui/input';
 import { Separator } from '@/components/ui/separator';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { useSessionValidation } from '@/hooks/auth/useSessionValidation';
 import { useToast } from '@/hooks/core/useToast';
 import { useFileStorage } from '@/hooks/files';
 import { useResponsiveDetection } from '@/hooks/ui/useResponsive';
@@ -43,7 +44,7 @@ import {
   DEFAULT_WRITING_SETTINGS,
   type WritingSettings as WritingSettingsType,
 } from '@/types/writingSettings';
-import { getBrowserFingerprint } from '@/utils/browserFingerprint';
+
 import { safeConsole } from '@/utils/console';
 import { securityMiddleware } from '@/utils/security/routeMiddleware';
 import { ErrorCategory } from '@/utils/sentry';
@@ -108,6 +109,10 @@ function SettingsPageContent() {
   const responsive = useResponsiveDetection();
   const { currentTheme, setTheme: setGlobalTheme } = useTheme();
   const fileStorage = useFileStorage();
+  const { terminateAllOtherSessions } = useSessionValidation({
+    enabled: isSignedIn,
+    showNotifications: false, // We'll handle notifications manually
+  });
 
   const [preferences, setPreferences] = useState<AppPreferences>({
     ...DEFAULT_PREFERENCES,
@@ -130,11 +135,7 @@ function SettingsPageContent() {
           const supabaseClient = createClerkSupabaseClient(getToken);
           const sessionManager = createSessionManager(supabaseClient);
 
-          // Create a consistent session ID based on browser fingerprint and user ID
-          const browserFingerprint = getBrowserFingerprint();
-          const currentSessionId = `session_${user.id}_${browserFingerprint}`;
-
-          await sessionManager.createSession(user.id, currentSessionId);
+          // Don't create session here - let useSessionValidation handle it
 
           const stats = await sessionManager.getSessionStats(user.id);
           const sessions = await sessionManager.getUserSessions(user.id);
@@ -968,23 +969,26 @@ function SettingsPageContent() {
                             onClick={async () => {
                               if (user?.id && getToken) {
                                 try {
-                                  const supabaseClient = createClerkSupabaseClient(getToken);
-                                  const sessionManager = createSessionManager(supabaseClient);
+                                  // Use the new session validation hook
+                                  const success = await terminateAllOtherSessions();
 
-                                  await sessionManager.terminateAllOtherSessions(
-                                    user.id,
-                                    'current'
-                                  );
-                                  // Reload sessions
-                                  const stats = await sessionManager.getSessionStats(user.id);
-                                  const sessions = await sessionManager.getUserSessions(user.id);
-                                  setSessionStats(stats);
-                                  setUserSessions(sessions);
+                                  if (success) {
+                                    // Reload sessions to reflect changes
+                                    const supabaseClient = createClerkSupabaseClient(getToken);
+                                    const sessionManager = createSessionManager(supabaseClient);
+                                    const stats = await sessionManager.getSessionStats(user.id);
+                                    const sessions = await sessionManager.getUserSessions(user.id);
+                                    setSessionStats(stats);
+                                    setUserSessions(sessions);
 
-                                  toast({
-                                    title: 'Sessions Terminated',
-                                    description: 'All other sessions have been terminated.',
-                                  });
+                                    toast({
+                                      title: 'Sessions Terminated',
+                                      description:
+                                        'All other sessions have been terminated successfully.',
+                                    });
+                                  } else {
+                                    throw new Error('Failed to terminate sessions');
+                                  }
                                 } catch (error) {
                                   safeConsole.error('Failed to terminate sessions:', error);
                                   toast({

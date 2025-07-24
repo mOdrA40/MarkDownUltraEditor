@@ -3,8 +3,8 @@
  * @author Axel Modra
  */
 
-import { useAuth } from "@clerk/react-router";
-import { createClient, type SupabaseClient } from "@supabase/supabase-js";
+import { useAuth } from '@clerk/react-router';
+import { createClient, type SupabaseClient } from '@supabase/supabase-js';
 
 // Environment variables validation
 const supabaseUrl = process.env.VITE_SUPABASE_URL;
@@ -12,7 +12,7 @@ const supabaseAnonKey = process.env.VITE_SUPABASE_ANON_KEY;
 
 if (!supabaseUrl || !supabaseAnonKey) {
   throw new Error(
-    "Missing Supabase environment variables. Please check VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY"
+    'Missing Supabase environment variables. Please check VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY'
   );
 }
 
@@ -106,7 +106,7 @@ const supabaseClient = createClient<Database>(supabaseUrl, supabaseAnonKey, {
   },
   global: {
     headers: {
-      "X-Client-Info": "markdown-ultra-editor",
+      'X-Client-Info': 'markdown-ultra-editor',
     },
   },
 });
@@ -122,7 +122,7 @@ export const createClerkSupabaseClient = (
     },
     global: {
       headers: {
-        "X-Client-Info": "markdown-ultra-editor",
+        'X-Client-Info': 'markdown-ultra-editor',
       },
     },
     // Native Third Party Auth integration
@@ -130,12 +130,12 @@ export const createClerkSupabaseClient = (
       try {
         const token = await getToken();
         console.log(
-          "🔍 DEBUG - Native accessToken called:",
-          token ? "✅ Token exists" : "❌ No token"
+          '🔍 DEBUG - Native accessToken called:',
+          token ? '✅ Token exists' : '❌ No token'
         );
         return token;
       } catch (error) {
-        console.error("Error getting token in accessToken():", error);
+        console.error('Error getting token in accessToken():', error);
         return null;
       }
     },
@@ -146,7 +146,7 @@ export const useSupabase = (): SupabaseClient<Database> | null => {
   const { isSignedIn } = useAuth();
 
   if (!isSignedIn) {
-    console.log("User not signed in, returning base Supabase client");
+    console.log('User not signed in, returning base Supabase client');
     return supabaseClient; // Return base client for non-authenticated users
   }
 
@@ -162,26 +162,21 @@ export const getAuthenticatedSupabaseClient = async (
   getToken: () => Promise<string | null>
 ): Promise<SupabaseClient<Database> | null> => {
   try {
-    console.log(
-      "Getting authenticated Supabase client with Native Third Party Auth (NEW METHOD)"
-    );
+    console.log('Getting authenticated Supabase client with Native Third Party Auth (NEW METHOD)');
 
     // Test if we can get a token
     const token = await getToken();
-    console.log(
-      "🔍 DEBUG - Token test:",
-      token ? "✅ Token available" : "❌ No token"
-    );
+    console.log('🔍 DEBUG - Token test:', token ? '✅ Token available' : '❌ No token');
 
     if (!token) {
-      console.warn("No Clerk token available, using base client");
+      console.warn('No Clerk token available, using base client');
       return supabaseClient;
     }
 
-    console.log("✓ Creating authenticated client with native accessToken()");
+    console.log('✓ Creating authenticated client with native accessToken()');
     return createClerkSupabaseClient(getToken);
   } catch (error) {
-    console.error("Error getting authenticated Supabase client:", error);
+    console.error('Error getting authenticated Supabase client:', error);
     return supabaseClient; // Fallback to base client
   }
 };
@@ -191,20 +186,17 @@ export const getAuthenticatedSupabaseClient = async (
  */
 export const testSupabaseConnection = async (): Promise<boolean> => {
   try {
-    const { error } = await supabaseClient
-      .from("user_files")
-      .select("count")
-      .limit(1);
+    const { error } = await supabaseClient.from('user_files').select('count').limit(1);
 
     if (error) {
-      console.error("Supabase connection test failed:", error);
+      console.error('Supabase connection test failed:', error);
       return false;
     }
 
-    console.log("Supabase connection test successful");
+    console.log('Supabase connection test successful');
     return true;
   } catch (error) {
-    console.error("Supabase connection test error:", error);
+    console.error('Supabase connection test error:', error);
     return false;
   }
 };
@@ -215,17 +207,14 @@ export { supabaseClient as supabase };
 /**
  * Utility function to handle Supabase errors
  */
-export const handleSupabaseError = (
-  error: unknown,
-  operation: string
-): void => {
+export const handleSupabaseError = (error: unknown, operation: string): void => {
   const errorObj = error as {
     message?: string;
     details?: string;
     hint?: string;
     code?: string;
   };
-  import("@/utils/console").then(({ safeConsole }) => {
+  import('@/utils/console').then(({ safeConsole }) => {
     safeConsole.error(`Supabase ${operation} error:`, {
       message: errorObj?.message,
       details: errorObj?.details,
@@ -255,7 +244,7 @@ export interface FileData {
  * Convert database row to FileData interface
  */
 export const dbRowToFileData = (
-  row: Database["public"]["Tables"]["user_files"]["Row"]
+  row: Database['public']['Tables']['user_files']['Row']
 ): FileData => {
   return {
     id: row.id,
@@ -277,12 +266,12 @@ export const dbRowToFileData = (
 export const fileDataToDbInsert = (
   fileData: FileData,
   userId: string
-): Database["public"]["Tables"]["user_files"]["Insert"] => {
+): Database['public']['Tables']['user_files']['Insert'] => {
   return {
     user_id: userId,
     title: fileData.title,
     content: fileData.content,
-    file_type: fileData.fileType || "markdown",
+    file_type: fileData.fileType || 'markdown',
     tags: fileData.tags || [],
     is_template: fileData.isTemplate || false,
     file_size: fileData.content.length,

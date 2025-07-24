@@ -52,6 +52,9 @@ export class SessionManager {
    */
   async createSession(userId: string, sessionId: string): Promise<SessionData | null> {
     try {
+      // Clean up old sessions for this user first (keep only last 5 active sessions)
+      await this.cleanupOldSessions(userId);
+
       // Get IP and device info
       const ipInfo = await getSecurityIPInfo();
       const userAgent = typeof navigator !== 'undefined' ? navigator.userAgent : '';
@@ -224,6 +227,45 @@ export class SessionManager {
         .lt('expires_at', new Date().toISOString());
     } catch (error) {
       safeConsole.error('Failed to clean expired sessions:', error);
+    }
+  }
+
+  /**
+   * Clean up old sessions for a user (keep only last 5 active sessions)
+   */
+  async cleanupOldSessions(userId: string): Promise<void> {
+    try {
+      // Get all active sessions for user, ordered by last activity
+      const { data: sessions, error } = await this.supabaseClient
+        .from('user_sessions')
+        .select('id, session_id, last_activity')
+        .eq('user_id', userId)
+        .eq('is_active', true)
+        .order('last_activity', { ascending: false });
+
+      if (error || !sessions) {
+        safeConsole.error('Failed to get user sessions for cleanup:', error);
+        return;
+      }
+
+      // If more than 5 active sessions, deactivate the oldest ones
+      if (sessions.length > 5) {
+        const sessionsToDeactivate = sessions.slice(5); // Keep first 5, deactivate rest
+        const sessionIds = sessionsToDeactivate.map((s) => s.session_id);
+
+        const { error: updateError } = await this.supabaseClient
+          .from('user_sessions')
+          .update({ is_active: false })
+          .in('session_id', sessionIds);
+
+        if (updateError) {
+          safeConsole.error('Failed to cleanup old sessions:', updateError);
+        } else {
+          safeConsole.log(`Cleaned up ${sessionIds.length} old sessions for user ${userId}`);
+        }
+      }
+    } catch (error) {
+      safeConsole.error('Error in cleanupOldSessions:', error);
     }
   }
 

@@ -20,10 +20,11 @@ import {
   RefreshCw,
   Trash2,
 } from "lucide-react";
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import { AuthButtons } from "@/components/auth/AuthButtons";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { ConfirmationDialog } from "@/components/ui/ConfirmationDialog";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   DropdownMenu,
@@ -77,7 +78,32 @@ export const FilesManager: React.FC = () => {
     Table<FileData> | undefined
   >(undefined);
 
+  // Delete confirmation dialog state
+  const [isDeleteConfirmOpen, setIsDeleteConfirmOpen] = useState(false);
+  const [fileToDelete, setFileToDelete] = useState<FileData | null>(null);
+  const [filesToDelete, setFilesToDelete] = useState<FileData[] | null>(null);
+  const [deleteType, setDeleteType] = useState<"single" | "bulk">("single");
+  const [tableKey, setTableKey] = useState(0);
+
   const selectedRowCount = Object.keys(rowSelection).length;
+  const previousFilesCountRef = useRef(files.length);
+
+  // Reset row selection when files are deleted (files count decreases)
+  useEffect(() => {
+    const currentFilesCount = files.length;
+    const previousFilesCount = previousFilesCountRef.current;
+
+    // Only reset selection when files count decreases (indicating deletion)
+    if (currentFilesCount < previousFilesCount) {
+      setRowSelection({});
+      if (tableInstance) {
+        tableInstance.resetRowSelection();
+      }
+    }
+
+    // Update the ref for next comparison
+    previousFilesCountRef.current = currentFilesCount;
+  }, [files.length, tableInstance]);
 
   // Compute accurate storage info using actual files data
   const computedStorageInfo = useMemo(() => {
@@ -138,13 +164,39 @@ export const FilesManager: React.FC = () => {
     window.location.href = `/?file=${file.id || file.title}`;
   };
 
-  const handleDeleteFile = async (file: FileData) => {
-    if (window.confirm(`Are you sure you want to delete "${file.title}"?`)) {
-      try {
-        await deleteFile(file.id || file.title);
-      } catch (error) {
-        safeConsole.error("Error deleting file:", error);
+  const handleDeleteFile = (file: FileData) => {
+    setFileToDelete(file);
+    setFilesToDelete(null);
+    setDeleteType("single");
+    setIsDeleteConfirmOpen(true);
+  };
+
+  const handleConfirmDelete = async () => {
+    try {
+      if (deleteType === "single" && fileToDelete) {
+        await deleteFile(fileToDelete.id || fileToDelete.title);
+        // Explicitly reset selection state after successful deletion
+        setRowSelection({});
+        tableInstance?.resetRowSelection();
+      } else if (deleteType === "bulk" && filesToDelete) {
+        await Promise.all(
+          filesToDelete.map((file) => deleteFile(file.id || file.title))
+        );
+        safeConsole.log(`Successfully deleted ${filesToDelete.length} files`);
+        // Explicitly reset selection state after successful deletion
       }
+    } catch (error) {
+      safeConsole.error("Error deleting file(s):", error);
+    } finally {
+      // Reset dialog state
+      setIsDeleteConfirmOpen(false);
+      setFileToDelete(null);
+      setFilesToDelete(null);
+      // Force table re-render by changing its key
+      setTableKey((prevKey) => prevKey + 1);
+      // Explicitly reset selection state after any deletion
+      setRowSelection({});
+      tableInstance?.resetRowSelection();
     }
   };
 
@@ -152,31 +204,17 @@ export const FilesManager: React.FC = () => {
     setTableInstance(table);
   };
 
-  const handleBulkDeleteFromTable = async () => {
+  const handleBulkDeleteFromTable = () => {
     if (!tableInstance) return;
 
     const selectedRows = tableInstance.getFilteredSelectedRowModel().rows;
     if (selectedRows.length === 0) return;
 
     const selectedFiles = selectedRows.map((row) => row.original);
-    const fileNames = selectedFiles.map((f) => f.title).join(", ");
-    const confirmMessage =
-      selectedFiles.length === 1
-        ? `Are you sure you want to delete "${fileNames}"?`
-        : `Are you sure you want to delete ${selectedFiles.length} files?\n\nFiles: ${fileNames}`;
-
-    if (window.confirm(confirmMessage)) {
-      try {
-        await Promise.all(
-          selectedFiles.map((file) => deleteFile(file.id || file.title))
-        );
-        safeConsole.log(`Successfully deleted ${selectedFiles.length} files`);
-
-        tableInstance.resetRowSelection();
-      } catch (error) {
-        safeConsole.error("Error deleting files:", error);
-      }
-    }
+    setFileToDelete(null);
+    setFilesToDelete(selectedFiles);
+    setDeleteType("bulk");
+    setIsDeleteConfirmOpen(true);
   };
 
   const handleDuplicateFile = (file: FileData) => {
@@ -371,7 +409,11 @@ export const FilesManager: React.FC = () => {
             </div>
           ) : viewMode === "table" ? (
             <ClientOnlyFilesTable
+              key={tableKey}
               files={filteredAndSortedFiles}
+              onTableReady={handleTableReady}
+              rowSelection={rowSelection}
+              setRowSelection={setRowSelection}
               onOpen={handleOpenFile}
               onDelete={handleDeleteFile}
               onDuplicate={handleDuplicateFile}
@@ -379,9 +421,6 @@ export const FilesManager: React.FC = () => {
               formatDate={formatDate}
               formatFileSize={formatFileSize}
               isLoading={isLoadingFiles}
-              onTableReady={handleTableReady}
-              rowSelection={rowSelection}
-              setRowSelection={setRowSelection}
             />
           ) : shouldUseVirtualization && viewMode === "list" ? (
             <VirtualizedFileList
@@ -418,6 +457,27 @@ export const FilesManager: React.FC = () => {
           )}
         </div>
       </div>
+
+      {/* Delete Confirmation Dialog */}
+      <ConfirmationDialog
+        isOpen={isDeleteConfirmOpen}
+        onOpenChange={setIsDeleteConfirmOpen}
+        title="Are you sure?"
+        description={
+          deleteType === "single" && fileToDelete
+            ? `This will permanently delete the file "${fileToDelete.title}". This action cannot be undone.`
+            : deleteType === "bulk" && filesToDelete
+            ? `This will permanently delete ${filesToDelete.length} file${
+                filesToDelete.length > 1 ? "s" : ""
+              }. This action cannot be undone.\n\nFiles: ${filesToDelete
+                .map((f) => f.title)
+                .join(", ")}`
+            : "This action cannot be undone."
+        }
+        onConfirm={handleConfirmDelete}
+        confirmText="Delete"
+        cancelText="Cancel"
+      />
     </div>
   );
 };
@@ -493,7 +553,15 @@ const FileCard: React.FC<FileCardProps> = ({
                   <MoreVertical className="w-4 h-4" />
                 </Button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent align="end">
+              <DropdownMenuContent
+                align="center"
+                side="bottom"
+                sideOffset={4}
+                alignOffset={-40}
+                className="z-50 min-w-[120px]"
+                onCloseAutoFocus={(e) => e.preventDefault()}
+                avoidCollisions={true}
+              >
                 <DropdownMenuItem onClick={onOpen}>
                   <Edit className="mr-2 h-4 w-4" />
                   Open
@@ -533,7 +601,14 @@ const FileCard: React.FC<FileCardProps> = ({
                 <MoreVertical className="w-4 h-4" />
               </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
+            <DropdownMenuContent
+              align="end"
+              side="bottom"
+              sideOffset={4}
+              className="z-50 min-w-[120px]"
+              onCloseAutoFocus={(e) => e.preventDefault()}
+              avoidCollisions={true}
+            >
               <DropdownMenuItem
                 onClick={(e) => {
                   e.stopPropagation();
