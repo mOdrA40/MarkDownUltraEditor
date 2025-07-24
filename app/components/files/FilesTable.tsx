@@ -12,7 +12,7 @@ import {
   getSortedRowModel,
   type SortingState,
   useReactTable,
-} from '@tanstack/react-table';
+} from "@tanstack/react-table";
 import {
   Calendar,
   Copy,
@@ -21,20 +21,20 @@ import {
   FileText,
   MoreHorizontal,
   Trash2,
-} from 'lucide-react';
-import type React from 'react';
-import { useEffect, useMemo, useState } from 'react';
+} from "lucide-react";
+import type React from "react";
+import { useEffect, useMemo, useState } from "react";
 
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-import { Checkbox } from '@/components/ui/checkbox';
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
+} from "@/components/ui/dropdown-menu";
 import {
   Table,
   TableBody,
@@ -42,8 +42,8 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from '@/components/ui/table';
-import type { FileData } from '@/lib/supabase';
+} from "@/components/ui/table";
+import type { FileData } from "@/lib/supabase";
 
 /**
  * Props interface for FilesTable
@@ -59,7 +59,9 @@ interface FilesTableProps {
   isLoading?: boolean;
   onTableReady?: (table: ReturnType<typeof useReactTable<FileData>>) => void;
   rowSelection: Record<string, boolean>;
-  setRowSelection: React.Dispatch<React.SetStateAction<Record<string, boolean>>>;
+  setRowSelection: React.Dispatch<
+    React.SetStateAction<Record<string, boolean>>
+  >;
 }
 
 /**
@@ -89,11 +91,13 @@ export const FilesTable: React.FC<FilesTableProps> = ({
   const columns = useMemo<ColumnDef<FileData>[]>(
     () => [
       {
-        id: 'select',
+        id: "select",
         header: ({ table }) => (
           <Checkbox
             checked={table.getIsAllPageRowsSelected()}
-            onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
+            onCheckedChange={(value) =>
+              table.toggleAllPageRowsSelected(!!value)
+            }
             aria-label="Select all"
             className="translate-y-[2px]"
           />
@@ -111,15 +115,17 @@ export const FilesTable: React.FC<FilesTableProps> = ({
         size: 40,
       },
       {
-        accessorKey: 'title',
-        header: 'Name',
+        accessorKey: "title",
+        header: "Name",
         cell: ({ row }) => {
           const file = row.original;
           return (
             <div className="flex items-center space-x-2 text-left w-full">
               <FileText className="h-4 w-4 text-muted-foreground" />
               <div className="flex flex-col">
-                <span className="font-medium truncate max-w-[200px]">{file.title}</span>
+                <span className="font-medium truncate max-w-[200px]">
+                  {file.title}
+                </span>
                 {file.tags && file.tags.length > 0 && (
                   <div className="flex gap-1 mt-1">
                     {file.tags.slice(0, 2).map((tag) => (
@@ -139,43 +145,45 @@ export const FilesTable: React.FC<FilesTableProps> = ({
           );
         },
         enableSorting: true,
-        sortingFn: 'alphanumeric',
+        sortingFn: "alphanumeric",
       },
       {
-        accessorKey: 'fileSize',
-        header: 'Size',
+        accessorKey: "fileSize",
+        header: "Size",
         cell: ({ row }) => {
-          const size = row.getValue('fileSize') as number;
+          const size = row.getValue("fileSize") as number;
           return (
             <span className="text-sm text-muted-foreground">
-              {size ? formatFileSize(size) : '-'}
+              {size ? formatFileSize(size) : "-"}
             </span>
           );
         },
         enableSorting: true,
-        sortingFn: 'basic',
+        sortingFn: "basic",
       },
       {
-        accessorKey: 'updatedAt',
-        header: 'Modified',
+        accessorKey: "updatedAt",
+        header: "Modified",
         cell: ({ row }) => {
-          const date = row.getValue('updatedAt') as string;
+          const date = row.getValue("updatedAt") as string;
           const createdAt = row.original.createdAt;
           const displayDate = date || createdAt;
 
           return (
             <div className="flex items-center space-x-2">
               <Calendar className="h-4 w-4 text-muted-foreground" />
-              <span className="text-sm">{displayDate ? formatDate(displayDate) : '-'}</span>
+              <span className="text-sm">
+                {displayDate ? formatDate(displayDate) : "-"}
+              </span>
             </div>
           );
         },
         enableSorting: true,
-        sortingFn: 'datetime',
+        sortingFn: "datetime",
       },
       {
-        id: 'actions',
-        header: 'Actions',
+        id: "actions",
+        header: "Actions",
         cell: ({ row }) => {
           const file = row.original;
 
@@ -292,22 +300,27 @@ export const FilesTable: React.FC<FilesTableProps> = ({
                 <TableHead key={header.id} className="py-4">
                   {header.isPlaceholder
                     ? null
-                    : flexRender(header.column.columnDef.header, header.getContext())}
+                    : flexRender(
+                        header.column.columnDef.header,
+                        header.getContext()
+                      )}
                 </TableHead>
               ))}
             </TableRow>
           ))}
         </TableHeader>
         <TableBody>
-          {Array.from({ length: 5 }).map((_, index) => (
-            <TableRow key={`loading-row-${index}`}>
-              {columns.map((_, colIndex) => (
-                <TableCell key={`loading-cell-${index}-${colIndex}`} className="py-3">
-                  <div className="h-4 bg-muted animate-pulse rounded" />
-                </TableCell>
-              ))}
-            </TableRow>
-          ))}
+          {Array.from({ length: 5 }, (_, index) => `loading-${index}`).map(
+            (loadingId) => (
+              <TableRow key={loadingId}>
+                {columns.map((column) => (
+                  <TableCell key={`${loadingId}-${column.id}`} className="py-3">
+                    <div className="h-4 bg-muted animate-pulse rounded" />
+                  </TableCell>
+                ))}
+              </TableRow>
+            )
+          )}
         </TableBody>
       </Table>
     </div>
@@ -324,10 +337,17 @@ export const FilesTable: React.FC<FilesTableProps> = ({
               {table.getHeaderGroups().map((headerGroup) => (
                 <TableRow key={headerGroup.id}>
                   {headerGroup.headers.map((header) => (
-                    <TableHead key={header.id} style={{ width: header.getSize() }} className="py-4">
+                    <TableHead
+                      key={header.id}
+                      style={{ width: header.getSize() }}
+                      className="py-4"
+                    >
                       {header.isPlaceholder
                         ? null
-                        : flexRender(header.column.columnDef.header, header.getContext())}
+                        : flexRender(
+                            header.column.columnDef.header,
+                            header.getContext()
+                          )}
                     </TableHead>
                   ))}
                 </TableRow>
@@ -338,15 +358,18 @@ export const FilesTable: React.FC<FilesTableProps> = ({
                 table.getRowModel().rows.map((row) => (
                   <TableRow
                     key={row.id}
-                    data-state={row.getIsSelected() && 'selected'}
+                    data-state={row.getIsSelected() && "selected"}
                     className={`hover:bg-muted/50 transition-colors cursor-pointer ${
-                      row.getIsSelected() ? 'bg-muted/30 border-l-2 border-l-primary' : ''
+                      row.getIsSelected()
+                        ? "bg-muted/30 border-l-2 border-l-primary"
+                        : ""
                     }`}
                     onClick={(e) => {
                       const target = e.target as HTMLElement;
                       const isCheckbox = target.closest('[role="checkbox"]');
                       const isDropdown =
-                        target.closest('[role="button"]') || target.closest('.dropdown-trigger');
+                        target.closest('[role="button"]') ||
+                        target.closest(".dropdown-trigger");
 
                       if (!isCheckbox && !isDropdown) {
                         onOpen(row.original);
@@ -355,14 +378,20 @@ export const FilesTable: React.FC<FilesTableProps> = ({
                   >
                     {row.getVisibleCells().map((cell) => (
                       <TableCell key={cell.id} className="py-3">
-                        {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                        {flexRender(
+                          cell.column.columnDef.cell,
+                          cell.getContext()
+                        )}
                       </TableCell>
                     ))}
                   </TableRow>
                 ))
               ) : (
                 <TableRow>
-                  <TableCell colSpan={columns.length} className="h-24 text-center">
+                  <TableCell
+                    colSpan={columns.length}
+                    className="h-24 text-center"
+                  >
                     No files found.
                   </TableCell>
                 </TableRow>

@@ -3,10 +3,10 @@
  * @author Axel Modra
  */
 
-import { useVirtualizer } from '@tanstack/react-virtual';
-import type React from 'react';
-import { useRef } from 'react';
-import type { FileData } from '@/lib/supabase';
+import { useVirtualizer } from "@tanstack/react-virtual";
+import type React from "react";
+import { useRef } from "react";
+import type { FileData } from "@/lib/supabase";
 
 /**
  * Props interface for VirtualizedFileList
@@ -42,7 +42,7 @@ export const VirtualizedFileList: React.FC<VirtualizedFileListProps> = ({
   formatFileSize,
   itemHeight = 80,
   overscan = 5,
-  className = '',
+  className = "",
 }) => {
   const parentRef = useRef<HTMLDivElement>(null);
 
@@ -73,16 +73,16 @@ export const VirtualizedFileList: React.FC<VirtualizedFileListProps> = ({
   return (
     <div
       ref={parentRef}
-      className={`h-[600px] overflow-auto mt-2 ${className}`}
+      className={`h-[400px] sm:h-[500px] lg:h-[600px] overflow-auto mt-2 ${className}`}
       style={{
-        contain: 'strict',
+        contain: "strict",
       }}
     >
       <div
         style={{
           height: `${virtualizer.getTotalSize()}px`,
-          width: '100%',
-          position: 'relative',
+          width: "100%",
+          position: "relative",
         }}
       >
         {items.map((virtualItem) => {
@@ -136,10 +136,10 @@ const VirtualizedFileItem: React.FC<VirtualizedFileItemProps> = ({
   return (
     <div
       style={{
-        position: 'absolute',
+        position: "absolute",
         top: 0,
         left: 0,
-        width: '100%',
+        width: "100%",
         height: `${virtualItem.size}px`,
         transform: `translateY(${virtualItem.start}px)`,
       }}
@@ -173,15 +173,17 @@ const VirtualizedFileItem: React.FC<VirtualizedFileItemProps> = ({
               </div>
 
               <div className="flex-1 min-w-0">
-                <p className="text-sm font-medium text-foreground truncate">{file.title}</p>
+                <p className="text-sm font-medium text-foreground truncate">
+                  {file.title}
+                </p>
                 <div className="flex items-center space-x-4 mt-1">
                   <p className="text-xs text-muted-foreground">
-                    {file.fileSize ? formatFileSize(file.fileSize) : '-'}
+                    {file.fileSize ? formatFileSize(file.fileSize) : "-"}
                   </p>
                   <p className="text-xs text-muted-foreground">
                     {file.updatedAt || file.createdAt
-                      ? formatDate(file.updatedAt || file.createdAt || '')
-                      : '-'}
+                      ? formatDate(file.updatedAt || file.createdAt || "")
+                      : "-"}
                   </p>
                 </div>
                 {file.tags && file.tags.length > 0 && (

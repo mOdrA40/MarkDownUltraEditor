@@ -5,12 +5,12 @@
  * @author Axel Modra
  */
 
-import { Check } from 'lucide-react';
-import React from 'react';
-import { Button } from '@/components/ui/button';
-import { cn } from '@/lib/utils';
-import { useThemeButton } from '../hooks/useThemeSelector';
-import type { ThemeButtonProps } from '../types/theme.types';
+import { Check } from "lucide-react";
+import React from "react";
+import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
+import { useThemeButton } from "../hooks/useThemeSelector";
+import type { ThemeButtonProps } from "../types/theme.types";
 
 /**
  * Komponen ThemeButton
@@ -22,12 +22,13 @@ import type { ThemeButtonProps } from '../types/theme.types';
 export const ThemeButton: React.FC<ThemeButtonProps> = React.memo(
   ({ theme, isActive, onClick, className, compact = false }) => {
     // Menggunakan custom hook untuk logic button
-    const { buttonStyle, buttonClassName, handleClick, ariaLabel } = useThemeButton({
-      theme,
-      currentTheme: { ...theme, id: isActive ? theme.id : 'other' },
-      onClick,
-      compact,
-    });
+    const { buttonStyle, buttonClassName, handleClick, ariaLabel } =
+      useThemeButton({
+        theme,
+        currentTheme: { ...theme, id: isActive ? theme.id : "other" },
+        onClick,
+        compact,
+      });
 
     return (
       <Button
@@ -36,7 +37,7 @@ export const ThemeButton: React.FC<ThemeButtonProps> = React.memo(
         onClick={handleClick}
         className={cn(
           buttonClassName,
-          'prevent-layout-shift', // Mencegah layout shift
+          "prevent-layout-shift", // Mencegah layout shift
           className
         )}
         style={buttonStyle}
@@ -46,7 +47,10 @@ export const ThemeButton: React.FC<ThemeButtonProps> = React.memo(
       >
         {isActive && (
           <Check
-            className={cn('text-white drop-shadow-sm', compact ? 'h-2 w-2' : 'h-3 w-3')}
+            className={cn(
+              "text-white drop-shadow-sm",
+              compact ? "h-2 w-2" : "h-3 w-3"
+            )}
             aria-hidden="true"
           />
         )}
@@ -56,4 +60,4 @@ export const ThemeButton: React.FC<ThemeButtonProps> = React.memo(
 );
 
 // Set display name untuk debugging
-ThemeButton.displayName = 'ThemeButton';
+ThemeButton.displayName = "ThemeButton";

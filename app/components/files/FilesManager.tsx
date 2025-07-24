@@ -264,23 +264,24 @@ export const FilesManager: React.FC = () => {
       {/* Header */}
       <div className="border-b bg-card/80 backdrop-blur-md">
         <div className="container mx-auto px-4 py-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-4">
+          <div className="flex flex-col sm:flex-row gap-4 sm:items-center sm:justify-between">
+            <div className="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-4">
               <Button
                 variant="ghost"
                 size="sm"
                 onClick={() => {
                   window.location.href = "/";
                 }}
-                className="flex items-center gap-2"
+                className="flex items-center gap-2 w-fit"
               >
                 <ArrowLeft className="w-4 h-4" />
-                Back to Editor
+                <span className="hidden xs:inline">Back to Editor</span>
+                <span className="xs:hidden">Back</span>
               </Button>
 
-              <div>
-                <h1 className="text-2xl font-bold">My Files</h1>
-                <p className="text-sm text-muted-foreground">
+              <div className="min-w-0">
+                <h1 className="text-xl sm:text-2xl font-bold">My Files</h1>
+                <p className="text-xs sm:text-sm text-muted-foreground">
                   {computedStorageInfo && (
                     <>
                       {computedStorageInfo.totalFiles} files •{" "}
@@ -294,19 +295,21 @@ export const FilesManager: React.FC = () => {
               </div>
             </div>
 
-            <AuthButtons
-              onViewFiles={() => {
-                window.location.href = "/files";
-              }}
-              onSettings={() => {
-                window.location.href = "/settings";
-              }}
-              responsive={{
-                isMobile: responsive.isMobile,
-                isTablet: responsive.isTablet,
-                isSmallTablet: responsive.windowWidth <= 640,
-              }}
-            />
+            <div className="flex justify-end sm:justify-start">
+              <AuthButtons
+                onViewFiles={() => {
+                  window.location.href = "/files";
+                }}
+                onSettings={() => {
+                  window.location.href = "/settings";
+                }}
+                responsive={{
+                  isMobile: responsive.isMobile,
+                  isTablet: responsive.isTablet,
+                  isSmallTablet: responsive.windowWidth <= 640,
+                }}
+              />
+            </div>
           </div>
         </div>
       </div>
@@ -317,14 +320,14 @@ export const FilesManager: React.FC = () => {
         {computedStorageInfo && (
           <Card className="mb-6">
             <CardContent className="p-4">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2">
+              <div className="flex flex-col sm:flex-row gap-4 sm:items-center sm:justify-between">
+                <div className="flex items-center gap-3 min-w-0 flex-1">
                   {computedStorageInfo.storageType === "cloud" ? (
-                    <Cloud className="w-5 h-5 text-primary" />
+                    <Cloud className="w-5 h-5 text-primary flex-shrink-0" />
                   ) : (
-                    <HardDrive className="w-5 h-5 text-muted-foreground" />
+                    <HardDrive className="w-5 h-5 text-muted-foreground flex-shrink-0" />
                   )}
-                  <div>
+                  <div className="min-w-0">
                     <p className="font-medium">
                       {computedStorageInfo.storageType === "cloud"
                         ? "Cloud Storage"
@@ -337,16 +340,17 @@ export const FilesManager: React.FC = () => {
                   </div>
                 </div>
 
-                <div className="flex items-center gap-2">
+                <div className="flex items-center justify-end sm:justify-start gap-2">
                   {files.length > 0 && (
                     <Button
                       variant="outline"
                       size="sm"
                       onClick={handleExportAll}
-                      className="flex items-center gap-2"
+                      className="flex items-center gap-2 w-full sm:w-auto"
                     >
                       <Download className="w-4 h-4" />
-                      Export All
+                      <span className="hidden xs:inline">Export All</span>
+                      <span className="xs:hidden">Export</span>
                     </Button>
                   )}
                 </div>
@@ -436,8 +440,8 @@ export const FilesManager: React.FC = () => {
             <div
               className={
                 viewMode === "grid"
-                  ? "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 mt-2"
-                  : "space-y-3 mt-2"
+                  ? "grid grid-cols-1 xs:grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-3 sm:gap-4 mt-2"
+                  : "space-y-2 sm:space-y-3 mt-2"
               }
             >
               {filteredAndSortedFiles.map((file) => (
@@ -509,24 +513,28 @@ const FileCard: React.FC<FileCardProps> = ({
   if (viewMode === "list") {
     return (
       <Card className="hover:shadow-md transition-shadow cursor-pointer">
-        <CardContent className="p-5">
-          <div className="flex items-center justify-between">
+        <CardContent className="p-3 sm:p-5">
+          <div className="flex items-center justify-between gap-2">
             <button
               type="button"
-              className="flex items-center gap-3 flex-1 min-w-0 text-left"
+              className="flex items-center gap-2 sm:gap-3 flex-1 min-w-0 text-left"
               onClick={onOpen}
             >
-              <FileText className="w-5 h-5 text-primary flex-shrink-0" />
+              <FileText className="w-4 h-4 sm:w-5 sm:h-5 text-primary flex-shrink-0" />
               <div className="min-w-0 flex-1">
-                <h3 className="font-medium truncate mb-1">{file.title}</h3>
-                <div className="flex items-center gap-4 text-sm text-muted-foreground">
+                <h3 className="font-medium truncate mb-1 text-sm sm:text-base">
+                  {file.title}
+                </h3>
+                <div className="flex flex-col xs:flex-row xs:items-center gap-1 xs:gap-4 text-xs sm:text-sm text-muted-foreground">
                   <span className="flex items-center gap-1">
                     <Clock className="w-3 h-3" />
                     {formatDate(file.updatedAt || file.createdAt || "")}
                   </span>
-                  <span>{formatFileSize(file.fileSize || 0)}</span>
+                  <span className="hidden xs:inline">
+                    {formatFileSize(file.fileSize || 0)}
+                  </span>
                   {file.tags && file.tags.length > 0 && (
-                    <div className="flex gap-1">
+                    <div className="flex gap-1 flex-wrap">
                       {file.tags.slice(0, 2).map((tag) => (
                         <Badge
                           key={tag}
@@ -549,15 +557,14 @@ const FileCard: React.FC<FileCardProps> = ({
 
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button variant="ghost" size="sm">
+                <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
                   <MoreVertical className="w-4 h-4" />
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent
-                align="center"
+                align="end"
                 side="bottom"
                 sideOffset={4}
-                alignOffset={-40}
                 className="z-50 min-w-[120px]"
                 onCloseAutoFocus={(e) => e.preventDefault()}
                 avoidCollisions={true}
@@ -589,15 +596,15 @@ const FileCard: React.FC<FileCardProps> = ({
 
   return (
     <Card
-      className="hover:shadow-md transition-shadow cursor-pointer"
+      className="hover:shadow-md transition-shadow cursor-pointer h-full flex flex-col"
       onClick={onOpen}
     >
-      <CardHeader className="pb-2">
+      <CardHeader className="pb-2 p-3 sm:p-6 sm:pb-2">
         <div className="flex items-start justify-between">
-          <FileText className="w-6 h-6 text-primary" />
+          <FileText className="w-5 h-5 sm:w-6 sm:h-6 text-primary flex-shrink-0" />
           <DropdownMenu>
             <DropdownMenuTrigger asChild onClick={(e) => e.stopPropagation()}>
-              <Button variant="ghost" size="sm">
+              <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
                 <MoreVertical className="w-4 h-4" />
               </Button>
             </DropdownMenuTrigger>
@@ -650,36 +657,42 @@ const FileCard: React.FC<FileCardProps> = ({
             </DropdownMenuContent>
           </DropdownMenu>
         </div>
-        <CardTitle className="text-base truncate">{file.title}</CardTitle>
+        <CardTitle className="text-sm sm:text-base truncate mt-2">
+          {file.title}
+        </CardTitle>
       </CardHeader>
-      <CardContent className="pt-0">
-        <div className="space-y-2">
-          <p className="text-sm text-muted-foreground line-clamp-2">
-            {file.content.substring(0, 100)}...
+      <CardContent className="pt-0 p-3 sm:p-6 sm:pt-0 flex-1 flex flex-col">
+        <div className="space-y-2 flex-1">
+          <p className="text-xs sm:text-sm text-muted-foreground line-clamp-2 sm:line-clamp-3">
+            {file.content.substring(0, 80)}...
           </p>
 
           {file.tags && file.tags.length > 0 && (
             <div className="flex flex-wrap gap-1">
-              {file.tags.slice(0, 3).map((tag) => (
+              {file.tags.slice(0, 2).map((tag) => (
                 <Badge key={tag} variant="secondary" className="text-xs">
                   {tag}
                 </Badge>
               ))}
-              {file.tags.length > 3 && (
+              {file.tags.length > 2 && (
                 <Badge variant="secondary" className="text-xs">
-                  +{file.tags.length - 3}
+                  +{file.tags.length - 2}
                 </Badge>
               )}
             </div>
           )}
+        </div>
 
-          <div className="flex items-center justify-between text-xs text-muted-foreground">
-            <span className="flex items-center gap-1">
-              <Clock className="w-3 h-3" />
+        <div className="flex flex-col xs:flex-row xs:items-center xs:justify-between gap-1 xs:gap-2 text-xs text-muted-foreground mt-2">
+          <span className="flex items-center gap-1">
+            <Clock className="w-3 h-3" />
+            <span className="truncate">
               {formatDate(file.updatedAt || file.createdAt || "")}
             </span>
-            <span>{formatFileSize(file.fileSize || 0)}</span>
-          </div>
+          </span>
+          <span className="text-right xs:text-left">
+            {formatFileSize(file.fileSize || 0)}
+          </span>
         </div>
       </CardContent>
     </Card>
