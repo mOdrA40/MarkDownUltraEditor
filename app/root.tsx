@@ -10,6 +10,7 @@ import { fixRedirectLoop } from '@/utils/auth/redirects';
 import type { Route } from './+types/root';
 
 import './tailwind.css';
+import './styles/dropdown-improvements.css';
 
 // Initialize performance optimizations
 if (typeof window !== 'undefined') {

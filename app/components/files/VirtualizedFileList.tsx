@@ -4,8 +4,18 @@
  */
 
 import { useVirtualizer } from "@tanstack/react-virtual";
+import { Copy, Download, Edit, MoreVertical, Trash2 } from "lucide-react";
 import type React from "react";
 import { useRef } from "react";
+import { Button } from "@/components/ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { useDropdownPositioning } from "@/hooks/ui/useDropdownPositioning";
 import type { FileData } from "@/lib/supabase";
 
 /**
@@ -133,6 +143,7 @@ const VirtualizedFileItem: React.FC<VirtualizedFileItemProps> = ({
   formatDate,
   formatFileSize,
 }) => {
+  const dropdownPositioning = useDropdownPositioning();
   return (
     <div
       style={{
@@ -145,10 +156,10 @@ const VirtualizedFileItem: React.FC<VirtualizedFileItemProps> = ({
       }}
     >
       <div className="p-4 border-b border-border hover:bg-muted/50 transition-colors cursor-pointer">
-        <div className="flex items-center justify-between">
+        <div className="flex items-center justify-between gap-3 relative">
           <button
             type="button"
-            className="flex-1 min-w-0 text-left"
+            className="flex-1 min-w-0 text-left pr-2"
             onClick={() => onOpen(file)}
             aria-label={`Open file ${file.title}`}
           >
@@ -207,81 +218,69 @@ const VirtualizedFileItem: React.FC<VirtualizedFileItemProps> = ({
             </div>
           </button>
 
-          <div className="flex items-center space-x-2 ml-4">
-            <button
-              type="button"
-              onClick={(e) => {
-                e.stopPropagation();
-                onDuplicate(file);
-              }}
-              className="p-2 text-muted-foreground hover:text-foreground hover:bg-muted rounded-md transition-colors"
-              title="Duplicate"
-            >
-              <svg
-                className="w-4 h-4"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-                aria-hidden="true"
+          <div className="flex items-center ml-4">
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="h-8 w-8 p-0 flex-shrink-0 dropdown-trigger-mobile"
+                  onClick={(e) => e.stopPropagation()}
+                >
+                  <MoreVertical className="w-4 h-4" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent
+                align={dropdownPositioning.align}
+                side={dropdownPositioning.side}
+                sideOffset={dropdownPositioning.sideOffset}
+                alignOffset={dropdownPositioning.alignOffset}
+                className="z-50 min-w-[140px] max-w-[200px] dropdown-virtualized-view"
+                onCloseAutoFocus={(e) => e.preventDefault()}
+                avoidCollisions={true}
+                collisionPadding={16}
+                data-view-type="virtualized"
               >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"
-                />
-              </svg>
-            </button>
-
-            <button
-              type="button"
-              onClick={(e) => {
-                e.stopPropagation();
-                onExport(file);
-              }}
-              className="p-2 text-muted-foreground hover:text-foreground hover:bg-muted rounded-md transition-colors"
-              title="Export"
-            >
-              <svg
-                className="w-4 h-4"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-                aria-hidden="true"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
-                />
-              </svg>
-            </button>
-
-            <button
-              type="button"
-              onClick={(e) => {
-                e.stopPropagation();
-                onDelete(file);
-              }}
-              className="p-2 text-muted-foreground hover:text-destructive hover:bg-destructive/10 rounded-md transition-colors"
-              title="Delete"
-            >
-              <svg
-                className="w-4 h-4"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-                aria-hidden="true"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
-                />
-              </svg>
-            </button>
+                <DropdownMenuItem
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    onOpen(file);
+                  }}
+                >
+                  <Edit className="mr-2 h-4 w-4" />
+                  Open
+                </DropdownMenuItem>
+                <DropdownMenuItem
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    onDuplicate(file);
+                  }}
+                >
+                  <Copy className="mr-2 h-4 w-4" />
+                  Duplicate
+                </DropdownMenuItem>
+                <DropdownMenuItem
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    onExport(file);
+                  }}
+                >
+                  <Download className="mr-2 h-4 w-4" />
+                  Export
+                </DropdownMenuItem>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    onDelete(file);
+                  }}
+                  className="text-destructive"
+                >
+                  <Trash2 className="mr-2 h-4 w-4" />
+                  Delete
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
           </div>
         </div>
       </div>

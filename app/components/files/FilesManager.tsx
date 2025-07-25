@@ -35,6 +35,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { useFileStorage } from "@/hooks/files";
 import { useResponsiveDetection } from "@/hooks/ui/useResponsive";
+import { useDropdownPositioning } from "@/hooks/ui/useDropdownPositioning";
 import type { FileData } from "@/lib/supabase";
 import { formatBytes, formatRelativeDate } from "@/utils/common";
 import { safeConsole } from "@/utils/console";
@@ -385,7 +386,7 @@ export const FilesManager: React.FC = () => {
         )}
 
         {/* Files display - Added proper spacing from toolbar */}
-        <div className="mt-6">
+        <div className="mt-6 files-container">
           {isLoadingFiles ? (
             <div className="text-center py-12">
               <RefreshCw className="w-8 h-8 animate-spin mx-auto mb-4 text-muted-foreground" />
@@ -510,14 +511,15 @@ const FileCard: React.FC<FileCardProps> = ({
   formatDate,
   formatFileSize,
 }) => {
+  const dropdownPositioning = useDropdownPositioning();
   if (viewMode === "list") {
     return (
       <Card className="hover:shadow-md transition-shadow cursor-pointer">
-        <CardContent className="p-3 sm:p-5">
-          <div className="flex items-center justify-between gap-2">
+        <CardContent className="p-3 sm:p-5 file-card-list-container">
+          <div className="flex items-center justify-between gap-3 relative">
             <button
               type="button"
-              className="flex items-center gap-2 sm:gap-3 flex-1 min-w-0 text-left"
+              className="flex items-center gap-2 sm:gap-3 flex-1 min-w-0 text-left pr-2"
               onClick={onOpen}
             >
               <FileText className="w-4 h-4 sm:w-5 sm:h-5 text-primary flex-shrink-0" />
@@ -557,17 +559,24 @@ const FileCard: React.FC<FileCardProps> = ({
 
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="h-8 w-8 p-0 flex-shrink-0 dropdown-trigger-mobile"
+                >
                   <MoreVertical className="w-4 h-4" />
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent
-                align="end"
-                side="bottom"
-                sideOffset={4}
-                className="z-50 min-w-[120px]"
+                align={dropdownPositioning.align}
+                side={dropdownPositioning.side}
+                sideOffset={dropdownPositioning.sideOffset}
+                alignOffset={dropdownPositioning.alignOffset}
+                className="z-50 min-w-[140px] max-w-[200px] dropdown-list-view"
                 onCloseAutoFocus={(e) => e.preventDefault()}
                 avoidCollisions={true}
+                collisionPadding={16}
+                data-view-type="list"
               >
                 <DropdownMenuItem onClick={onOpen}>
                   <Edit className="mr-2 h-4 w-4" />
@@ -582,7 +591,10 @@ const FileCard: React.FC<FileCardProps> = ({
                   Export
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem onClick={onDelete} className="text-red-600">
+                <DropdownMenuItem
+                  onClick={onDelete}
+                  className="text-destructive"
+                >
                   <Trash2 className="mr-2 h-4 w-4" />
                   Delete
                 </DropdownMenuItem>
@@ -609,12 +621,15 @@ const FileCard: React.FC<FileCardProps> = ({
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent
-              align="end"
-              side="bottom"
-              sideOffset={4}
-              className="z-50 min-w-[120px]"
+              align={dropdownPositioning.align}
+              side={dropdownPositioning.side}
+              sideOffset={dropdownPositioning.sideOffset}
+              alignOffset={dropdownPositioning.alignOffset}
+              className="z-50 min-w-[140px] max-w-[200px] dropdown-grid-view"
               onCloseAutoFocus={(e) => e.preventDefault()}
               avoidCollisions={true}
+              collisionPadding={16}
+              data-view-type="grid"
             >
               <DropdownMenuItem
                 onClick={(e) => {
@@ -649,7 +664,7 @@ const FileCard: React.FC<FileCardProps> = ({
                   e.stopPropagation();
                   onDelete();
                 }}
-                className="text-red-600"
+                className="text-destructive"
               >
                 <Trash2 className="mr-2 h-4 w-4" />
                 Delete

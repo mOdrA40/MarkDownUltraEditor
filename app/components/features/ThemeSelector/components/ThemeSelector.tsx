@@ -5,12 +5,12 @@
  * @author Axel Modra
  */
 
-import { Palette } from "lucide-react";
-import React from "react";
-import { cn } from "@/lib/utils";
-import { useThemeSelector } from "../hooks/useThemeSelector";
-import type { ThemeSelectorProps } from "../types/theme.types";
-import { ThemeButton } from "./ThemeButton";
+import { Palette } from 'lucide-react';
+import React from 'react';
+import { cn } from '@/lib/utils';
+import { useThemeSelector } from '../hooks/useThemeSelector';
+import type { ThemeSelectorProps } from '../types/theme.types';
+import { ThemeButton } from './ThemeButton';
 /**
  * Komponen ThemeSelector
  * Menampilkan daftar tema yang tersedia dengan icon palette dan theme buttons
@@ -28,26 +28,23 @@ export const ThemeSelector: React.FC<ThemeSelectorProps> = React.memo(
     return (
       <fieldset
         className={cn(
-          "flex items-center border-0 p-0 m-0",
-          compact ? "space-x-1" : "space-x-2",
+          'flex items-center border-0 p-0 m-0',
+          compact ? 'space-x-1' : 'space-x-2',
           className
         )}
       >
         <legend className="sr-only">Theme selector</legend>
         {/* Icon Palette */}
         <Palette
-          className={cn(
-            "text-muted-foreground",
-            compact ? "h-3 w-3" : "h-4 w-4"
-          )}
+          className={cn('text-muted-foreground', compact ? 'h-3 w-3' : 'h-4 w-4')}
           aria-hidden="true"
         />
 
         {/* Container untuk theme buttons */}
         <div
           className={cn(
-            "flex scroll-container-stable", // Tambahkan class untuk mencegah scroll
-            compact ? "space-x-0.5" : "space-x-1"
+            'flex scroll-container-stable', // Tambahkan class untuk mencegah scroll
+            compact ? 'space-x-0.5' : 'space-x-1'
           )}
           role="radiogroup"
           aria-label="Available themes"
@@ -67,4 +64,4 @@ export const ThemeSelector: React.FC<ThemeSelectorProps> = React.memo(
   }
 );
 // Set display name untuk debugging
-ThemeSelector.displayName = "ThemeSelector";
+ThemeSelector.displayName = 'ThemeSelector';

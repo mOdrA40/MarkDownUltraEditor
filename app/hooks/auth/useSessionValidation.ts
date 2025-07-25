@@ -3,14 +3,14 @@
  * @author Axel Modra
  */
 
-import { useAuth, useUser } from '@clerk/react-router';
-import { useCallback, useEffect, useRef, useState } from 'react';
-import { useNavigate } from 'react-router';
-import { useToast } from '@/hooks/core/useToast';
-import { createClerkSupabaseClient } from '@/lib/supabase';
-import { createSessionManager } from '@/services/sessionManager';
-import { getBrowserFingerprint } from '@/utils/browserFingerprint';
-import { safeConsole } from '@/utils/console';
+import { useAuth, useUser } from "@clerk/react-router";
+import { useCallback, useEffect, useRef, useState } from "react";
+import { useNavigate } from "react-router";
+import { useToast } from "@/hooks/core/useToast";
+import { createClerkSupabaseClient } from "@/lib/supabase";
+import { createSessionManager } from "@/services/sessionManager";
+import { getBrowserFingerprint } from "@/utils/browserFingerprint";
+import { safeConsole } from "@/utils/console";
 
 interface SessionValidationConfig {
   /** Interval in milliseconds to check session validity (default: 30 seconds) */
@@ -61,7 +61,10 @@ export const useSessionValidation = (config: SessionValidationConfig = {}) => {
 
     // Prevent duplicate session creation
     if (currentSessionIdRef.current) {
-      safeConsole.log('Session already initialized:', currentSessionIdRef.current);
+      safeConsole.log(
+        "Session already initialized:",
+        currentSessionIdRef.current
+      );
       return;
     }
 
@@ -76,45 +79,48 @@ export const useSessionValidation = (config: SessionValidationConfig = {}) => {
       // Check if session already exists for this browser
       const existingSessions = await sessionManager.getUserSessions(user.id);
       const existingSession = existingSessions.find(
-        (s) => s.session_id.startsWith(`session_${user.id}_${browserFingerprint}`) && s.is_active
+        (s) =>
+          s.session_id.startsWith(`session_${user.id}_${browserFingerprint}`) &&
+          s.is_active
       );
 
       if (existingSession) {
         // Use existing session
         currentSessionIdRef.current = existingSession.session_id;
-        safeConsole.log('Using existing session:', existingSession.session_id);
+        safeConsole.log("Using existing session:", existingSession.session_id);
 
         // Update activity for existing session
         await sessionManager.updateActivity(existingSession.session_id);
       } else {
         // Create new session with unique ID
         const uniqueId =
-          typeof crypto !== 'undefined' && crypto.randomUUID
-            ? crypto
-                .randomUUID()
-                .substring(0, 8) // Shorter unique part
+          typeof crypto !== "undefined" && crypto.randomUUID
+            ? crypto.randomUUID().substring(0, 8) // Shorter unique part
             : Date.now().toString(36);
         const uniqueSessionId = `${sessionId}_${uniqueId}`;
 
         currentSessionIdRef.current = uniqueSessionId;
         await sessionManager.createSession(user.id, uniqueSessionId);
-        safeConsole.log('New session created:', uniqueSessionId);
+        safeConsole.log("New session created:", uniqueSessionId);
       }
     } catch (error) {
-      safeConsole.error('Error initializing session:', error);
+      safeConsole.error("Error initializing session:", error);
     }
   }, [isSignedIn, user?.id, getToken]);
 
   // Force logout with cleanup
   const forceLogout = useCallback(async () => {
     try {
-      safeConsole.log('Performing force logout...');
+      safeConsole.log("Performing force logout...");
 
       // Clear all localStorage data
       const keysToRemove = [];
       for (let i = 0; i < localStorage.length; i++) {
         const key = localStorage.key(i);
-        if (key && (key.startsWith('markdownEditor_') || key.startsWith('clerk-'))) {
+        if (
+          key &&
+          (key.startsWith("markdownEditor_") || key.startsWith("clerk-"))
+        ) {
           keysToRemove.push(key);
         }
       }
@@ -125,17 +131,19 @@ export const useSessionValidation = (config: SessionValidationConfig = {}) => {
 
       // Clear cookies (basic approach)
       try {
-        document.cookie.split(';').forEach((cookie) => {
-          const eqPos = cookie.indexOf('=');
+        document.cookie.split(";").forEach((cookie) => {
+          const eqPos = cookie.indexOf("=");
           const name = eqPos > -1 ? cookie.substring(0, eqPos) : cookie;
           const cookieName = name.trim();
           if (cookieName) {
+            // biome-ignore lint/suspicious/noDocumentCookie: Required for session cleanup
             document.cookie = `${cookieName}=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/`;
+            // biome-ignore lint/suspicious/noDocumentCookie: Required for session cleanup
             document.cookie = `${cookieName}=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/;domain=${window.location.hostname}`;
           }
         });
       } catch (error) {
-        safeConsole.error('Error clearing cookies:', error);
+        safeConsole.error("Error clearing cookies:", error);
       }
 
       // Reset session state
@@ -148,14 +156,14 @@ export const useSessionValidation = (config: SessionValidationConfig = {}) => {
       });
 
       // Navigate to home page
-      navigate('/', { replace: true });
+      navigate("/", { replace: true });
 
       // Reload page to ensure complete cleanup
       setTimeout(() => {
         window.location.reload();
       }, 1000);
     } catch (error) {
-      safeConsole.error('Error during force logout:', error);
+      safeConsole.error("Error during force logout:", error);
     }
   }, [navigate]);
 
@@ -186,16 +194,19 @@ export const useSessionValidation = (config: SessionValidationConfig = {}) => {
 
       // Check if session is still active in database
       const sessions = await sessionManager.getUserSessions(user.id);
-      const currentSession = sessions.find((s) => s.session_id === currentSessionId);
+      const currentSession = sessions.find(
+        (s) => s.session_id === currentSessionId
+      );
 
       if (!currentSession || !currentSession.is_active) {
-        safeConsole.log('Session terminated remotely, logging out...');
+        safeConsole.log("Session terminated remotely, logging out...");
 
         if (showNotifications) {
           toast({
-            title: 'Session Terminated',
-            description: 'Your session has been terminated from another device.',
-            variant: 'destructive',
+            title: "Session Terminated",
+            description:
+              "Your session has been terminated from another device.",
+            variant: "destructive",
           });
         }
 
@@ -216,8 +227,9 @@ export const useSessionValidation = (config: SessionValidationConfig = {}) => {
 
       return true;
     } catch (error) {
-      safeConsole.error('Session validation error:', error);
-      const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+      safeConsole.error("Session validation error:", error);
+      const errorMessage =
+        error instanceof Error ? error.message : "Unknown error";
 
       setState((prev) => ({
         ...prev,
@@ -228,7 +240,15 @@ export const useSessionValidation = (config: SessionValidationConfig = {}) => {
 
       return false;
     }
-  }, [isSignedIn, user?.id, getToken, showNotifications, toast, forceLogout, initializeSession]);
+  }, [
+    isSignedIn,
+    user?.id,
+    getToken,
+    showNotifications,
+    toast,
+    forceLogout,
+    initializeSession,
+  ]);
 
   // Initialize session when user signs in
   useEffect(() => {
@@ -278,27 +298,30 @@ export const useSessionValidation = (config: SessionValidationConfig = {}) => {
 
       const currentSessionId = currentSessionIdRef.current;
       if (!currentSessionId) {
-        throw new Error('No current session ID');
+        throw new Error("No current session ID");
       }
 
-      const success = await sessionManager.terminateAllOtherSessions(user.id, currentSessionId);
+      const success = await sessionManager.terminateAllOtherSessions(
+        user.id,
+        currentSessionId
+      );
 
       if (success && showNotifications) {
         toast({
-          title: 'Sessions Terminated',
-          description: 'All other sessions have been terminated successfully.',
+          title: "Sessions Terminated",
+          description: "All other sessions have been terminated successfully.",
         });
       }
 
       return success;
     } catch (error) {
-      safeConsole.error('Error terminating other sessions:', error);
+      safeConsole.error("Error terminating other sessions:", error);
 
       if (showNotifications) {
         toast({
-          title: 'Error',
-          description: 'Failed to terminate other sessions. Please try again.',
-          variant: 'destructive',
+          title: "Error",
+          description: "Failed to terminate other sessions. Please try again.",
+          variant: "destructive",
         });
       }
 

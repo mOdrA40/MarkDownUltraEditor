@@ -43,6 +43,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { useDropdownPositioning } from "@/hooks/ui/useDropdownPositioning";
 import type { FileData } from "@/lib/supabase";
 
 /**
@@ -85,6 +86,7 @@ export const FilesTable: React.FC<FilesTableProps> = ({
   rowSelection,
   setRowSelection,
 }) => {
+  const dropdownPositioning = useDropdownPositioning();
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
 
@@ -202,12 +204,15 @@ export const FilesTable: React.FC<FilesTableProps> = ({
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent
-                align="end"
-                side="bottom"
-                sideOffset={4}
-                className="z-50 min-w-[120px]"
+                align={dropdownPositioning.align}
+                side={dropdownPositioning.side}
+                sideOffset={dropdownPositioning.sideOffset}
+                alignOffset={dropdownPositioning.alignOffset}
+                className="z-50 min-w-[140px] max-w-[200px] dropdown-table-view"
                 onCloseAutoFocus={(e) => e.preventDefault()}
                 avoidCollisions={true}
+                collisionPadding={16}
+                data-view-type="table"
               >
                 <DropdownMenuItem
                   onClick={(e) => {
@@ -256,7 +261,15 @@ export const FilesTable: React.FC<FilesTableProps> = ({
         size: 60,
       },
     ],
-    [onOpen, onDelete, onDuplicate, onExport, formatDate, formatFileSize]
+    [
+      onOpen,
+      onDelete,
+      onDuplicate,
+      onExport,
+      formatDate,
+      formatFileSize,
+      dropdownPositioning,
+    ]
   );
 
   const table = useReactTable({

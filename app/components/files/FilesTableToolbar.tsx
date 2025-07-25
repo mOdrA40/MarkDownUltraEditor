@@ -3,46 +3,33 @@
  * @author Axel Modra
  */
 
-import type { Table } from "@tanstack/react-table";
-import {
-  Download,
-  Grid3X3,
-  List,
-  Plus,
-  Search,
-  SlidersHorizontal,
-  Trash2,
-  X,
-} from "lucide-react";
-import type React from "react";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import type { Table } from '@tanstack/react-table';
+import { Download, Grid3X3, List, Plus, Search, SlidersHorizontal, Trash2, X } from 'lucide-react';
+import type React from 'react';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
-import { Separator } from "@/components/ui/separator";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
-import type { FileData } from "@/lib/supabase";
+} from '@/components/ui/select';
+import { Separator } from '@/components/ui/separator';
+import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
+import type { FileData } from '@/lib/supabase';
 
 /**
  * View mode type
  */
-type ViewMode = "grid" | "list" | "table";
+type ViewMode = 'grid' | 'list' | 'table';
 
 /**
  * Sort options
  */
-type SortOption = "name" | "date" | "size";
-type SortDirection = "asc" | "desc";
+type SortOption = 'name' | 'date' | 'size';
+type SortDirection = 'asc' | 'desc';
 
 /**
  * Props interface for FilesTableToolbar
@@ -88,12 +75,12 @@ export const FilesTableToolbar: React.FC<FilesTableToolbarProps> = ({
   const hasSelection = selectedRowCount > 0;
 
   const clearSearch = () => {
-    onSearchChange("");
+    onSearchChange('');
   };
 
   const clearFilters = () => {
     table?.resetColumnFilters();
-    onSearchChange("");
+    onSearchChange('');
   };
 
   return (
@@ -124,23 +111,15 @@ export const FilesTableToolbar: React.FC<FilesTableToolbarProps> = ({
           </div>
 
           {/* Active filters indicator */}
-          {(searchQuery ||
-            (table?.getState().columnFilters.length || 0) > 0) && (
+          {(searchQuery || (table?.getState().columnFilters.length || 0) > 0) && (
             <div className="flex items-center space-x-2 flex-wrap">
               <Badge variant="secondary" className="text-xs">
                 {searchQuery && `Search: "${searchQuery}"`}
-                {searchQuery &&
-                  (table?.getState().columnFilters.length || 0) > 0 &&
-                  ", "}
+                {searchQuery && (table?.getState().columnFilters.length || 0) > 0 && ', '}
                 {(table?.getState().columnFilters.length || 0) > 0 &&
                   `${table?.getState().columnFilters.length || 0} filter(s)`}
               </Badge>
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={clearFilters}
-                className="h-6 px-2 text-xs"
-              >
+              <Button variant="ghost" size="sm" onClick={clearFilters} className="h-6 px-2 text-xs">
                 Clear
               </Button>
             </div>
@@ -149,12 +128,7 @@ export const FilesTableToolbar: React.FC<FilesTableToolbarProps> = ({
 
         {/* Primary actions */}
         <div className="flex items-center justify-end sm:justify-start space-x-2">
-          <Button
-            onClick={onNewFile}
-            size="sm"
-            disabled={isLoading}
-            className="flex-shrink-0"
-          >
+          <Button onClick={onNewFile} size="sm" disabled={isLoading} className="flex-shrink-0">
             <Plus className="mr-2 h-4 w-4" />
             <span className="hidden xs:inline">New File</span>
             <span className="xs:hidden">New</span>
@@ -170,9 +144,9 @@ export const FilesTableToolbar: React.FC<FilesTableToolbarProps> = ({
             <Tooltip>
               <TooltipTrigger asChild>
                 <Button
-                  variant={viewMode === "grid" ? "default" : "ghost"}
+                  variant={viewMode === 'grid' ? 'default' : 'ghost'}
                   size="sm"
-                  onClick={() => onViewModeChange("grid")}
+                  onClick={() => onViewModeChange('grid')}
                   className="h-7 w-7 p-0"
                 >
                   <Grid3X3 className="h-3 w-3" />
@@ -184,9 +158,9 @@ export const FilesTableToolbar: React.FC<FilesTableToolbarProps> = ({
             <Tooltip>
               <TooltipTrigger asChild>
                 <Button
-                  variant={viewMode === "list" ? "default" : "ghost"}
+                  variant={viewMode === 'list' ? 'default' : 'ghost'}
                   size="sm"
-                  onClick={() => onViewModeChange("list")}
+                  onClick={() => onViewModeChange('list')}
                   className="h-7 w-7 p-0"
                 >
                   <List className="h-3 w-3" />
@@ -198,9 +172,9 @@ export const FilesTableToolbar: React.FC<FilesTableToolbarProps> = ({
             <Tooltip>
               <TooltipTrigger asChild>
                 <Button
-                  variant={viewMode === "table" ? "default" : "ghost"}
+                  variant={viewMode === 'table' ? 'default' : 'ghost'}
                   size="sm"
-                  onClick={() => onViewModeChange("table")}
+                  onClick={() => onViewModeChange('table')}
                   className="h-7 w-7 p-0"
                 >
                   <SlidersHorizontal className="h-3 w-3" />
@@ -214,9 +188,7 @@ export const FilesTableToolbar: React.FC<FilesTableToolbarProps> = ({
 
           {/* Sort controls */}
           <div className="flex flex-col xs:flex-row xs:items-center gap-2 xs:space-x-2">
-            <span className="text-sm text-muted-foreground hidden sm:inline">
-              Sort by:
-            </span>
+            <span className="text-sm text-muted-foreground hidden sm:inline">Sort by:</span>
             <div className="flex items-center gap-2">
               <Select value={sortBy} onValueChange={onSortByChange}>
                 <SelectTrigger className="w-24 h-8">
@@ -229,10 +201,7 @@ export const FilesTableToolbar: React.FC<FilesTableToolbarProps> = ({
                 </SelectContent>
               </Select>
 
-              <Select
-                value={sortDirection}
-                onValueChange={onSortDirectionChange}
-              >
+              <Select value={sortDirection} onValueChange={onSortDirectionChange}>
                 <SelectTrigger className="w-20 h-8">
                   <SelectValue />
                 </SelectTrigger>
@@ -272,10 +241,7 @@ export const FilesTableToolbar: React.FC<FilesTableToolbarProps> = ({
                 </Button>
               )}
 
-              <Separator
-                orientation="vertical"
-                className="h-6 hidden sm:block"
-              />
+              <Separator orientation="vertical" className="h-6 hidden sm:block" />
             </>
           )}
 
