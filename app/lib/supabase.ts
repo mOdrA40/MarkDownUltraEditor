@@ -1,8 +1,3 @@
-/**
- * @fileoverview Supabase client configuration with Clerk authentication integration
- * @author Axel Modra
- */
-
 import { useAuth } from '@clerk/react-router';
 import { createClient, type SupabaseClient } from '@supabase/supabase-js';
 

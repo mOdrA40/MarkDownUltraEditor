@@ -4,55 +4,37 @@
  */
 
 import { useAuth } from "@clerk/react-router";
-import type { Table } from "@tanstack/react-table";
+
 import { formatDistanceToNow } from "date-fns";
 import {
   ArrowLeft,
   Clock,
   Cloud,
-  Copy,
   Download,
-  Edit,
   FileText,
   HardDrive,
-  MoreVertical,
   Plus,
   RefreshCw,
-  Trash2,
 } from "lucide-react";
-import React, { useEffect, useMemo, useRef, useState } from "react";
+import React, { useEffect, useMemo, useRef } from "react";
 import { AuthButtons } from "@/components/auth/AuthButtons";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { ConfirmationDialog } from "@/components/ui/ConfirmationDialog";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+
 import { useFileStorage } from "@/hooks/files";
+import { useFileActions } from "@/hooks/files/useFileActions";
+import { useFileSelection } from "@/hooks/files/useFileSelection";
+import { useFilesUIState, type ViewMode } from "@/hooks/files/useFilesUIState";
 import { useResponsiveDetection } from "@/hooks/ui/useResponsive";
-import { useDropdownPositioning } from "@/hooks/ui/useDropdownPositioning";
+
 import type { FileData } from "@/lib/supabase";
 import { formatBytes, formatRelativeDate } from "@/utils/common";
-import { safeConsole } from "@/utils/console";
 import { ClientOnlyFilesTable } from "./ClientOnlyFilesTable";
 import { FilesTableToolbar } from "./FilesTableToolbar";
+import { FileDropdownMenu } from "./shared/FileDropdownMenu";
 import { VirtualizedFileList } from "./VirtualizedFileList";
-
-/**
- * View mode type - Enhanced with table view
- */
-type ViewMode = "grid" | "list" | "table";
-
-/**
- * Sort options
- */
-type SortOption = "name" | "date" | "size";
-type SortDirection = "asc" | "desc";
 
 /**
  * Files manager component
@@ -69,24 +51,50 @@ export const FilesManager: React.FC = () => {
     isAuthenticated: _isAuthenticated,
   } = useFileStorage();
 
-  // UI state
-  const [viewMode, setViewMode] = useState<ViewMode>("table");
-  const [searchQuery, setSearchQuery] = useState("");
-  const [sortBy, setSortBy] = useState<SortOption>("date");
-  const [sortDirection, setSortDirection] = useState<SortDirection>("desc");
-  const [rowSelection, setRowSelection] = useState({});
-  const [tableInstance, setTableInstance] = useState<
-    Table<FileData> | undefined
-  >(undefined);
+  // UI state using custom hooks
+  const uiState = useFilesUIState();
+  const {
+    viewMode,
+    setViewMode,
+    searchQuery,
+    setSearchQuery,
+    sortBy,
+    setSortBy,
+    sortDirection,
+    setSortDirection,
+    rowSelection,
+    setRowSelection,
+    tableInstance,
+    setTableInstance,
+    tableKey,
+  } = uiState;
 
-  // Delete confirmation dialog state
-  const [isDeleteConfirmOpen, setIsDeleteConfirmOpen] = useState(false);
-  const [fileToDelete, setFileToDelete] = useState<FileData | null>(null);
-  const [filesToDelete, setFilesToDelete] = useState<FileData[] | null>(null);
-  const [deleteType, setDeleteType] = useState<"single" | "bulk">("single");
-  const [tableKey, setTableKey] = useState(0);
+  // File actions using custom hook
+  const fileActions = useFileActions({
+    onTableInstanceChange: setTableInstance,
+  });
+  const {
+    isDeleteConfirmOpen,
+    setIsDeleteConfirmOpen,
+    fileToDelete,
+    filesToDelete,
+    deleteType,
+    handleOpenFile,
+    handleDeleteFile,
+    handleDuplicateFile,
+    handleExportFile,
+    handleConfirmDelete,
+    handleBulkDelete,
+    handleTableReady,
+  } = fileActions;
 
-  const selectedRowCount = Object.keys(rowSelection).length;
+  // File selection using custom hook
+  const selectionState = useFileSelection({
+    files,
+    rowSelection,
+    tableInstance,
+  });
+  const { selectedRowCount } = selectionState;
   const previousFilesCountRef = useRef(files.length);
 
   // Reset row selection when files are deleted (files count decreases)
@@ -104,7 +112,7 @@ export const FilesManager: React.FC = () => {
 
     // Update the ref for next comparison
     previousFilesCountRef.current = currentFilesCount;
-  }, [files.length, tableInstance]);
+  }, [files.length, tableInstance, setRowSelection]);
 
   // Compute accurate storage info using actual files data
   const computedStorageInfo = useMemo(() => {
@@ -160,51 +168,7 @@ export const FilesManager: React.FC = () => {
   // Performance optimization: Use virtualization for large datasets
   const shouldUseVirtualization = filteredAndSortedFiles.length > 100;
 
-  // Handle file operations
-  const handleOpenFile = (file: FileData) => {
-    window.location.href = `/?file=${file.id || file.title}`;
-  };
-
-  const handleDeleteFile = (file: FileData) => {
-    setFileToDelete(file);
-    setFilesToDelete(null);
-    setDeleteType("single");
-    setIsDeleteConfirmOpen(true);
-  };
-
-  const handleConfirmDelete = async () => {
-    try {
-      if (deleteType === "single" && fileToDelete) {
-        await deleteFile(fileToDelete.id || fileToDelete.title);
-        // Explicitly reset selection state after successful deletion
-        setRowSelection({});
-        tableInstance?.resetRowSelection();
-      } else if (deleteType === "bulk" && filesToDelete) {
-        await Promise.all(
-          filesToDelete.map((file) => deleteFile(file.id || file.title))
-        );
-        safeConsole.log(`Successfully deleted ${filesToDelete.length} files`);
-        // Explicitly reset selection state after successful deletion
-      }
-    } catch (error) {
-      safeConsole.error("Error deleting file(s):", error);
-    } finally {
-      // Reset dialog state
-      setIsDeleteConfirmOpen(false);
-      setFileToDelete(null);
-      setFilesToDelete(null);
-      // Force table re-render by changing its key
-      setTableKey((prevKey) => prevKey + 1);
-      // Explicitly reset selection state after any deletion
-      setRowSelection({});
-      tableInstance?.resetRowSelection();
-    }
-  };
-
-  const handleTableReady = (table: Table<FileData>) => {
-    setTableInstance(table);
-  };
-
+  // Handle bulk delete from table
   const handleBulkDeleteFromTable = () => {
     if (!tableInstance) return;
 
@@ -212,43 +176,14 @@ export const FilesManager: React.FC = () => {
     if (selectedRows.length === 0) return;
 
     const selectedFiles = selectedRows.map((row) => row.original);
-    setFileToDelete(null);
-    setFilesToDelete(selectedFiles);
-    setDeleteType("bulk");
-    setIsDeleteConfirmOpen(true);
-  };
-
-  const handleDuplicateFile = (file: FileData) => {
-    const duplicatedFile = {
-      ...file,
-      title: `${file.title} (Copy)`,
-      id: undefined,
-    };
-
-    const params = new URLSearchParams({
-      title: duplicatedFile.title,
-      content: duplicatedFile.content,
-    });
-    window.location.href = `/?${params.toString()}`;
-  };
-
-  const handleExportFile = (file: FileData) => {
-    const blob = new Blob([file.content], { type: "text/markdown" });
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement("a");
-    link.href = url;
-    link.download = `${file.title}.md`;
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-    URL.revokeObjectURL(url);
+    handleBulkDelete(selectedFiles, deleteFile);
   };
 
   const handleExportAll = async () => {
     try {
       await exportAllFiles();
     } catch (error) {
-      safeConsole.error("Error exporting files:", error);
+      console.error("Error exporting files:", error);
     }
   };
 
@@ -479,7 +414,7 @@ export const FilesManager: React.FC = () => {
                 .join(", ")}`
             : "This action cannot be undone."
         }
-        onConfirm={handleConfirmDelete}
+        onConfirm={() => handleConfirmDelete(deleteFile, tableInstance)}
         confirmText="Delete"
         cancelText="Cancel"
       />
@@ -511,7 +446,6 @@ const FileCard: React.FC<FileCardProps> = ({
   formatDate,
   formatFileSize,
 }) => {
-  const dropdownPositioning = useDropdownPositioning();
   if (viewMode === "list") {
     return (
       <Card className="hover:shadow-md transition-shadow cursor-pointer">
@@ -557,49 +491,14 @@ const FileCard: React.FC<FileCardProps> = ({
               </div>
             </button>
 
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  className="h-8 w-8 p-0 flex-shrink-0 dropdown-trigger-mobile"
-                >
-                  <MoreVertical className="w-4 h-4" />
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent
-                align={dropdownPositioning.align}
-                side={dropdownPositioning.side}
-                sideOffset={dropdownPositioning.sideOffset}
-                alignOffset={dropdownPositioning.alignOffset}
-                className="z-50 min-w-[140px] max-w-[200px] dropdown-list-view"
-                onCloseAutoFocus={(e) => e.preventDefault()}
-                avoidCollisions={true}
-                collisionPadding={16}
-                data-view-type="list"
-              >
-                <DropdownMenuItem onClick={onOpen}>
-                  <Edit className="mr-2 h-4 w-4" />
-                  Open
-                </DropdownMenuItem>
-                <DropdownMenuItem onClick={onDuplicate}>
-                  <Copy className="mr-2 h-4 w-4" />
-                  Duplicate
-                </DropdownMenuItem>
-                <DropdownMenuItem onClick={onExport}>
-                  <Download className="mr-2 h-4 w-4" />
-                  Export
-                </DropdownMenuItem>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem
-                  onClick={onDelete}
-                  className="text-destructive"
-                >
-                  <Trash2 className="mr-2 h-4 w-4" />
-                  Delete
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
+            <FileDropdownMenu
+              file={file}
+              viewType="list"
+              onOpen={onOpen}
+              onDelete={onDelete}
+              onDuplicate={onDuplicate}
+              onExport={onExport}
+            />
           </div>
         </CardContent>
       </Card>
@@ -614,63 +513,15 @@ const FileCard: React.FC<FileCardProps> = ({
       <CardHeader className="pb-2 p-3 sm:p-6 sm:pb-2">
         <div className="flex items-start justify-between">
           <FileText className="w-5 h-5 sm:w-6 sm:h-6 text-primary flex-shrink-0" />
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild onClick={(e) => e.stopPropagation()}>
-              <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
-                <MoreVertical className="w-4 h-4" />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent
-              align={dropdownPositioning.align}
-              side={dropdownPositioning.side}
-              sideOffset={dropdownPositioning.sideOffset}
-              alignOffset={dropdownPositioning.alignOffset}
-              className="z-50 min-w-[140px] max-w-[200px] dropdown-grid-view"
-              onCloseAutoFocus={(e) => e.preventDefault()}
-              avoidCollisions={true}
-              collisionPadding={16}
-              data-view-type="grid"
-            >
-              <DropdownMenuItem
-                onClick={(e) => {
-                  e.stopPropagation();
-                  onOpen();
-                }}
-              >
-                <Edit className="mr-2 h-4 w-4" />
-                Open
-              </DropdownMenuItem>
-              <DropdownMenuItem
-                onClick={(e) => {
-                  e.stopPropagation();
-                  onDuplicate();
-                }}
-              >
-                <Copy className="mr-2 h-4 w-4" />
-                Duplicate
-              </DropdownMenuItem>
-              <DropdownMenuItem
-                onClick={(e) => {
-                  e.stopPropagation();
-                  onExport();
-                }}
-              >
-                <Download className="mr-2 h-4 w-4" />
-                Export
-              </DropdownMenuItem>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem
-                onClick={(e) => {
-                  e.stopPropagation();
-                  onDelete();
-                }}
-                className="text-destructive"
-              >
-                <Trash2 className="mr-2 h-4 w-4" />
-                Delete
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
+          <FileDropdownMenu
+            file={file}
+            viewType="grid"
+            onOpen={onOpen}
+            onDelete={onDelete}
+            onDuplicate={onDuplicate}
+            onExport={onExport}
+            stopPropagationOnTrigger={true}
+          />
         </div>
         <CardTitle className="text-sm sm:text-base truncate mt-2">
           {file.title}
@@ -698,16 +549,18 @@ const FileCard: React.FC<FileCardProps> = ({
           )}
         </div>
 
-        <div className="flex flex-col xs:flex-row xs:items-center xs:justify-between gap-1 xs:gap-2 text-xs text-muted-foreground mt-2">
-          <span className="flex items-center gap-1">
-            <Clock className="w-3 h-3" />
+        <div className="space-y-1 text-xs text-muted-foreground mt-2">
+          <div className="flex items-center gap-1 min-w-0">
+            <Clock className="w-3 h-3 flex-shrink-0" />
             <span className="truncate">
               {formatDate(file.updatedAt || file.createdAt || "")}
             </span>
-          </span>
-          <span className="text-right xs:text-left">
-            {formatFileSize(file.fileSize || 0)}
-          </span>
+          </div>
+          <div className="flex items-center justify-between gap-2 min-w-0">
+            <span className="truncate flex-1">
+              {formatFileSize(file.fileSize || 0)}
+            </span>
+          </div>
         </div>
       </CardContent>
     </Card>

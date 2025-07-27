@@ -3,20 +3,11 @@
  * @author Axel Modra
  */
 
-import { useVirtualizer } from "@tanstack/react-virtual";
-import { Copy, Download, Edit, MoreVertical, Trash2 } from "lucide-react";
-import type React from "react";
-import { useRef } from "react";
-import { Button } from "@/components/ui/button";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { useDropdownPositioning } from "@/hooks/ui/useDropdownPositioning";
-import type { FileData } from "@/lib/supabase";
+import { useVirtualizer } from '@tanstack/react-virtual';
+import type React from 'react';
+import { useRef } from 'react';
+import { FileDropdownMenu } from '@/components/files/shared/FileDropdownMenu';
+import type { FileData } from '@/lib/supabase';
 
 /**
  * Props interface for VirtualizedFileList
@@ -52,7 +43,7 @@ export const VirtualizedFileList: React.FC<VirtualizedFileListProps> = ({
   formatFileSize,
   itemHeight = 80,
   overscan = 5,
-  className = "",
+  className = '',
 }) => {
   const parentRef = useRef<HTMLDivElement>(null);
 
@@ -85,14 +76,14 @@ export const VirtualizedFileList: React.FC<VirtualizedFileListProps> = ({
       ref={parentRef}
       className={`h-[400px] sm:h-[500px] lg:h-[600px] overflow-auto mt-2 ${className}`}
       style={{
-        contain: "strict",
+        contain: 'strict',
       }}
     >
       <div
         style={{
           height: `${virtualizer.getTotalSize()}px`,
-          width: "100%",
-          position: "relative",
+          width: '100%',
+          position: 'relative',
         }}
       >
         {items.map((virtualItem) => {
@@ -143,14 +134,13 @@ const VirtualizedFileItem: React.FC<VirtualizedFileItemProps> = ({
   formatDate,
   formatFileSize,
 }) => {
-  const dropdownPositioning = useDropdownPositioning();
   return (
     <div
       style={{
-        position: "absolute",
+        position: 'absolute',
         top: 0,
         left: 0,
-        width: "100%",
+        width: '100%',
         height: `${virtualItem.size}px`,
         transform: `translateY(${virtualItem.start}px)`,
       }}
@@ -184,17 +174,15 @@ const VirtualizedFileItem: React.FC<VirtualizedFileItemProps> = ({
               </div>
 
               <div className="flex-1 min-w-0">
-                <p className="text-sm font-medium text-foreground truncate">
-                  {file.title}
-                </p>
+                <p className="text-sm font-medium text-foreground truncate">{file.title}</p>
                 <div className="flex items-center space-x-4 mt-1">
                   <p className="text-xs text-muted-foreground">
-                    {file.fileSize ? formatFileSize(file.fileSize) : "-"}
+                    {file.fileSize ? formatFileSize(file.fileSize) : '-'}
                   </p>
                   <p className="text-xs text-muted-foreground">
                     {file.updatedAt || file.createdAt
-                      ? formatDate(file.updatedAt || file.createdAt || "")
-                      : "-"}
+                      ? formatDate(file.updatedAt || file.createdAt || '')
+                      : '-'}
                   </p>
                 </div>
                 {file.tags && file.tags.length > 0 && (
@@ -219,68 +207,14 @@ const VirtualizedFileItem: React.FC<VirtualizedFileItemProps> = ({
           </button>
 
           <div className="flex items-center ml-4">
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  className="h-8 w-8 p-0 flex-shrink-0 dropdown-trigger-mobile"
-                  onClick={(e) => e.stopPropagation()}
-                >
-                  <MoreVertical className="w-4 h-4" />
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent
-                align={dropdownPositioning.align}
-                side={dropdownPositioning.side}
-                sideOffset={dropdownPositioning.sideOffset}
-                alignOffset={dropdownPositioning.alignOffset}
-                className="z-50 min-w-[140px] max-w-[200px] dropdown-virtualized-view"
-                onCloseAutoFocus={(e) => e.preventDefault()}
-                avoidCollisions={true}
-                collisionPadding={16}
-                data-view-type="virtualized"
-              >
-                <DropdownMenuItem
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    onOpen(file);
-                  }}
-                >
-                  <Edit className="mr-2 h-4 w-4" />
-                  Open
-                </DropdownMenuItem>
-                <DropdownMenuItem
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    onDuplicate(file);
-                  }}
-                >
-                  <Copy className="mr-2 h-4 w-4" />
-                  Duplicate
-                </DropdownMenuItem>
-                <DropdownMenuItem
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    onExport(file);
-                  }}
-                >
-                  <Download className="mr-2 h-4 w-4" />
-                  Export
-                </DropdownMenuItem>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    onDelete(file);
-                  }}
-                  className="text-destructive"
-                >
-                  <Trash2 className="mr-2 h-4 w-4" />
-                  Delete
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
+            <FileDropdownMenu
+              file={file}
+              viewType="virtualized"
+              onOpen={() => onOpen(file)}
+              onDelete={() => onDelete(file)}
+              onDuplicate={() => onDuplicate(file)}
+              onExport={() => onExport(file)}
+            />
           </div>
         </div>
       </div>
