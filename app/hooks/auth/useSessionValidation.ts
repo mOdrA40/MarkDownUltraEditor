@@ -21,11 +21,7 @@ interface SessionValidationState {
 }
 
 export const useSessionValidation = (config: SessionValidationConfig = {}) => {
-  const {
-    checkInterval = 30000,
-    enabled = true,
-    showNotifications = true,
-  } = config;
+  const { checkInterval = 30000, enabled = true, showNotifications = true } = config;
 
   const { isSignedIn, getToken } = useAuth();
   const { user } = useUser();

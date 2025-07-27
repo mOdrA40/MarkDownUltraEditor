@@ -72,18 +72,12 @@ export const useGridDropdownPositioning = () => {
     }
 
     let totalColumns = 1;
-    if (screenWidth >= 1536)
-      totalColumns = 6;
-    else if (screenWidth >= 1280)
-      totalColumns = 5;
-    else if (screenWidth >= 1024)
-      totalColumns = 4;
-    else if (screenWidth >= 768)
-      totalColumns = 3;
-    else if (screenWidth >= 640)
-      totalColumns = 2;
-    else if (screenWidth >= 475)
-      totalColumns = 2;
+    if (screenWidth >= 1536) totalColumns = 6;
+    else if (screenWidth >= 1280) totalColumns = 5;
+    else if (screenWidth >= 1024) totalColumns = 4;
+    else if (screenWidth >= 768) totalColumns = 3;
+    else if (screenWidth >= 640) totalColumns = 2;
+    else if (screenWidth >= 475) totalColumns = 2;
     else totalColumns = 1;
 
     const columnIndex = currentIndex % totalColumns;

@@ -28,7 +28,6 @@ export interface FilesUIState {
   tableKey: string;
 }
 
-
 export const useFilesUIState = (): FilesUIState => {
   const [viewMode, setViewMode] = useState<ViewMode>('table');
   const [searchQuery, setSearchQuery] = useState('');

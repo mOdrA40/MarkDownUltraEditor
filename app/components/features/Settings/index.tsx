@@ -1,14 +1,56 @@
-/**
- * @fileoverview Settings feature components export
- * @author Axel Modra
- */
+// Individual components
+export {
+  AccountTab,
+  AppearanceTab,
+  BehaviorTab,
+  EditorTab,
+  SessionManagement,
+  SettingsHeader,
+  SettingsTabs,
+  StorageTab,
+} from './components';
+// Constants
+export {
+  ACTIVITY_INTERVALS,
+  DEFAULT_PREFERENCES,
+  DEFAULT_TAB,
+  STORAGE_KEYS,
+  TABS_CONFIG,
+} from './constants';
 
-// Re-export settings types and constants
-export type { AppPreferences } from '../../../routes/settings';
-export { default as SettingsPage } from '../../../routes/settings';
+// Hooks
+export {
+  useAccountActions,
+  useSessionManagement,
+  useSettingsState,
+  useStorageActions,
+} from './hooks';
+// Main components
+// Re-export for backward compatibility
+export { SettingsPage, SettingsPage as default, SettingsPageContent } from './SettingsPage';
+// Types
+export type {
+  AccountInfo,
+  AccountState,
+  AppPreferences,
+  SessionData,
+  SessionManagementState,
+  SessionStats,
+  SettingsActions,
+  SettingsState,
+  SettingsTab,
+  StorageInfo,
+  StorageState,
+  TabConfig,
+  UseAccountReturn,
+  UseSessionManagementReturn,
+  UseSettingsReturn,
+  UseStorageReturn,
+} from './types';
 
 /**
- * Settings integration hook
+ * Legacy Settings integration hook (deprecated - use useSettingsState instead)
+ * @deprecated Use useSettingsState from './hooks/useSettingsState' instead
  */
 import { useEffect, useState } from 'react';
 import {
