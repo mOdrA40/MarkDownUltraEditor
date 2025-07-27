@@ -37,10 +37,14 @@ export const StorageTab: React.FC = memo(() => {
             <div className="p-3 sm:p-4 border rounded-lg">
               <div className="flex items-center gap-2 mb-2">
                 <Database className="w-4 h-4" />
-                <span className="font-medium text-sm sm:text-base">Local Storage</span>
+                <span className="font-medium text-sm sm:text-base">
+                  {isSignedIn ? 'Browser Cache' : 'Local Storage'}
+                </span>
               </div>
               <p className="text-xs sm:text-sm text-muted-foreground mb-2">
-                Browser storage for offline access
+                {isSignedIn
+                  ? 'Cache for themes, preferences, and temporary data'
+                  : 'Browser storage for offline access'}
               </p>
               <div className="space-y-2">
                 <div className="flex justify-between text-xs sm:text-sm">
@@ -54,6 +58,11 @@ export const StorageTab: React.FC = memo(() => {
                   />
                 </div>
               </div>
+              {isSignedIn && (
+                <p className="text-xs text-muted-foreground mt-2">
+                  Used for app settings, themes, and performance optimization
+                </p>
+              )}
             </div>
 
             {isSignedIn && state.cloudStorage && (

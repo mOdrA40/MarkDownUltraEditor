@@ -1,4 +1,3 @@
-
 import { useAuth } from '@clerk/react-router';
 import { User } from 'lucide-react';
 import type React from 'react';

@@ -572,6 +572,64 @@ html.dark .markdown-editor-textarea::placeholder,
   color: hsl(215.4 16.3% 56.9%) !important;
 }
 
+/* ===== DANGER/DESTRUCTIVE COLORS FOR THEMES ===== */
+
+/* Text red colors - theme specific for better contrast */
+.theme-ocean .text-red-600,
+.theme-ocean .text-red-700,
+.theme-ocean .text-red-800 {
+  color: #dc2626 !important; /* red-600 - good contrast with ocean blue */
+}
+
+.theme-forest .text-red-600,
+.theme-forest .text-red-700,
+.theme-forest .text-red-800 {
+  color: #dc2626 !important; /* red-600 - good contrast with forest green */
+}
+
+.theme-sunset .text-red-600,
+.theme-sunset .text-red-700,
+.theme-sunset .text-red-800 {
+  color: #991b1b !important; /* red-800 - darker red to contrast with orange theme */
+}
+
+.theme-purple .text-red-600,
+.theme-purple .text-red-700,
+.theme-purple .text-red-800 {
+  color: #991b1b !important; /* red-800 - darker red to contrast with purple */
+}
+
+.theme-rose .text-red-600,
+.theme-rose .text-red-700,
+.theme-rose .text-red-800 {
+  color: #7f1d1d !important; /* red-900 - darkest red to contrast with rose/pink */
+}
+
+.dark .text-red-600,
+.dark .text-red-700,
+.dark .text-red-800 {
+  color: #ef4444 !important; /* red-500 - lighter red for dark background contrast */
+}
+
+/* Destructive button overrides for theme consistency */
+.theme-sunset button[variant="destructive"],
+.theme-sunset .bg-destructive {
+  background-color: #991b1b !important; /* red-800 for sunset theme */
+  color: #fef2f2 !important; /* red-50 for text */
+}
+
+.theme-purple button[variant="destructive"],
+.theme-purple .bg-destructive {
+  background-color: #991b1b !important; /* red-800 for purple theme */
+  color: #fef2f2 !important; /* red-50 for text */
+}
+
+.theme-rose button[variant="destructive"],
+.theme-rose .bg-destructive {
+  background-color: #7f1d1d !important; /* red-900 for rose theme */
+  color: #fef2f2 !important; /* red-50 for text */
+}
+
 /* ===== CONSOLIDATED BACKGROUND AND FORM STYLING ===== */
 
 /* Muted backgrounds - consolidated using CSS custom properties */

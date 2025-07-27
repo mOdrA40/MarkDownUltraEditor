@@ -1,4 +1,3 @@
-
 import { ArrowLeft, Settings as SettingsIcon } from 'lucide-react';
 import type React from 'react';
 import { memo } from 'react';

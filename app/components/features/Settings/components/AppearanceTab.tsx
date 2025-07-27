@@ -1,4 +1,3 @@
-
 import { Eye, Monitor, Palette } from 'lucide-react';
 import type React from 'react';
 import { memo } from 'react';
