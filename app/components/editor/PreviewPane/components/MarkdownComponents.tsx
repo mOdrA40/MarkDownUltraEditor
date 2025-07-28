@@ -107,6 +107,8 @@ const ImageComponent: React.FC<ImageComponentProps> = ({ src, alt, title, theme 
         style={{
           border: `1px solid ${theme?.accent || '#e5e7eb'}`,
         }}
+        loading="lazy"
+        crossOrigin="anonymous"
       />
       {alt && !isLoading && !hasError && (
         <p className="text-sm text-gray-600 mt-2 text-center italic">{alt}</p>

@@ -69,9 +69,11 @@ export const links: LinksFunction = () => [
   },
 ];
 
-// Enhanced security headers - optimized for production
+// Enhanced security headers - environment aware
 export const headers: HeadersFunction = () => {
-  return {
+  const isDevelopment = process.env.NODE_ENV === 'development';
+
+  const baseHeaders = {
     // HSTS - HTTP Strict Transport Security
     'Strict-Transport-Security': 'max-age=31536000; includeSubDomains; preload',
     // Prevent MIME type sniffing
@@ -84,14 +86,97 @@ export const headers: HeadersFunction = () => {
     'Referrer-Policy': 'strict-origin-when-cross-origin',
     // Permissions Policy
     'Permissions-Policy': 'camera=(), microphone=(), geolocation=(), interest-cohort=()',
-    // Content Security Policy - Optimized for your app
+  };
+
+  // Trusted image hosting domains (free to enterprise)
+  const trustedImageDomains = [
+    // Core domains
+    "'self'",
+    'data:',
+    'blob:',
+
+    // Authentication & UI
+    'https://*.clerk.com',
+    'https://*.clerk.accounts.dev',
+    'https://img.clerk.com',
+
+    // Free Image Hosting (Popular & Reliable)
+    'https://picsum.photos', // Lorem Picsum - reliable placeholder service
+    'https://via.placeholder.com', // Placeholder.com - widely used
+    'https://placehold.it',
+    'https://placehold.co', // Placeholder services
+    'https://placekitten.com',
+    'https://placebear.com', // Fun placeholders
+    'https://images.unsplash.com',
+    'https://unsplash.com', // Unsplash - high quality free
+    'https://cdn.pixabay.com',
+    'https://pixabay.com', // Pixabay - free stock
+    'https://images.pexels.com',
+    'https://pexels.com', // Pexels - free stock
+
+    // GitHub & Development
+    'https://raw.githubusercontent.com',
+    'https://github.com',
+    'https://avatars.githubusercontent.com',
+    'https://user-images.githubusercontent.com',
+
+    // Popular CDNs & Cloud Storage
+    'https://*.imgur.com',
+    'https://imgur.com', // Imgur - popular image hosting
+    'https://*.cloudinary.com',
+    'https://cloudinary.com', // Cloudinary - enterprise CDN
+    'https://*.amazonaws.com',
+    'https://amazonaws.com', // AWS S3 - enterprise
+    'https://*.googleusercontent.com', // Google Drive/Photos
+    'https://*.dropboxusercontent.com', // Dropbox
+
+    // Enterprise Image Services
+    'https://*.imagekit.io', // ImageKit - enterprise CDN
+    'https://*.fastly.com', // Fastly CDN
+    'https://*.jsdelivr.net', // jsDelivr CDN
+    'https://*.unpkg.com', // unpkg CDN
+
+    // Social Media (for profile pics, etc)
+    'https://*.gravatar.com',
+    'https://gravatar.com', // Gravatar
+    'https://*.twimg.com', // Twitter images
+    'https://*.fbcdn.net', // Facebook images
+  ];
+
+  // In development, use relaxed CSP but still secure
+  if (isDevelopment) {
+    console.log('🔧 Development mode: Permissive CSP for better developer experience');
+    return {
+      ...baseHeaders,
+      'Content-Security-Policy': [
+        "default-src 'self'",
+        "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://clerk.com https://*.clerk.accounts.dev https://*.clerk.com https://challenges.cloudflare.com",
+        "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://clerk.com https://*.clerk.accounts.dev https://cdnjs.cloudflare.com",
+        "img-src * 'self' data: blob: https: http:", // Very permissive for development
+        "font-src 'self' data: https://fonts.googleapis.com https://fonts.gstatic.com",
+        "connect-src 'self' https://*.supabase.co https://clerk.com https://*.clerk.accounts.dev https://*.clerk.com wss://*.supabase.co wss://*.clerk.com https://*.ingest.sentry.io https://*.ingest.us.sentry.io https://sentry.io",
+        "media-src 'self' blob:",
+        "object-src 'none'",
+        "child-src 'none'",
+        "worker-src 'self' blob:",
+        "frame-src 'self' https://clerk.com https://*.clerk.accounts.dev https://*.clerk.com https://challenges.cloudflare.com",
+        "frame-ancestors 'none'",
+        "form-action 'self' https://clerk.com https://*.clerk.accounts.dev",
+        "base-uri 'self'",
+      ].join('; '),
+    };
+  }
+
+  // Production CSP with strict security
+  return {
+    ...baseHeaders,
     'Content-Security-Policy': [
       "default-src 'self'",
-      "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://clerk.com https://*.clerk.accounts.dev https://*.clerk.com https://challenges.cloudflare.com",
+      "script-src 'self' 'unsafe-inline' https://clerk.com https://*.clerk.accounts.dev https://*.clerk.com https://challenges.cloudflare.com",
       "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://clerk.com https://*.clerk.accounts.dev https://cdnjs.cloudflare.com",
-      "img-src 'self' data: blob: https://*.clerk.com https://*.clerk.accounts.dev https://img.clerk.com",
+      `img-src ${trustedImageDomains.join(' ')}`,
       "font-src 'self' data: https://fonts.googleapis.com https://fonts.gstatic.com",
-      "connect-src 'self' https://*.supabase.co https://clerk.com https://*.clerk.accounts.dev https://*.clerk.com wss://*.supabase.co wss://*.clerk.com https://*.ingest.sentry.io https://*.ingest.us.sentry.io https://sentry.io https://api.ipify.org https://ipapi.co https://ipinfo.io https://api.ip.sb",
+      "connect-src 'self' https://*.supabase.co https://clerk.com https://*.clerk.accounts.dev https://*.clerk.com wss://*.supabase.co wss://*.clerk.com https://*.ingest.sentry.io https://*.ingest.us.sentry.io https://sentry.io",
       "media-src 'self'",
       "object-src 'none'",
       "child-src 'none'",

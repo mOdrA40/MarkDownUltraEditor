@@ -92,10 +92,15 @@ export const useFileStorage = (): UseFileStorageReturn => {
 
         setStorageService(service);
 
+        // Run cleanup to remove duplicate files from localStorage
+        if (service && 'cleanupLocalStorage' in service) {
+          (service as { cleanupLocalStorage: () => void }).cleanupLocalStorage();
+        }
+
         await new Promise((resolve) => setTimeout(resolve, 100));
 
         setIsInitialized(true);
-        safeConsole.log('File storage service initialized successfully');
+        safeConsole.log('File storage service initialized successfully with cleanup');
       } catch (initError) {
         safeConsole.error('Error initializing storage service:', initError);
         setError('Failed to initialize storage service');
@@ -187,10 +192,8 @@ export const useFileStorage = (): UseFileStorageReturn => {
         invalidateQueries.storage.info(userId || 'anonymous');
       }
 
-      toast({
-        title: 'File Saved',
-        description: `${savedFile.title} has been saved successfully.`,
-      });
+      // Only show toast for manual saves, not auto-saves
+      // Auto-saves are handled by the auto-save hook with less intrusive notifications
     },
     onError: (error: unknown) => {
       safeConsole.error('Error saving file:', error);

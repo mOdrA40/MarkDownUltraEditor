@@ -5,8 +5,10 @@ MarkdownEditor
 
 import React from 'react';
 import { useSearchParams } from 'react-router';
+import { CSPNotification, ImageInsertHelp } from '@/components/ui/CSPNotification';
 import { usePerformanceDebug, useRenderPerformance } from '@/hooks/core/usePerformance';
 import { useFileStorage } from '@/hooks/files';
+import { useCSPDetection } from '@/hooks/useCSPDetection';
 import { useWelcomeDialog, WelcomeDialog } from '../../auth/WelcomeDialog';
 import { type Theme, useTheme } from '../../features/ThemeSelector';
 import { MobileNav } from '../../layout/MobileNav';
@@ -130,7 +132,13 @@ export const MarkdownEditor: React.FC<MarkdownEditorProps> = ({
   const [showPreview, setShowPreview] = React.useState(true);
   const [showToc, setShowToc] = React.useState(false);
   const [showOutline, setShowOutline] = React.useState(false);
+
+  // Ref to track last saved content hash to prevent duplicate saves
+  const lastSavedContentRef = React.useRef<string>('');
   const [sidebarCollapsed, setSidebarCollapsed] = React.useState(false);
+
+  // CSP and image handling
+  const { isCSPBlocking } = useCSPDetection();
 
   // Auto-collapse sidebars based on responsive state
   React.useEffect(() => {
@@ -201,6 +209,48 @@ export const MarkdownEditor: React.FC<MarkdownEditorProps> = ({
     [editorActions]
   );
 
+  // Manual save function with duplicate prevention
+  const handleManualSave = React.useCallback(async () => {
+    if (!editor.markdown || !editor.fileName || !fileStorage.saveFile) {
+      console.warn('Cannot save: missing content, filename, or save function');
+      return;
+    }
+
+    // Create content hash to prevent duplicate saves
+    const currentContentHash = `${editor.fileName}:${
+      editor.markdown.length
+    }:${editor.markdown.slice(0, 100)}`;
+
+    // Skip save if content hasn't actually changed
+    if (lastSavedContentRef.current === currentContentHash) {
+      console.log('Content unchanged, skipping save');
+      return;
+    }
+
+    try {
+      const storageType = fileStorage.isAuthenticated ? 'cloud' : 'local';
+      console.log(`Manual saving file to ${storageType}:`, editor.fileName);
+
+      await fileStorage.saveFile({
+        title: editor.fileName,
+        content: editor.markdown,
+        fileType: 'markdown',
+        tags: [],
+      });
+
+      // Update last saved content hash to prevent duplicates
+      lastSavedContentRef.current = currentContentHash;
+      console.log(
+        `Manual save to ${storageType} successful - Hash: ${currentContentHash.slice(0, 50)}...`
+      );
+
+      // Mark as saved in editor state
+      editorActions.setModified(false);
+    } catch (error) {
+      console.error('Manual save failed:', error);
+    }
+  }, [editor.markdown, editor.fileName, fileStorage, editorActions]);
+
   // Keyboard shortcuts context
   const keyboardContext = React.useMemo(
     () => ({
@@ -211,23 +261,7 @@ export const MarkdownEditor: React.FC<MarkdownEditorProps> = ({
       undo: undoRedo.undo,
       redo: undoRedo.redo,
       newFile: editorActions.newFile,
-      saveFile: async () => {
-        // Manual save functionality
-        if (editor.markdown && editor.fileName && fileStorage.saveFile) {
-          try {
-            console.log('Manual save triggered:', editor.fileName);
-            await fileStorage.saveFile({
-              title: editor.fileName,
-              content: editor.markdown,
-              fileType: 'markdown',
-              tags: [],
-            });
-            console.log('Manual save successful');
-          } catch (error) {
-            console.warn('Manual save failed:', error);
-          }
-        }
-      },
+      saveFile: handleManualSave,
       openFile: () => {
         // TODO: Implement open functionality
       },
@@ -239,9 +273,7 @@ export const MarkdownEditor: React.FC<MarkdownEditorProps> = ({
       dialogActions,
       undoRedo,
       editorActions,
-      editor.markdown,
-      editor.fileName,
-      fileStorage.saveFile,
+      handleManualSave,
     ]
   );
 
@@ -285,38 +317,6 @@ export const MarkdownEditor: React.FC<MarkdownEditorProps> = ({
   const handleToggleOutline = React.useCallback(() => {
     setShowOutline((prev) => !prev);
   }, []);
-
-  // Enhanced auto-save functionality with optimized debouncing
-  React.useEffect(() => {
-    if (!editor.markdown || !editor.fileName || !editor.isModified) return;
-
-    // Increased debounce time from 2s to 8s for better performance
-    const autoSaveTimer = setTimeout(async () => {
-      if (fileStorage.saveFile) {
-        try {
-          const storageType = fileStorage.isAuthenticated ? 'cloud' : 'local';
-          console.log(`Auto-saving file to ${storageType}:`, editor.fileName);
-
-          // Optimistic update - mark as saved immediately for better UX
-          const currentContent = editor.markdown;
-          const currentFileName = editor.fileName;
-
-          await fileStorage.saveFile({
-            title: currentFileName,
-            content: currentContent,
-            fileType: 'markdown',
-            tags: [],
-          });
-
-          console.log(`Auto-save to ${storageType} successful`);
-        } catch (error) {
-          console.warn('Auto-save failed:', error);
-        }
-      }
-    }, 8000); // Optimized: Auto-save after 8 seconds of inactivity
-
-    return () => clearTimeout(autoSaveTimer);
-  }, [editor.markdown, editor.fileName, editor.isModified, fileStorage]);
 
   // Use ref to store latest functions to avoid dependency issues
   const loadFileRef = React.useRef(editorActions.loadFile);
@@ -414,6 +414,12 @@ export const MarkdownEditor: React.FC<MarkdownEditorProps> = ({
           className={className}
           style={style}
         >
+          {/* CSP Notification */}
+          {isCSPBlocking && !settings.zenMode && <CSPNotification className="mx-4 mt-4" />}
+
+          {/* Image Insert Help */}
+          {isCSPBlocking && !settings.zenMode && <ImageInsertHelp className="mx-4 mt-2" />}
+
           {/* Mobile Navigation */}
           {responsive.isMobile && !settings.zenMode && (
             <MobileNav

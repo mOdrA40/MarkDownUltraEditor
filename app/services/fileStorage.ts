@@ -17,6 +17,7 @@ import {
   fileDataToDbInsert,
   handleSupabaseError,
 } from '@/lib/supabase';
+import { compressContent, decompressContent, formatFileSize } from '@/utils/compression';
 import { safeConsole } from '@/utils/console';
 
 // Storage keys for localStorage
@@ -96,6 +97,61 @@ export class HybridFileStorage implements FileStorageService {
     });
   }
 
+  // Generate content hash for duplicate detection
+  private generateContentHash(content: string): string {
+    // Simple hash based on content length and first/last 100 chars
+    const start = content.slice(0, 100);
+    const end = content.slice(-100);
+    return `${content.length}:${start}:${end}`;
+  }
+
+  // Clean up old duplicate files in localStorage
+  cleanupLocalStorage(): void {
+    try {
+      const filesList = this.listLocalFiles();
+      const titleGroups = new Map<string, FileData[]>();
+
+      // Group files by title
+      filesList.forEach((file) => {
+        const existing = titleGroups.get(file.title) || [];
+        existing.push(file);
+        titleGroups.set(file.title, existing);
+      });
+
+      let cleanedCount = 0;
+
+      // For each title group, keep only the most recent file
+      titleGroups.forEach((files) => {
+        if (files.length > 1) {
+          // Sort by updated_at or created_at, keep the most recent
+          files.sort((a, b) => {
+            const dateA = new Date(a.updatedAt || a.createdAt || Date.now()).getTime();
+            const dateB = new Date(b.updatedAt || b.createdAt || Date.now()).getTime();
+            return dateB - dateA; // Most recent first
+          });
+
+          // Remove all but the first (most recent)
+          for (let i = 1; i < files.length; i++) {
+            const fileToRemove = files[i];
+            const fileKey = `${STORAGE_KEYS.FILE_PREFIX}${fileToRemove.id}`;
+            removeStorageItem(fileKey);
+            cleanedCount++;
+          }
+        }
+      });
+
+      if (cleanedCount > 0) {
+        safeConsole.log(`Cleaned up ${cleanedCount} duplicate files from localStorage`);
+
+        // Update the files list
+        const updatedList = this.listLocalFiles();
+        setStorageJSON(STORAGE_KEYS.FILES_LIST, updatedList);
+      }
+    } catch (error) {
+      safeConsole.error('Error cleaning up localStorage:', error);
+    }
+  }
+
   // Cloud operations
   async saveToCloud(file: FileData): Promise<FileData> {
     if (!this.supabaseClient || !this.userId) {
@@ -105,12 +161,34 @@ export class HybridFileStorage implements FileStorageService {
     try {
       safeConsole.log('Saving file to cloud:', file.title);
 
-      // Validate file size
-      if (file.content.length > STORAGE_LIMITS.MAX_FILE_SIZE) {
-        throw new Error(`File size exceeds limit of ${STORAGE_LIMITS.MAX_FILE_SIZE / 1024}KB`);
+      // Compress content for storage optimization
+      const compressionResult = compressContent(file.content);
+      const optimizedFile = {
+        ...file,
+        content: compressionResult.content,
+      };
+
+      // Validate file size (after compression)
+      if (compressionResult.compressedSize > STORAGE_LIMITS.MAX_FILE_SIZE) {
+        throw new Error(
+          `File size exceeds limit of ${STORAGE_LIMITS.MAX_FILE_SIZE / 1024}KB (${formatFileSize(
+            compressionResult.compressedSize
+          )} after compression)`
+        );
       }
 
-      const dbInsert = fileDataToDbInsert(file, this.userId);
+      // Log compression stats
+      if (compressionResult.isCompressed) {
+        safeConsole.log(
+          `Content compressed: ${formatFileSize(
+            compressionResult.originalSize
+          )} → ${formatFileSize(compressionResult.compressedSize)} (${(
+            compressionResult.compressionRatio * 100
+          ).toFixed(1)}%)`
+        );
+      }
+
+      const dbInsert = fileDataToDbInsert(optimizedFile, this.userId);
 
       // Check if file exists (update) or create new
       if (file.id) {
@@ -135,16 +213,35 @@ export class HybridFileStorage implements FileStorageService {
         return dbRowToFileData(data);
       }
 
+      // Enhanced duplicate prevention: Check by title AND content hash
+      const contentHash = this.generateContentHash(optimizedFile.content);
+
       const { data: existingFile } = await this.supabaseClient
         .from('user_files')
-        .select('id, title, updated_at')
+        .select('id, title, content, updated_at')
         .eq('user_id', this.userId)
         .eq('title', file.title)
         .eq('is_deleted', false)
         .single();
 
       if (existingFile) {
-        // File exists - update it
+        const existingContentHash = this.generateContentHash(existingFile.content);
+
+        // If content is identical, skip save
+        if (existingContentHash === contentHash) {
+          safeConsole.log('Content identical, skipping duplicate save:', file.title);
+          const fileData = dbRowToFileData(
+            existingFile as Database['public']['Tables']['user_files']['Row']
+          );
+          // Decompress content if it was compressed
+          const decompressedContent = decompressContent(fileData.content);
+          return {
+            ...fileData,
+            content: decompressedContent,
+          };
+        }
+
+        // File exists with different content - update it
         const { data, error } = await this.supabaseClient
           .from('user_files')
           .update({
@@ -211,7 +308,15 @@ export class HybridFileStorage implements FileStorageService {
       }
 
       safeConsole.log('File loaded from cloud:', data.title);
-      return dbRowToFileData(data);
+      const fileData = dbRowToFileData(data);
+
+      // Decompress content if it was compressed
+      const decompressedContent = decompressContent(fileData.content);
+
+      return {
+        ...fileData,
+        content: decompressedContent,
+      };
     } catch (error) {
       safeConsole.error('Error loading file from cloud:', error);
       throw error;
@@ -277,7 +382,7 @@ export class HybridFileStorage implements FileStorageService {
   }
 
   // Local operations
-  saveToLocal(file: FileData): void {
+  saveToLocal(file: FileData): FileData {
     try {
       safeConsole.log('Saving file to local storage:', file.title);
 
@@ -289,10 +394,49 @@ export class HybridFileStorage implements FileStorageService {
         throw new Error(`Maximum number of files (${STORAGE_LIMITS.MAX_FILES_PER_USER}) reached`);
       }
 
-      // Generate ID if not present
+      // Check for existing file with same title to prevent duplicates
+      const existingFiles = filesList;
+      const existingFile = existingFiles.find((f: FileData) => f.title === file.title);
+
+      if (existingFile) {
+        // Check if content is identical
+        const existingFileData = this.loadFromLocal(existingFile.title);
+        if (existingFileData) {
+          const existingContentHash = this.generateContentHash(existingFileData.content);
+          const newContentHash = this.generateContentHash(file.content);
+
+          if (existingContentHash === newContentHash) {
+            safeConsole.log('Content identical, skipping duplicate local save:', file.title);
+            return existingFileData;
+          }
+        }
+      }
+
+      // Compress content for storage optimization
+      const compressionResult = compressContent(file.content);
+
+      // Use existing ID if updating, or generate new one
       const fileId =
-        file.id || `local_${Date.now()}_${Math.random().toString(36).substring(2, 11)}`;
-      const fileWithId = { ...file, id: fileId };
+        existingFile?.id ||
+        file.id ||
+        `local_${Date.now()}_${Math.random().toString(36).substring(2, 11)}`;
+
+      const fileWithId = {
+        ...file,
+        id: fileId,
+        content: compressionResult.content,
+      };
+
+      // Log compression stats for local storage
+      if (compressionResult.isCompressed) {
+        safeConsole.log(
+          `Local storage compressed: ${formatFileSize(
+            compressionResult.originalSize
+          )} → ${formatFileSize(compressionResult.compressedSize)} (${(
+            compressionResult.compressionRatio * 100
+          ).toFixed(1)}%)`
+        );
+      }
 
       // Save file data
       const fileKey = `${STORAGE_KEYS.FILE_PREFIX}${fileId}`;
@@ -304,6 +448,13 @@ export class HybridFileStorage implements FileStorageService {
       setStorageJSON(STORAGE_KEYS.FILES_LIST, updatedList);
 
       safeConsole.log('File saved to local storage:', file.title);
+
+      // Return the saved file with decompressed content
+      const decompressedContent = decompressContent(fileWithId.content);
+      return {
+        ...fileWithId,
+        content: decompressedContent,
+      };
     } catch (error) {
       safeConsole.error('Error saving file to local storage:', error);
       throw error;
@@ -326,9 +477,16 @@ export class HybridFileStorage implements FileStorageService {
 
       if (fileData) {
         safeConsole.log('File loaded from local storage:', fileData.title);
-      } else {
-        safeConsole.log('File not found in local storage:', fileName);
+
+        // Decompress content if it was compressed
+        const decompressedContent = decompressContent(fileData.content);
+
+        return {
+          ...fileData,
+          content: decompressedContent,
+        };
       }
+      safeConsole.log('File not found in local storage:', fileName);
 
       return fileData;
     } catch (error) {

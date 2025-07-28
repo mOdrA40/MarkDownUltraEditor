@@ -278,6 +278,15 @@ export const safeConsole = {
   },
 
   /**
+   * Warning logging (development only)
+   */
+  warn: (...args: unknown[]) => {
+    if (process.env.NODE_ENV === 'development') {
+      originalConsole.warn(...args);
+    }
+  },
+
+  /**
    * Performance logging (development only)
    */
   perf: (message: string, duration?: number) => {
