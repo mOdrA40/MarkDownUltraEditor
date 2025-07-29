@@ -72,14 +72,18 @@ export const scrollToLineInEditor = (
       // Find editor textarea
       const textarea = document.querySelector('textarea') as HTMLTextAreaElement;
       if (!textarea) {
-        console.warn('Editor textarea tidak ditemukan');
+        import('@/utils/console').then(({ safeConsole }) => {
+          safeConsole.warn('Editor textarea tidak ditemukan');
+        });
         resolve(false);
         return;
       }
 
       const lines = textarea.value.split('\n');
       if (lineNumber < 0 || lineNumber >= lines.length) {
-        console.warn(`Line number ${lineNumber} out of range`);
+        import('@/utils/console').then(({ safeConsole }) => {
+          safeConsole.warn(`Line number ${lineNumber} out of range`);
+        });
         resolve(false);
         return;
       }
@@ -144,7 +148,9 @@ export const scrollToHeading = (
     requestAnimationFrame(() => {
       const element = safeGetElementById(headingId);
       if (!element) {
-        console.warn(`Heading dengan ID "${headingId}" tidak ditemukan`);
+        import('@/utils/console').then(({ safeConsole }) => {
+          safeConsole.warn(`Heading dengan ID "${headingId}" tidak ditemukan`);
+        });
         resolve(false);
         return;
       }
@@ -207,7 +213,9 @@ export const scrollToHeadingGlobal = async (
   // Parse heading info from ID
   const headingInfo = parseHeadingIdToInfo(headingId);
   if (!headingInfo) {
-    console.warn(`Cannot parse heading ID: ${headingId}`);
+    import('@/utils/console').then(({ safeConsole }) => {
+      safeConsole.warn(`Cannot parse heading ID: ${headingId}`);
+    });
     return false;
   }
 
@@ -234,7 +242,11 @@ export const scrollToHeadingGlobal = async (
         }),
       ]);
 
-      console.log(`📜 Dual scroll result: Editor=${editorSuccess}, Preview=${previewSuccess}`);
+      import('@/utils/console').then(({ safeConsole }) => {
+        safeConsole.dev(
+          `📜 Dual scroll result: Editor=${editorSuccess}, Preview=${previewSuccess}`
+        );
+      });
       return editorSuccess || previewSuccess;
     }
 
@@ -244,7 +256,9 @@ export const scrollToHeadingGlobal = async (
         behavior,
         highlight: true,
       });
-      console.log(`📝 Editor scroll result: ${success}`);
+      import('@/utils/console').then(({ safeConsole }) => {
+        safeConsole.dev(`📝 Editor scroll result: ${success}`);
+      });
       return success;
     }
 
@@ -255,12 +269,16 @@ export const scrollToHeadingGlobal = async (
         behavior,
         container: previewPane,
       });
-      console.log(`👁️ Preview scroll result: ${success}`);
+      import('@/utils/console').then(({ safeConsole }) => {
+        safeConsole.dev(`👁️ Preview scroll result: ${success}`);
+      });
       return success;
     }
 
     // Strategy 4: Fallback - try both anyway
-    console.log('🔄 Fallback: Trying both scroll methods');
+    import('@/utils/console').then(({ safeConsole }) => {
+      safeConsole.dev('🔄 Fallback: Trying both scroll methods');
+    });
     const [editorSuccess, previewSuccess] = await Promise.allSettled([
       scrollToLineInEditor(lineNumber, { behavior, highlight: true }),
       scrollToHeading(headingId, { offset, behavior }),
@@ -269,10 +287,14 @@ export const scrollToHeadingGlobal = async (
     const editorResult = editorSuccess.status === 'fulfilled' ? editorSuccess.value : false;
     const previewResult = previewSuccess.status === 'fulfilled' ? previewSuccess.value : false;
 
-    console.log(`🔄 Fallback result: Editor=${editorResult}, Preview=${previewResult}`);
+    import('@/utils/console').then(({ safeConsole }) => {
+      safeConsole.dev(`🔄 Fallback result: Editor=${editorResult}, Preview=${previewResult}`);
+    });
     return editorResult || previewResult;
   } catch (error) {
-    console.error('Error in global scroll:', error);
+    import('@/utils/console').then(({ safeConsole }) => {
+      safeConsole.error('Error in global scroll:', error);
+    });
     return false;
   }
 };

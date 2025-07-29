@@ -142,13 +142,19 @@ export const useAccountActions = (): UseAccountReturn => {
         const cleanupService = createUserCleanupService(supabaseClient);
         const cleanupResult = await cleanupService.cleanupUserData(user.id);
 
-        console.log('User data cleanup result:', cleanupResult);
+        import('@/utils/console').then(({ safeConsole }) => {
+          safeConsole.dev('User data cleanup result:', cleanupResult);
+        });
 
         if (!cleanupResult.success && cleanupResult.errors.length > 0) {
-          console.warn('Some data cleanup errors occurred:', cleanupResult.errors);
+          import('@/utils/console').then(({ safeConsole }) => {
+            safeConsole.warn('Some data cleanup errors occurred:', cleanupResult.errors);
+          });
         }
       } catch (cleanupError) {
-        console.error('Error cleaning up user data:', cleanupError);
+        import('@/utils/console').then(({ safeConsole }) => {
+          safeConsole.error('Error cleaning up user data:', cleanupError);
+        });
         // Continue with account deletion even if cleanup fails
       }
 

@@ -143,7 +143,9 @@ export const loadSettingsFromStorage = (
     const parsed = JSON.parse(stored);
     return sanitizeWritingSettings(parsed, rules);
   } catch (error) {
-    console.warn('Failed to load writing settings from storage:', error);
+    import('@/utils/console').then(({ safeConsole }) => {
+      safeConsole.warn('Failed to load writing settings from storage:', error);
+    });
     return DEFAULT_WRITING_SETTINGS;
   }
 };

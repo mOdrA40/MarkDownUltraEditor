@@ -5,12 +5,12 @@
  * @author Axel Modra
  */
 
-import { Code, FileText } from 'lucide-react';
-import React from 'react';
-import { Button } from '@/components/ui/button';
-import { cn } from '@/lib/utils';
-import type { MobileToolbarProps } from '../types/toolbar.types';
-import { ToolbarButton } from './ToolbarButton';
+import { Code, FileText } from "lucide-react";
+import React from "react";
+import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
+import type { MobileToolbarProps } from "../types/toolbar.types";
+import { ToolbarButton } from "./ToolbarButton";
 
 /**
  * Komponen MobileToolbar
@@ -22,21 +22,28 @@ import { ToolbarButton } from './ToolbarButton';
 export const MobileToolbar: React.FC<MobileToolbarProps> = React.memo(
   ({ formatButtons, onInsertText, className, currentTheme }) => {
     // Pisahkan buttons berdasarkan kategori untuk layout yang lebih baik
-    const headingButtons = formatButtons.filter((btn) => btn.category === 'heading').slice(0, 3);
+    const headingButtons = formatButtons
+      .filter((btn) => btn.category === "heading")
+      .slice(0, 3);
     const formattingButtons = formatButtons
-      .filter((btn) => btn.category === 'formatting')
+      .filter((btn) => btn.category === "formatting")
       .slice(0, 2);
     const contentButtons = formatButtons.filter(
-      (btn) => btn.category === 'content' || btn.category === 'list' || btn.category === 'media'
+      (btn) =>
+        btn.category === "content" ||
+        btn.category === "list" ||
+        btn.category === "media"
     );
 
     // Action untuk code block
     const insertCodeBlock = () => {
-      onInsertText('```javascript\n// Your code here\nconsole.log("Hello World!");\n```');
+      onInsertText(
+        '```javascript\n// Your code here\nfunction greet(name) {\n  return "Hello, " + name + "!";\n}\n```'
+      );
     };
 
     return (
-      <div className={cn('w-full block sm:hidden', className)}>
+      <div className={cn("w-full block sm:hidden", className)}>
         {/* Row 1: Headings (H1, H2, H3) */}
         <div className="grid grid-cols-3 gap-2 mb-3">
           {headingButtons.map((button) => (
@@ -70,7 +77,7 @@ export const MobileToolbar: React.FC<MobileToolbarProps> = React.memo(
           <Button
             variant="outline"
             size="sm"
-            onClick={() => onInsertText('`code`')}
+            onClick={() => onInsertText("`code`")}
             className="h-9 text-xs clean-button toolbar-button-fix prevent-layout-shift"
             title="Inline Code"
             style={currentTheme ? { color: currentTheme.text } : undefined}
@@ -113,4 +120,4 @@ export const MobileToolbar: React.FC<MobileToolbarProps> = React.memo(
 );
 
 // Set display name untuk debugging
-MobileToolbar.displayName = 'MobileToolbar';
+MobileToolbar.displayName = "MobileToolbar";

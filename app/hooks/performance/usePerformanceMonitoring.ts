@@ -143,7 +143,9 @@ export function useFPSMonitoring() {
 
         // Log FPS warnings in development
         if (process.env.NODE_ENV === 'development' && fps.current < 30) {
-          console.warn(`Low FPS detected: ${fps.current}`);
+          import('@/utils/console').then(({ safeConsole }) => {
+            safeConsole.warn(`Low FPS detected: ${fps.current}`);
+          });
         }
       }
 

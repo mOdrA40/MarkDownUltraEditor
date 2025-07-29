@@ -89,7 +89,9 @@ class PerformanceMonitor {
       observer.observe({ entryTypes: ['paint', 'largest-contentful-paint'] });
       this.observers.push(observer);
     } catch (error) {
-      console.warn('Failed to observe paint metrics:', error);
+      import('@/utils/console').then(({ safeConsole }) => {
+        safeConsole.warn('Failed to observe paint metrics:', error);
+      });
     }
   }
 
@@ -115,7 +117,9 @@ class PerformanceMonitor {
       observer.observe({ entryTypes: ['layout-shift'] });
       this.observers.push(observer);
     } catch (error) {
-      console.warn('Failed to observe layout shift:', error);
+      import('@/utils/console').then(({ safeConsole }) => {
+        safeConsole.warn('Failed to observe layout shift:', error);
+      });
     }
   }
 
@@ -138,7 +142,9 @@ class PerformanceMonitor {
       observer.observe({ entryTypes: ['first-input'] });
       this.observers.push(observer);
     } catch (error) {
-      console.warn('Failed to observe first input delay:', error);
+      import('@/utils/console').then(({ safeConsole }) => {
+        safeConsole.warn('Failed to observe first input delay:', error);
+      });
     }
   }
 
@@ -164,7 +170,9 @@ class PerformanceMonitor {
       observer.observe({ entryTypes: ['navigation'] });
       this.observers.push(observer);
     } catch (error) {
-      console.warn('Failed to observe navigation timing:', error);
+      import('@/utils/console').then(({ safeConsole }) => {
+        safeConsole.warn('Failed to observe navigation timing:', error);
+      });
     }
   }
 

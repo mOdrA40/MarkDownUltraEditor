@@ -78,7 +78,9 @@ export class MemoryManager {
       try {
         cleanup();
       } catch (error) {
-        console.warn('Cleanup function failed:', error);
+        import('@/utils/console').then(({ safeConsole }) => {
+          safeConsole.warn('Cleanup function failed:', error);
+        });
       }
     });
     this.cleanupFunctions.clear();

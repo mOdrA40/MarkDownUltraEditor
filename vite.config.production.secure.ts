@@ -9,116 +9,124 @@ config();
 export default defineConfig({
   plugins: [reactRouter(), tsconfigPaths()],
 
-  // Production-specific configuration
-  mode: 'production',
-
+  // Production-specific optimizations
   build: {
-    // Security: Disable source maps in production
-    sourcemap: false,
-
-    // Performance: Enable minification
+    // Minify for production
     minify: 'terser',
 
-    // Security: Remove console statements in production
-    terserOptions: {
-      compress: {
-        drop_console: true,
-        drop_debugger: true,
-        pure_funcs: ['console.log', 'console.debug', 'console.info'],
-      },
-      mangle: {
-        safari10: true,
-      },
-    },
+    // Disable source maps for security
+    sourcemap: false,
 
-    // Performance: Optimize chunk splitting
+    // Optimize chunks
     rollupOptions: {
       output: {
+        // Manual chunk splitting for better caching
         manualChunks: {
-          vendor: ['react', 'react-dom'],
-          router: ['react-router', '@react-router/dev'],
-          ui: ['@radix-ui/react-dialog', '@radix-ui/react-dropdown-menu'],
-          editor: ['@uiw/react-md-editor', '@uiw/react-markdown-preview'],
+          vendor: ['react', 'react-dom', 'react-router'],
+          ui: [
+            '@radix-ui/react-accordion',
+            '@radix-ui/react-dialog',
+            '@radix-ui/react-dropdown-menu',
+          ],
+          editor: ['react-markdown', 'rehype-highlight', 'remark-gfm'],
           auth: ['@clerk/react-router'],
           database: ['@supabase/supabase-js'],
-          monitoring: ['@sentry/react'],
+          monitoring: ['@sentry/react', '@sentry/integrations'],
         },
+
+        // Clean file names without hashes for better compression
+        entryFileNames: 'assets/[name]-[hash].js',
+        chunkFileNames: 'assets/[name]-[hash].js',
+        assetFileNames: 'assets/[name]-[hash].[ext]',
       },
+
+      // External dependencies that shouldn't be bundled
+      external: [],
     },
 
-    // Security: Set appropriate target
+    // Target modern browsers for better optimization
     target: 'es2020',
 
-    // Performance: Optimize asset handling
-    assetsInlineLimit: 4096,
+    // Optimize CSS
+    cssCodeSplit: true,
 
-    // Security: Ensure proper file naming
+    // Reduce bundle size
     chunkSizeWarningLimit: 1000,
   },
 
-  // Production server configuration
-  server: {
-    port: 5174,
-    strictPort: true,
-    host: false, // Security: Don't expose to external hosts
-  },
-
-  // Production preview configuration
-  preview: {
-    port: 4173,
-    strictPort: true,
-    host: false, // Security: Don't expose to external hosts
-  },
-
-  // Environment variables for production
+  // Production environment variables
   define: {
-    // Only expose necessary environment variables
+    'process.env.NODE_ENV': JSON.stringify('production'),
     'process.env.VITE_CLERK_PUBLISHABLE_KEY': JSON.stringify(
       process.env.VITE_CLERK_PUBLISHABLE_KEY
     ),
     'process.env.VITE_SUPABASE_URL': JSON.stringify(process.env.VITE_SUPABASE_URL),
     'process.env.VITE_SUPABASE_ANON_KEY': JSON.stringify(process.env.VITE_SUPABASE_ANON_KEY),
     'process.env.VITE_SENTRY_DSN': JSON.stringify(process.env.VITE_SENTRY_DSN),
-    'process.env.NODE_ENV': JSON.stringify('production'),
 
-    // Security: Disable debug features
-    'process.env.VITE_DEBUG': JSON.stringify('false'),
-    'process.env.VITE_VERBOSE_LOGGING': JSON.stringify('false'),
-    'process.env.VITE_GENERATE_SOURCEMAP': JSON.stringify('false'),
-
-    // Performance: Optimize for production
+    // Disable development features
     __DEV__: false,
-    __PROD__: true,
+    'import.meta.env.DEV': false,
+    'import.meta.env.PROD': true,
   },
 
-  // Security: Configure environment prefix
+  // Environment prefix
   envPrefix: 'VITE_',
 
-  // Performance: Optimize dependencies
+  // Server configuration for preview
+  preview: {
+    port: 4173,
+    strictPort: true,
+    host: true,
+  },
+
+  // Optimize dependencies
   optimizeDeps: {
-    include: ['react', 'react-dom', 'react-router', '@clerk/react-router', '@supabase/supabase-js'],
+    include: [
+      'react',
+      'react-dom',
+      'react-router',
+      '@clerk/react-router',
+      '@supabase/supabase-js',
+      '@sentry/react',
+    ],
     exclude: [
       // Exclude development-only dependencies
-      '@testing-library/react',
-      '@testing-library/jest-dom',
-      'vitest',
     ],
   },
 
-  // Security: Configure CSP and other security headers
-  // Note: These should also be configured at the server/CDN level
-  html: {
-    cspNonce: 'VITE_NONCE',
+  // Security headers for development server
+  server: {
+    headers: {
+      'X-Content-Type-Options': 'nosniff',
+      'X-Frame-Options': 'DENY',
+      'X-XSS-Protection': '1; mode=block',
+    },
   },
 
-  // Performance: Configure asset handling
-  assetsInclude: ['**/*.md', '**/*.txt'],
+  // CSS configuration
+  css: {
+    // Minimize CSS in production
+    postcss: {
+      plugins: [
+        // Add any PostCSS plugins here
+      ],
+    },
+  },
 
-  // Security: Prevent information disclosure
-  logLevel: 'warn', // Reduce log verbosity in production
+  // Experimental features
+  experimental: {
+    // Enable any experimental features if needed
+  },
 
-  // Performance: Configure worker handling
+  // Worker configuration
   worker: {
     format: 'es',
+  },
+
+  // JSON configuration
+  json: {
+    namedExports: true,
+    stringify: false,
   },
 });

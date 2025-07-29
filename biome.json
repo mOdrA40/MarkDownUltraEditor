@@ -184,11 +184,7 @@
       }
     },
     {
-      "includes": [
-        "**/*.config.{js,ts}",
-        "**/vite.config.ts",
-        "**/tailwind.config.ts"
-      ],
+      "includes": ["**/*.config.{js,ts}", "**/vite.config.ts", "**/tailwind.config.ts"],
       "linter": {
         "rules": {
           "style": {

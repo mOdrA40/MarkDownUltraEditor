@@ -129,7 +129,9 @@ export const getStorageItem = (key: string): string | null => {
     if (!isStorageAvailable()) return null;
     return localStorage.getItem(key);
   } catch (error) {
-    console.warn(`Failed to get item from localStorage: ${key}`, error);
+    import('@/utils/console').then(({ safeConsole }) => {
+      safeConsole.warn(`Failed to get item from localStorage: ${key}`, error);
+    });
     return null;
   }
 };
@@ -144,7 +146,9 @@ export const setStorageItem = (key: string, value: string): boolean => {
     localStorage.setItem(key, value);
     return true;
   } catch (error) {
-    console.warn(`Failed to set item in localStorage: ${key}`, error);
+    import('@/utils/console').then(({ safeConsole }) => {
+      safeConsole.warn(`Failed to set item in localStorage: ${key}`, error);
+    });
     return false;
   }
 };
@@ -159,7 +163,9 @@ export const removeStorageItem = (key: string): boolean => {
     localStorage.removeItem(key);
     return true;
   } catch (error) {
-    console.warn(`Failed to remove item from localStorage: ${key}`, error);
+    import('@/utils/console').then(({ safeConsole }) => {
+      safeConsole.warn(`Failed to remove item from localStorage: ${key}`, error);
+    });
     return false;
   }
 };
@@ -174,7 +180,9 @@ export const getStorageJSON = <T>(key: string, defaultValue?: T): T | null => {
     if (item === null) return defaultValue || null;
     return JSON.parse(item) as T;
   } catch (error) {
-    console.warn(`Failed to parse JSON from localStorage: ${key}`, error);
+    import('@/utils/console').then(({ safeConsole }) => {
+      safeConsole.warn(`Failed to parse JSON from localStorage: ${key}`, error);
+    });
     return defaultValue || null;
   }
 };
@@ -188,7 +196,9 @@ export const setStorageJSON = <T>(key: string, value: T): boolean => {
     const jsonString = JSON.stringify(value);
     return setStorageItem(key, jsonString);
   } catch (error) {
-    console.warn(`Failed to stringify JSON for localStorage: ${key}`, error);
+    import('@/utils/console').then(({ safeConsole }) => {
+      safeConsole.warn(`Failed to stringify JSON for localStorage: ${key}`, error);
+    });
     return false;
   }
 };

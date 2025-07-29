@@ -131,7 +131,9 @@ export const initializeSecurity = (config?: {
     ); // Cleanup every hour
   }
 
-  console.log('✅ Security system initialized successfully');
+  import('@/utils/console').then(({ safeConsole }) => {
+    safeConsole.dev('✅ Security system initialized successfully');
+  });
 
   return {
     monitor: securityMonitor,

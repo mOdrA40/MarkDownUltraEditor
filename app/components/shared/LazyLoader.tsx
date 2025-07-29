@@ -152,11 +152,19 @@ export const usePreloadComponent = () => {
     // Preload on idle or after a delay
     if ('requestIdleCallback' in window) {
       requestIdleCallback(() => {
-        componentLoader().catch(console.error);
+        componentLoader().catch((error) => {
+          import('@/utils/console').then(({ safeConsole }) => {
+            safeConsole.error('Component preload error:', error);
+          });
+        });
       });
     } else {
       setTimeout(() => {
-        componentLoader().catch(console.error);
+        componentLoader().catch((error) => {
+          import('@/utils/console').then(({ safeConsole }) => {
+            safeConsole.error('Component preload error:', error);
+          });
+        });
       }, 100);
     }
   }, []);

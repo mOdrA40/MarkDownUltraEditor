@@ -24,7 +24,9 @@
     "clean": "rm -rf build dist .react-router node_modules/.cache",
     "production-check": "node scripts/production-check.js",
     "pre-deploy": "bun run production-check && bun run build:secure",
-    "security-audit": "npm audit && bun run production-check"
+    "security-audit": "npm audit && bun run production-check",
+    "console-audit": "node scripts/production-check.js --console-only",
+    "fix-console": "node scripts/fix-remaining-console.js"
   },
   "dependencies": {
     "@clerk/react-router": "^1.6.3",

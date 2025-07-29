@@ -252,9 +252,9 @@ export const MarkdownEditor: React.FC<MarkdownEditorProps> = ({
 
       // Update last saved content hash to prevent duplicates
       lastSavedContentRef.current = currentContentHash;
-      console.log(
-        `Manual save to ${storageType} successful - Hash: ${currentContentHash.slice(0, 50)}...`
-      );
+      import('@/utils/console').then(({ safeConsole }) => {
+        safeConsole.dev(`Manual save to ${storageType} successful`);
+      });
 
       // Mark as saved in editor state
       editorActions.setModified(false);
@@ -350,39 +350,46 @@ export const MarkdownEditor: React.FC<MarkdownEditorProps> = ({
     if (urlFile && fileStorage.isInitialized && fileStorage.storageService) {
       const loadFileFromStorage = async () => {
         try {
-          console.log('Loading file from storage:', urlFile);
-          console.log('Storage service initialized:', fileStorage.isInitialized);
-          console.log('Storage service authenticated:', fileStorage.isAuthenticated);
+          import('@/utils/console').then(({ safeConsole }) => {
+            safeConsole.dev('Loading file from storage:', urlFile);
+            safeConsole.dev('Storage service initialized:', fileStorage.isInitialized);
+            safeConsole.dev('Storage service authenticated:', fileStorage.isAuthenticated);
+          });
 
           // Wait a bit more to ensure service is fully ready
           await new Promise((resolve) => setTimeout(resolve, 200));
 
           const fileData = await fileStorage.loadFile(urlFile);
           if (fileData) {
-            console.log(
-              'File loaded from storage:',
-              fileData.title,
-              'content length:',
-              fileData.content.length
-            );
+            import('@/utils/console').then(({ safeConsole }) => {
+              safeConsole.dev('File loaded from storage successfully');
+            });
             (
               loadFileRef.current as (content: string, name: string, bypassDialog?: boolean) => void
             )(fileData.content, fileData.title, true);
 
             // Clear URL parameter after successful file loading
-            console.log('File loaded successfully, clearing URL parameter');
+            import('@/utils/console').then(({ safeConsole }) => {
+              safeConsole.dev('File loaded successfully, clearing URL parameter');
+            });
             setSearchParams({}, { replace: true });
           } else {
-            console.warn('File not found in storage:', urlFile);
+            import('@/utils/console').then(({ safeConsole }) => {
+              safeConsole.warn('File not found in storage');
+            });
             // If file not found and user is authenticated, show error
             if (fileStorage.isAuthenticated) {
-              console.error('File not found in cloud storage:', urlFile);
+              import('@/utils/console').then(({ safeConsole }) => {
+                safeConsole.error('File not found in cloud storage');
+              });
             }
             // Clear URL parameter even if file not found
             setSearchParams({}, { replace: true });
           }
         } catch (error) {
-          console.error('Error loading file from storage:', error);
+          import('@/utils/console').then(({ safeConsole }) => {
+            safeConsole.error('Error loading file from storage:', error);
+          });
           // Clear URL parameter on error
           setSearchParams({}, { replace: true });
         } finally {
@@ -394,7 +401,9 @@ export const MarkdownEditor: React.FC<MarkdownEditorProps> = ({
       setIsLoadingFromUrl(false);
     } else if (urlFile && !fileStorage.isInitialized) {
       // Keep loading state if we have a file to load but service isn't ready
-      console.log('Waiting for storage service to initialize...');
+      import('@/utils/console').then(({ safeConsole }) => {
+        safeConsole.dev('Waiting for storage service to initialize...');
+      });
     }
   }, [
     urlFile,
