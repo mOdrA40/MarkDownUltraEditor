@@ -57,7 +57,9 @@ export const getBrowserFingerprint = (): string => {
     // Generate a consistent hash
     return simpleHash(fingerprintData).toString(36);
   } catch (error) {
-    console.warn('Error generating browser fingerprint:', error);
+    import('@/utils/console').then(({ safeConsole }) => {
+      safeConsole.warn('Error generating browser fingerprint:', error);
+    });
     // Fallback to a simpler fingerprint
     return simpleHash(
       `${navigator.userAgent || 'unknown'}|${window.screen?.width || 0}x${
@@ -89,7 +91,9 @@ export const getDeviceInfo = () => {
       device: result.device.type || 'Desktop',
     };
   } catch (error) {
-    console.warn('Error parsing user agent:', error);
+    import('@/utils/console').then(({ safeConsole }) => {
+      safeConsole.warn('Error parsing user agent:', error);
+    });
     return {
       browser: 'Unknown',
       os: 'Unknown',

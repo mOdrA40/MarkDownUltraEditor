@@ -379,7 +379,9 @@ export const secureStorage = {
       const dataToStore = encrypt ? encryptData(value, key).encrypted : value;
       localStorage.setItem(key, dataToStore);
     } catch (error) {
-      console.error('Failed to store data securely:', error);
+      import('@/utils/console').then(({ safeConsole }) => {
+        safeConsole.error('Failed to store data securely:', error);
+      });
     }
   },
 
@@ -392,7 +394,9 @@ export const secureStorage = {
 
       return decrypt ? decryptData(storedData, key, '', '') : storedData;
     } catch (error) {
-      console.error('Failed to retrieve data securely:', error);
+      import('@/utils/console').then(({ safeConsole }) => {
+        safeConsole.error('Failed to retrieve data securely:', error);
+      });
       return null;
     }
   },

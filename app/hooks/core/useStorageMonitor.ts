@@ -58,7 +58,21 @@ export const useStorageMonitor = (
     autoCleanup = true,
   } = options;
 
-  const [storageInfo, setStorageInfo] = useState<StorageInfo>(() => getStorageInfo());
+  const [storageInfo, setStorageInfo] = useState<StorageInfo>(() => {
+    // Return default values during SSR to prevent hydration mismatch
+    if (typeof window === 'undefined') {
+      return {
+        used: 0,
+        available: 5 * 1024 * 1024, // 5MB
+        total: 5 * 1024 * 1024,
+        usedPercentage: 0,
+        usedFormatted: '0 Bytes',
+        availableFormatted: '5 MB',
+        totalFormatted: '5 MB',
+      };
+    }
+    return getStorageInfo();
+  });
 
   /**
    * Refresh storage information
@@ -67,6 +81,13 @@ export const useStorageMonitor = (
     const info = getStorageInfo();
     setStorageInfo(info);
   }, []);
+
+  // Update storage info after hydration to prevent mismatch
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      refreshInfo();
+    }
+  }, [refreshInfo]);
 
   /**
    * Check if storage has enough space for new data
@@ -84,10 +105,14 @@ export const useStorageMonitor = (
       const cleanedBytes = cleanupStorage(preserveKeys);
       refreshInfo();
 
-      console.log(`🧹 Storage cleanup completed: ${formatBytes(cleanedBytes)} freed`);
+      import('@/utils/console').then(({ safeConsole }) => {
+        safeConsole.dev(`🧹 Storage cleanup completed: ${formatBytes(cleanedBytes)} freed`);
+      });
       return cleanedBytes;
     } catch (error) {
-      console.error('Storage cleanup failed:', error);
+      import('@/utils/console').then(({ safeConsole }) => {
+        safeConsole.error('Storage cleanup failed:', error);
+      });
       return 0;
     }
   }, [preserveKeys, refreshInfo]);
@@ -100,9 +125,11 @@ export const useStorageMonitor = (
 
     const info = getStorageInfo();
     if (info.usedPercentage >= cleanupThreshold) {
-      console.log(
-        `⚠️ Storage threshold reached (${info.usedPercentage.toFixed(1)}%), triggering cleanup...`
-      );
+      import('@/utils/console').then(({ safeConsole }) => {
+        safeConsole.dev(
+          `⚠️ Storage threshold reached (${info.usedPercentage.toFixed(1)}%), triggering cleanup...`
+        );
+      });
       await triggerCleanup();
     }
   }, [autoCleanup, cleanupThreshold, triggerCleanup]);

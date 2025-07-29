@@ -605,7 +605,7 @@ class MainApp {
   }
 
   init() {
-    console.log('Application initialized');
+    import('@/utils/console').then(({ safeConsole }) => { safeConsole.dev('Application initialized'); });;
     this.component.render();
   }
 }
@@ -649,7 +649,7 @@ export class Component {
 
   render() {
     // Implementation details
-    console.log('Component rendered with options:', this.options);
+    import('@/utils/console').then(({ safeConsole }) => { safeConsole.dev('Component rendered with options:', this.options); });;
   }
 
   update(newData) {
@@ -697,7 +697,7 @@ Now let's add some advanced functionality:
 \`\`\`javascript
 class ErrorHandler {
   static handle(error, context = '') {
-    console.error(\`Error in \${context}:\`, error);
+    import('@/utils/console').then(({ safeConsole }) => { safeConsole.error(); });console.error(\`Error in \${context}:\`, error);
 
     // Log to external service in production
     if (process.env.NODE_ENV === 'production') {
@@ -2802,7 +2802,7 @@ await app.start();
 
 // Use the API
 const result = await app.process(data);
-console.log(result);
+import('@/utils/console').then(({ safeConsole }) => { safeConsole.dev(result); });;
 \`\`\`
 
 ## 📚 API Reference

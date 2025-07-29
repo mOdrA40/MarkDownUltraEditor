@@ -286,7 +286,9 @@ export const useFocusManagement = (
         try {
           savedFocusRef.current.focus();
         } catch (error) {
-          console.warn('Failed to restore focus on unmount:', error);
+          import('@/utils/console').then(({ safeConsole }) => {
+            safeConsole.warn('Failed to restore focus on unmount:', error);
+          });
         }
       }
     };

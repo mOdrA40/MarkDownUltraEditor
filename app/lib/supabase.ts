@@ -124,13 +124,14 @@ export const createClerkSupabaseClient = (
     accessToken: async () => {
       try {
         const token = await getToken();
-        console.log(
-          '🔍 DEBUG - Native accessToken called:',
-          token ? '✅ Token exists' : '❌ No token'
-        );
+        import('@/utils/console').then(({ safeConsole }) => {
+          safeConsole.dev('Native accessToken called:', token ? '✅ Token exists' : '❌ No token');
+        });
         return token;
       } catch (error) {
-        console.error('Error getting token in accessToken():', error);
+        import('@/utils/console').then(({ safeConsole }) => {
+          safeConsole.error('Error getting token in accessToken():', error);
+        });
         return null;
       }
     },
@@ -141,7 +142,9 @@ export const useSupabase = (): SupabaseClient<Database> | null => {
   const { isSignedIn } = useAuth();
 
   if (!isSignedIn) {
-    console.log('User not signed in, returning base Supabase client');
+    import('@/utils/console').then(({ safeConsole }) => {
+      safeConsole.dev('User not signed in, returning base Supabase client');
+    });
     return supabaseClient; // Return base client for non-authenticated users
   }
 
@@ -157,21 +160,31 @@ export const getAuthenticatedSupabaseClient = async (
   getToken: () => Promise<string | null>
 ): Promise<SupabaseClient<Database> | null> => {
   try {
-    console.log('Getting authenticated Supabase client with Native Third Party Auth (NEW METHOD)');
+    import('@/utils/console').then(({ safeConsole }) => {
+      safeConsole.dev('Getting authenticated Supabase client with Native Third Party Auth');
+    });
 
     // Test if we can get a token
     const token = await getToken();
-    console.log('🔍 DEBUG - Token test:', token ? '✅ Token available' : '❌ No token');
+    import('@/utils/console').then(({ safeConsole }) => {
+      safeConsole.dev('Token test:', token ? '✅ Token available' : '❌ No token');
+    });
 
     if (!token) {
-      console.warn('No Clerk token available, using base client');
+      import('@/utils/console').then(({ safeConsole }) => {
+        safeConsole.warn('No Clerk token available, using base client');
+      });
       return supabaseClient;
     }
 
-    console.log('✓ Creating authenticated client with native accessToken()');
+    import('@/utils/console').then(({ safeConsole }) => {
+      safeConsole.dev('✓ Creating authenticated client with native accessToken()');
+    });
     return createClerkSupabaseClient(getToken);
   } catch (error) {
-    console.error('Error getting authenticated Supabase client:', error);
+    import('@/utils/console').then(({ safeConsole }) => {
+      safeConsole.error('Error getting authenticated Supabase client:', error);
+    });
     return supabaseClient; // Fallback to base client
   }
 };
@@ -184,14 +197,20 @@ export const testSupabaseConnection = async (): Promise<boolean> => {
     const { error } = await supabaseClient.from('user_files').select('count').limit(1);
 
     if (error) {
-      console.error('Supabase connection test failed:', error);
+      import('@/utils/console').then(({ safeConsole }) => {
+        safeConsole.error('Supabase connection test failed:', error);
+      });
       return false;
     }
 
-    console.log('Supabase connection test successful');
+    import('@/utils/console').then(({ safeConsole }) => {
+      safeConsole.dev('Supabase connection test successful');
+    });
     return true;
   } catch (error) {
-    console.error('Supabase connection test error:', error);
+    import('@/utils/console').then(({ safeConsole }) => {
+      safeConsole.error('Supabase connection test error:', error);
+    });
     return false;
   }
 };
@@ -200,7 +219,7 @@ export const testSupabaseConnection = async (): Promise<boolean> => {
 export { supabaseClient as supabase };
 
 /**
- * Utility function to handle Supabase errors
+ * Utility function to handle Supabase errors securely
  */
 export const handleSupabaseError = (error: unknown, operation: string): void => {
   const errorObj = error as {
@@ -209,14 +228,30 @@ export const handleSupabaseError = (error: unknown, operation: string): void => 
     hint?: string;
     code?: string;
   };
-  import('@/utils/console').then(({ safeConsole }) => {
-    safeConsole.error(`Supabase ${operation} error:`, {
-      message: errorObj?.message,
-      details: errorObj?.details,
-      hint: errorObj?.hint,
-      code: errorObj?.code,
+
+  // Sanitize error details to prevent information disclosure
+  const sanitizedError = {
+    message: errorObj?.message?.replace(/\b\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}\b/g, '[IP]'), // Remove IP addresses
+    code: errorObj?.code,
+    operation,
+    timestamp: new Date().toISOString(),
+  };
+
+  // Only log detailed information in development
+  if (process.env.NODE_ENV === 'development') {
+    import('@/utils/console').then(({ safeConsole }) => {
+      safeConsole.error(`Supabase ${operation} error:`, {
+        ...sanitizedError,
+        details: errorObj?.details,
+        hint: errorObj?.hint,
+      });
     });
-  });
+  } else {
+    // In production, log minimal information
+    import('@/utils/console').then(({ safeConsole }) => {
+      safeConsole.error('Supabase operation failed:', sanitizedError);
+    });
+  }
 };
 
 /**

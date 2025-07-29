@@ -20,7 +20,9 @@ export const preferencesUtils = {
         return JSON.parse(saved);
       }
     } catch (error) {
-      console.warn('Failed to parse saved preferences:', error);
+      import('@/utils/console').then(({ safeConsole }) => {
+        safeConsole.warn('Failed to parse saved preferences:', error);
+      });
     }
     return {};
   },
@@ -34,7 +36,9 @@ export const preferencesUtils = {
       localStorage.setItem(STORAGE_KEYS.PREFERENCES, JSON.stringify(appPrefs));
       return true;
     } catch (error) {
-      console.error('Failed to save preferences:', error);
+      import('@/utils/console').then(({ safeConsole }) => {
+        safeConsole.error('Failed to save preferences:', error);
+      });
       return false;
     }
   },
@@ -90,7 +94,9 @@ export const preferencesUtils = {
         return preferencesUtils.mergeWithDefaults(data.preferences);
       }
     } catch (error) {
-      console.error('Failed to import preferences:', error);
+      import('@/utils/console').then(({ safeConsole }) => {
+        safeConsole.error('Failed to import preferences:', error);
+      });
     }
     return null;
   },

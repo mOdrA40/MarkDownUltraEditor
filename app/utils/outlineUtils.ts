@@ -83,7 +83,9 @@ export const handleOutlineItemClick = async (
         { priority: 'polite' }
       );
     } else if (!success) {
-      console.warn(`Failed to scroll to heading: ${headingId}`);
+      import('@/utils/console').then(({ safeConsole }) => {
+        safeConsole.warn(`Failed to scroll to heading: ${headingId}`);
+      });
       // Fallback: try to find element and scroll manually
       const element = document.getElementById(headingId);
       if (element) {
@@ -95,7 +97,9 @@ export const handleOutlineItemClick = async (
       }
     }
   } catch (error) {
-    console.error('Error scrolling to heading:', error);
+    import('@/utils/console').then(({ safeConsole }) => {
+      safeConsole.error('Error scrolling to heading:', error);
+    });
   }
 };
 

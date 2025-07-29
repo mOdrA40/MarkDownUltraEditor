@@ -6,7 +6,9 @@ export default function SignUpPage() {
 
   useEffect(() => {
     // Redirect to home - sign up should only be accessible via modal
-    console.log('Sign-up route accessed directly, redirecting to home');
+    import('@/utils/console').then(({ safeConsole }) => {
+      safeConsole.dev('Sign-up route accessed directly, redirecting to home');
+    });
     navigate('/', { replace: true });
   }, [navigate]);
 

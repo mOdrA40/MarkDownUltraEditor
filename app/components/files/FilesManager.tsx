@@ -178,7 +178,9 @@ export const FilesManager: React.FC = () => {
     try {
       await exportAllFiles();
     } catch (error) {
-      console.error('Error exporting files:', error);
+      import('@/utils/console').then(({ safeConsole }) => {
+        safeConsole.error('Error exporting files:', error);
+      });
     }
   };
 

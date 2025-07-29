@@ -93,14 +93,18 @@ export const useEditorState = (
    * Create a new file
    */
   const handleNewFile = useCallback(() => {
-    console.log('handleNewFile called - isModified:', isModified);
+    import('@/utils/console').then(({ safeConsole }) => {
+      safeConsole.dev('handleNewFile called - isModified:', isModified);
+    });
 
     if (isModified) {
       const confirmed = window.confirm(
         'You have unsaved changes. Are you sure you want to create a new file?'
       );
       if (!confirmed) {
-        console.log('User cancelled new file creation');
+        import('@/utils/console').then(({ safeConsole }) => {
+          safeConsole.dev('User cancelled new file creation');
+        });
         return;
       }
     }
@@ -109,8 +113,12 @@ export const useEditorState = (
     const newFileContent = '';
     const newFileName = 'untitled.md';
 
-    console.log('Creating new file with content:', newFileContent);
-    console.log('Setting filename to:', newFileName);
+    import('@/utils/console').then(({ safeConsole }) => {
+      safeConsole.dev('Creating new file with content:', newFileContent);
+    });
+    import('@/utils/console').then(({ safeConsole }) => {
+      safeConsole.dev('Setting filename to:', newFileName);
+    });
 
     // Clear history first with the new content to prevent race conditions
     clearHistory(newFileContent);
@@ -126,7 +134,9 @@ export const useEditorState = (
         localStorage.setItem(STORAGE_KEYS.CONTENT, newFileContent);
         localStorage.setItem(STORAGE_KEYS.FILE_NAME, newFileName);
       } catch (error) {
-        console.warn('Failed to save to localStorage:', error);
+        import('@/utils/console').then(({ safeConsole }) => {
+          safeConsole.warn('Failed to save to localStorage:', error);
+        });
       }
     }
 
@@ -135,7 +145,9 @@ export const useEditorState = (
       description: 'Ready to start writing!',
     });
 
-    console.log('New file created successfully');
+    import('@/utils/console').then(({ safeConsole }) => {
+      safeConsole.dev('New file created successfully');
+    });
   }, [isModified, setMarkdown, clearHistory, toast]);
 
   /**
@@ -152,7 +164,9 @@ export const useEditorState = (
 
       // Debug logging (development only)
       if (process.env.NODE_ENV === 'development') {
-        console.log('Loading file:', name, 'with content length:', content.length);
+        import('@/utils/console').then(({ safeConsole }) => {
+          safeConsole.dev('Loading file:', name, 'with content length:', content.length);
+        });
       }
 
       // Clear history first with the new content to prevent race conditions
@@ -176,9 +190,13 @@ export const useEditorState = (
           // Always update current editor state in localStorage for editor functionality
           localStorage.setItem(STORAGE_KEYS.CONTENT, content);
           localStorage.setItem(STORAGE_KEYS.FILE_NAME, name);
-          console.log('Updated editor state in localStorage:', name);
+          import('@/utils/console').then(({ safeConsole }) => {
+            safeConsole.dev('Updated editor state in localStorage:', name);
+          });
         } catch (error) {
-          console.warn('Failed to update localStorage:', error);
+          import('@/utils/console').then(({ safeConsole }) => {
+            safeConsole.warn('Failed to update localStorage:', error);
+          });
         }
       }
 
@@ -187,7 +205,9 @@ export const useEditorState = (
         description: `${name} has been loaded successfully.`,
       });
 
-      console.log('File loaded successfully:', name);
+      import('@/utils/console').then(({ safeConsole }) => {
+        safeConsole.dev('File loaded successfully:', name);
+      });
     },
     [isModified, setMarkdown, clearHistory, toast]
   );

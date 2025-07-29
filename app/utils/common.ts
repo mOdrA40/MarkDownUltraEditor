@@ -374,9 +374,25 @@ export const logError = (
 ): void => {
   const errorObj = error instanceof Error ? error : new Error(String(error));
 
+  // Sanitize stack trace to remove sensitive paths
+  const sanitizedStack = errorObj.stack
+    ? errorObj.stack
+        .split('\n')
+        .map((line) => {
+          // Remove absolute paths and keep only relative paths
+          return line
+            .replace(/file:\/\/\/[^/]+/g, 'file:///')
+            .replace(/at [^(]*\(/g, 'at (')
+            .replace(/\([^)]*node_modules[^)]*\)/g, '(node_modules)')
+            .replace(/\([^)]*\.vite[^)]*\)/g, '(.vite)');
+        })
+        .slice(0, 10) // Limit stack trace depth
+        .join('\n')
+    : undefined;
+
   const logData = {
     message: errorObj.message,
-    stack: errorObj.stack,
+    stack: process.env.NODE_ENV === 'development' ? sanitizedStack : undefined,
     context,
     timestamp: new Date().toISOString(),
     ...additionalData,
@@ -385,7 +401,12 @@ export const logError = (
   if (process.env.NODE_ENV === 'development') {
     safeConsole.error(`Error in ${context}:`, logData);
   } else {
-    safeConsole.error('Application error:', logData);
+    // In production, only log essential information
+    safeConsole.error('Application error:', {
+      message: errorObj.message,
+      context,
+      timestamp: logData.timestamp,
+    });
   }
 };
 

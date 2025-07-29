@@ -41,11 +41,15 @@ export const useTemplateActions = (options: TemplateSelectionOptions): UseTempla
     (template: DocumentTemplate) => {
       // Debug logging (development only)
       if (process.env.NODE_ENV === 'development') {
-        console.log(
-          'useTemplateActions: handleSelectTemplate called with template:',
-          template.name
-        );
-        console.log('useTemplateActions: template content length:', template.content.length);
+        import('@/utils/console').then(({ safeConsole }) => {
+          safeConsole.dev(
+            'useTemplateActions: handleSelectTemplate called with template:',
+            template.name
+          );
+        });
+        import('@/utils/console').then(({ safeConsole }) => {
+          safeConsole.dev('useTemplateActions: template content length:', template.content.length);
+        });
       }
 
       setSelectedTemplate(template);

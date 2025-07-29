@@ -72,7 +72,9 @@ export const clearToastTimeout = (toastId: string): void => {
  */
 export const validateToastInput = (props: unknown): boolean => {
   if (!props || typeof props !== 'object') {
-    console.warn('Toast props must be an object');
+    import('@/utils/console').then(({ safeConsole }) => {
+      safeConsole.warn('Toast props must be an object');
+    });
     return false;
   }
 

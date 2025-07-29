@@ -32,14 +32,18 @@ export const DocumentTemplates: React.FC<DocumentTemplatesProps> = ({
   // Template actions logic dengan callback yang langsung menutup dialog
   const handleTemplateSelect = React.useCallback(
     (content: string, fileName: string) => {
-      console.log(
-        'DocumentTemplates: handleTemplateSelect called with fileName:',
-        fileName,
-        'content length:',
-        content.length
-      );
+      import('@/utils/console').then(({ safeConsole }) => {
+        safeConsole.dev(
+          'DocumentTemplates: handleTemplateSelect called with fileName:',
+          fileName,
+          'content length:',
+          content.length
+        );
+      });
       onSelectTemplate(content, fileName);
-      console.log('DocumentTemplates: closing dialog');
+      import('@/utils/console').then(({ safeConsole }) => {
+        safeConsole.dev('DocumentTemplates: closing dialog');
+      });
       onClose(); // Tutup dialog setelah template dipilih
     },
     [onSelectTemplate, onClose]

@@ -56,7 +56,9 @@ export const useExportToEpub = (
         setExportProgress(EXPORT_PROGRESS_STEPS.COMPLETE);
         onSuccess?.(SUCCESS_MESSAGES.HTML_EXPORTED);
       } catch (error) {
-        console.error('HTML export error:', error);
+        import('@/utils/console').then(({ safeConsole }) => {
+          safeConsole.error('HTML export error:', error);
+        });
         const errorMessage = error instanceof Error ? error.message : ERROR_MESSAGES.EXPORT_FAILED;
         onError?.(errorMessage);
       } finally {

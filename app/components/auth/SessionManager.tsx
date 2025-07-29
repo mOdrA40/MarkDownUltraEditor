@@ -24,9 +24,13 @@ export const SessionManager = () => {
   // Log session status changes for debugging
   useEffect(() => {
     if (isSignedIn) {
-      console.log('Session Manager: Session active =', sessionActive);
+      import('@/utils/console').then(({ safeConsole }) => {
+        safeConsole.dev('Session Manager: Session active =', sessionActive);
+      });
       if (validationError) {
-        console.error('Session Manager: Validation error =', validationError);
+        import('@/utils/console').then(({ safeConsole }) => {
+          safeConsole.error('Session Manager: Validation error =', validationError);
+        });
       }
     }
   }, [isSignedIn, sessionActive, validationError]);

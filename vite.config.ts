@@ -9,7 +9,7 @@ config();
 export default defineConfig({
   plugins: [reactRouter(), tsconfigPaths()],
   server: {
-    port: 5174,
+    port: 5173,
   },
   define: {
     'process.env.VITE_CLERK_PUBLISHABLE_KEY': JSON.stringify(

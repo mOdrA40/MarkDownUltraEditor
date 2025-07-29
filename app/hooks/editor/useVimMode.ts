@@ -99,7 +99,9 @@ export const useVimMode = (
           vimCommand.execute(context);
         }
       } else if (isValidVimCommand(action)) {
-        console.warn(`Vim command '${action}' not implemented for mode '${mode}'`);
+        import('@/utils/console').then(({ safeConsole }) => {
+          safeConsole.warn(`Vim command '${action}' not implemented for mode '${mode}'`);
+        });
       }
     },
     [enabled, mode, createVimContext]

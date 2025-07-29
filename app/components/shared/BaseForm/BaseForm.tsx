@@ -162,7 +162,9 @@ export const BaseForm: React.FC<BaseFormProps> = ({
         try {
           await onSubmit(values);
         } catch (error) {
-          console.error('Form submission error:', error);
+          import('@/utils/console').then(({ safeConsole }) => {
+            safeConsole.error('Form submission error:', error);
+          });
         }
       }
     },

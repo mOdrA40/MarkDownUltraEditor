@@ -108,7 +108,9 @@ export const ImageLinkDialog: React.FC<ImageLinkDialogProps> = ({
       const finalImageUrl = imageUrl.trim();
 
       // Debug log to check what we're sending
-      console.log('Sending to onImageInsert:', { finalImageUrl, finalAltText });
+      import('@/utils/console').then(({ safeConsole }) => {
+        safeConsole.dev('Sending to onImageInsert:', { finalImageUrl, finalAltText });
+      });
 
       onImageInsert(finalImageUrl, finalAltText);
       handleClose();

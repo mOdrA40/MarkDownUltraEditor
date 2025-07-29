@@ -37,7 +37,9 @@ interface LazyErrorBoundaryState {
 }
 
 class LazyErrorBoundary extends React.Component<
-  React.PropsWithChildren<{ fallback?: React.ComponentType<{ error?: Error; retry: () => void }> }>,
+  React.PropsWithChildren<{
+    fallback?: React.ComponentType<{ error?: Error; retry: () => void }>;
+  }>,
   LazyErrorBoundaryState
 > {
   constructor(
@@ -54,7 +56,9 @@ class LazyErrorBoundary extends React.Component<
   }
 
   componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
-    console.error('Lazy loading error:', error, errorInfo);
+    import('@/utils/console').then(({ safeConsole }) => {
+      safeConsole.error('Lazy loading error:', error, errorInfo);
+    });
   }
 
   retry = () => {

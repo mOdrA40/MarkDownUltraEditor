@@ -30,7 +30,7 @@ const fetchUserData = async (userId) => {
       lastSeen: new Date(data.lastLogin)
     };
   } catch (error) {
-    console.error('Failed to fetch user:', error);
+    import('@/utils/console').then(({ safeConsole }) => { safeConsole.error('Failed to fetch user:', error); });;
     throw new Error('User data unavailable');
   }
 };

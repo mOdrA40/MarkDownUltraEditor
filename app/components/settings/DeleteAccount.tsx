@@ -42,13 +42,19 @@ export const DeleteAccount: React.FC = () => {
         const cleanupService = createUserCleanupService(supabaseClient);
         const cleanupResult = await cleanupService.cleanupUserData(user.id);
 
-        console.log('User data cleanup result:', cleanupResult);
+        import('@/utils/console').then(({ safeConsole }) => {
+          safeConsole.dev('User data cleanup result:', cleanupResult);
+        });
 
         if (!cleanupResult.success && cleanupResult.errors.length > 0) {
-          console.warn('Some data cleanup errors occurred:', cleanupResult.errors);
+          import('@/utils/console').then(({ safeConsole }) => {
+            safeConsole.warn('Some data cleanup errors occurred:', cleanupResult.errors);
+          });
         }
       } catch (cleanupError) {
-        console.error('Error cleaning up user data:', cleanupError);
+        import('@/utils/console').then(({ safeConsole }) => {
+          safeConsole.error('Error cleaning up user data:', cleanupError);
+        });
         // Continue with account deletion even if cleanup fails
       }
 
@@ -56,7 +62,9 @@ export const DeleteAccount: React.FC = () => {
       await user.delete();
       navigate('/');
     } catch (error) {
-      console.error('Error deleting account:', error);
+      import('@/utils/console').then(({ safeConsole }) => {
+        safeConsole.error('Error deleting account:', error);
+      });
       alert('Failed to delete account. Please try again or contact support.');
     } finally {
       setIsDeleting(false);

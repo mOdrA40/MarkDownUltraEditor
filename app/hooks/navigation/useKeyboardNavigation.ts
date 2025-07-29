@@ -166,7 +166,9 @@ export const useKeyboardNavigation = (
         element.focus();
         return document.activeElement === element;
       } catch (error) {
-        console.warn('Failed to focus active item:', error);
+        import('@/utils/console').then(({ safeConsole }) => {
+          safeConsole.warn('Failed to focus active item:', error);
+        });
         return false;
       }
     }

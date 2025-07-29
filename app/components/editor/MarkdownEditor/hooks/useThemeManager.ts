@@ -46,7 +46,11 @@ export const useThemeManager = (initialTheme?: Theme): UseThemeManagerReturn => 
       document.documentElement.classList.add(`theme-${theme.id}`);
     }
 
-    console.log(`🎨 Theme applied: ${theme.id}, classes: ${document.documentElement.className}`);
+    import('@/utils/console').then(({ safeConsole }) => {
+      safeConsole.dev(
+        `🎨 Theme applied: ${theme.id}, classes: ${document.documentElement.className}`
+      );
+    });
   }, []);
 
   /**
@@ -56,7 +60,9 @@ export const useThemeManager = (initialTheme?: Theme): UseThemeManagerReturn => 
     try {
       localStorage.setItem(STORAGE_KEYS.THEME, theme.id);
     } catch (error) {
-      console.warn('Failed to save theme to localStorage:', error);
+      import('@/utils/console').then(({ safeConsole }) => {
+        safeConsole.warn('Failed to save theme to localStorage:', error);
+      });
     }
   }, []);
 
@@ -71,7 +77,9 @@ export const useThemeManager = (initialTheme?: Theme): UseThemeManagerReturn => 
         return savedTheme || null;
       }
     } catch (error) {
-      console.warn('Failed to load theme from localStorage:', error);
+      import('@/utils/console').then(({ safeConsole }) => {
+        safeConsole.warn('Failed to load theme from localStorage:', error);
+      });
     }
     return null;
   }, []);

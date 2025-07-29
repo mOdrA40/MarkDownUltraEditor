@@ -158,7 +158,9 @@ export class FocusManager {
       element.focus({ preventScroll });
       return document.activeElement === element;
     } catch (error) {
-      console.warn('Failed to focus element:', error);
+      import('@/utils/console').then(({ safeConsole }) => {
+        safeConsole.warn('Failed to focus element:', error);
+      });
       return false;
     }
   }

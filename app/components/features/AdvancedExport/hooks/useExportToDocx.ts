@@ -178,7 +178,9 @@ export const useExportToDocx = (
         setExportProgress(EXPORT_PROGRESS_STEPS.COMPLETE);
         onSuccess?.(SUCCESS_MESSAGES.RTF_EXPORTED);
       } catch (error) {
-        console.error('DOCX export error:', error);
+        import('@/utils/console').then(({ safeConsole }) => {
+          safeConsole.error('DOCX export error:', error);
+        });
         const errorMessage = error instanceof Error ? error.message : ERROR_MESSAGES.EXPORT_FAILED;
         onError?.(errorMessage);
       } finally {

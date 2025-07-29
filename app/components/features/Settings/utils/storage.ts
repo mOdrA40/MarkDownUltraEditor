@@ -80,7 +80,9 @@ export const storageUtils = {
           available: (estimate.quota || 0) - (estimate.usage || 0),
         };
       } catch (error) {
-        console.warn('Failed to get storage quota:', error);
+        import('@/utils/console').then(({ safeConsole }) => {
+          safeConsole.warn('Failed to get storage quota:', error);
+        });
       }
     }
     return null;

@@ -57,7 +57,9 @@ export const convertMarkdownToHTML = (
 
     return { html, metadata };
   } catch (error) {
-    console.error('Error converting markdown to HTML with ReactMarkdown:', error);
+    import('@/utils/console').then(({ safeConsole }) => {
+      safeConsole.error('Error converting markdown to HTML with ReactMarkdown:', error);
+    });
 
     // Fallback to enhanced simple conversion
     const html = convertMarkdownToHTMLSimple(markdown);

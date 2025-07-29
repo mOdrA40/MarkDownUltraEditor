@@ -192,7 +192,9 @@ export const AccountInfo: React.FC<AccountInfoProps> = memo(
                   setIsExporting(true);
                   await actions.exportUserData();
                 } catch (error) {
-                  console.error('Export failed:', error);
+                  import('@/utils/console').then(({ safeConsole }) => {
+                    safeConsole.error('Export failed:', error);
+                  });
                 } finally {
                   setIsExporting(false);
                 }

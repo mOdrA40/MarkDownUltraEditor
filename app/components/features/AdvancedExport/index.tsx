@@ -111,7 +111,9 @@ export const AdvancedExport: React.FC<AdvancedExportProps> = ({
           break;
       }
     } catch (error) {
-      console.error('Export error:', error);
+      import('@/utils/console').then(({ safeConsole }) => {
+        safeConsole.error('Export error:', error);
+      });
       handleExportError('Terjadi kesalahan saat export');
     }
   };

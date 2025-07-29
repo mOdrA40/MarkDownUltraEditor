@@ -5,6 +5,7 @@
 
 import { Minimize2, Monitor, Smartphone, Tablet } from 'lucide-react';
 import type React from 'react';
+import { useEffect, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import type { Theme } from '../../../../features/ThemeSelector';
 import type { ResponsiveState } from '../../types';
@@ -45,11 +46,15 @@ export const EditorContainer: React.FC<EditorContainerProps> = ({
   style = {},
 }) => {
   const { isMobile, isTablet } = responsive;
+  const [isHydrated, setIsHydrated] = useState(false);
 
-  // Generate responsive classes (safe for SSR)
-  const screenWidth = typeof window !== 'undefined' ? window.innerWidth : 1024;
+  const screenWidth = isHydrated && typeof window !== 'undefined' ? window.innerWidth : 1024;
   const deviceType = getDeviceType(screenWidth);
   const responsiveClasses = generateResponsiveClasses(deviceType);
+
+  useEffect(() => {
+    setIsHydrated(true);
+  }, []);
 
   return (
     <div

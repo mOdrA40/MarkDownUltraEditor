@@ -256,7 +256,17 @@ export const safeConsole = {
    * Development-only logging
    */
   dev: (...args: unknown[]) => {
-    if (process.env.NODE_ENV === 'development') {
+    if (process.env.NODE_ENV === 'development' && !import.meta.env.VITE_PRODUCTION_BUILD) {
+      // Filter out noisy debug messages
+      const message = args[0];
+      if (
+        typeof message === 'string' &&
+        (message.includes('Heading Cache Debug') ||
+          message.includes('Production safety audit') ||
+          message.includes('Global Theme applied'))
+      ) {
+        return; // Skip noisy debug messages
+      }
       originalConsole.log('[DEV]', ...args);
     }
   },

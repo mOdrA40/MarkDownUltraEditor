@@ -12,26 +12,26 @@ import type { Route } from './+types/root';
 import './tailwind.css';
 import './styles/dropdown-improvements.css';
 
-// Initialize performance optimizations
 if (typeof window !== 'undefined') {
   import('@/utils/performance').then(({ initializePerformanceOptimizations }) => {
     initializePerformanceOptimizations();
   });
 
-  // Initialize memory optimization for production
   import('@/utils/memoryOptimization').then(({ initializeMemoryOptimization }) => {
     initializeMemoryOptimization();
   });
 }
 
-// Initialize security system
 if (typeof window !== 'undefined') {
   import('@/utils/security/integration').then(({ initializeAppSecurity }) => {
     initializeAppSecurity();
   });
+
+  import('@/utils/errorHandling').then(({ initializeErrorHandler }) => {
+    initializeErrorHandler();
+  });
 }
 
-// Initialize console protection
 if (typeof window !== 'undefined') {
   import('@/utils/console').then(({ initializeConsoleProtection }) => {
     initializeConsoleProtection();
@@ -145,7 +145,9 @@ export const headers: HeadersFunction = () => {
 
   // In development, use relaxed CSP but still secure
   if (isDevelopment) {
-    console.log('🔧 Development mode: Permissive CSP for better developer experience');
+    import('@/utils/console').then(({ safeConsole }) => {
+      safeConsole.dev('🔧 Development mode: Permissive CSP for better developer experience');
+    });
     return {
       ...baseHeaders,
       'Content-Security-Policy': [

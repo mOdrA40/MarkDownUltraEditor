@@ -6,7 +6,9 @@ export default function SignInPage() {
 
   useEffect(() => {
     // Redirect to home - sign in should only be accessible via modal
-    console.log('Sign-in route accessed directly, redirecting to home');
+    import('@/utils/console').then(({ safeConsole }) => {
+      safeConsole.dev('Sign-in route accessed directly, redirecting to home');
+    });
     navigate('/', { replace: true });
   }, [navigate]);
 

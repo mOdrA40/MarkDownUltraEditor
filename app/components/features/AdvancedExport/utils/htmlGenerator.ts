@@ -74,20 +74,22 @@ const isCurrentAppThemeDark = (): boolean => {
 
   // Debug logging in development
   if (process.env.NODE_ENV === 'development') {
-    console.log('Dark theme detection (PDF):', {
-      isExplicitlyDark,
-      hasDarkClass,
-      hasDarkBgColor,
-      hasLightTextColor,
-      isSelectedDark,
-      isStoredDark,
-      result,
-      bodyTheme,
-      htmlTheme,
-      bgColor,
-      textColor,
-      selectedTheme,
-      storedTheme,
+    import('@/utils/console').then(({ safeConsole }) => {
+      safeConsole.dev('Dark theme detection (PDF):', {
+        isExplicitlyDark,
+        hasDarkClass,
+        hasDarkBgColor,
+        hasLightTextColor,
+        isSelectedDark,
+        isStoredDark,
+        result,
+        bodyTheme,
+        htmlTheme,
+        bgColor,
+        textColor,
+        selectedTheme,
+        storedTheme,
+      });
     });
   }
 

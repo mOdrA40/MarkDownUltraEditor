@@ -42,7 +42,9 @@ export const DesktopToolbar: React.FC<DesktopToolbarProps> = React.memo(
     // Handle image insertion
     const handleImageInsert = (imageUrl: string, altText = 'Image') => {
       // Debug log to check parameters
-      console.log('Image insertion:', { imageUrl, altText });
+      import('@/utils/console').then(({ safeConsole }) => {
+        safeConsole.dev('Image insertion:', { imageUrl, altText });
+      });
       onInsertText(`![${altText}](${imageUrl})`);
     };
 

@@ -167,7 +167,9 @@ export const useUndoRedoState = ({
       try {
         onUndo();
       } catch (error) {
-        console.error('Error during undo operation:', error);
+        import('@/utils/console').then(({ safeConsole }) => {
+          safeConsole.error('Error during undo operation:', error);
+        });
       }
     }
   }, [onUndo, canUndo, disabled]);
@@ -180,7 +182,9 @@ export const useUndoRedoState = ({
       try {
         onRedo();
       } catch (error) {
-        console.error('Error during redo operation:', error);
+        import('@/utils/console').then(({ safeConsole }) => {
+          safeConsole.error('Error during redo operation:', error);
+        });
       }
     }
   }, [onRedo, canRedo, disabled]);

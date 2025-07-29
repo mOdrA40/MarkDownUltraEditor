@@ -63,7 +63,9 @@ class PerformanceMonitor {
         this.observeNavigationTiming();
       }
     } catch (error) {
-      console.warn('Performance monitoring initialization failed:', error);
+      import('@/utils/console').then(({ safeConsole }) => {
+        safeConsole.warn('Performance monitoring initialization failed:', error);
+      });
     }
   }
 
@@ -232,7 +234,9 @@ class PerformanceMonitor {
         return entries.length > 0 ? entries[entries.length - 1].duration : null;
       }
     } catch (error) {
-      console.warn('Performance measure failed:', error);
+      import('@/utils/console').then(({ safeConsole }) => {
+        safeConsole.warn('Performance measure failed:', error);
+      });
     }
     return null;
   }
@@ -286,7 +290,9 @@ class PerformanceMonitor {
       try {
         observer.disconnect();
       } catch (error) {
-        console.warn('Failed to disconnect performance observer:', error);
+        import('@/utils/console').then(({ safeConsole }) => {
+          safeConsole.warn('Failed to disconnect performance observer:', error);
+        });
       }
     });
     this.observers = [];

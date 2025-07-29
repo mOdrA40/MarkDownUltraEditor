@@ -54,7 +54,9 @@ export const useExportToPresentation = (
         setExportProgress(EXPORT_PROGRESS_STEPS.COMPLETE);
         onSuccess?.(SUCCESS_MESSAGES.PRESENTATION_EXPORTED);
       } catch (error) {
-        console.error('Presentation export error:', error);
+        import('@/utils/console').then(({ safeConsole }) => {
+          safeConsole.error('Presentation export error:', error);
+        });
         const errorMessage = error instanceof Error ? error.message : ERROR_MESSAGES.EXPORT_FAILED;
         onError?.(errorMessage);
       } finally {

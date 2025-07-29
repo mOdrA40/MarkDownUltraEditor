@@ -110,7 +110,9 @@ export const useAppSettings = (): UseSettingsReturn => {
         setShowWordCount(parsed.showWordCount ?? true);
         setShowCharacterCount(parsed.showCharacterCount ?? true);
       } catch (error) {
-        console.warn('Failed to parse saved preferences:', error);
+        import('@/utils/console').then(({ safeConsole }) => {
+          safeConsole.warn('Failed to parse saved preferences:', error);
+        });
       }
     }
   }, []);

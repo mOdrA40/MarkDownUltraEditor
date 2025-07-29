@@ -74,12 +74,14 @@ export const useHeadingCache = (markdown: string) => {
       (window as unknown as { headingCacheUtils: typeof debugUtils }).headingCacheUtils =
         debugUtils;
 
-      console.log('🔧 Heading Cache Debug tools available:');
-      console.log('  - headingCache - View cache Map');
-      console.log('  - headingCacheUtils.clearCache() - Clear cache');
-      console.log('  - headingCacheUtils.getCacheSize() - Get cache size');
-      console.log('  - headingCacheUtils.getCacheEntries() - Get all entries');
-      console.log('  - headingCacheUtils.findHeadingInCache(text) - Find by text');
+      // Only show debug tools once in development
+      if (process.env.NODE_ENV === 'development' && !import.meta.env.VITE_PRODUCTION_BUILD) {
+        import('@/utils/console').then(({ safeConsole }) => {
+          safeConsole.dev(
+            '🔧 Heading Cache Debug tools available (use headingCacheUtils in console)'
+          );
+        });
+      }
     }
   }, []);
 

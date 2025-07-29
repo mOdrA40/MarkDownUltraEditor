@@ -159,7 +159,7 @@ Welcome to the most powerful markdown editor with advanced features and beautifu
 \`\`\`markdown
 \`\`\`javascript
 function hello() {
-  console.log("Hello, World!");
+  import('@/utils/console').then(({ safeConsole }) => { safeConsole.dev("Hello, World!"); });;
 }
 \`\`\`
 

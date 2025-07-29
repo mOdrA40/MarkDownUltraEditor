@@ -90,13 +90,17 @@ export class SecureSentryIntegration {
 
     // Skip initialization if DSN is not provided
     if (!this.config.dsn) {
-      console.warn('🚨 Sentry DSN not provided - Error tracking disabled');
+      import('@/utils/console').then(({ safeConsole }) => {
+        safeConsole.warn('🚨 Sentry DSN not provided - Error tracking disabled');
+      });
       return;
     }
 
     // Skip in development unless explicitly enabled
     if (this.config.environment === 'development' && !this.config.enableInDevelopment) {
-      console.info('📊 Sentry disabled in development mode');
+      import('@/utils/console').then(({ safeConsole }) => {
+        safeConsole.dev('📊 Sentry disabled in development mode');
+      });
       return;
     }
 
@@ -138,16 +142,18 @@ export class SecureSentryIntegration {
         attachStacktrace: false, // Reduce payload size
       }),
 
-      // Development settings
+      // Development settings - reduced verbosity
       ...(this.config.environment === 'development' && {
-        debug: true,
-        maxBreadcrumbs: 100,
+        debug: false, // Disable debug to reduce console noise
+        maxBreadcrumbs: 50, // Reduced from 100
         attachStacktrace: true,
       }),
     });
 
     this.isInitialized = true;
-    console.info('📊 Sentry initialized successfully');
+    import('@/utils/console').then(({ safeConsole }) => {
+      safeConsole.dev('📊 Sentry initialized successfully');
+    });
   }
 
   /**

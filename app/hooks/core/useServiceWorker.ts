@@ -51,21 +51,29 @@ export const useServiceWorker = (): UseServiceWorkerReturn => {
     setState((prev) => ({ ...prev, isSupported }));
 
     if (isSupported) {
-      console.log('Service Worker: Supported');
+      import('@/utils/console').then(({ safeConsole }) => {
+        safeConsole.dev('Service Worker: Supported');
+      });
     } else {
-      console.log('Service Worker: Not supported');
+      import('@/utils/console').then(({ safeConsole }) => {
+        safeConsole.dev('Service Worker: Not supported');
+      });
     }
   }, []);
 
   // Register Service Worker
   const register = useCallback(async (): Promise<void> => {
     if (!state.isSupported) {
-      console.warn('Service Worker: Not supported');
+      import('@/utils/console').then(({ safeConsole }) => {
+        safeConsole.warn('Service Worker: Not supported');
+      });
       return;
     }
 
     try {
-      console.log('Service Worker: Registering...');
+      import('@/utils/console').then(({ safeConsole }) => {
+        safeConsole.dev('Service Worker: Registering...');
+      });
       setState((prev) => ({ ...prev, isInstalling: true, error: null }));
 
       const reg = await navigator.serviceWorker.register('/sw.js', {
@@ -82,11 +90,15 @@ export const useServiceWorker = (): UseServiceWorkerReturn => {
         isWaiting: !!reg.waiting,
       }));
 
-      console.log('Service Worker: Registered successfully');
+      import('@/utils/console').then(({ safeConsole }) => {
+        safeConsole.dev('Service Worker: Registered successfully');
+      });
 
       // Listen for updates
       reg.addEventListener('updatefound', () => {
-        console.log('Service Worker: Update found');
+        import('@/utils/console').then(({ safeConsole }) => {
+          safeConsole.dev('Service Worker: Update found');
+        });
         setState((prev) => ({ ...prev, isInstalling: true }));
 
         const newWorker = reg.installing;
@@ -99,13 +111,17 @@ export const useServiceWorker = (): UseServiceWorkerReturn => {
                 isWaiting: true,
                 needsRefresh: true,
               }));
-              console.log('Service Worker: New version available');
+              import('@/utils/console').then(({ safeConsole }) => {
+                safeConsole.dev('Service Worker: New version available');
+              });
             }
           });
         }
       });
     } catch (error) {
-      console.error('Service Worker: Registration failed', error);
+      import('@/utils/console').then(({ safeConsole }) => {
+        safeConsole.error('Service Worker: Registration failed', error);
+      });
       setState((prev) => ({
         ...prev,
         isInstalling: false,
@@ -117,15 +133,21 @@ export const useServiceWorker = (): UseServiceWorkerReturn => {
   // Update Service Worker
   const update = useCallback(async (): Promise<void> => {
     if (!registration) {
-      console.warn('Service Worker: No registration found');
+      import('@/utils/console').then(({ safeConsole }) => {
+        safeConsole.warn('Service Worker: No registration found');
+      });
       return;
     }
 
     try {
-      console.log('Service Worker: Checking for updates...');
+      import('@/utils/console').then(({ safeConsole }) => {
+        safeConsole.dev('Service Worker: Checking for updates...');
+      });
       await registration.update();
     } catch (error) {
-      console.error('Service Worker: Update failed', error);
+      import('@/utils/console').then(({ safeConsole }) => {
+        safeConsole.error('Service Worker: Update failed', error);
+      });
       setState((prev) => ({
         ...prev,
         error: error instanceof Error ? error.message : 'Update failed',
@@ -136,16 +158,22 @@ export const useServiceWorker = (): UseServiceWorkerReturn => {
   // Skip waiting and activate new Service Worker
   const skipWaiting = useCallback((): void => {
     if (!registration?.waiting) {
-      console.warn('Service Worker: No waiting worker found');
+      import('@/utils/console').then(({ safeConsole }) => {
+        safeConsole.warn('Service Worker: No waiting worker found');
+      });
       return;
     }
 
-    console.log('Service Worker: Skipping waiting...');
+    import('@/utils/console').then(({ safeConsole }) => {
+      safeConsole.dev('Service Worker: Skipping waiting...');
+    });
     registration.waiting.postMessage({ type: 'SKIP_WAITING' });
 
     // Listen for controlling change
     navigator.serviceWorker.addEventListener('controllerchange', () => {
-      console.log('Service Worker: Controller changed, reloading...');
+      import('@/utils/console').then(({ safeConsole }) => {
+        safeConsole.dev('Service Worker: Controller changed, reloading...');
+      });
       window.location.reload();
     });
   }, [registration]);
@@ -154,11 +182,15 @@ export const useServiceWorker = (): UseServiceWorkerReturn => {
   const cacheFile = useCallback(
     (url: string, content: string): void => {
       if (!registration?.active) {
-        console.warn('Service Worker: No active worker found');
+        import('@/utils/console').then(({ safeConsole }) => {
+          safeConsole.warn('Service Worker: No active worker found');
+        });
         return;
       }
 
-      console.log('Service Worker: Caching file', url);
+      import('@/utils/console').then(({ safeConsole }) => {
+        safeConsole.dev('Service Worker: Caching file', url);
+      });
       registration.active.postMessage({
         type: 'CACHE_FILE',
         data: { url, content },
@@ -171,11 +203,15 @@ export const useServiceWorker = (): UseServiceWorkerReturn => {
   const clearCache = useCallback(
     (cacheName?: string): void => {
       if (!registration?.active) {
-        console.warn('Service Worker: No active worker found');
+        import('@/utils/console').then(({ safeConsole }) => {
+          safeConsole.warn('Service Worker: No active worker found');
+        });
         return;
       }
 
-      console.log('Service Worker: Clearing cache', cacheName || 'all');
+      import('@/utils/console').then(({ safeConsole }) => {
+        safeConsole.dev('Service Worker: Clearing cache', cacheName || 'all');
+      });
       registration.active.postMessage({
         type: 'CLEAR_CACHE',
         data: { cacheName },
@@ -193,16 +229,22 @@ export const useServiceWorker = (): UseServiceWorkerReturn => {
 
       switch (type) {
         case 'SYNC_COMPLETE':
-          console.log('Service Worker: Sync complete', data);
+          import('@/utils/console').then(({ safeConsole }) => {
+            safeConsole.dev('Service Worker: Sync complete', data);
+          });
           // Handle sync completion
           break;
 
         case 'CACHE_UPDATED':
-          console.log('Service Worker: Cache updated', data);
+          import('@/utils/console').then(({ safeConsole }) => {
+            safeConsole.dev('Service Worker: Cache updated', data);
+          });
           break;
 
         default:
-          console.log('Service Worker: Unknown message', type, data);
+          import('@/utils/console').then(({ safeConsole }) => {
+            safeConsole.dev('Service Worker: Unknown message', type, data);
+          });
       }
     };
 

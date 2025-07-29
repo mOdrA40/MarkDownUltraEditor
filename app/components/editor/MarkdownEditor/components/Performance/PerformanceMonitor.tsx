@@ -127,7 +127,9 @@ export const PerformanceMonitor: React.FC<PerformanceMonitorProps> = ({
     try {
       observer.observe({ entryTypes: ['measure', 'navigation'] });
     } catch (error) {
-      console.warn('Performance observer not supported:', error);
+      import('@/utils/console').then(({ safeConsole }) => {
+        safeConsole.warn('Performance observer not supported:', error);
+      });
     }
 
     return () => observer.disconnect();

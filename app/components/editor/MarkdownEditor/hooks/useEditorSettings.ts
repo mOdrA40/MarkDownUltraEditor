@@ -141,7 +141,9 @@ export const useEditorSettings = (
     try {
       localStorage.setItem(STORAGE_KEYS.SETTINGS, JSON.stringify(settings));
     } catch (error) {
-      console.warn('Failed to save settings to localStorage:', error);
+      import('@/utils/console').then(({ safeConsole }) => {
+        safeConsole.warn('Failed to save settings to localStorage:', error);
+      });
     }
   }, [settings]);
 
@@ -161,7 +163,9 @@ export const useEditorSettings = (
         }));
       }
     } catch (error) {
-      console.warn('Failed to load settings from localStorage:', error);
+      import('@/utils/console').then(({ safeConsole }) => {
+        safeConsole.warn('Failed to load settings from localStorage:', error);
+      });
     }
   }, []);
 

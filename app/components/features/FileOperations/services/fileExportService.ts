@@ -22,7 +22,9 @@ const safeFileSaver = async (blob: Blob, filename: string): Promise<void> => {
     saveAs(blob, filename);
   } else {
     // In SSR environment, we can't save files
-    console.warn('File saving is not available in server-side rendering environment');
+    import('@/utils/console').then(({ safeConsole }) => {
+      safeConsole.warn('File saving is not available in server-side rendering environment');
+    });
   }
 };
 

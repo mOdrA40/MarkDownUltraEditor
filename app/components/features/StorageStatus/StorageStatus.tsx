@@ -7,7 +7,7 @@
 
 import { AlertTriangle, HardDrive, Info, RefreshCw, Trash2 } from 'lucide-react';
 import type React from 'react';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import {
@@ -42,8 +42,14 @@ export const StorageStatus: React.FC<StorageStatusProps> = ({
 }) => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isCleaningUp, setIsCleaningUp] = useState(false);
+  const [isHydrated, setIsHydrated] = useState(false);
 
   const { storageInfo, isNearCapacity, isCritical, statusColor, statusText } = useStorageStatus();
+
+  // Prevent hydration mismatch by only showing real data after hydration
+  useEffect(() => {
+    setIsHydrated(true);
+  }, []);
 
   const { triggerCleanup, refreshInfo } = useStorageMonitor();
 
@@ -56,10 +62,14 @@ export const StorageStatus: React.FC<StorageStatusProps> = ({
       const cleanedBytes = await triggerCleanup();
       if (cleanedBytes > 0) {
         // Show success feedback
-        console.log(`Cleanup successful: ${cleanedBytes} bytes freed`);
+        import('@/utils/console').then(({ safeConsole }) => {
+          safeConsole.dev(`Cleanup successful: ${cleanedBytes} bytes freed`);
+        });
       }
     } catch (error) {
-      console.error('Cleanup failed:', error);
+      import('@/utils/console').then(({ safeConsole }) => {
+        safeConsole.error('Cleanup failed:', error);
+      });
     } finally {
       setIsCleaningUp(false);
     }
@@ -78,14 +88,18 @@ export const StorageStatus: React.FC<StorageStatusProps> = ({
               )}
             >
               <HardDrive className="h-3 w-3" />
-              <span className="text-xs font-medium">{storageInfo.usedPercentage.toFixed(0)}%</span>
+              <span className="text-xs font-medium">
+                {isHydrated ? `${storageInfo.usedPercentage.toFixed(0)}%` : '0%'}
+              </span>
             </div>
           </TooltipTrigger>
           <TooltipContent>
             <div className="space-y-1">
               <p className="font-medium">Storage Usage</p>
               <p className="text-sm">
-                {storageInfo.usedFormatted} / {storageInfo.totalFormatted}
+                {isHydrated
+                  ? `${storageInfo.usedFormatted} / ${storageInfo.totalFormatted}`
+                  : '0 Bytes / 5 MB'}
               </p>
               <p className="text-sm text-muted-foreground">Status: {statusText}</p>
             </div>
@@ -241,10 +255,10 @@ export const StorageStatus: React.FC<StorageStatusProps> = ({
 
       {/* Progress Bar */}
       <div className="space-y-1">
-        <Progress value={storageInfo.usedPercentage} className="h-1.5" />
+        <Progress value={isHydrated ? storageInfo.usedPercentage : 0} className="h-1.5" />
         <div className="flex justify-between text-xs text-muted-foreground">
-          <span>{storageInfo.usedFormatted}</span>
-          <span>{storageInfo.totalFormatted}</span>
+          <span>{isHydrated ? storageInfo.usedFormatted : '0 Bytes'}</span>
+          <span>{isHydrated ? storageInfo.totalFormatted : '5 MB'}</span>
         </div>
       </div>
 

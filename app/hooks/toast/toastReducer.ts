@@ -39,7 +39,9 @@ export const toastReducer = (
 
     case TOAST_ACTION_TYPES.UPDATE_TOAST: {
       if (!action.toast.id) {
-        console.warn('Toast update requires an ID');
+        import('@/utils/console').then(({ safeConsole }) => {
+          safeConsole.warn('Toast update requires an ID');
+        });
         return state;
       }
 
@@ -107,7 +109,9 @@ export const toastReducer = (
     }
 
     default: {
-      console.warn(`Unknown toast action type: ${(action as { type: string }).type}`);
+      import('@/utils/console').then(({ safeConsole }) => {
+        safeConsole.warn(`Unknown toast action type: ${(action as { type: string }).type}`);
+      });
       return state;
     }
   }

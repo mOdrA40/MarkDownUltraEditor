@@ -102,9 +102,11 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({
       });
     }, 0);
 
-    console.log(
-      `🎨 Global Theme applied: ${theme.id}, button color: ${buttonColor}, classes: ${document.documentElement.className}`
-    );
+    import('@/utils/console').then(({ safeConsole }) => {
+      safeConsole.dev(
+        `🎨 Global Theme applied: ${theme.id}, button color: ${buttonColor}, classes: ${document.documentElement.className}`
+      );
+    });
   }, []);
 
   /**
@@ -163,7 +165,9 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({
     try {
       localStorage.setItem(THEME_STORAGE_KEY, theme.id);
     } catch (error) {
-      console.warn('Failed to save theme to localStorage:', error);
+      import('@/utils/console').then(({ safeConsole }) => {
+        safeConsole.warn('Failed to save theme to localStorage:', error);
+      });
     }
   }, []);
 
@@ -178,7 +182,9 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({
         return savedTheme || null;
       }
     } catch (error) {
-      console.warn('Failed to load theme from localStorage:', error);
+      import('@/utils/console').then(({ safeConsole }) => {
+        safeConsole.warn('Failed to load theme from localStorage:', error);
+      });
     }
     return null;
   }, []);

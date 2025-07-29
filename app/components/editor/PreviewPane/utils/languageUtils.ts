@@ -250,7 +250,9 @@ export const copyToClipboard = async (text: string, button?: HTMLButtonElement):
       }, 1500);
     }
   } catch (error) {
-    console.error('Failed to copy:', error);
+    import('@/utils/console').then(({ safeConsole }) => {
+      safeConsole.error('Failed to copy:', error);
+    });
   }
 };
 

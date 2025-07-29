@@ -51,7 +51,9 @@ export const useSettingsState = (): UseSettingsReturn => {
             const parsed = JSON.parse(savedPreferences);
             loadedPrefs = { ...loadedPrefs, ...parsed };
           } catch (error) {
-            console.warn('Failed to parse saved preferences:', error);
+            import('@/utils/console').then(({ safeConsole }) => {
+              safeConsole.warn('Failed to parse saved preferences:', error);
+            });
           }
         }
 
@@ -61,7 +63,9 @@ export const useSettingsState = (): UseSettingsReturn => {
           isLoading: false,
         }));
       } catch (error) {
-        console.error('Error loading preferences:', error);
+        import('@/utils/console').then(({ safeConsole }) => {
+          safeConsole.error('Error loading preferences:', error);
+        });
         toast({
           title: 'Settings Load Error',
           description: 'Failed to load your settings. Using defaults.',
@@ -107,7 +111,9 @@ export const useSettingsState = (): UseSettingsReturn => {
         description: 'Your preferences have been saved successfully.',
       });
     } catch (error) {
-      console.error('Error saving preferences:', error);
+      import('@/utils/console').then(({ safeConsole }) => {
+        safeConsole.error('Error saving preferences:', error);
+      });
       toast({
         title: 'Save Error',
         description: 'Failed to save your settings. Please try again.',

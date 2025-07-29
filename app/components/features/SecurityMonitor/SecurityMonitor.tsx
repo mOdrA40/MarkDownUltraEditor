@@ -89,7 +89,9 @@ export const SecurityMonitor: React.FC<SecurityMonitorProps> = ({ className = ''
           recommendations,
         });
       } catch (error) {
-        console.error('Error checking security status:', error);
+        import('@/utils/console').then(({ safeConsole }) => {
+          safeConsole.error('Error checking security status:', error);
+        });
         setSecurityStatus({
           level: 'medium',
           score: 50,

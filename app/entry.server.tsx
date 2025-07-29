@@ -1,7 +1,6 @@
 /**
- * By default, React Router will handle generating the HTTP Response for you.
- * You are free to delete this file if you'd like to, but if you ever want it revealed again, you can run `npx react-router reveal` ✨
- * For more information, see https://reactrouter.com/start/framework
+ * This file is the entry point for the server-side of the application.
+ * It is responsible for rendering the app and generating the HTTP response.
  */
 
 import { PassThrough } from 'node:stream';
@@ -18,9 +17,6 @@ export default function handleRequest(
   responseStatusCode: number,
   responseHeaders: Headers,
   remixContext: EntryContext,
-  // This is ignored so we can keep it in the template for visibility.  Feel
-  // free to delete this parameter in your app if you're not using it!
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   _loadContext: AppLoadContext
 ) {
   return isbot(request.headers.get('user-agent') || '')
@@ -61,9 +57,6 @@ function handleBotRequest(
         },
         onError(error: unknown) {
           currentStatusCode = 500;
-          // Log streaming rendering errors from inside the shell.  Don't log
-          // errors encountered during initial shell rendering since they'll
-          // reject and get logged in handleDocumentRequest.
           if (shellRendered) {
             import('@/utils/console').then(({ safeConsole }) => {
               safeConsole.error(error);
@@ -110,11 +103,10 @@ function handleBrowserRequest(
         },
         onError(error: unknown) {
           currentStatusCode = 500;
-          // Log streaming rendering errors from inside the shell.  Don't log
-          // errors encountered during initial shell rendering since they'll
-          // reject and get logged in handleDocumentRequest.
           if (shellRendered) {
-            console.error(error);
+            import('@/utils/console').then(({ safeConsole }) => {
+              safeConsole.error(error);
+            });
           }
         },
       }

@@ -170,7 +170,9 @@ export function useStableComputation<T>(
     const duration = typeof window !== 'undefined' ? performance.now() - start : Date.now() - start;
 
     if (process.env.NODE_ENV === 'development' && duration > 16) {
-      console.warn(`Expensive computation took ${duration.toFixed(2)}ms`);
+      import('@/utils/console').then(({ safeConsole }) => {
+        safeConsole.warn(`Expensive computation took ${duration.toFixed(2)}ms`);
+      });
     }
 
     return result;
@@ -239,9 +241,11 @@ export function withPerformanceOptimization<P extends Record<string, unknown>>(
       renderCount.current += 1;
 
       if (process.env.NODE_ENV === 'development') {
-        console.log(
-          `${Component.displayName || Component.name} rendered ${renderCount.current} times`
-        );
+        import('@/utils/console').then(({ safeConsole }) => {
+          safeConsole.dev(
+            `${Component.displayName || Component.name} rendered ${renderCount.current} times`
+          );
+        });
       }
     });
 
@@ -289,7 +293,9 @@ export const VirtualizedEditorSidebar = memo<
           items: tocItems,
           onItemClick: (item: { id: string; text: string; level: number; line: number }) => {
             // Scroll to heading logic would go here
-            console.log('Navigate to:', item.text);
+            import('@/utils/console').then(({ safeConsole }) => {
+              safeConsole.dev('Navigate to:', item.text);
+            });
           },
           className: 'virtualized-toc',
         })

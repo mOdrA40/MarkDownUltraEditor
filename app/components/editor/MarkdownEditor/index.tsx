@@ -109,12 +109,18 @@ export const MarkdownEditor: React.FC<MarkdownEditorProps> = ({
         const { testSupabaseConnection } = await import('@/lib/supabase');
         const isConnected = await testSupabaseConnection();
         if (isConnected) {
-          console.log('✓ Supabase connection test successful');
+          import('@/utils/console').then(({ safeConsole }) => {
+            safeConsole.dev('✓ Supabase connection test successful');
+          });
         } else {
-          console.warn('⚠️ Supabase connection test failed');
+          import('@/utils/console').then(({ safeConsole }) => {
+            safeConsole.warn('⚠️ Supabase connection test failed');
+          });
         }
       } catch (error) {
-        console.error('Error testing Supabase connection:', error);
+        import('@/utils/console').then(({ safeConsole }) => {
+          safeConsole.error('Error testing Supabase connection:', error);
+        });
       }
     };
 
@@ -212,7 +218,9 @@ export const MarkdownEditor: React.FC<MarkdownEditorProps> = ({
   // Manual save function with duplicate prevention
   const handleManualSave = React.useCallback(async () => {
     if (!editor.markdown || !editor.fileName || !fileStorage.saveFile) {
-      console.warn('Cannot save: missing content, filename, or save function');
+      import('@/utils/console').then(({ safeConsole }) => {
+        safeConsole.warn('Cannot save: missing content, filename, or save function');
+      });
       return;
     }
 
@@ -223,13 +231,17 @@ export const MarkdownEditor: React.FC<MarkdownEditorProps> = ({
 
     // Skip save if content hasn't actually changed
     if (lastSavedContentRef.current === currentContentHash) {
-      console.log('Content unchanged, skipping save');
+      import('@/utils/console').then(({ safeConsole }) => {
+        safeConsole.dev('Content unchanged, skipping save');
+      });
       return;
     }
 
     try {
       const storageType = fileStorage.isAuthenticated ? 'cloud' : 'local';
-      console.log(`Manual saving file to ${storageType}:`, editor.fileName);
+      import('@/utils/console').then(({ safeConsole }) => {
+        safeConsole.dev(`Manual saving file to ${storageType}:`, editor.fileName);
+      });
 
       await fileStorage.saveFile({
         title: editor.fileName,
@@ -247,7 +259,9 @@ export const MarkdownEditor: React.FC<MarkdownEditorProps> = ({
       // Mark as saved in editor state
       editorActions.setModified(false);
     } catch (error) {
-      console.error('Manual save failed:', error);
+      import('@/utils/console').then(({ safeConsole }) => {
+        safeConsole.error('Manual save failed:', error);
+      });
     }
   }, [editor.markdown, editor.fileName, fileStorage, editorActions]);
 

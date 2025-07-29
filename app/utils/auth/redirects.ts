@@ -101,7 +101,9 @@ export function hasRedirectLoop(): boolean {
  */
 export function fixRedirectLoop(): void {
   if (hasRedirectLoop()) {
-    console.warn('Redirect loop detected, redirecting to home');
+    import('@/utils/console').then(({ safeConsole }) => {
+      safeConsole.warn('Redirect loop detected, redirecting to home');
+    });
     clearRedirectData();
     window.location.href = '/';
   }

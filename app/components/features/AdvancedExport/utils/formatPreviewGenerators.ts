@@ -1410,7 +1410,7 @@ const generateEnhancedWatermark = (options: HTMLGeneratorOptions): string => {
                 mutations.forEach(function(mutation) {
                     if (mutation.type === 'attributes' || mutation.type === 'childList') {
                         // Log tampering attempt
-                        console.warn('Document integrity check failed - ${uniqueId}');
+                        import('@/utils/console').then(({ safeConsole }) => { safeConsole.warn('Document integrity check failed - ${uniqueId}'); });;
                     }
                 });
             });
@@ -1426,7 +1426,7 @@ const generateEnhancedWatermark = (options: HTMLGeneratorOptions): string => {
                 // Prevent element removal
                 Object.defineProperty(element, 'remove', {
                     value: function() {
-                        console.warn('Watermark removal attempt detected - ${uniqueId}');
+                        import('@/utils/console').then(({ safeConsole }) => { safeConsole.warn('Watermark removal attempt detected - ${uniqueId}'); });;
                         return false;
                     },
                     writable: false,
@@ -1458,7 +1458,7 @@ const generateEnhancedWatermark = (options: HTMLGeneratorOptions): string => {
             setTimeout(function() {
                 const metaWatermark = document.querySelector('meta[name="watermark"]');
                 if (!metaWatermark || !metaWatermark.content) {
-                    console.warn('Document integrity compromised - ${uniqueId}');
+                    import('@/utils/console').then(({ safeConsole }) => { safeConsole.warn('Document integrity compromised - ${uniqueId}'); });;
                 }
             }, 1000);
 

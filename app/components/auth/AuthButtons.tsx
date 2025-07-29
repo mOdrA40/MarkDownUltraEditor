@@ -177,7 +177,9 @@ export const AuthButtons: React.FC<AuthButtonsProps> = ({
                     await signOut();
                     navigate('/');
                   } catch (error) {
-                    console.error('Error signing out:', error);
+                    import('@/utils/console').then(({ safeConsole }) => {
+                      safeConsole.error('Error signing out:', error);
+                    });
                   }
                 }}
                 className="text-red-600 focus:text-red-600 focus:bg-red-50"

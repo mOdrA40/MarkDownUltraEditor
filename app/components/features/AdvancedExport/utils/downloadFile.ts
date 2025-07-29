@@ -35,7 +35,9 @@ export const downloadFile = (blob: Blob, filename: string): void => {
     document.body.removeChild(link);
     URL.revokeObjectURL(url);
   } catch (error) {
-    console.error('Download file error:', error);
+    import('@/utils/console').then(({ safeConsole }) => {
+      safeConsole.error('Download file error:', error);
+    });
     throw new Error(
       `Failed to download file: ${error instanceof Error ? error.message : 'Unknown error'}`
     );

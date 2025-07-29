@@ -221,7 +221,9 @@ export const wrapFileOperation = async <T>(
     return createSuccessResult(result);
   } catch (error) {
     const fileError = parseFileOperationError(error);
-    console.error(`${operationName} failed:`, fileError);
+    import('@/utils/console').then(({ safeConsole }) => {
+      safeConsole.error(`${operationName} failed:`, fileError);
+    });
     return createErrorResult(fileError);
   }
 };

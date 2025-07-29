@@ -196,7 +196,9 @@ export const importWritingSettings = (
     // Try to parse as direct settings object
     return sanitizeWritingSettings(parsed, rules);
   } catch (error) {
-    console.error('Failed to import writing settings:', error);
+    import('@/utils/console').then(({ safeConsole }) => {
+      safeConsole.error('Failed to import writing settings:', error);
+    });
     return null;
   }
 };

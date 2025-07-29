@@ -86,7 +86,9 @@ export const useDialogManager = (): UseDialogManagerReturn => {
       // If query is provided, it can be passed to the search component
       if (query) {
         // This would typically be handled by the search component itself
-        console.log('Opening search with query:', query);
+        import('@/utils/console').then(({ safeConsole }) => {
+          safeConsole.dev('Opening search with query:', query);
+        });
       }
     },
     [showDialog]

@@ -55,7 +55,9 @@ export const clearEditorStorage = (): boolean => {
 
     return success;
   } catch (error) {
-    console.warn('Failed to clear editor storage', error);
+    import('@/utils/console').then(({ safeConsole }) => {
+      safeConsole.warn('Failed to clear editor storage', error);
+    });
     return false;
   }
 };
@@ -191,7 +193,9 @@ export const getStorageUsage = (): {
 
     return { used, total, percentage, available };
   } catch (error) {
-    console.warn('Failed to calculate storage usage', error);
+    import('@/utils/console').then(({ safeConsole }) => {
+      safeConsole.warn('Failed to calculate storage usage', error);
+    });
     return { used: 0, total: 0, percentage: 0, available: 0 };
   }
 };
@@ -260,7 +264,9 @@ export const importEditorData = (data: {
 
     return success;
   } catch (error) {
-    console.warn('Failed to import editor data', error);
+    import('@/utils/console').then(({ safeConsole }) => {
+      safeConsole.warn('Failed to import editor data', error);
+    });
     return false;
   }
 };
@@ -281,7 +287,9 @@ export const restoreFromBackup = (backupString: string): boolean => {
     const data = JSON.parse(backupString);
     return importEditorData(data);
   } catch (error) {
-    console.warn('Failed to restore from backup', error);
+    import('@/utils/console').then(({ safeConsole }) => {
+      safeConsole.warn('Failed to restore from backup', error);
+    });
     return false;
   }
 };
@@ -292,10 +300,14 @@ export const restoreFromBackup = (backupString: string): boolean => {
 export const migrateStorageData = (fromVersion: string, toVersion: string): boolean => {
   try {
     // Add migration logic here when needed
-    console.log(`Migrating storage data from ${fromVersion} to ${toVersion}`);
+    import('@/utils/console').then(({ safeConsole }) => {
+      safeConsole.dev(`Migrating storage data from ${fromVersion} to ${toVersion}`);
+    });
     return true;
   } catch (error) {
-    console.warn('Failed to migrate storage data', error);
+    import('@/utils/console').then(({ safeConsole }) => {
+      safeConsole.warn('Failed to migrate storage data', error);
+    });
     return false;
   }
 };
