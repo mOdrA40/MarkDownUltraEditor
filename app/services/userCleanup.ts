@@ -57,11 +57,7 @@ export class UserCleanupService {
         result.errors.push(`Stats cleanup error: ${statsResult.error}`);
       }
 
-      // 4. Delete file versions
-      const versionsResult = await this.deleteFileVersions(userId);
-      if (versionsResult.error) {
-        result.errors.push(`File versions cleanup error: ${versionsResult.error}`);
-      }
+      // File versions table has been removed - no cleanup needed
 
       result.success = result.errors.length === 0;
 
@@ -122,44 +118,6 @@ export class UserCleanupService {
   private async deleteUserStats(_userId: string): Promise<{ count: number; error?: string }> {
     try {
       return { count: 0 };
-    } catch (error) {
-      return { count: 0, error: String(error) };
-    }
-  }
-
-  /**
-   * Delete file versions for user files
-   */
-  private async deleteFileVersions(userId: string): Promise<{ count: number; error?: string }> {
-    try {
-      // First get all file IDs for the user
-      const { data: userFiles, error: filesError } = await this.supabaseClient
-        .from('user_files')
-        .select('id')
-        .eq('user_id', userId);
-
-      if (filesError) {
-        return { count: 0, error: filesError.message };
-      }
-
-      if (!userFiles || userFiles.length === 0) {
-        return { count: 0 };
-      }
-
-      const fileIds = userFiles.map((file) => file.id);
-
-      // Delete file versions for these files
-      const { data, error } = await this.supabaseClient
-        .from('file_versions')
-        .delete()
-        .in('file_id', fileIds)
-        .select('id');
-
-      if (error) {
-        return { count: 0, error: error.message };
-      }
-
-      return { count: data?.length || 0 };
     } catch (error) {
       return { count: 0, error: String(error) };
     }

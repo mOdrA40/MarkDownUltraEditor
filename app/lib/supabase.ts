@@ -62,32 +62,6 @@ export interface Database {
           deleted_at?: string | null;
         };
       };
-      file_versions: {
-        Row: {
-          id: string;
-          file_id: string;
-          content: string;
-          version_number: number;
-          created_at: string;
-          created_by: string;
-        };
-        Insert: {
-          id?: string;
-          file_id: string;
-          content: string;
-          version_number: number;
-          created_at?: string;
-          created_by: string;
-        };
-        Update: {
-          id?: string;
-          file_id?: string;
-          content?: string;
-          version_number?: number;
-          created_at?: string;
-          created_by?: string;
-        };
-      };
     };
   };
 }

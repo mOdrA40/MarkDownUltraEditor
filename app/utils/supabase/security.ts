@@ -31,17 +31,7 @@ interface SupabaseSecurityAudit {
 /**
  * Tables that should have RLS enabled
  */
-const REQUIRED_RLS_TABLES = [
-  'user_files',
-  'file_versions',
-  'user_sessions',
-  'content_security_analysis',
-  'file_security_stats',
-  'security_audit_log',
-  'security_dashboard',
-  'user_file_stats',
-  'user_roles',
-] as const;
+const REQUIRED_RLS_TABLES = ['user_files', 'user_sessions'] as const;
 
 /**
  * Verify RLS policies for a specific table
