@@ -175,7 +175,14 @@ export interface UseEditorStateReturn {
     setFileName: (name: string) => void;
     setModified: (modified: boolean) => void;
     newFile: () => void;
-    loadFile: (content: string, name: string) => void;
+    loadFile: (
+      content: string,
+      name: string,
+      bypassDialog?: boolean,
+      fileId?: string,
+      source?: 'url' | 'files-page' | 'manual' | 'auto-save',
+      silent?: boolean
+    ) => void;
   };
   undoRedo: {
     undo: () => void;

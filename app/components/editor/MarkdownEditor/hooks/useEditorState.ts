@@ -5,6 +5,7 @@
 
 import { useCallback, useState } from 'react';
 import { useToast, useUndoRedo } from '@/hooks/core';
+import { fileContextManager } from '@/utils/fileContext';
 import type { EditorState, UseEditorStateReturn } from '../types';
 import { DEFAULT_FILE, STORAGE_KEYS, SUCCESS_MESSAGES } from '../utils/constants';
 
@@ -22,7 +23,22 @@ export const useEditorState = (
   const getInitialContent = () => {
     if (initialMarkdown !== undefined) return initialMarkdown;
 
-    // Only check localStorage if no initialMarkdown was provided
+    // Check if there's an active file context that should be preserved
+    const activeFileContext = fileContextManager.getActiveFile();
+    if (activeFileContext) {
+      // If there's an active file context, check localStorage for its content
+      if (typeof localStorage !== 'undefined') {
+        const savedContent = localStorage.getItem(STORAGE_KEYS.CONTENT);
+        if (savedContent !== null) {
+          import('@/utils/console').then(({ safeConsole }) => {
+            safeConsole.dev('Restoring content for active file:', activeFileContext.fileName);
+          });
+          return savedContent;
+        }
+      }
+    }
+
+    // Only check localStorage if no initialMarkdown was provided and no active file context
     if (typeof localStorage !== 'undefined') {
       const savedContent = localStorage.getItem(STORAGE_KEYS.CONTENT);
       if (savedContent !== null) return savedContent;
@@ -35,7 +51,16 @@ export const useEditorState = (
   const getInitialFileName = () => {
     if (initialFileName !== undefined) return initialFileName;
 
-    // Only check localStorage if no initialFileName was provided
+    // Check if there's an active file context that should be preserved
+    const activeFileContext = fileContextManager.getActiveFile();
+    if (activeFileContext) {
+      import('@/utils/console').then(({ safeConsole }) => {
+        safeConsole.dev('Restoring filename for active file:', activeFileContext.fileName);
+      });
+      return activeFileContext.fileName;
+    }
+
+    // Only check localStorage if no initialFileName was provided and no active file context
     if (typeof localStorage !== 'undefined') {
       const savedFileName = localStorage.getItem(STORAGE_KEYS.FILE_NAME);
       if (savedFileName !== null) return savedFileName;
@@ -88,6 +113,36 @@ export const useEditorState = (
   const handleSetModified = useCallback((modified: boolean) => {
     setIsModified(modified);
   }, []);
+
+  /**
+   * Update file context when a file is loaded
+   */
+  const updateFileContext = useCallback(
+    (
+      fileName: string,
+      fileId?: string,
+      source: 'url' | 'files-page' | 'manual' | 'auto-save' = 'manual'
+    ) => {
+      // Generate a file ID if not provided (for new files or files without ID)
+      const contextFileId =
+        fileId || `file_${Date.now()}_${Math.random().toString(36).substring(2, 11)}`;
+
+      fileContextManager.setActiveFile({
+        fileId: contextFileId,
+        fileName,
+        source,
+      });
+
+      import('@/utils/console').then(({ safeConsole }) => {
+        safeConsole.dev('File context updated:', {
+          fileId: contextFileId,
+          fileName,
+          source,
+        });
+      });
+    },
+    []
+  );
 
   /**
    * Create a new file
@@ -154,7 +209,14 @@ export const useEditorState = (
    * Load file content
    */
   const handleLoadFile = useCallback(
-    (content: string, name: string, bypassDialog = false) => {
+    (
+      content: string,
+      name: string,
+      bypassDialog = false,
+      fileId?: string,
+      source: 'url' | 'files-page' | 'manual' | 'auto-save' = 'manual',
+      silent = false // Add silent parameter to suppress notifications
+    ) => {
       if (!bypassDialog && isModified) {
         const confirmed = window.confirm(
           'You have unsaved changes. Are you sure you want to load a new file?'
@@ -183,6 +245,9 @@ export const useEditorState = (
         content.includes('# API Documentation');
       setIsModified(isTemplate);
 
+      // Update file context to maintain state across navigation
+      updateFileContext(name, fileId, source);
+
       // Only update localStorage for guest users to prevent conflict with Supabase
       // For authenticated users, let auto-save handle the Supabase storage
       if (typeof localStorage !== 'undefined') {
@@ -200,16 +265,19 @@ export const useEditorState = (
         }
       }
 
-      toast({
-        title: SUCCESS_MESSAGES.FILE_LOADED,
-        description: `${name} has been loaded successfully.`,
-      });
+      // Only show toast for manual file loading, not for automatic restoration
+      if (!silent && source !== 'auto-save') {
+        toast({
+          title: SUCCESS_MESSAGES.FILE_LOADED,
+          description: `${name} has been loaded successfully.`,
+        });
+      }
 
       import('@/utils/console').then(({ safeConsole }) => {
-        safeConsole.dev('File loaded successfully:', name);
+        safeConsole.dev('File loaded successfully:', name, silent ? '(silent)' : '');
       });
     },
-    [isModified, setMarkdown, clearHistory, toast]
+    [isModified, setMarkdown, clearHistory, toast, updateFileContext]
   );
 
   // Create state object

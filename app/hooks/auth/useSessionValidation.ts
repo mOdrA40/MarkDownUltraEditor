@@ -40,29 +40,49 @@ export const useSessionValidation = (config: SessionValidationConfig = {}) => {
 
   const initializeSession = useCallback(async () => {
     if (!isSignedIn || !user?.id) {
+      if (process.env.NODE_ENV === 'development') {
+        safeConsole.dev('🚫 Session init skipped');
+      }
       return;
     }
 
     if (currentSessionIdRef.current) {
-      safeConsole.log('Session already initialized:', currentSessionIdRef.current);
+      if (process.env.NODE_ENV === 'development') {
+        safeConsole.dev('✅ Session already initialized');
+      }
       return;
     }
 
     try {
+      if (process.env.NODE_ENV === 'development') {
+        safeConsole.dev('🔄 Initializing session');
+      }
+
       const supabaseClient = createClerkSupabaseClient(getToken);
       const sessionManager = createSessionManager(supabaseClient);
 
       const browserFingerprint = getBrowserFingerprint();
       const sessionId = `session_${user.id}_${browserFingerprint}`;
 
+      if (process.env.NODE_ENV === 'development') {
+        safeConsole.dev('🔍 Checking existing sessions');
+      }
+
       const existingSessions = await sessionManager.getUserSessions(user.id);
+
+      if (process.env.NODE_ENV === 'development') {
+        safeConsole.dev('📊 Found existing sessions:', existingSessions.length);
+      }
+
       const existingSession = existingSessions.find(
         (s) => s.session_id.startsWith(`session_${user.id}_${browserFingerprint}`) && s.is_active
       );
 
       if (existingSession) {
         currentSessionIdRef.current = existingSession.session_id;
-        safeConsole.log('Using existing session:', existingSession.session_id);
+        if (process.env.NODE_ENV === 'development') {
+          safeConsole.dev('♻️ Using existing session');
+        }
 
         await sessionManager.updateActivity(existingSession.session_id);
       } else {
@@ -74,12 +94,23 @@ export const useSessionValidation = (config: SessionValidationConfig = {}) => {
             : Date.now().toString(36);
         const uniqueSessionId = `${sessionId}_${uniqueId}`;
 
+        if (process.env.NODE_ENV === 'development') {
+          safeConsole.dev('🆕 Creating new session');
+        }
+
         currentSessionIdRef.current = uniqueSessionId;
-        await sessionManager.createSession(user.id, uniqueSessionId);
-        safeConsole.log('New session created:', uniqueSessionId);
+        const createdSession = await sessionManager.createSession(user.id, uniqueSessionId);
+
+        if (process.env.NODE_ENV === 'development') {
+          safeConsole.dev('✅ New session created:', !!createdSession);
+        }
       }
     } catch (error) {
-      safeConsole.error('Error initializing session:', error);
+      if (process.env.NODE_ENV === 'development') {
+        safeConsole.error('❌ Error initializing session:', error);
+      } else {
+        safeConsole.error('Session initialization failed');
+      }
     }
   }, [isSignedIn, user?.id, getToken]);
 

@@ -5,10 +5,10 @@ MarkdownEditor
 
 import React from 'react';
 import { useSearchParams } from 'react-router';
-import { CSPNotification, ImageInsertHelp } from '@/components/ui/CSPNotification';
+
 import { usePerformanceDebug, useRenderPerformance } from '@/hooks/core/usePerformance';
 import { useFileStorage } from '@/hooks/files';
-import { useCSPDetection } from '@/hooks/useCSPDetection';
+
 import { useWelcomeDialog, WelcomeDialog } from '../../auth/WelcomeDialog';
 import { type Theme, useTheme } from '../../features/ThemeSelector';
 import { MobileNav } from '../../layout/MobileNav';
@@ -142,9 +142,6 @@ export const MarkdownEditor: React.FC<MarkdownEditorProps> = ({
   // Ref to track last saved content hash to prevent duplicate saves
   const lastSavedContentRef = React.useRef<string>('');
   const [sidebarCollapsed, setSidebarCollapsed] = React.useState(false);
-
-  // CSP and image handling
-  const { isCSPBlocking } = useCSPDetection();
 
   // Auto-collapse sidebars based on responsive state
   React.useEffect(() => {
@@ -345,7 +342,7 @@ export const MarkdownEditor: React.FC<MarkdownEditorProps> = ({
     fileStorageRef.current = fileStorage.loadFile;
   });
 
-  // Handle file loading from URL parameter - wait for storage service to be ready
+  // Handle file loading from URL parameter OR active file context - wait for storage service to be ready
   React.useEffect(() => {
     if (urlFile && fileStorage.isInitialized && fileStorage.storageService) {
       const loadFileFromStorage = async () => {
@@ -356,8 +353,8 @@ export const MarkdownEditor: React.FC<MarkdownEditorProps> = ({
             safeConsole.dev('Storage service authenticated:', fileStorage.isAuthenticated);
           });
 
-          // Wait a bit more to ensure service is fully ready
-          await new Promise((resolve) => setTimeout(resolve, 200));
+          // Minimal wait to ensure service is ready
+          await new Promise((resolve) => setTimeout(resolve, 50));
 
           const fileData = await fileStorage.loadFile(urlFile);
           if (fileData) {
@@ -365,14 +362,23 @@ export const MarkdownEditor: React.FC<MarkdownEditorProps> = ({
               safeConsole.dev('File loaded from storage successfully');
             });
             (
-              loadFileRef.current as (content: string, name: string, bypassDialog?: boolean) => void
-            )(fileData.content, fileData.title, true);
+              loadFileRef.current as (
+                content: string,
+                name: string,
+                bypassDialog?: boolean,
+                fileId?: string,
+                source?: 'url' | 'files-page' | 'manual'
+              ) => void
+            )(fileData.content, fileData.title, true, fileData.id, 'url');
 
-            // Clear URL parameter after successful file loading
+            // Clear URL parameter after successful file loading with delay to ensure file context is saved
             import('@/utils/console').then(({ safeConsole }) => {
-              safeConsole.dev('File loaded successfully, clearing URL parameter');
+              safeConsole.dev('File loaded successfully, clearing URL parameter after delay');
             });
-            setSearchParams({}, { replace: true });
+            // Minimal delay to ensure file context is saved
+            setTimeout(() => {
+              setSearchParams({}, { replace: true });
+            }, 50);
           } else {
             import('@/utils/console').then(({ safeConsole }) => {
               safeConsole.warn('File not found in storage');
@@ -414,6 +420,71 @@ export const MarkdownEditor: React.FC<MarkdownEditorProps> = ({
     setSearchParams,
   ]);
 
+  // Handle file restoration from active context when no URL parameter
+  React.useEffect(() => {
+    // Only try to restore if there's no URL file parameter and storage is ready
+    if (!urlFile && !isLoadingFromUrl && fileStorage.isInitialized) {
+      const restoreActiveFile = async () => {
+        try {
+          // Import file context manager dynamically to avoid SSR issues
+          const { fileContextManager } = await import('@/utils/fileContext');
+          const activeFileContext = fileContextManager.getActiveFile();
+
+          if (activeFileContext?.fileId) {
+            import('@/utils/console').then(({ safeConsole }) => {
+              safeConsole.dev('Attempting to restore active file:', activeFileContext.fileName);
+            });
+
+            // Load the file from storage (with caching optimization)
+            const fileData = await fileStorage.loadFile(activeFileContext.fileId);
+            if (fileData) {
+              import('@/utils/console').then(({ safeConsole }) => {
+                safeConsole.dev('Active file restored successfully:', fileData.title);
+              });
+
+              // Load the file content
+              const validSource = ['url', 'files-page', 'manual'].includes(activeFileContext.source)
+                ? (activeFileContext.source as 'url' | 'files-page' | 'manual')
+                : 'manual';
+
+              (
+                loadFileRef.current as (
+                  content: string,
+                  name: string,
+                  bypassDialog?: boolean,
+                  fileId?: string,
+                  source?: 'url' | 'files-page' | 'manual',
+                  silent?: boolean
+                ) => void
+              )(
+                fileData.content,
+                fileData.title,
+                true,
+                fileData.id,
+                validSource,
+                true // Silent loading for restoration
+              );
+            } else {
+              import('@/utils/console').then(({ safeConsole }) => {
+                safeConsole.warn('Active file not found in storage, clearing context');
+              });
+              // Clear invalid file context
+              fileContextManager.clearActiveFile();
+            }
+          }
+        } catch (error) {
+          import('@/utils/console').then(({ safeConsole }) => {
+            safeConsole.error('Error restoring active file:', error);
+          });
+        }
+      };
+
+      // Minimal delay to ensure editor is initialized
+      const timer = setTimeout(restoreActiveFile, 100);
+      return () => clearTimeout(timer);
+    }
+  }, [urlFile, isLoadingFromUrl, fileStorage.isInitialized, fileStorage.loadFile]);
+
   // Show loading state while loading file from URL
   if (isLoadingFromUrl) {
     return (
@@ -437,12 +508,6 @@ export const MarkdownEditor: React.FC<MarkdownEditorProps> = ({
           className={className}
           style={style}
         >
-          {/* CSP Notification */}
-          {isCSPBlocking && !settings.zenMode && <CSPNotification className="mx-4 mt-4" />}
-
-          {/* Image Insert Help */}
-          {isCSPBlocking && !settings.zenMode && <ImageInsertHelp className="mx-4 mt-2" />}
-
           {/* Mobile Navigation */}
           {responsive.isMobile && !settings.zenMode && (
             <MobileNav

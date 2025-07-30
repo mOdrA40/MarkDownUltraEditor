@@ -6,6 +6,7 @@ import type { HeadersFunction, LinksFunction } from 'react-router';
 import { Links, Meta, Outlet, Scripts, ScrollRestoration } from 'react-router';
 import SessionManager from '@/components/auth/SessionManager';
 import { ThemeProvider } from '@/components/features/ThemeSelector';
+import { FileContextProvider } from '@/contexts/FileContextProvider';
 import { fixRedirectLoop } from '@/utils/auth/redirects';
 import type { Route } from './+types/root';
 
@@ -145,9 +146,6 @@ export const headers: HeadersFunction = () => {
 
   // In development, use relaxed CSP but still secure
   if (isDevelopment) {
-    import('@/utils/console').then(({ safeConsole }) => {
-      safeConsole.dev('🔧 Development mode: Permissive CSP for better developer experience');
-    });
     return {
       ...baseHeaders,
       'Content-Security-Policy': [
@@ -156,7 +154,7 @@ export const headers: HeadersFunction = () => {
         "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://clerk.com https://*.clerk.accounts.dev https://cdnjs.cloudflare.com",
         "img-src * 'self' data: blob: https: http:", // Very permissive for development
         "font-src 'self' data: https://fonts.googleapis.com https://fonts.gstatic.com",
-        "connect-src 'self' https://*.supabase.co https://clerk.com https://*.clerk.accounts.dev https://*.clerk.com wss://*.supabase.co wss://*.clerk.com https://*.ingest.sentry.io https://*.ingest.us.sentry.io https://sentry.io",
+        "connect-src 'self' https://*.supabase.co https://clerk.com https://*.clerk.accounts.dev https://*.clerk.com wss://*.supabase.co wss://*.clerk.com https://*.ingest.sentry.io https://*.ingest.us.sentry.io https://sentry.io https://api.ipify.org https://ipapi.co https://ipinfo.io https://api.ip.sb https://clerk-telemetry.com",
         "media-src 'self' blob:",
         "object-src 'none'",
         "child-src 'none'",
@@ -178,7 +176,7 @@ export const headers: HeadersFunction = () => {
       "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://clerk.com https://*.clerk.accounts.dev https://cdnjs.cloudflare.com",
       `img-src ${trustedImageDomains.join(' ')}`,
       "font-src 'self' data: https://fonts.googleapis.com https://fonts.gstatic.com",
-      "connect-src 'self' https://*.supabase.co https://clerk.com https://*.clerk.accounts.dev https://*.clerk.com wss://*.supabase.co wss://*.clerk.com https://*.ingest.sentry.io https://*.ingest.us.sentry.io https://sentry.io",
+      "connect-src 'self' https://*.supabase.co https://clerk.com https://*.clerk.accounts.dev https://*.clerk.com wss://*.supabase.co wss://*.clerk.com https://*.ingest.sentry.io https://*.ingest.us.sentry.io https://sentry.io https://api.ipify.org https://ipapi.co https://ipinfo.io https://api.ip.sb https://clerk-telemetry.com",
       "media-src 'self'",
       "object-src 'none'",
       "child-src 'none'",
@@ -275,8 +273,10 @@ export default function App({ loaderData }: Route.ComponentProps) {
       }}
     >
       <ThemeProvider>
-        <SessionManager />
-        <Outlet />
+        <FileContextProvider>
+          <SessionManager />
+          <Outlet />
+        </FileContextProvider>
       </ThemeProvider>
     </ClerkProvider>
   );

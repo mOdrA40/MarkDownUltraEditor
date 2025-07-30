@@ -9,6 +9,7 @@
 export interface SessionData {
   id?: string;
   session_id: string;
+  session_token?: string;
   user_id: string;
   ip_address?: string;
   user_agent?: string;

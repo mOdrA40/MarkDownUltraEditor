@@ -62,6 +62,56 @@ export interface Database {
           deleted_at?: string | null;
         };
       };
+      user_sessions: {
+        Row: {
+          id: string;
+          user_id: string;
+          session_id: string | null;
+          session_token: string | null;
+          ip_address: string | null;
+          user_agent: string | null;
+          location: Record<string, unknown> | null;
+          device_info: Record<string, unknown> | null;
+          security_flags: Record<string, unknown> | null;
+          is_active: boolean | null;
+          last_activity: string | null;
+          created_at: string | null;
+          updated_at: string | null;
+          expires_at: string | null;
+        };
+        Insert: {
+          id?: string;
+          user_id?: string;
+          session_id?: string | null;
+          session_token?: string | null;
+          ip_address?: string | null;
+          user_agent?: string | null;
+          location?: Record<string, unknown> | null;
+          device_info?: Record<string, unknown> | null;
+          security_flags?: Record<string, unknown> | null;
+          is_active?: boolean | null;
+          last_activity?: string | null;
+          created_at?: string | null;
+          updated_at?: string | null;
+          expires_at?: string | null;
+        };
+        Update: {
+          id?: string;
+          user_id?: string;
+          session_id?: string | null;
+          session_token?: string | null;
+          ip_address?: string | null;
+          user_agent?: string | null;
+          location?: Record<string, unknown> | null;
+          device_info?: Record<string, unknown> | null;
+          security_flags?: Record<string, unknown> | null;
+          is_active?: boolean | null;
+          last_activity?: string | null;
+          created_at?: string | null;
+          updated_at?: string | null;
+          expires_at?: string | null;
+        };
+      };
     };
   };
 }
@@ -94,18 +144,39 @@ export const createClerkSupabaseClient = (
         'X-Client-Info': 'markdown-ultra-editor',
       },
     },
-    // Native Third Party Auth integration
+    // Native Third Party Auth integration with Clerk
+    // This uses the new recommended method from Supabase docs
     accessToken: async () => {
       try {
         const token = await getToken();
-        import('@/utils/console').then(({ safeConsole }) => {
-          safeConsole.dev('Native accessToken called:', token ? '✅ Token exists' : '❌ No token');
-        });
+        if (process.env.NODE_ENV === 'development') {
+          import('@/utils/console').then(({ safeConsole }) => {
+            safeConsole.dev(
+              '🔐 Clerk token for Supabase:',
+              token ? '✅ Token exists' : '❌ No token'
+            );
+            if (token) {
+              // Only log token details in development
+              try {
+                const payload = JSON.parse(atob(token.split('.')[1]));
+                safeConsole.dev('🔍 Token payload preview:', {
+                  sub: payload.sub,
+                  role: payload.role,
+                  exp: new Date(payload.exp * 1000).toISOString(),
+                });
+              } catch (_e) {
+                safeConsole.dev('🔍 Token parsing failed (expected in some cases)');
+              }
+            }
+          });
+        }
         return token;
       } catch (error) {
-        import('@/utils/console').then(({ safeConsole }) => {
-          safeConsole.error('Error getting token in accessToken():', error);
-        });
+        if (process.env.NODE_ENV === 'development') {
+          import('@/utils/console').then(({ safeConsole }) => {
+            safeConsole.error('❌ Error getting Clerk token for Supabase:', error);
+          });
+        }
         return null;
       }
     },

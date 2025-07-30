@@ -5,14 +5,14 @@
  * @author Axel Modra
  */
 
-import { FileText } from "lucide-react";
-import React from "react";
-import { ImageUploadButton } from "@/components/editor/ImageUpload";
-import { Button } from "@/components/ui/button";
-import { Separator } from "@/components/ui/separator";
-import { cn } from "@/lib/utils";
-import type { DesktopToolbarProps } from "../types/toolbar.types";
-import { ToolbarButton } from "./ToolbarButton";
+import { FileText } from 'lucide-react';
+import React from 'react';
+import { ImageUploadButton } from '@/components/editor/ImageUpload';
+import { Button } from '@/components/ui/button';
+import { Separator } from '@/components/ui/separator';
+import { cn } from '@/lib/utils';
+import type { DesktopToolbarProps } from '../types/toolbar.types';
+import { ToolbarButton } from './ToolbarButton';
 
 /**
  * Komponen DesktopToolbar
@@ -24,21 +24,15 @@ import { ToolbarButton } from "./ToolbarButton";
 export const DesktopToolbar: React.FC<DesktopToolbarProps> = React.memo(
   ({ formatButtons, onInsertText, className, currentTheme }) => {
     // Pisahkan buttons berdasarkan kategori untuk grouping yang lebih baik
-    const headingButtons = formatButtons
-      .filter((btn) => btn.category === "heading")
-      .slice(0, 3);
+    const headingButtons = formatButtons.filter((btn) => btn.category === 'heading').slice(0, 3);
     const formattingButtons = formatButtons
-      .filter((btn) => btn.category === "formatting")
+      .filter((btn) => btn.category === 'formatting')
       .slice(0, 2);
-    const codeButtons = formatButtons
-      .filter((btn) => btn.category === "code")
-      .slice(0, 1);
+    const codeButtons = formatButtons.filter((btn) => btn.category === 'code').slice(0, 1);
     const contentButtons = formatButtons.filter(
-      (btn) => btn.category === "content" || btn.category === "list"
+      (btn) => btn.category === 'content' || btn.category === 'list'
     );
-    const _mediaButtons = formatButtons.filter(
-      (btn) => btn.category === "media"
-    );
+    const _mediaButtons = formatButtons.filter((btn) => btn.category === 'media');
 
     // Action untuk code block
     const insertCodeBlock = () => {
@@ -48,10 +42,10 @@ export const DesktopToolbar: React.FC<DesktopToolbarProps> = React.memo(
     };
 
     // Handle image insertion
-    const handleImageInsert = (imageUrl: string, altText = "Image") => {
+    const handleImageInsert = (imageUrl: string, altText = 'Image') => {
       // Debug log to check parameters
-      import("@/utils/console").then(({ safeConsole }) => {
-        safeConsole.dev("Image insertion:", { imageUrl, altText });
+      import('@/utils/console').then(({ safeConsole }) => {
+        safeConsole.dev('Image insertion:', { imageUrl, altText });
       });
       onInsertText(`![${altText}](${imageUrl})`);
     };
@@ -59,7 +53,7 @@ export const DesktopToolbar: React.FC<DesktopToolbarProps> = React.memo(
     return (
       <div
         className={cn(
-          "hidden xl:block px-4 py-2 border-b bg-background/50 backdrop-blur",
+          'hidden xl:block px-4 py-2 border-b bg-background/50 backdrop-blur',
           className
         )}
       >
@@ -145,4 +139,4 @@ export const DesktopToolbar: React.FC<DesktopToolbarProps> = React.memo(
 );
 
 // Set display name untuk debugging
-DesktopToolbar.displayName = "DesktopToolbar";
+DesktopToolbar.displayName = 'DesktopToolbar';

@@ -292,7 +292,9 @@ export class HybridFileStorage implements FileStorageService {
 
       const { data, error } = await this.supabaseClient
         .from('user_files')
-        .select('*')
+        .select(
+          'id, user_id, title, content, file_type, tags, created_at, updated_at, is_template, file_size, version, is_deleted, deleted_at'
+        )
         .eq('id', fileId)
         .eq('user_id', this.userId)
         .eq('is_deleted', false)

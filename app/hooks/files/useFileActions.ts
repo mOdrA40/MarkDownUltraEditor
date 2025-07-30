@@ -1,5 +1,6 @@
 import type { Table } from '@tanstack/react-table';
 import { useCallback, useState } from 'react';
+import { useFileContextActions } from '@/contexts/FileContextProvider';
 import type { FileData } from '@/lib/supabase';
 import { safeConsole } from '@/utils/console';
 
@@ -41,9 +42,18 @@ export const useFileActions = ({
   const [filesToDelete, setFilesToDelete] = useState<FileData[] | null>(null);
   const [deleteType, setDeleteType] = useState<DeleteType>('single');
 
-  const handleOpenFile = useCallback((file: FileData) => {
-    window.location.href = `/?file=${file.id || file.title}`;
-  }, []);
+  const { setActiveFileFromFilesPage } = useFileContextActions();
+
+  const handleOpenFile = useCallback(
+    (file: FileData) => {
+      // Set file context before navigation to preserve state
+      setActiveFileFromFilesPage(file.id || file.title, file.title);
+
+      // Navigate to editor with file parameter
+      window.location.href = `/?file=${file.id || file.title}`;
+    },
+    [setActiveFileFromFilesPage]
+  );
 
   const handleDeleteFile = useCallback((file: FileData) => {
     setFileToDelete(file);

@@ -273,6 +273,18 @@ export const useFileStorage = (): UseFileStorageReturn => {
         return null;
       }
 
+      // Check if file is already cached in query client
+      const cachedFile = queryClient.getQueryData<FileData>([
+        'file',
+        userId || 'anonymous',
+        identifier,
+      ]);
+
+      if (cachedFile) {
+        safeConsole.log('File loaded from cache:', cachedFile.title);
+        return cachedFile;
+      }
+
       try {
         safeConsole.log('Loading file:', identifier);
         safeConsole.log('Storage service authenticated:', isSignedIn);
@@ -290,6 +302,11 @@ export const useFileStorage = (): UseFileStorageReturn => {
           if (!file.content || file.content.trim().length === 0) {
             safeConsole.log('Warning: Loaded file has empty content:', file.title);
           }
+
+          // Cache the loaded file for faster subsequent access
+          queryClient.setQueryData(['file', userId || 'anonymous', identifier], file, {
+            updatedAt: Date.now(),
+          });
         } else {
           safeConsole.log('File not found:', identifier);
           if (isSignedIn) {
@@ -317,7 +334,7 @@ export const useFileStorage = (): UseFileStorageReturn => {
         return null;
       }
     },
-    [storageService, toast, isInitialized, isSignedIn]
+    [storageService, toast, isInitialized, isSignedIn, queryClient, userId]
   );
 
   const exportAllFiles = useCallback(async (): Promise<void> => {

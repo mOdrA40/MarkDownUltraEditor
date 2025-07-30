@@ -5,13 +5,13 @@
  * @author Axel Modra
  */
 
-import { Code, FileText } from "lucide-react";
-import React from "react";
-import { Button } from "@/components/ui/button";
-import { Separator } from "@/components/ui/separator";
-import { cn } from "@/lib/utils";
-import type { TabletToolbarProps } from "../types/toolbar.types";
-import { ToolbarButton } from "./ToolbarButton";
+import { Code, FileText } from 'lucide-react';
+import React from 'react';
+import { Button } from '@/components/ui/button';
+import { Separator } from '@/components/ui/separator';
+import { cn } from '@/lib/utils';
+import type { TabletToolbarProps } from '../types/toolbar.types';
+import { ToolbarButton } from './ToolbarButton';
 
 /**
  * Komponen TabletToolbar
@@ -22,25 +22,14 @@ import { ToolbarButton } from "./ToolbarButton";
  * @returns JSX Element
  */
 export const TabletToolbar: React.FC<TabletToolbarProps> = React.memo(
-  ({
-    formatButtons,
-    onInsertText,
-    className,
-    compact = false,
-    currentTheme,
-  }) => {
+  ({ formatButtons, onInsertText, className, compact = false, currentTheme }) => {
     // Pisahkan buttons berdasarkan kategori
-    const headingButtons = formatButtons
-      .filter((btn) => btn.category === "heading")
-      .slice(0, 3);
+    const headingButtons = formatButtons.filter((btn) => btn.category === 'heading').slice(0, 3);
     const formattingButtons = formatButtons
-      .filter((btn) => btn.category === "formatting")
+      .filter((btn) => btn.category === 'formatting')
       .slice(0, 2);
     const contentButtons = formatButtons.filter(
-      (btn) =>
-        btn.category === "content" ||
-        btn.category === "list" ||
-        btn.category === "media"
+      (btn) => btn.category === 'content' || btn.category === 'list' || btn.category === 'media'
     );
 
     // Action untuk code block
@@ -55,7 +44,7 @@ export const TabletToolbar: React.FC<TabletToolbarProps> = React.memo(
       return (
         <div
           className={cn(
-            "hidden sm:block md:hidden px-2 py-2 border-b bg-background/50 backdrop-blur",
+            'hidden sm:block md:hidden px-2 py-2 border-b bg-background/50 backdrop-blur',
             className
           )}
         >
@@ -90,7 +79,7 @@ export const TabletToolbar: React.FC<TabletToolbarProps> = React.memo(
             <Button
               variant="ghost"
               size="sm"
-              onClick={() => onInsertText("`code`")}
+              onClick={() => onInsertText('`code`')}
               className="h-6 px-2 text-xs flex-shrink-0 clean-button toolbar-button-fix prevent-layout-shift"
               title="Inline Code"
               style={currentTheme ? { color: currentTheme.text } : undefined}
@@ -133,7 +122,7 @@ export const TabletToolbar: React.FC<TabletToolbarProps> = React.memo(
     return (
       <div
         className={cn(
-          "hidden md:block xl:hidden px-3 py-2 border-b bg-background/50 backdrop-blur",
+          'hidden md:block xl:hidden px-3 py-2 border-b bg-background/50 backdrop-blur',
           className
         )}
       >
@@ -168,7 +157,7 @@ export const TabletToolbar: React.FC<TabletToolbarProps> = React.memo(
           <Button
             variant="ghost"
             size="sm"
-            onClick={() => onInsertText("`code`")}
+            onClick={() => onInsertText('`code`')}
             className="h-7 px-3 text-xs clean-button toolbar-button-fix prevent-layout-shift"
             title="Inline Code"
             style={currentTheme ? { color: currentTheme.text } : undefined}
@@ -211,4 +200,4 @@ export const TabletToolbar: React.FC<TabletToolbarProps> = React.memo(
 );
 
 // Set display name untuk debugging
-TabletToolbar.displayName = "TabletToolbar";
+TabletToolbar.displayName = 'TabletToolbar';

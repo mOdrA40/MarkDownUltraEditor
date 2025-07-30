@@ -12,6 +12,7 @@ export interface SessionData {
   id?: string;
   user_id: string;
   session_id: string;
+  session_token?: string;
   ip_address?: string;
   user_agent?: string;
   location?: {
@@ -52,6 +53,10 @@ export class SessionManager {
    */
   async createSession(userId: string, sessionId: string): Promise<SessionData | null> {
     try {
+      if (process.env.NODE_ENV === 'development') {
+        safeConsole.dev('🔄 SessionManager: Creating session');
+      }
+
       // Clean up old sessions for this user first (keep only last 5 active sessions)
       await this.cleanupOldSessions(userId);
 
@@ -62,10 +67,13 @@ export class SessionManager {
       // Parse device info using improved detection
       const deviceInfo = getDeviceInfo();
 
+      // Generate unique session_token (different from session_id to avoid constraint conflict)
+      const sessionToken = `token_${userId}_${Date.now()}_${Math.random().toString(36).substring(2, 8)}`;
+
       const sessionData = {
-        user_id: userId,
+        // user_id will be auto-filled from auth.jwt() ->> 'sub' (Clerk token)
         session_id: sessionId,
-        session_token: sessionId, // Use sessionId as session_token for now
+        session_token: sessionToken, // Use unique token to avoid constraint conflict
         ip_address: ipInfo.ip,
         user_agent: userAgent,
         location: {
@@ -85,23 +93,36 @@ export class SessionManager {
         },
       };
 
+      if (process.env.NODE_ENV === 'development') {
+        safeConsole.dev('📝 SessionManager: Session data prepared');
+      }
+
       const { data, error } = await this.supabaseClient
         .from('user_sessions')
-        .upsert(sessionData, {
-          onConflict: 'session_id',
-          ignoreDuplicates: false,
-        })
+        .insert(sessionData)
         .select()
         .single();
 
       if (error) {
-        safeConsole.error('Failed to create session:', error);
+        if (process.env.NODE_ENV === 'development') {
+          safeConsole.error('❌ SessionManager: Failed to create session:', error.message);
+        } else {
+          safeConsole.error('Failed to create session');
+        }
         return null;
+      }
+
+      if (process.env.NODE_ENV === 'development') {
+        safeConsole.dev('✅ SessionManager: Session created successfully');
       }
 
       return data;
     } catch (error) {
-      safeConsole.error('Session creation error:', error);
+      if (process.env.NODE_ENV === 'development') {
+        safeConsole.error('❌ SessionManager: Session creation error:', error);
+      } else {
+        safeConsole.error('Session creation failed');
+      }
       return null;
     }
   }
@@ -127,6 +148,10 @@ export class SessionManager {
    */
   async getUserSessions(userId: string): Promise<SessionData[]> {
     try {
+      if (process.env.NODE_ENV === 'development') {
+        safeConsole.dev('🔍 SessionManager: Getting sessions');
+      }
+
       const { data, error } = await this.supabaseClient
         .from('user_sessions')
         .select('*')
@@ -135,13 +160,25 @@ export class SessionManager {
         .order('last_activity', { ascending: false });
 
       if (error) {
-        safeConsole.error('Failed to get user sessions:', error);
+        if (process.env.NODE_ENV === 'development') {
+          safeConsole.error('❌ SessionManager: Failed to get user sessions:', error.message);
+        } else {
+          safeConsole.error('Failed to get user sessions');
+        }
         return [];
+      }
+
+      if (process.env.NODE_ENV === 'development') {
+        safeConsole.dev('📊 SessionManager: Retrieved sessions:', data?.length || 0);
       }
 
       return data || [];
     } catch (error) {
-      safeConsole.error('Get sessions error:', error);
+      if (process.env.NODE_ENV === 'development') {
+        safeConsole.error('❌ SessionManager: Get sessions error:', error);
+      } else {
+        safeConsole.error('Get sessions failed');
+      }
       return [];
     }
   }
