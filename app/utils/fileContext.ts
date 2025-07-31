@@ -3,7 +3,7 @@
  * @author Axel Modra
  */
 
-import { safeConsole } from '@/utils/console';
+import { safeConsole } from "@/utils/console";
 
 /**
  * File context interface
@@ -16,7 +16,7 @@ export interface FileContext {
   /** Timestamp when file was opened */
   openedAt: number;
   /** Source of file opening (url, files-page, etc) */
-  source: 'url' | 'files-page' | 'manual' | 'auto-save';
+  source: "url" | "files-page" | "manual" | "auto-save";
   /** Whether this is an active file session */
   isActive: boolean;
 }
@@ -25,8 +25,8 @@ export interface FileContext {
  * Session storage keys for file context
  */
 const SESSION_KEYS = {
-  ACTIVE_FILE: 'markdownEditor_activeFile',
-  FILE_HISTORY: 'markdownEditor_fileHistory',
+  ACTIVE_FILE: "markdownEditor_activeFile",
+  FILE_HISTORY: "markdownEditor_fileHistory",
 } as const;
 
 /**
@@ -38,9 +38,9 @@ class FileContextManager {
    */
   private isSessionStorageAvailable(): boolean {
     try {
-      if (typeof sessionStorage === 'undefined') return false;
-      const test = '__session_test__';
-      sessionStorage.setItem(test, 'test');
+      if (typeof sessionStorage === "undefined") return false;
+      const test = "__session_test__";
+      sessionStorage.setItem(test, "test");
       sessionStorage.removeItem(test);
       return true;
     } catch {
@@ -51,9 +51,9 @@ class FileContextManager {
   /**
    * Set active file context
    */
-  setActiveFile(context: Omit<FileContext, 'openedAt' | 'isActive'>): boolean {
+  setActiveFile(context: Omit<FileContext, "openedAt" | "isActive">): boolean {
     if (!this.isSessionStorageAvailable()) {
-      safeConsole.warn('SessionStorage not available for file context');
+      safeConsole.warn("SessionStorage not available for file context");
       return false;
     }
 
@@ -64,12 +64,15 @@ class FileContextManager {
         isActive: true,
       };
 
-      sessionStorage.setItem(SESSION_KEYS.ACTIVE_FILE, JSON.stringify(fileContext));
+      sessionStorage.setItem(
+        SESSION_KEYS.ACTIVE_FILE,
+        JSON.stringify(fileContext)
+      );
 
-      safeConsole.dev('Active file context set:', fileContext.fileName);
+      safeConsole.dev("Active file context set:", fileContext.fileName);
       return true;
     } catch (error) {
-      safeConsole.error('Failed to set active file context:', error);
+      safeConsole.error("Failed to set active file context:", error);
       return false;
     }
   }
@@ -88,14 +91,14 @@ class FileContextManager {
 
       // Validate context structure
       if (!context.fileId || !context.fileName) {
-        safeConsole.warn('Invalid file context structure, clearing');
+        safeConsole.warn("Invalid file context structure, clearing");
         this.clearActiveFile();
         return null;
       }
 
       return context;
     } catch (error) {
-      safeConsole.error('Failed to get active file context:', error);
+      safeConsole.error("Failed to get active file context:", error);
       this.clearActiveFile();
       return null;
     }
@@ -109,10 +112,10 @@ class FileContextManager {
 
     try {
       sessionStorage.removeItem(SESSION_KEYS.ACTIVE_FILE);
-      safeConsole.dev('Active file context cleared');
+      safeConsole.dev("Active file context cleared");
       return true;
     } catch (error) {
-      safeConsole.error('Failed to clear active file context:', error);
+      safeConsole.error("Failed to clear active file context:", error);
       return false;
     }
   }
@@ -127,7 +130,7 @@ class FileContextManager {
   /**
    * Update active file context
    */
-  updateActiveFile(updates: Partial<Omit<FileContext, 'openedAt'>>): boolean {
+  updateActiveFile(updates: Partial<Omit<FileContext, "openedAt">>): boolean {
     const current = this.getActiveFile();
     if (!current) return false;
 
@@ -156,10 +159,13 @@ class FileContextManager {
       // Keep only last 10 files
       history = history.slice(0, 10);
 
-      sessionStorage.setItem(SESSION_KEYS.FILE_HISTORY, JSON.stringify(history));
+      sessionStorage.setItem(
+        SESSION_KEYS.FILE_HISTORY,
+        JSON.stringify(history)
+      );
       return true;
     } catch (error) {
-      safeConsole.error('Failed to add file to history:', error);
+      safeConsole.error("Failed to add file to history:", error);
       return false;
     }
   }
@@ -174,7 +180,7 @@ class FileContextManager {
       const stored = sessionStorage.getItem(SESSION_KEYS.FILE_HISTORY);
       return stored ? JSON.parse(stored) : [];
     } catch (error) {
-      safeConsole.error('Failed to get file history:', error);
+      safeConsole.error("Failed to get file history:", error);
       return [];
     }
   }
@@ -188,10 +194,10 @@ class FileContextManager {
     try {
       sessionStorage.removeItem(SESSION_KEYS.ACTIVE_FILE);
       sessionStorage.removeItem(SESSION_KEYS.FILE_HISTORY);
-      safeConsole.dev('All file context data cleared');
+      safeConsole.dev("All file context data cleared");
       return true;
     } catch (error) {
-      safeConsole.error('Failed to clear file context data:', error);
+      safeConsole.error("Failed to clear file context data:", error);
       return false;
     }
   }
@@ -216,6 +222,57 @@ class FileContextManager {
  * Global file context manager instance
  */
 export const fileContextManager = new FileContextManager();
+
+/**
+ * Global flag for immediate loading detection
+ * This is set during navigation and checked synchronously
+ * Using window object for immediate global access
+ */
+declare global {
+  interface Window {
+    __markdownEditor_shouldShowLoading?: boolean;
+  }
+}
+
+/**
+ * Set global loading flag (called during navigation)
+ */
+export const setGlobalLoadingFlag = (shouldLoad: boolean) => {
+  if (typeof window !== "undefined") {
+    window.__markdownEditor_shouldShowLoading = shouldLoad;
+  }
+};
+
+/**
+ * Get global loading flag (immediate synchronous check)
+ */
+export const getGlobalLoadingFlag = (): boolean => {
+  if (typeof window !== "undefined") {
+    return window.__markdownEditor_shouldShowLoading === true;
+  }
+  return false;
+};
+
+/**
+ * Check if should show loading immediately (combines window flag + sessionStorage)
+ */
+export const shouldShowImmediateLoading = (): boolean => {
+  // First check window flag (immediate, zero delay)
+  if (
+    typeof window !== "undefined" &&
+    window.__markdownEditor_shouldShowLoading === true
+  ) {
+    return true;
+  }
+
+  // Then check sessionStorage (may have delay)
+  try {
+    const activeFile = fileContextManager.getActiveFile();
+    return !!activeFile?.fileId;
+  } catch (_error) {
+    return false;
+  }
+};
 
 /**
  * Convenience hooks and utilities
@@ -251,7 +308,7 @@ export const getActiveFileName = (): string | null => {
 export const setActiveFile = (
   fileId: string,
   fileName: string,
-  source: FileContext['source'] = 'manual'
+  source: FileContext["source"] = "manual"
 ): boolean => {
   return fileContextManager.setActiveFile({
     fileId,

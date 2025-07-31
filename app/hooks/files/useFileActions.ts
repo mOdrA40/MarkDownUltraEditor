@@ -1,10 +1,11 @@
-import type { Table } from '@tanstack/react-table';
-import { useCallback, useState } from 'react';
-import { useFileContextActions } from '@/contexts/FileContextProvider';
-import type { FileData } from '@/lib/supabase';
-import { safeConsole } from '@/utils/console';
+import type { Table } from "@tanstack/react-table";
+import { useCallback, useState } from "react";
+import { useNavigate } from "react-router";
+import { useFileContextActions } from "@/contexts/FileContextProvider";
+import type { FileData } from "@/lib/supabase";
+import { safeConsole } from "@/utils/console";
 
-type DeleteType = 'single' | 'bulk';
+type DeleteType = "single" | "bulk";
 export interface FileActionsState {
   isDeleteConfirmOpen: boolean;
   setIsDeleteConfirmOpen: (open: boolean) => void;
@@ -40,48 +41,52 @@ export const useFileActions = ({
   const [isDeleteConfirmOpen, setIsDeleteConfirmOpen] = useState(false);
   const [fileToDelete, setFileToDelete] = useState<FileData | null>(null);
   const [filesToDelete, setFilesToDelete] = useState<FileData[] | null>(null);
-  const [deleteType, setDeleteType] = useState<DeleteType>('single');
+  const [deleteType, setDeleteType] = useState<DeleteType>("single");
 
+  const navigate = useNavigate();
   const { setActiveFileFromFilesPage } = useFileContextActions();
 
   const handleOpenFile = useCallback(
-    (file: FileData) => {
-      // Set file context before navigation to preserve state
-      setActiveFileFromFilesPage(file.id || file.title, file.title);
+    async (file: FileData) => {
+      // Set file context and wait for it to complete
+      await setActiveFileFromFilesPage(file.id || file.title, file.title);
 
-      // Navigate to editor with file parameter
-      window.location.href = `/?file=${file.id || file.title}`;
+      // Navigate to editor only after context is set
+      navigate(`/?file=${file.id || file.title}`);
     },
-    [setActiveFileFromFilesPage]
+    [setActiveFileFromFilesPage, navigate]
   );
 
   const handleDeleteFile = useCallback((file: FileData) => {
     setFileToDelete(file);
     setFilesToDelete(null);
-    setDeleteType('single');
+    setDeleteType("single");
     setIsDeleteConfirmOpen(true);
   }, []);
 
-  const handleDuplicateFile = useCallback((file: FileData) => {
-    const duplicatedFile: FileData = {
-      ...file,
-      id: undefined,
-      title: `${file.title} (Copy)`,
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
-    };
+  const handleDuplicateFile = useCallback(
+    (file: FileData) => {
+      const duplicatedFile: FileData = {
+        ...file,
+        id: undefined,
+        title: `${file.title} (Copy)`,
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+      };
 
-    const params = new URLSearchParams({
-      content: duplicatedFile.content,
-      title: duplicatedFile.title,
-    });
-    window.location.href = `/?${params.toString()}`;
-  }, []);
+      const params = new URLSearchParams({
+        content: duplicatedFile.content,
+        title: duplicatedFile.title,
+      });
+      navigate(`/?${params.toString()}`);
+    },
+    [navigate]
+  );
 
   const handleExportFile = useCallback((file: FileData) => {
-    const blob = new Blob([file.content], { type: 'text/markdown' });
+    const blob = new Blob([file.content], { type: "text/markdown" });
     const url = URL.createObjectURL(blob);
-    const link = document.createElement('a');
+    const link = document.createElement("a");
     link.href = url;
     link.download = `${file.title}.md`;
     document.body.appendChild(link);
@@ -96,13 +101,15 @@ export const useFileActions = ({
       tableInstance?: Table<FileData>
     ) => {
       try {
-        if (deleteType === 'single' && fileToDelete) {
+        if (deleteType === "single" && fileToDelete) {
           await deleteFileFn(fileToDelete.id || fileToDelete.title);
           if (tableInstance) {
             tableInstance.resetRowSelection();
           }
-        } else if (deleteType === 'bulk' && filesToDelete) {
-          await Promise.all(filesToDelete.map((file) => deleteFileFn(file.id || file.title)));
+        } else if (deleteType === "bulk" && filesToDelete) {
+          await Promise.all(
+            filesToDelete.map((file) => deleteFileFn(file.id || file.title))
+          );
           safeConsole.log(`Successfully deleted ${filesToDelete.length} files`);
           if (tableInstance) {
             tableInstance.resetRowSelection();
@@ -113,19 +120,22 @@ export const useFileActions = ({
         setFileToDelete(null);
         setFilesToDelete(null);
       } catch (error) {
-        safeConsole.error('Error deleting file(s):', error);
+        safeConsole.error("Error deleting file(s):", error);
       }
     },
     [deleteType, fileToDelete, filesToDelete]
   );
 
   const handleBulkDelete = useCallback(
-    (selectedFiles: FileData[], _deleteFileFn: (identifier: string) => Promise<void>) => {
+    (
+      selectedFiles: FileData[],
+      _deleteFileFn: (identifier: string) => Promise<void>
+    ) => {
       if (selectedFiles.length === 0) return;
 
       setFilesToDelete(selectedFiles);
       setFileToDelete(null);
-      setDeleteType('bulk');
+      setDeleteType("bulk");
       setIsDeleteConfirmOpen(true);
     },
     []
