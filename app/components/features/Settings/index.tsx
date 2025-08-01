@@ -8,7 +8,7 @@ export {
   SettingsHeader,
   SettingsTabs,
   StorageTab,
-} from "./components";
+} from './components';
 // Constants
 export {
   ACTIVITY_INTERVALS,
@@ -16,7 +16,7 @@ export {
   DEFAULT_TAB,
   STORAGE_KEYS,
   TABS_CONFIG,
-} from "./constants";
+} from './constants';
 
 // Hooks
 export {
@@ -24,10 +24,10 @@ export {
   useSessionManagement,
   useSettingsState,
   useStorageActions,
-} from "./hooks";
+} from './hooks';
 // Main components
 // Re-export for backward compatibility
-export { SettingsPage, SettingsPage as default } from "./SettingsPage";
+export { SettingsPage, SettingsPage as default } from './SettingsPage';
 // Types
 export type {
   AccountInfo,
@@ -46,20 +46,20 @@ export type {
   UseSessionManagementReturn,
   UseSettingsReturn,
   UseStorageReturn,
-} from "./types";
+} from './types';
 
 /**
  * Legacy Settings integration hook (deprecated - use useSettingsState instead)
  * @deprecated Use useSettingsState from './hooks/useSettingsState' instead
  */
-import { useEffect, useState } from "react";
+import { useEffect, useState } from 'react';
 import {
   DEFAULT_WRITING_SETTINGS,
   loadSettingsFromStorage,
   saveSettingsToStorage,
   type WritingSettings,
-} from "@/utils/writingSettingsUtils";
-import { type Theme, themes } from "../ThemeSelector";
+} from '@/utils/writingSettingsUtils';
+import { type Theme, themes } from '../ThemeSelector';
 
 interface UseSettingsReturn {
   theme: Theme;
@@ -79,9 +79,7 @@ interface UseSettingsReturn {
  */
 export const useAppSettings = (): UseSettingsReturn => {
   const [theme, setTheme] = useState<Theme>(themes[0]);
-  const [writingSettings, setWritingSettings] = useState<WritingSettings>(
-    DEFAULT_WRITING_SETTINGS
-  );
+  const [writingSettings, setWritingSettings] = useState<WritingSettings>(DEFAULT_WRITING_SETTINGS);
   const [autoSave, setAutoSave] = useState(true);
   const [showLineNumbers, setShowLineNumbers] = useState(false);
   const [showWordCount, setShowWordCount] = useState(true);
@@ -90,7 +88,7 @@ export const useAppSettings = (): UseSettingsReturn => {
   // Load settings on mount
   useEffect(() => {
     // Load theme
-    const savedTheme = localStorage.getItem("markdownEditor_theme");
+    const savedTheme = localStorage.getItem('markdownEditor_theme');
     if (savedTheme) {
       const foundTheme = themes.find((t) => t.id === savedTheme);
       if (foundTheme) {
@@ -103,7 +101,7 @@ export const useAppSettings = (): UseSettingsReturn => {
     setWritingSettings(savedWritingSettings);
 
     // Load app preferences
-    const savedPreferences = localStorage.getItem("markdownEditor_preferences");
+    const savedPreferences = localStorage.getItem('markdownEditor_preferences');
     if (savedPreferences) {
       try {
         const parsed = JSON.parse(savedPreferences);
@@ -112,8 +110,8 @@ export const useAppSettings = (): UseSettingsReturn => {
         setShowWordCount(parsed.showWordCount ?? true);
         setShowCharacterCount(parsed.showCharacterCount ?? true);
       } catch (error) {
-        import("@/utils/console").then(({ safeConsole }) => {
-          safeConsole.warn("Failed to parse saved preferences:", error);
+        import('@/utils/console').then(({ safeConsole }) => {
+          safeConsole.warn('Failed to parse saved preferences:', error);
         });
       }
     }
@@ -121,7 +119,7 @@ export const useAppSettings = (): UseSettingsReturn => {
 
   const updateTheme = (newTheme: Theme) => {
     setTheme(newTheme);
-    localStorage.setItem("markdownEditor_theme", newTheme.id);
+    localStorage.setItem('markdownEditor_theme', newTheme.id);
   };
 
   const updateWritingSettings = (settings: WritingSettings) => {
@@ -131,35 +129,25 @@ export const useAppSettings = (): UseSettingsReturn => {
 
   const updateAutoSave = (enabled: boolean) => {
     setAutoSave(enabled);
-    const preferences = JSON.parse(
-      localStorage.getItem("markdownEditor_preferences") || "{}"
-    );
+    const preferences = JSON.parse(localStorage.getItem('markdownEditor_preferences') || '{}');
     preferences.autoSave = enabled;
-    localStorage.setItem(
-      "markdownEditor_preferences",
-      JSON.stringify(preferences)
-    );
+    localStorage.setItem('markdownEditor_preferences', JSON.stringify(preferences));
   };
 
   const updateDisplayPreference = (key: string, value: boolean) => {
-    const preferences = JSON.parse(
-      localStorage.getItem("markdownEditor_preferences") || "{}"
-    );
+    const preferences = JSON.parse(localStorage.getItem('markdownEditor_preferences') || '{}');
     preferences[key] = value;
-    localStorage.setItem(
-      "markdownEditor_preferences",
-      JSON.stringify(preferences)
-    );
+    localStorage.setItem('markdownEditor_preferences', JSON.stringify(preferences));
 
     // Update local state
     switch (key) {
-      case "showLineNumbers":
+      case 'showLineNumbers':
         setShowLineNumbers(value);
         break;
-      case "showWordCount":
+      case 'showWordCount':
         setShowWordCount(value);
         break;
-      case "showCharacterCount":
+      case 'showCharacterCount':
         setShowCharacterCount(value);
         break;
     }

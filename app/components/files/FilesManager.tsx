@@ -3,9 +3,9 @@
  * @author Axel Modra
  */
 
-import { useAuth } from "@clerk/react-router";
+import { useAuth } from '@clerk/react-router';
 
-import { formatDistanceToNow } from "date-fns";
+import { formatDistanceToNow } from 'date-fns';
 import {
   ArrowLeft,
   Clock,
@@ -15,27 +15,27 @@ import {
   HardDrive,
   Plus,
   RefreshCw,
-} from "lucide-react";
-import React, { useEffect, useMemo, useRef } from "react";
-import { useNavigate } from "react-router";
-import { AuthButtons } from "@/components/auth/AuthButtons";
-import { PageLoader } from "@/components/shared/PageLoader";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { ConfirmationDialog } from "@/components/ui/ConfirmationDialog";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { useFileStorage } from "@/hooks/files";
-import { useFileActions } from "@/hooks/files/useFileActions";
-import { useFileSelection } from "@/hooks/files/useFileSelection";
-import { useFilesUIState, type ViewMode } from "@/hooks/files/useFilesUIState";
-import { useResponsiveDetection } from "@/hooks/ui/useResponsive";
+} from 'lucide-react';
+import React, { useEffect, useMemo, useRef } from 'react';
+import { useNavigate } from 'react-router';
+import { AuthButtons } from '@/components/auth/AuthButtons';
+import { PageLoader } from '@/components/shared/PageLoader';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { ConfirmationDialog } from '@/components/ui/ConfirmationDialog';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { useFileStorage } from '@/hooks/files';
+import { useFileActions } from '@/hooks/files/useFileActions';
+import { useFileSelection } from '@/hooks/files/useFileSelection';
+import { useFilesUIState, type ViewMode } from '@/hooks/files/useFilesUIState';
+import { useResponsiveDetection } from '@/hooks/ui/useResponsive';
 
-import type { FileData } from "@/lib/supabase";
-import { formatBytes, formatRelativeDate } from "@/utils/common";
-import { ClientOnlyFilesTable } from "./ClientOnlyFilesTable";
-import { FilesTableToolbar } from "./FilesTableToolbar";
-import { FileDropdownMenu } from "./shared/FileDropdownMenu";
-import { VirtualizedFileList } from "./VirtualizedFileList";
+import type { FileData } from '@/lib/supabase';
+import { formatBytes, formatRelativeDate } from '@/utils/common';
+import { ClientOnlyFilesTable } from './ClientOnlyFilesTable';
+import { FilesTableToolbar } from './FilesTableToolbar';
+import { FileDropdownMenu } from './shared/FileDropdownMenu';
+import { VirtualizedFileList } from './VirtualizedFileList';
 
 /**
  * Files manager component
@@ -121,10 +121,7 @@ export const FilesManager: React.FC = () => {
   const computedStorageInfo = useMemo(() => {
     if (!storageInfo) return null;
 
-    const totalSize = files.reduce(
-      (sum, file) => sum + (file.content?.length || 0),
-      0
-    );
+    const totalSize = files.reduce((sum, file) => sum + (file.content?.length || 0), 0);
 
     return {
       ...storageInfo,
@@ -138,9 +135,7 @@ export const FilesManager: React.FC = () => {
     const filtered = files.filter(
       (file) =>
         file.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        file.tags?.some((tag) =>
-          tag.toLowerCase().includes(searchQuery.toLowerCase())
-        )
+        file.tags?.some((tag) => tag.toLowerCase().includes(searchQuery.toLowerCase()))
     );
 
     // Sort files
@@ -148,21 +143,21 @@ export const FilesManager: React.FC = () => {
       let comparison = 0;
 
       switch (sortBy) {
-        case "name":
+        case 'name':
           comparison = a.title.localeCompare(b.title);
           break;
-        case "date": {
+        case 'date': {
           const dateA = new Date(a.updatedAt || a.createdAt || 0);
           const dateB = new Date(b.updatedAt || b.createdAt || 0);
           comparison = dateA.getTime() - dateB.getTime();
           break;
         }
-        case "size":
+        case 'size':
           comparison = (a.fileSize || 0) - (b.fileSize || 0);
           break;
       }
 
-      return sortDirection === "asc" ? comparison : -comparison;
+      return sortDirection === 'asc' ? comparison : -comparison;
     });
 
     return filtered;
@@ -186,8 +181,8 @@ export const FilesManager: React.FC = () => {
     try {
       await exportAllFiles();
     } catch (error) {
-      import("@/utils/console").then(({ safeConsole }) => {
-        safeConsole.error("Error exporting files:", error);
+      import('@/utils/console').then(({ safeConsole }) => {
+        safeConsole.error('Error exporting files:', error);
       });
     }
   };
@@ -214,7 +209,7 @@ export const FilesManager: React.FC = () => {
               <Button
                 variant="ghost"
                 size="sm"
-                onClick={() => navigate("/")}
+                onClick={() => navigate('/')}
                 className="flex items-center gap-2 w-fit"
               >
                 <ArrowLeft className="w-4 h-4" />
@@ -227,11 +222,8 @@ export const FilesManager: React.FC = () => {
                 <p className="text-xs sm:text-sm text-muted-foreground">
                   {computedStorageInfo && (
                     <>
-                      {computedStorageInfo.totalFiles} files •{" "}
-                      {computedStorageInfo.storageType === "cloud"
-                        ? "Cloud"
-                        : "Local"}{" "}
-                      storage
+                      {computedStorageInfo.totalFiles} files •{' '}
+                      {computedStorageInfo.storageType === 'cloud' ? 'Cloud' : 'Local'} storage
                     </>
                   )}
                 </p>
@@ -240,8 +232,8 @@ export const FilesManager: React.FC = () => {
 
             <div className="flex justify-end sm:justify-start">
               <AuthButtons
-                onViewFiles={() => navigate("/files")}
-                onSettings={() => navigate("/settings")}
+                onViewFiles={() => navigate('/files')}
+                onSettings={() => navigate('/settings')}
                 responsive={{
                   isMobile: responsive.isMobile,
                   isTablet: responsive.isTablet,
@@ -261,19 +253,19 @@ export const FilesManager: React.FC = () => {
             <CardContent className="p-4">
               <div className="flex flex-col sm:flex-row gap-4 sm:items-center sm:justify-between">
                 <div className="flex items-center gap-3 min-w-0 flex-1">
-                  {computedStorageInfo.storageType === "cloud" ? (
+                  {computedStorageInfo.storageType === 'cloud' ? (
                     <Cloud className="w-5 h-5 text-primary flex-shrink-0" />
                   ) : (
                     <HardDrive className="w-5 h-5 text-muted-foreground flex-shrink-0" />
                   )}
                   <div className="min-w-0">
                     <p className="font-medium">
-                      {computedStorageInfo.storageType === "cloud"
-                        ? "Cloud Storage"
-                        : "Local Storage"}
+                      {computedStorageInfo.storageType === 'cloud'
+                        ? 'Cloud Storage'
+                        : 'Local Storage'}
                     </p>
                     <p className="text-sm text-muted-foreground">
-                      {computedStorageInfo.totalFiles} files •{" "}
+                      {computedStorageInfo.totalFiles} files •{' '}
                       {formatFileSize(computedStorageInfo.totalSize)}
                     </p>
                   </div>
@@ -311,7 +303,7 @@ export const FilesManager: React.FC = () => {
               onSortByChange={setSortBy}
               sortDirection={sortDirection}
               onSortDirectionChange={setSortDirection}
-              onNewFile={() => navigate("/?new=true")}
+              onNewFile={() => navigate('/?new=true')}
               onExportAll={handleExportAll}
               onDeleteSelected={handleBulkDeleteFromTable}
               isLoading={isLoadingFiles}
@@ -332,19 +324,19 @@ export const FilesManager: React.FC = () => {
             <div className="text-center py-12">
               <FileText className="w-12 h-12 mx-auto mb-4 text-muted-foreground" />
               <h3 className="text-lg font-medium mb-2">
-                {searchQuery ? "No files found" : "No files yet"}
+                {searchQuery ? 'No files found' : 'No files yet'}
               </h3>
               <p className="text-muted-foreground mb-4">
                 {searchQuery
-                  ? "Try adjusting your search terms"
-                  : "Create your first markdown file to get started"}
+                  ? 'Try adjusting your search terms'
+                  : 'Create your first markdown file to get started'}
               </p>
-              <Button onClick={() => navigate("/?new=true")}>
+              <Button onClick={() => navigate('/?new=true')}>
                 <Plus className="w-4 h-4 mr-2" />
                 Create New File
               </Button>
             </div>
-          ) : viewMode === "table" ? (
+          ) : viewMode === 'table' ? (
             <ClientOnlyFilesTable
               key={tableKey}
               files={filteredAndSortedFiles}
@@ -359,7 +351,7 @@ export const FilesManager: React.FC = () => {
               formatFileSize={formatFileSize}
               isLoading={isLoadingFiles}
             />
-          ) : shouldUseVirtualization && viewMode === "list" ? (
+          ) : shouldUseVirtualization && viewMode === 'list' ? (
             <VirtualizedFileList
               files={filteredAndSortedFiles}
               onOpen={handleOpenFile}
@@ -372,9 +364,9 @@ export const FilesManager: React.FC = () => {
           ) : (
             <div
               className={
-                viewMode === "grid"
-                  ? "grid grid-cols-1 xs:grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-3 sm:gap-4 mt-2"
-                  : "space-y-2 sm:space-y-3 mt-2"
+                viewMode === 'grid'
+                  ? 'grid grid-cols-1 xs:grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-3 sm:gap-4 mt-2'
+                  : 'space-y-2 sm:space-y-3 mt-2'
               }
             >
               {filteredAndSortedFiles.map((file) => (
@@ -401,15 +393,15 @@ export const FilesManager: React.FC = () => {
         onOpenChange={setIsDeleteConfirmOpen}
         title="Are you sure?"
         description={
-          deleteType === "single" && fileToDelete
+          deleteType === 'single' && fileToDelete
             ? `This will permanently delete the file "${fileToDelete.title}". This action cannot be undone.`
-            : deleteType === "bulk" && filesToDelete
+            : deleteType === 'bulk' && filesToDelete
               ? `This will permanently delete ${filesToDelete.length} file${
-                  filesToDelete.length > 1 ? "s" : ""
+                  filesToDelete.length > 1 ? 's' : ''
                 }. This action cannot be undone.\n\nFiles: ${filesToDelete
                   .map((f) => f.title)
-                  .join(", ")}`
-              : "This action cannot be undone."
+                  .join(', ')}`
+              : 'This action cannot be undone.'
         }
         onConfirm={() => handleConfirmDelete(deleteFile, tableInstance)}
         confirmText="Delete"
@@ -443,7 +435,7 @@ const FileCard: React.FC<FileCardProps> = ({
   formatDate,
   formatFileSize,
 }) => {
-  if (viewMode === "list") {
+  if (viewMode === 'list') {
     return (
       <Card className="hover:shadow-md transition-shadow cursor-pointer">
         <CardContent className="p-3 sm:p-5 file-card-list-container">
@@ -455,25 +447,17 @@ const FileCard: React.FC<FileCardProps> = ({
             >
               <FileText className="w-4 h-4 sm:w-5 sm:h-5 text-primary flex-shrink-0" />
               <div className="min-w-0 flex-1">
-                <h3 className="font-medium truncate mb-1 text-sm sm:text-base">
-                  {file.title}
-                </h3>
+                <h3 className="font-medium truncate mb-1 text-sm sm:text-base">{file.title}</h3>
                 <div className="flex flex-col xs:flex-row xs:items-center gap-1 xs:gap-4 text-xs sm:text-sm text-muted-foreground">
                   <span className="flex items-center gap-1">
                     <Clock className="w-3 h-3" />
-                    {formatDate(file.updatedAt || file.createdAt || "")}
+                    {formatDate(file.updatedAt || file.createdAt || '')}
                   </span>
-                  <span className="hidden xs:inline">
-                    {formatFileSize(file.fileSize || 0)}
-                  </span>
+                  <span className="hidden xs:inline">{formatFileSize(file.fileSize || 0)}</span>
                   {file.tags && file.tags.length > 0 && (
                     <div className="flex gap-1 flex-wrap">
                       {file.tags.slice(0, 2).map((tag) => (
-                        <Badge
-                          key={tag}
-                          variant="secondary"
-                          className="text-xs"
-                        >
+                        <Badge key={tag} variant="secondary" className="text-xs">
                           {tag}
                         </Badge>
                       ))}
@@ -520,9 +504,7 @@ const FileCard: React.FC<FileCardProps> = ({
             stopPropagationOnTrigger={true}
           />
         </div>
-        <CardTitle className="text-sm sm:text-base truncate mt-2">
-          {file.title}
-        </CardTitle>
+        <CardTitle className="text-sm sm:text-base truncate mt-2">{file.title}</CardTitle>
       </CardHeader>
       <CardContent className="pt-0 p-3 sm:p-6 sm:pt-0 flex-1 flex flex-col">
         <div className="space-y-2 flex-1">
@@ -549,14 +531,10 @@ const FileCard: React.FC<FileCardProps> = ({
         <div className="space-y-1 text-xs text-muted-foreground mt-2">
           <div className="flex items-center gap-1 min-w-0">
             <Clock className="w-3 h-3 flex-shrink-0" />
-            <span className="truncate">
-              {formatDate(file.updatedAt || file.createdAt || "")}
-            </span>
+            <span className="truncate">{formatDate(file.updatedAt || file.createdAt || '')}</span>
           </div>
           <div className="flex items-center justify-between gap-2 min-w-0">
-            <span className="truncate flex-1">
-              {formatFileSize(file.fileSize || 0)}
-            </span>
+            <span className="truncate flex-1">{formatFileSize(file.fileSize || 0)}</span>
           </div>
         </div>
       </CardContent>

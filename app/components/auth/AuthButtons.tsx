@@ -3,13 +3,13 @@
  * @author Axel Modra
  */
 
-import { SignInButton, useAuth, useClerk, useUser } from '@clerk/react-router';
-import { Cloud, Files, HardDrive, LogOut, Settings, User } from 'lucide-react';
-import type React from 'react';
-import { useNavigate } from 'react-router';
-import { useTheme } from '@/components/features/ThemeSelector';
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
+import { SignInButton, useAuth, useClerk, useUser } from "@clerk/react-router";
+import { Cloud, Files, HardDrive, LogOut, Settings, User } from "lucide-react";
+import type React from "react";
+import { useNavigate } from "react-router";
+import { useTheme } from "@/components/features/ThemeSelector";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -17,7 +17,7 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
+} from "@/components/ui/dropdown-menu";
 
 /**
  * Props for AuthButtons component
@@ -42,7 +42,7 @@ export const AuthButtons: React.FC<AuthButtonsProps> = ({
   onViewFiles,
   onSettings,
   responsive,
-  className = '',
+  className = "",
 }) => {
   const { isSignedIn, isLoaded } = useAuth();
   const { user } = useUser();
@@ -66,13 +66,16 @@ export const AuthButtons: React.FC<AuthButtonsProps> = ({
   if (!isLoaded) {
     return (
       <div className={`flex items-center gap-2 ${className}`}>
+        <div className="hidden sm:flex items-center gap-1 text-xs">
+          <div className="w-12 h-6 bg-gray-200 rounded-md animate-pulse" />
+        </div>
         <div className="w-8 h-8 bg-gray-200 rounded-full animate-pulse" />
       </div>
     );
   }
 
   // Authenticated user UI
-  if (isSignedIn && user) {
+  if (isSignedIn) {
     return (
       <div className={`flex items-center gap-2 ${className}`}>
         {/* Storage indicator with theme colors */}
@@ -95,20 +98,22 @@ export const AuthButtons: React.FC<AuthButtonsProps> = ({
                 size="sm"
                 className="flex items-center gap-2 hover:bg-gray-100"
               >
-                {user.imageUrl ? (
+                {user?.imageUrl ? (
                   <img
                     src={user.imageUrl}
-                    alt={user.fullName || 'User'}
+                    alt={user.fullName || "User"}
                     className="w-6 h-6 rounded-full"
                   />
                 ) : (
-                  <User className="w-4 h-4" />
+                  <div className="w-6 h-6 rounded-full bg-gray-200 animate-pulse" />
                 )}
-                {!isSmallTablet && (
+                {!isSmallTablet && user?.firstName ? (
                   <span className="text-sm font-medium truncate max-w-24">
-                    {user.firstName || user.fullName || 'User'}
+                    {user.firstName || user.fullName || "User"}
                   </span>
-                )}
+                ) : !isSmallTablet ? (
+                  <div className="w-20 h-5 bg-gray-200 rounded-md animate-pulse" />
+                ) : null}
               </Button>
             </DropdownMenuTrigger>
 
@@ -121,16 +126,21 @@ export const AuthButtons: React.FC<AuthButtonsProps> = ({
               avoidCollisions={true}
               collisionPadding={16}
             >
-              <DropdownMenuLabel className="font-normal">
-                <div className="flex flex-col space-y-1">
-                  <p className="text-sm font-medium leading-none">{user.fullName || 'User'}</p>
-                  <p className="text-xs leading-none text-muted-foreground">
-                    {user.primaryEmailAddress?.emailAddress}
-                  </p>
-                </div>
-              </DropdownMenuLabel>
-
-              <DropdownMenuSeparator />
+              {user && (
+                <>
+                  <DropdownMenuLabel className="font-normal">
+                    <div className="flex flex-col space-y-1">
+                      <p className="text-sm font-medium leading-none">
+                        {user.fullName || "User"}
+                      </p>
+                      <p className="text-xs leading-none text-muted-foreground">
+                        {user.primaryEmailAddress?.emailAddress}
+                      </p>
+                    </div>
+                  </DropdownMenuLabel>
+                  <DropdownMenuSeparator />
+                </>
+              )}
 
               {/* Files option - always visible in menu */}
               {onViewFiles && (
@@ -175,10 +185,10 @@ export const AuthButtons: React.FC<AuthButtonsProps> = ({
                 onClick={async () => {
                   try {
                     await signOut();
-                    navigate('/');
+                    navigate("/");
                   } catch (error) {
-                    import('@/utils/console').then(({ safeConsole }) => {
-                      safeConsole.error('Error signing out:', error);
+                    import("@/utils/console").then(({ safeConsole }) => {
+                      safeConsole.error("Error signing out:", error);
                     });
                   }
                 }}
