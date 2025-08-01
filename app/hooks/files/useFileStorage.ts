@@ -142,10 +142,13 @@ export const useFileStorage = (): UseFileStorageReturn => {
       }
     },
     enabled: isInitialized && !!storageService,
-    staleTime: 15 * 60 * 1000,
-    gcTime: 30 * 60 * 1000,
-    refetchOnMount: false,
+    staleTime: 2 * 60 * 1000, // 2 minutes - faster refresh for file changes
+    gcTime: 10 * 60 * 1000, // 10 minutes
+    refetchOnMount: false, // Only refetch if stale
     refetchOnWindowFocus: false,
+    retry: 2,
+    // Add background refetch for better UX
+    refetchInterval: 5 * 60 * 1000, // Background refresh every 5 minutes
   });
 
   const { data: storageInfo = null, isLoading: isLoadingStorageInfo } = useQuery({

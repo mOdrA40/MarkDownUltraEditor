@@ -333,12 +333,16 @@ export class HybridFileStorage implements FileStorageService {
     try {
       safeConsole.log('Listing files from cloud');
 
+      // Optimized query - only select needed columns for listing
       const { data, error } = await this.supabaseClient
         .from('user_files')
-        .select('*')
+        .select(
+          'id, user_id, title, file_type, tags, created_at, updated_at, is_template, file_size, version, is_deleted, deleted_at'
+        )
         .eq('user_id', this.userId)
         .eq('is_deleted', false)
-        .order('updated_at', { ascending: false });
+        .order('updated_at', { ascending: false })
+        .limit(1000); // Add reasonable limit to prevent large data transfers
 
       if (error) {
         handleSupabaseError(error, 'list files');
@@ -346,7 +350,8 @@ export class HybridFileStorage implements FileStorageService {
       }
 
       safeConsole.log(`Loaded ${data.length} files from cloud`);
-      return data.map(dbRowToFileData);
+      // Map data with content as empty string for listing (content not needed for file list)
+      return data.map((row) => dbRowToFileData({ ...row, content: '' }));
     } catch (error) {
       safeConsole.error('Error listing files from cloud:', error);
       throw error;

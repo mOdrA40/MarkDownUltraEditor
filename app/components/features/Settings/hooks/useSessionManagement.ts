@@ -1,10 +1,11 @@
 /**
- * @fileoverview Session management hook
+ * @fileoverview Session management hook with React Query optimization
  * @author Axel Modra
  */
 
 import { useAuth, useSession, useUser } from '@clerk/react-router';
-import { useCallback, useEffect, useState } from 'react';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { useCallback, useMemo, useState } from 'react';
 import { useToast } from '@/hooks/core/useToast';
 import { createClerkSupabaseClient } from '@/lib/supabase';
 import { createSessionManager } from '@/services/sessionManager';
@@ -13,51 +14,80 @@ import { safeConsole } from '@/utils/console';
 import type { SessionManagementState, UseSessionManagementReturn } from '../types/session';
 
 /**
- * Session management hook
+ * Session management hook with React Query optimization
  */
 export const useSessionManagement = (): UseSessionManagementReturn => {
   const { isSignedIn, getToken } = useAuth();
   const { user } = useUser();
   const { session } = useSession();
   const { toast } = useToast();
+  const queryClient = useQueryClient();
 
-  const [state, setState] = useState<SessionManagementState>({
-    sessionStats: null,
-    userSessions: [],
-    isLoading: false,
-    error: null,
-  });
+  const [error, setError] = useState<string | null>(null);
 
-  // Load sessions
-  const loadSessions = useCallback(async () => {
-    if (!isSignedIn || !user?.id || !getToken) return;
+  // Query keys for caching - memoized to prevent unnecessary re-renders
+  const queryKeys = useMemo(
+    () => ({
+      sessions: ['sessions', user?.id],
+      stats: ['session-stats', user?.id],
+    }),
+    [user?.id]
+  );
 
-    try {
-      setState((prev) => ({ ...prev, isLoading: true, error: null }));
+  // Fetch session stats with React Query
+  const {
+    data: sessionStats,
+    isLoading: isLoadingStats,
+    refetch: refetchStats,
+  } = useQuery({
+    queryKey: queryKeys.stats,
+    queryFn: async () => {
+      if (!isSignedIn || !user?.id || !getToken) return null;
 
       const supabaseClient = createClerkSupabaseClient(getToken);
       const sessionManager = createSessionManager(supabaseClient);
+      return sessionManager.getSessionStats(user.id);
+    },
+    enabled: !!(isSignedIn && user?.id && getToken),
+    staleTime: 2 * 60 * 1000, // 2 minutes
+    gcTime: 5 * 60 * 1000, // 5 minutes
+    refetchOnWindowFocus: false,
+    retry: 2,
+  });
 
-      const [stats, sessions] = await Promise.all([
-        sessionManager.getSessionStats(user.id),
-        sessionManager.getUserSessions(user.id),
-      ]);
+  // Fetch user sessions with React Query
+  const {
+    data: userSessions = [],
+    isLoading: isLoadingSessions,
+    refetch: refetchSessions,
+  } = useQuery({
+    queryKey: queryKeys.sessions,
+    queryFn: async () => {
+      if (!isSignedIn || !user?.id || !getToken) return [];
 
-      setState((prev) => ({
-        ...prev,
-        sessionStats: stats,
-        userSessions: sessions,
-        isLoading: false,
-      }));
+      const supabaseClient = createClerkSupabaseClient(getToken);
+      const sessionManager = createSessionManager(supabaseClient);
+      return sessionManager.getUserSessions(user.id);
+    },
+    enabled: !!(isSignedIn && user?.id && getToken),
+    staleTime: 2 * 60 * 1000, // 2 minutes
+    gcTime: 5 * 60 * 1000, // 5 minutes
+    refetchOnWindowFocus: false,
+    retry: 2,
+  });
+
+  const isLoading = isLoadingStats || isLoadingSessions;
+
+  // Load sessions function for compatibility
+  const loadSessions = useCallback(async () => {
+    setError(null);
+    try {
+      await Promise.all([refetchStats(), refetchSessions()]);
     } catch (error) {
       safeConsole.error('Failed to load sessions:', error);
-      setState((prev) => ({
-        ...prev,
-        error: 'Failed to load sessions',
-        isLoading: false,
-      }));
+      setError('Failed to load sessions');
     }
-  }, [isSignedIn, user?.id, getToken]);
+  }, [refetchStats, refetchSessions]);
 
   // Terminate specific session
   const terminateSession = useCallback(
@@ -69,11 +99,9 @@ export const useSessionManagement = (): UseSessionManagementReturn => {
         const sessionManager = createSessionManager(supabaseClient);
         await sessionManager.terminateSession(sessionId);
 
-        // Remove from local state
-        setState((prev) => ({
-          ...prev,
-          userSessions: prev.userSessions.filter((s) => s.session_id !== sessionId),
-        }));
+        // Invalidate and refetch sessions
+        await queryClient.invalidateQueries({ queryKey: queryKeys.sessions });
+        await queryClient.invalidateQueries({ queryKey: queryKeys.stats });
 
         toast({
           title: 'Session Terminated',
@@ -88,7 +116,7 @@ export const useSessionManagement = (): UseSessionManagementReturn => {
         });
       }
     },
-    [getToken, toast]
+    [getToken, toast, queryClient, queryKeys]
   );
 
   // Terminate all other sessions
@@ -103,7 +131,7 @@ export const useSessionManagement = (): UseSessionManagementReturn => {
       const currentSessionId = session?.id;
 
       // Terminate all sessions except current
-      const sessionsToTerminate = state.userSessions.filter(
+      const sessionsToTerminate = userSessions.filter(
         (userSession) => !currentSessionId || userSession.session_id !== currentSessionId
       );
 
@@ -111,8 +139,9 @@ export const useSessionManagement = (): UseSessionManagementReturn => {
         sessionsToTerminate.map((session) => sessionManager.terminateSession(session.session_id))
       );
 
-      // Reload sessions to reflect changes
-      await loadSessions();
+      // Invalidate and refetch sessions
+      await queryClient.invalidateQueries({ queryKey: queryKeys.sessions });
+      await queryClient.invalidateQueries({ queryKey: queryKeys.stats });
 
       toast({
         title: 'Sessions Terminated',
@@ -126,17 +155,20 @@ export const useSessionManagement = (): UseSessionManagementReturn => {
         variant: 'destructive',
       });
     }
-  }, [user?.id, getToken, state.userSessions, loadSessions, toast, session?.id]);
+  }, [user?.id, getToken, userSessions, toast, session?.id, queryClient, queryKeys]);
 
   // Refresh sessions
   const refreshSessions = useCallback(async () => {
     await loadSessions();
   }, [loadSessions]);
 
-  // Load sessions on mount and when dependencies change
-  useEffect(() => {
-    loadSessions();
-  }, [loadSessions]);
+  // Create state object for compatibility
+  const state: SessionManagementState = {
+    sessionStats: sessionStats || null,
+    userSessions,
+    isLoading,
+    error,
+  };
 
   return {
     state,

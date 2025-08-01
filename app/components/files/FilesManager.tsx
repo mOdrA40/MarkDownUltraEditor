@@ -19,11 +19,11 @@ import {
 import React, { useEffect, useMemo, useRef } from "react";
 import { useNavigate } from "react-router";
 import { AuthButtons } from "@/components/auth/AuthButtons";
+import { PageLoader } from "@/components/shared/PageLoader";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { ConfirmationDialog } from "@/components/ui/ConfirmationDialog";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-
 import { useFileStorage } from "@/hooks/files";
 import { useFileActions } from "@/hooks/files/useFileActions";
 import { useFileSelection } from "@/hooks/files/useFileSelection";
@@ -51,6 +51,7 @@ export const FilesManager: React.FC = () => {
     deleteFile,
     exportAllFiles,
     isAuthenticated: _isAuthenticated,
+    isInitialized,
   } = useFileStorage();
 
   // UI state using custom hooks
@@ -198,6 +199,10 @@ export const FilesManager: React.FC = () => {
   const formatDate = (dateString: string) => {
     return formatRelativeDate(dateString, formatDistanceToNow);
   };
+
+  if (!isInitialized) {
+    return <PageLoader text="Loading your files..." />;
+  }
 
   return (
     <div className="min-h-screen bg-background">

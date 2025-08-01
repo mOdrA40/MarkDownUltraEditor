@@ -8,6 +8,7 @@ node_modules
 hasilconsole.txt
 hasil.txt
 .cursor
+.windsurf
 # Mengabaikan semua file .md
 *.md
 

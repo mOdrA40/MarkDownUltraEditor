@@ -3,13 +3,13 @@
  * @author Axel Modra
  */
 
-import { SignInButton, useAuth, useClerk, useUser } from "@clerk/react-router";
-import { Cloud, Files, HardDrive, LogOut, Settings, User } from "lucide-react";
-import type React from "react";
-import { useNavigate } from "react-router";
-import { useTheme } from "@/components/features/ThemeSelector";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
+import { SignInButton, useAuth, useClerk, useUser } from '@clerk/react-router';
+import { Cloud, Files, HardDrive, LogOut, Settings, User } from 'lucide-react';
+import type React from 'react';
+import { useNavigate } from 'react-router';
+import { useTheme } from '@/components/features/ThemeSelector';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -17,7 +17,7 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+} from '@/components/ui/dropdown-menu';
 
 /**
  * Props for AuthButtons component
@@ -42,7 +42,7 @@ export const AuthButtons: React.FC<AuthButtonsProps> = ({
   onViewFiles,
   onSettings,
   responsive,
-  className = "",
+  className = '',
 }) => {
   const { isSignedIn, isLoaded } = useAuth();
   const { user } = useUser();
@@ -98,7 +98,7 @@ export const AuthButtons: React.FC<AuthButtonsProps> = ({
                 {user.imageUrl ? (
                   <img
                     src={user.imageUrl}
-                    alt={user.fullName || "User"}
+                    alt={user.fullName || 'User'}
                     className="w-6 h-6 rounded-full"
                   />
                 ) : (
@@ -106,7 +106,7 @@ export const AuthButtons: React.FC<AuthButtonsProps> = ({
                 )}
                 {!isSmallTablet && (
                   <span className="text-sm font-medium truncate max-w-24">
-                    {user.firstName || user.fullName || "User"}
+                    {user.firstName || user.fullName || 'User'}
                   </span>
                 )}
               </Button>
@@ -123,9 +123,7 @@ export const AuthButtons: React.FC<AuthButtonsProps> = ({
             >
               <DropdownMenuLabel className="font-normal">
                 <div className="flex flex-col space-y-1">
-                  <p className="text-sm font-medium leading-none">
-                    {user.fullName || "User"}
-                  </p>
+                  <p className="text-sm font-medium leading-none">{user.fullName || 'User'}</p>
                   <p className="text-xs leading-none text-muted-foreground">
                     {user.primaryEmailAddress?.emailAddress}
                   </p>
@@ -177,10 +175,10 @@ export const AuthButtons: React.FC<AuthButtonsProps> = ({
                 onClick={async () => {
                   try {
                     await signOut();
-                    navigate("/");
+                    navigate('/');
                   } catch (error) {
-                    import("@/utils/console").then(({ safeConsole }) => {
-                      safeConsole.error("Error signing out:", error);
+                    import('@/utils/console').then(({ safeConsole }) => {
+                      safeConsole.error('Error signing out:', error);
                     });
                   }
                 }}

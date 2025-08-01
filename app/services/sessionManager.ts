@@ -144,7 +144,7 @@ export class SessionManager {
   }
 
   /**
-   * Get user sessions
+   * Get user sessions with optimized query
    */
   async getUserSessions(userId: string): Promise<SessionData[]> {
     try {
@@ -152,12 +152,16 @@ export class SessionManager {
         safeConsole.dev('🔍 SessionManager: Getting sessions');
       }
 
+      // Optimized query - only select needed columns and limit results
       const { data, error } = await this.supabaseClient
         .from('user_sessions')
-        .select('*')
+        .select(
+          'id, user_id, session_id, session_token, ip_address, user_agent, location, device_info, security_flags, is_active, last_activity, created_at, expires_at'
+        )
         .eq('user_id', userId)
         .eq('is_active', true)
-        .order('last_activity', { ascending: false });
+        .order('last_activity', { ascending: false })
+        .limit(50); // Limit to prevent large data transfers
 
       if (error) {
         if (process.env.NODE_ENV === 'development') {
@@ -184,15 +188,37 @@ export class SessionManager {
   }
 
   /**
-   * Get session statistics
+   * Get session statistics with optimized single query
    */
   async getSessionStats(userId: string): Promise<SessionStats> {
     try {
-      const sessions = await this.getUserSessions(userId);
-      const activeSessions = sessions.filter((s) => s.is_active);
-      const uniqueIPs = new Set(sessions.map((s) => s.ip_address)).size;
-      const recentActivity = sessions.slice(0, 5);
-      const suspiciousActivity = sessions.filter(
+      // Single optimized query instead of calling getUserSessions
+      const { data: sessions, error } = await this.supabaseClient
+        .from('user_sessions')
+        .select(
+          'id, user_id, session_id, ip_address, security_flags, is_active, last_activity, created_at'
+        )
+        .eq('user_id', userId)
+        .eq('is_active', true)
+        .order('last_activity', { ascending: false })
+        .limit(100); // Reasonable limit for stats calculation
+
+      if (error) {
+        safeConsole.error('Failed to get session stats:', error);
+        return {
+          totalSessions: 0,
+          activeSessions: 0,
+          uniqueIPs: 0,
+          recentActivity: [],
+          suspiciousActivity: [],
+        };
+      }
+
+      const sessionData = sessions || [];
+      const activeSessions = sessionData.filter((s) => s.is_active);
+      const uniqueIPs = new Set(sessionData.map((s) => s.ip_address)).size;
+      const recentActivity = sessionData.slice(0, 5);
+      const suspiciousActivity = sessionData.filter(
         (s) =>
           s.security_flags?.suspicious ||
           s.security_flags?.new_location ||
@@ -200,7 +226,7 @@ export class SessionManager {
       );
 
       return {
-        totalSessions: sessions.length,
+        totalSessions: sessionData.length,
         activeSessions: activeSessions.length,
         uniqueIPs,
         recentActivity,

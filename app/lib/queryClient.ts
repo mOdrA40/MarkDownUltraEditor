@@ -17,13 +17,13 @@ export const createOptimizedQueryClient = () => {
     defaultOptions: {
       queries: {
         // Enhanced cache optimization for better performance
-        staleTime: 10 * 60 * 1000, // 10 minutes - increased from 5 minutes
-        gcTime: 30 * 60 * 1000, // 30 minutes - increased from 10 minutes for better memory management
+        staleTime: 5 * 60 * 1000, // 5 minutes - optimized for faster data freshness
+        gcTime: 15 * 60 * 1000, // 15 minutes - balanced memory management
 
-        // Network optimization - more conservative approach
+        // Network optimization - more aggressive caching
         refetchOnWindowFocus: false, // Prevent unnecessary refetches
         refetchOnReconnect: 'always', // Always refetch on reconnect
-        refetchOnMount: false, // Changed: Only refetch if data is stale
+        refetchOnMount: 'always', // Always refetch on mount for fresh data
         refetchInterval: false, // Disable automatic polling
 
         // Enhanced retry strategy with better error handling

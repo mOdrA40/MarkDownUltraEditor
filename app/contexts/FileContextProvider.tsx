@@ -10,9 +10,9 @@ import React, {
   useContext,
   useEffect,
   useState,
-} from "react";
-import { safeConsole } from "@/utils/console";
-import { type FileContext, fileContextManager } from "@/utils/fileContext";
+} from 'react';
+import { safeConsole } from '@/utils/console';
+import { type FileContext, fileContextManager } from '@/utils/fileContext';
 
 /**
  * File Context interface for React Context
@@ -26,7 +26,7 @@ interface FileContextState {
   setActiveFile: (
     fileId: string,
     fileName: string,
-    source?: FileContext["source"]
+    source?: FileContext['source']
   ) => Promise<boolean>;
   /** Clear active file */
   clearActiveFile: () => void;
@@ -37,7 +37,7 @@ interface FileContextState {
   /** Get active file name */
   getActiveFileName: () => string | null;
   /** Update active file context */
-  updateActiveFile: (updates: Partial<Omit<FileContext, "openedAt">>) => void;
+  updateActiveFile: (updates: Partial<Omit<FileContext, 'openedAt'>>) => void;
 }
 
 /**
@@ -55,9 +55,7 @@ interface FileContextProviderProps {
 /**
  * File Context Provider Component
  */
-export const FileContextProvider: React.FC<FileContextProviderProps> = ({
-  children,
-}) => {
+export const FileContextProvider: React.FC<FileContextProviderProps> = ({ children }) => {
   const [activeFile, setActiveFileState] = useState<FileContext | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -70,13 +68,10 @@ export const FileContextProvider: React.FC<FileContextProviderProps> = ({
         const savedContext = fileContextManager.getActiveFile();
         if (savedContext) {
           setActiveFileState(savedContext);
-          safeConsole.dev(
-            "Loaded initial file context:",
-            savedContext.fileName
-          );
+          safeConsole.dev('Loaded initial file context:', savedContext.fileName);
         }
       } catch (error) {
-        safeConsole.error("Failed to load initial file context:", error);
+        safeConsole.error('Failed to load initial file context:', error);
       } finally {
         setIsLoading(false);
       }
@@ -92,7 +87,7 @@ export const FileContextProvider: React.FC<FileContextProviderProps> = ({
     async (
       fileId: string,
       fileName: string,
-      source: FileContext["source"] = "manual"
+      source: FileContext['source'] = 'manual'
     ): Promise<boolean> => {
       return new Promise((resolve) => {
         try {
@@ -105,11 +100,11 @@ export const FileContextProvider: React.FC<FileContextProviderProps> = ({
           if (success) {
             const newContext = fileContextManager.getActiveFile();
             setActiveFileState(newContext);
-            safeConsole.dev("Active file set via context:", fileName);
+            safeConsole.dev('Active file set via context:', fileName);
           }
           resolve(success);
         } catch (error) {
-          safeConsole.error("Failed to set active file via context:", error);
+          safeConsole.error('Failed to set active file via context:', error);
           resolve(false);
         }
       });
@@ -125,10 +120,10 @@ export const FileContextProvider: React.FC<FileContextProviderProps> = ({
       const success = fileContextManager.clearActiveFile();
       if (success) {
         setActiveFileState(null);
-        safeConsole.dev("Active file cleared via context");
+        safeConsole.dev('Active file cleared via context');
       }
     } catch (error) {
-      safeConsole.error("Failed to clear active file via context:", error);
+      safeConsole.error('Failed to clear active file via context:', error);
     }
   }, []);
 
@@ -159,21 +154,18 @@ export const FileContextProvider: React.FC<FileContextProviderProps> = ({
   /**
    * Update active file context
    */
-  const updateActiveFile = useCallback(
-    (updates: Partial<Omit<FileContext, "openedAt">>) => {
-      try {
-        const success = fileContextManager.updateActiveFile(updates);
-        if (success) {
-          const updatedContext = fileContextManager.getActiveFile();
-          setActiveFileState(updatedContext);
-          safeConsole.dev("Active file updated via context:", updates);
-        }
-      } catch (error) {
-        safeConsole.error("Failed to update active file via context:", error);
+  const updateActiveFile = useCallback((updates: Partial<Omit<FileContext, 'openedAt'>>) => {
+    try {
+      const success = fileContextManager.updateActiveFile(updates);
+      if (success) {
+        const updatedContext = fileContextManager.getActiveFile();
+        setActiveFileState(updatedContext);
+        safeConsole.dev('Active file updated via context:', updates);
       }
-    },
-    []
-  );
+    } catch (error) {
+      safeConsole.error('Failed to update active file via context:', error);
+    }
+  }, []);
 
   /**
    * Context value
@@ -189,11 +181,7 @@ export const FileContextProvider: React.FC<FileContextProviderProps> = ({
     updateActiveFile,
   };
 
-  return (
-    <FileContextReact.Provider value={contextValue}>
-      {children}
-    </FileContextReact.Provider>
-  );
+  return <FileContextReact.Provider value={contextValue}>{children}</FileContextReact.Provider>;
 };
 
 /**
@@ -202,7 +190,7 @@ export const FileContextProvider: React.FC<FileContextProviderProps> = ({
 export const useFileContext = (): FileContextState => {
   const context = useContext(FileContextReact);
   if (context === undefined) {
-    throw new Error("useFileContext must be used within a FileContextProvider");
+    throw new Error('useFileContext must be used within a FileContextProvider');
   }
   return context;
 };
@@ -220,8 +208,8 @@ export const useActiveFile = () => {
     activeFileId: activeFile?.fileId || null,
     activeFileName: activeFile?.fileName || null,
     activeFileSource: activeFile?.source || null,
-    isActiveFileFromUrl: activeFile?.source === "url",
-    isActiveFileFromFilesPage: activeFile?.source === "files-page",
+    isActiveFileFromUrl: activeFile?.source === 'url',
+    isActiveFileFromFilesPage: activeFile?.source === 'files-page',
   };
 };
 
@@ -229,8 +217,7 @@ export const useActiveFile = () => {
  * Hook for file context actions (convenience hook)
  */
 export const useFileContextActions = () => {
-  const { setActiveFile, clearActiveFile, updateActiveFile, isFileActive } =
-    useFileContext();
+  const { setActiveFile, clearActiveFile, updateActiveFile, isFileActive } = useFileContext();
 
   return {
     setActiveFile,
@@ -238,20 +225,18 @@ export const useFileContextActions = () => {
     updateActiveFile,
     isFileActive,
     setActiveFileFromUrl: (fileId: string, fileName: string) =>
-      setActiveFile(fileId, fileName, "url"),
+      setActiveFile(fileId, fileName, 'url'),
     setActiveFileFromFilesPage: (fileId: string, fileName: string) =>
-      setActiveFile(fileId, fileName, "files-page"),
+      setActiveFile(fileId, fileName, 'files-page'),
     setActiveFileManual: (fileId: string, fileName: string) =>
-      setActiveFile(fileId, fileName, "manual"),
+      setActiveFile(fileId, fileName, 'manual'),
   };
 };
 
 /**
  * HOC to provide file context to components
  */
-export const withFileContext = <P extends object>(
-  Component: React.ComponentType<P>
-) => {
+export const withFileContext = <P extends object>(Component: React.ComponentType<P>) => {
   const WrappedComponent = React.forwardRef<unknown, P>((props, ref) => {
     return (
       <FileContextProvider>
