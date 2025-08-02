@@ -3,6 +3,7 @@
  * @author Axel Modra
  */
 
+import { useAuth } from '@clerk/react-router';
 import { useCallback, useEffect, useState } from 'react';
 import { useToast, useUndoRedo } from '@/hooks/core';
 import { isFirstVisit } from '@/utils/editorPreferences';
@@ -19,6 +20,7 @@ export const useEditorState = (
   initialFileName?: string
 ): UseEditorStateReturn & { isRestoring: boolean } => {
   const { toast } = useToast();
+  const { isSignedIn, isLoaded } = useAuth();
   const [isRestoring, setIsRestoring] = useState(true);
 
   const getInitialValue = useCallback(
@@ -65,12 +67,18 @@ export const useEditorState = (
     const isFirstTime = isFirstVisit();
     const hasInitialContent = initialMarkdown !== undefined;
 
-    // Show loader if we are a returning user and there's no overriding initial content
-    if (!isFirstTime && !hasInitialContent && activeFile) {
-      setIsRestoring(true);
-      // Content will be loaded by useAutoFileRestoration, we just show the loader
-    } else {
+    // For authenticated users, loading state is handled by MarkdownEditor component
+    // based on immediate loading state, so don't show restoration loading here
+    if (isLoaded && isSignedIn) {
       setIsRestoring(false);
+    } else {
+      // Show loader if we are a returning guest user and there's no overriding initial content
+      if (!isFirstTime && !hasInitialContent && activeFile) {
+        setIsRestoring(true);
+        // Content will be loaded by useAutoFileRestoration, we just show the loader
+      } else {
+        setIsRestoring(false);
+      }
     }
 
     // On initial load, if there's content from localStorage, set it
@@ -79,13 +87,13 @@ export const useEditorState = (
       setMarkdown(savedContent); // Set without adding to history
     }
 
-    // Set a timeout to prevent infinite loading screen
+    // Set a timeout to prevent infinite loading screen for guest users
     const timeoutId = setTimeout(() => {
       setIsRestoring(false);
     }, 5000);
 
     return () => clearTimeout(timeoutId);
-  }, [initialMarkdown, setMarkdown]);
+  }, [initialMarkdown, setMarkdown, isLoaded, isSignedIn]);
 
   const handleMarkdownChange = useCallback(
     (value: string) => {

@@ -3,22 +3,19 @@ MarkdownEditor
 @author Axel Modra
  */
 
-import { useAuth } from "@clerk/react-router";
-import React from "react";
-import { useLocation, useSearchParams } from "react-router";
+import { useAuth } from '@clerk/react-router';
+import React from 'react';
+import { useLocation, useSearchParams } from 'react-router';
 
-import {
-  usePerformanceDebug,
-  useRenderPerformance,
-} from "@/hooks/core/usePerformance";
-import { useAutoFileRestoration, useFileStorage } from "@/hooks/files";
-import { isFirstVisit, markVisited } from "@/utils/editorPreferences";
+import { usePerformanceDebug, useRenderPerformance } from '@/hooks/core/usePerformance';
+import { useAutoFileRestoration, useFileStorage, useImmediateFileLoading } from '@/hooks/files';
+import { isFirstVisit, markVisited } from '@/utils/editorPreferences';
 
-import { useWelcomeDialog, WelcomeDialog } from "../../auth/WelcomeDialog";
-import { type Theme, useTheme } from "../../features/ThemeSelector";
-import { MobileNav } from "../../layout/MobileNav";
-import { ContentRestorationLoader } from "../../shared/ThemeAwareLoader";
-import { DialogContainer, EditorContainer } from "./components";
+import { useWelcomeDialog, WelcomeDialog } from '../../auth/WelcomeDialog';
+import { type Theme, useTheme } from '../../features/ThemeSelector';
+import { MobileNav } from '../../layout/MobileNav';
+import { ContentRestorationLoader } from '../../shared/ThemeAwareLoader';
+import { DialogContainer, EditorContainer } from './components';
 import {
   EditorErrorBoundary,
   MemoizedEditorFooter,
@@ -26,16 +23,16 @@ import {
   MemoizedEditorMainContent,
   MemoizedEditorSidebar,
   PerformanceMonitor,
-} from "./components/Performance";
+} from './components/Performance';
 import {
   useDialogManager,
   useEditorSettings,
   useEditorState,
   useKeyboardShortcuts,
   useResponsiveLayout,
-} from "./hooks";
-import type { MarkdownEditorProps } from "./types";
-import { DEFAULT_FILE } from "./utils/constants";
+} from './hooks';
+import type { MarkdownEditorProps } from './types';
+import { DEFAULT_FILE } from './utils/constants';
 
 /**
  * Main MarkdownEditor component
@@ -45,27 +42,39 @@ export const MarkdownEditor: React.FC<MarkdownEditorProps> = ({
   initialFileName: _initialFileName = DEFAULT_FILE.NAME,
   initialTheme: _initialTheme,
   eventHandlers = {},
-  className = "",
+  className = '',
   style = {},
 }) => {
   const [searchParams, setSearchParams] = useSearchParams();
   const _location = useLocation();
 
-  const urlTitle = searchParams.get("title");
-  const urlContent = searchParams.get("content");
-  const urlFile = searchParams.get("file");
-  const isNewFileRequest = searchParams.get("new") === "true";
+  const urlTitle = searchParams.get('title');
+  const urlContent = searchParams.get('content');
+  const urlFile = searchParams.get('file');
+  const isNewFileRequest = searchParams.get('new') === 'true';
 
   const { isSignedIn, isLoaded } = useAuth();
+  const immediateLoading = useImmediateFileLoading();
+  const [isFileRestored, setIsFileRestored] = React.useState(false);
 
   const getInitialContent = () => {
-    if (isNewFileRequest) return "";
+    if (isNewFileRequest) return '';
     if (urlContent) return urlContent;
 
-    // For authenticated users, let useAutoFileRestoration handle loading from Supabase
-    // Don't show welcome template for authenticated users, even on first visit
+    // For authenticated users, wait for immediate loading to complete
     if (isLoaded && isSignedIn) {
-      return undefined; // Let file restoration handle this
+      // If immediate loading is still in progress, return undefined to show loading
+      if (immediateLoading.isLoading || !immediateLoading.hasChecked) {
+        return undefined;
+      }
+
+      // If immediate loading found a file, return undefined to let restoration handle it
+      if (immediateLoading.fileData) {
+        return undefined;
+      }
+
+      // If no file found and user is authenticated, return empty content (new user)
+      return '';
     }
 
     // For guest users, show welcome template on first visit
@@ -79,12 +88,23 @@ export const MarkdownEditor: React.FC<MarkdownEditorProps> = ({
   };
 
   const getInitialFileName = () => {
-    if (isNewFileRequest) return "untitled.md";
+    if (isNewFileRequest) return 'untitled.md';
     if (urlTitle) return urlTitle;
 
-    // For authenticated users, let useAutoFileRestoration handle loading from Supabase
+    // For authenticated users, wait for immediate loading to complete
     if (isLoaded && isSignedIn) {
-      return undefined; // Let file restoration handle this
+      // If immediate loading is still in progress, return undefined
+      if (immediateLoading.isLoading || !immediateLoading.hasChecked) {
+        return undefined;
+      }
+
+      // If immediate loading found a file, return undefined to let restoration handle it
+      if (immediateLoading.fileData) {
+        return undefined;
+      }
+
+      // If no file found and user is authenticated, return default name for new user
+      return 'untitled.md';
     }
 
     // For guest users, show default name on first visit
@@ -99,6 +119,34 @@ export const MarkdownEditor: React.FC<MarkdownEditorProps> = ({
       setSearchParams({}, { replace: true });
     }
   }, [urlTitle, urlContent, isNewFileRequest, setSearchParams]);
+
+  // Reset file restored state when authentication changes
+  React.useEffect(() => {
+    if (!isLoaded || !isSignedIn) {
+      setIsFileRestored(false);
+    }
+  }, [isLoaded, isSignedIn]);
+
+  // Handle case when no file is found (new user) - mark as restored to prevent infinite loading
+  React.useEffect(() => {
+    if (
+      isLoaded &&
+      isSignedIn &&
+      immediateLoading.hasChecked &&
+      !immediateLoading.isLoading &&
+      !immediateLoading.fileData &&
+      !isFileRestored
+    ) {
+      setIsFileRestored(true);
+    }
+  }, [
+    isLoaded,
+    isSignedIn,
+    immediateLoading.hasChecked,
+    immediateLoading.isLoading,
+    immediateLoading.fileData,
+    isFileRestored,
+  ]);
 
   const editorState = useEditorState(getInitialContent(), getInitialFileName());
   const responsiveLayout = useResponsiveLayout();
@@ -118,6 +166,8 @@ export const MarkdownEditor: React.FC<MarkdownEditorProps> = ({
         fileData.source,
         true
       );
+      // Mark file as restored to prevent flicker
+      setIsFileRestored(true);
     },
     {
       skipIfUrlParams: true,
@@ -127,26 +177,26 @@ export const MarkdownEditor: React.FC<MarkdownEditorProps> = ({
     }
   );
 
-  useRenderPerformance("MarkdownEditor");
+  useRenderPerformance('MarkdownEditor');
   usePerformanceDebug();
 
   React.useEffect(() => {
     const testConnection = async () => {
       try {
-        const { testSupabaseConnection } = await import("@/lib/supabase");
+        const { testSupabaseConnection } = await import('@/lib/supabase');
         const isConnected = await testSupabaseConnection();
         if (isConnected) {
-          import("@/utils/console").then(({ safeConsole }) => {
-            safeConsole.dev("✓ Supabase connection test successful");
+          import('@/utils/console').then(({ safeConsole }) => {
+            safeConsole.dev('✓ Supabase connection test successful');
           });
         } else {
-          import("@/utils/console").then(({ safeConsole }) => {
-            safeConsole.warn("⚠️ Supabase connection test failed");
+          import('@/utils/console').then(({ safeConsole }) => {
+            safeConsole.warn('⚠️ Supabase connection test failed');
           });
         }
       } catch (error) {
-        import("@/utils/console").then(({ safeConsole }) => {
-          safeConsole.error("Error testing Supabase connection:", error);
+        import('@/utils/console').then(({ safeConsole }) => {
+          safeConsole.error('Error testing Supabase connection:', error);
         });
       }
     };
@@ -164,7 +214,7 @@ export const MarkdownEditor: React.FC<MarkdownEditorProps> = ({
   const { state: dialogs, actions: dialogActions } = dialogManager;
   const { settings, actions: settingsActions } = editorSettings;
 
-  const lastSavedContentRef = React.useRef<string>("");
+  const lastSavedContentRef = React.useRef<string>('');
   const [sidebarCollapsed, setSidebarCollapsed] = React.useState(false);
 
   React.useEffect(() => {
@@ -188,17 +238,12 @@ export const MarkdownEditor: React.FC<MarkdownEditorProps> = ({
       if (insertTextAtCursor) {
         insertTextAtCursor(text, false);
       } else {
-        const textarea = document.querySelector(
-          ".markdown-editor-textarea"
-        ) as HTMLTextAreaElement;
+        const textarea = document.querySelector('.markdown-editor-textarea') as HTMLTextAreaElement;
         if (textarea) {
           const start = textarea.selectionStart;
           const end = textarea.selectionEnd;
           const currentValue = textarea.value;
-          const newValue =
-            currentValue.substring(0, start) +
-            text +
-            currentValue.substring(end);
+          const newValue = currentValue.substring(0, start) + text + currentValue.substring(end);
 
           textarea.value = newValue;
           editorActions.setMarkdown(newValue);
@@ -207,7 +252,7 @@ export const MarkdownEditor: React.FC<MarkdownEditorProps> = ({
           textarea.setSelectionRange(newCursorPos, newCursorPos);
           textarea.focus();
 
-          const inputEvent = new Event("input", { bubbles: true });
+          const inputEvent = new Event('input', { bubbles: true });
           textarea.dispatchEvent(inputEvent);
         } else {
           editorActions.setMarkdown(`${editor.markdown}\n\n${text}`);
@@ -233,10 +278,8 @@ export const MarkdownEditor: React.FC<MarkdownEditorProps> = ({
 
   const handleManualSave = React.useCallback(async () => {
     if (!editor.markdown || !editor.fileName || !fileStorage.saveFile) {
-      import("@/utils/console").then(({ safeConsole }) => {
-        safeConsole.warn(
-          "Cannot save: missing content, filename, or save function"
-        );
+      import('@/utils/console').then(({ safeConsole }) => {
+        safeConsole.warn('Cannot save: missing content, filename, or save function');
       });
       return;
     }
@@ -246,37 +289,34 @@ export const MarkdownEditor: React.FC<MarkdownEditorProps> = ({
     }:${editor.markdown.slice(0, 100)}`;
 
     if (lastSavedContentRef.current === currentContentHash) {
-      import("@/utils/console").then(({ safeConsole }) => {
-        safeConsole.dev("Content unchanged, skipping save");
+      import('@/utils/console').then(({ safeConsole }) => {
+        safeConsole.dev('Content unchanged, skipping save');
       });
       return;
     }
 
     try {
-      const storageType = fileStorage.isAuthenticated ? "cloud" : "local";
-      import("@/utils/console").then(({ safeConsole }) => {
-        safeConsole.dev(
-          `Manual saving file to ${storageType}:`,
-          editor.fileName
-        );
+      const storageType = fileStorage.isAuthenticated ? 'cloud' : 'local';
+      import('@/utils/console').then(({ safeConsole }) => {
+        safeConsole.dev(`Manual saving file to ${storageType}:`, editor.fileName);
       });
 
       await fileStorage.saveFile({
         title: editor.fileName,
         content: editor.markdown,
-        fileType: "markdown",
+        fileType: 'markdown',
         tags: [],
       });
 
       lastSavedContentRef.current = currentContentHash;
-      import("@/utils/console").then(({ safeConsole }) => {
+      import('@/utils/console').then(({ safeConsole }) => {
         safeConsole.dev(`Manual save to ${storageType} successful`);
       });
 
       editorActions.setModified(false);
     } catch (error) {
-      import("@/utils/console").then(({ safeConsole }) => {
-        safeConsole.error("Manual save failed:", error);
+      import('@/utils/console').then(({ safeConsole }) => {
+        safeConsole.error('Manual save failed:', error);
       });
     }
   }, [editor.markdown, editor.fileName, fileStorage, editorActions]);
@@ -286,7 +326,7 @@ export const MarkdownEditor: React.FC<MarkdownEditorProps> = ({
       insertText,
       togglePreview: () => setShowPreview(!showPreview),
       toggleZenMode: () => settingsActions.toggleZenMode(),
-      showShortcuts: () => dialogActions.showDialog("showShortcuts"),
+      showShortcuts: () => dialogActions.showDialog('showShortcuts'),
       undo: undoRedo.undo,
       redo: undoRedo.redo,
       newFile: editorActions.newFile,
@@ -361,21 +401,21 @@ export const MarkdownEditor: React.FC<MarkdownEditorProps> = ({
                 name: string,
                 bypassDialog?: boolean,
                 fileId?: string,
-                source?: "url" | "files-page" | "manual"
+                source?: 'url' | 'files-page' | 'manual'
               ) => void
-            )(fileData.content, fileData.title, true, fileData.id, "url");
+            )(fileData.content, fileData.title, true, fileData.id, 'url');
 
             setTimeout(() => {
               setSearchParams({}, { replace: true });
             }, 50);
           } else {
             if (fileStorage.isAuthenticated) {
-              console.error("File not found in cloud storage");
+              console.error('File not found in cloud storage');
             }
             setSearchParams({}, { replace: true });
           }
         } catch (error) {
-          console.error("Error loading file from storage:", error);
+          console.error('Error loading file from storage:', error);
           setSearchParams({}, { replace: true });
         }
       };
@@ -390,19 +430,28 @@ export const MarkdownEditor: React.FC<MarkdownEditorProps> = ({
     setSearchParams,
   ]);
 
-  if (editorState.isRestoring) {
+  // Show loading for authenticated users during immediate file loading
+  // Keep loading until file is actually restored to prevent flicker
+  if (
+    isLoaded &&
+    isSignedIn &&
+    (immediateLoading.isLoading ||
+      !immediateLoading.hasChecked ||
+      (immediateLoading.hasChecked && immediateLoading.fileData && !isFileRestored))
+  ) {
     return (
-      <ContentRestorationLoader
-        fileName={fileRestoration.activeFileName || undefined}
-      />
+      <ContentRestorationLoader fileName={immediateLoading.fileData?.title || 'your last file'} />
     );
   }
 
+  // Show loading for file restoration
+  if (editorState.isRestoring) {
+    return <ContentRestorationLoader fileName={fileRestoration.activeFileName || undefined} />;
+  }
+
   return (
-    <EditorErrorBoundary
-      enableReporting={process.env.NODE_ENV === "production"}
-    >
-      <PerformanceMonitor enabled={process.env.NODE_ENV === "development"}>
+    <EditorErrorBoundary enableReporting={process.env.NODE_ENV === 'production'}>
+      <PerformanceMonitor enabled={process.env.NODE_ENV === 'development'}>
         <EditorContainer
           theme={currentTheme}
           responsive={responsive}
@@ -418,7 +467,7 @@ export const MarkdownEditor: React.FC<MarkdownEditorProps> = ({
               showPreview={showPreview}
               onTogglePreview={() => setShowPreview(!showPreview)}
               onToggleZen={settingsActions.toggleZenMode}
-              onSearch={() => dialogActions.showDialog("showSearch")}
+              onSearch={() => dialogActions.showDialog('showSearch')}
               onNewFile={editorActions.newFile}
               markdown={editor.markdown}
               fileName={editor.fileName}
@@ -426,9 +475,7 @@ export const MarkdownEditor: React.FC<MarkdownEditorProps> = ({
               onFileNameChange={editorActions.setFileName}
               onInsertText={insertText}
               fontSize={settings.fontSize}
-              onFontSizeChange={(size) =>
-                settingsActions.updateSettings({ fontSize: size })
-              }
+              onFontSizeChange={(size) => settingsActions.updateSettings({ fontSize: size })}
               lineHeight={settings.lineHeight}
               onLineHeightChange={(height) =>
                 settingsActions.updateSettings({ lineHeight: height })
@@ -447,10 +494,8 @@ export const MarkdownEditor: React.FC<MarkdownEditorProps> = ({
               onRedo={undoRedo.redo}
               canUndo={undoRedo.canUndo}
               canRedo={undoRedo.canRedo}
-              onShowAdvancedExport={() =>
-                dialogActions.showDialog("showAdvancedExport")
-              }
-              onShowTemplates={() => dialogActions.showDialog("showTemplates")}
+              onShowAdvancedExport={() => dialogActions.showDialog('showAdvancedExport')}
+              onShowTemplates={() => dialogActions.showDialog('showTemplates')}
             />
           )}
 
@@ -466,12 +511,10 @@ export const MarkdownEditor: React.FC<MarkdownEditorProps> = ({
               onNewFile={editorActions.newFile}
               showPreview={showPreview}
               onTogglePreview={() => setShowPreview(!showPreview)}
-              onShowSearch={() => dialogActions.showDialog("showSearch")}
-              onShowTemplates={() => dialogActions.showDialog("showTemplates")}
-              onShowAdvancedExport={() =>
-                dialogActions.showDialog("showAdvancedExport")
-              }
-              onShowShortcuts={() => dialogActions.showDialog("showShortcuts")}
+              onShowSearch={() => dialogActions.showDialog('showSearch')}
+              onShowTemplates={() => dialogActions.showDialog('showTemplates')}
+              onShowAdvancedExport={() => dialogActions.showDialog('showAdvancedExport')}
+              onShowShortcuts={() => dialogActions.showDialog('showShortcuts')}
               onInsertText={insertText}
               settings={settings}
               onSettingsChange={settingsActions.updateSettings}

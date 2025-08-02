@@ -3,24 +3,19 @@
  * @author Axel Modra
  */
 
-import { useAuth } from "@clerk/react-router";
-import { useCallback, useEffect, useRef, useState } from "react";
-import { useLocation } from "react-router";
-import { useFileContext } from "@/contexts/FileContextProvider";
-import { useFileStorage } from "@/hooks/files/useFileStorage";
-import { useLastOpenedFile } from "@/hooks/files/useLastOpenedFile";
-import { safeConsole } from "@/utils/console";
+import { useAuth } from '@clerk/react-router';
+import { useCallback, useEffect, useRef, useState } from 'react';
+import { useLocation } from 'react-router';
+import { useFileContext } from '@/contexts/FileContextProvider';
+import { useFileStorage } from '@/hooks/files/useFileStorage';
+import { useImmediateFileLoading } from '@/hooks/files/useImmediateFileLoading';
+import { useLastOpenedFile } from '@/hooks/files/useLastOpenedFile';
+import { safeConsole } from '@/utils/console';
 
 /**
  * File restoration states
  */
-export type RestorationState =
-  | "idle"
-  | "checking"
-  | "loading"
-  | "success"
-  | "error"
-  | "no-file";
+export type RestorationState = 'idle' | 'checking' | 'loading' | 'success' | 'error' | 'no-file';
 
 /**
  * File restoration result
@@ -37,7 +32,7 @@ export interface FileRestorationResult {
     content: string;
     title: string;
     id: string;
-    source: "url" | "files-page" | "manual";
+    source: 'url' | 'files-page' | 'manual';
   } | null;
   /** Whether there's an active file to restore */
   hasActiveFile: boolean;
@@ -77,34 +72,28 @@ export const useSmartFileRestoration = (
   const location = useLocation();
 
   const getInitialState = useCallback((): RestorationState => {
-    if (typeof window === "undefined") return "idle";
+    if (typeof window === 'undefined') return 'idle';
     const params = new URLSearchParams(window.location.search);
     if (
       skipIfUrlParams &&
-      (params.has("file") ||
-        params.has("title") ||
-        params.has("content") ||
-        params.has("new"))
+      (params.has('file') || params.has('title') || params.has('content') || params.has('new'))
     ) {
-      return "idle";
+      return 'idle';
     }
     try {
-      const context = JSON.parse(
-        sessionStorage.getItem("active_file_context") || "null"
-      );
+      const context = JSON.parse(sessionStorage.getItem('active_file_context') || 'null');
       if (context?.fileId) {
-        return "checking";
+        return 'checking';
       }
     } catch {
-      return "idle";
+      return 'idle';
     }
-    return "idle";
+    return 'idle';
   }, [skipIfUrlParams]);
 
   const [state, setState] = useState<RestorationState>(getInitialState);
   const [error, setError] = useState<string | null>(null);
-  const [fileData, setFileData] =
-    useState<FileRestorationResult["fileData"]>(null);
+  const [fileData, setFileData] = useState<FileRestorationResult['fileData']>(null);
 
   // Flag to prevent multiple restoration attempts
   const restorationAttemptedRef = useRef(false);
@@ -114,7 +103,7 @@ export const useSmartFileRestoration = (
    * Clear restoration state
    */
   const clearRestoration = useCallback(() => {
-    setState("idle");
+    setState('idle');
     setError(null);
     setFileData(null);
     restorationAttemptedRef.current = false; // Reset attempt flag
@@ -124,15 +113,10 @@ export const useSmartFileRestoration = (
    * Check if URL parameters are present
    */
   const hasUrlParams = useCallback(() => {
-    if (typeof window === "undefined") return false;
+    if (typeof window === 'undefined') return false;
 
     const params = new URLSearchParams(window.location.search);
-    return (
-      params.has("file") ||
-      params.has("title") ||
-      params.has("content") ||
-      params.has("new")
-    );
+    return params.has('file') || params.has('title') || params.has('content') || params.has('new');
   }, []);
 
   /**
@@ -141,26 +125,26 @@ export const useSmartFileRestoration = (
   const restoreFile = useCallback(async () => {
     // Skip if URL parameters are present and option is enabled
     if (skipIfUrlParams && hasUrlParams()) {
-      safeConsole.dev("Skipping file restoration due to URL parameters");
-      setState("idle");
+      safeConsole.dev('Skipping file restoration due to URL parameters');
+      setState('idle');
       return;
     }
 
     // Skip if storage is not ready
     if (!fileStorage.isInitialized || !fileStorage.storageService) {
-      safeConsole.dev("Storage not ready for file restoration");
-      setState("idle");
+      safeConsole.dev('Storage not ready for file restoration');
+      setState('idle');
       return;
     }
 
     // Skip if no active file context
     if (!activeFile?.fileId) {
-      safeConsole.dev("No active file to restore");
-      setState("no-file");
+      safeConsole.dev('No active file to restore');
+      setState('no-file');
       return;
     }
 
-    setState("checking");
+    setState('checking');
     setError(null);
 
     // Set timeout to prevent stuck loading
@@ -169,25 +153,23 @@ export const useSmartFileRestoration = (
     }
 
     timeoutRef.current = setTimeout(() => {
-      safeConsole.warn("File restoration timeout reached");
-      setState("error");
-      setError("File restoration timeout");
+      safeConsole.warn('File restoration timeout reached');
+      setState('error');
+      setError('File restoration timeout');
     }, 8000); // 8 second timeout
 
     try {
-      safeConsole.dev("Starting file restoration for:", activeFile.fileName);
-      setState("loading");
+      safeConsole.dev('Starting file restoration for:', activeFile.fileName);
+      setState('loading');
 
       // Load file from storage with optimized caching
       const loadedFile = await fileStorage.loadFile(activeFile.fileId);
 
       if (loadedFile) {
         // Validate source
-        const validSource = ["url", "files-page", "manual"].includes(
-          activeFile.source
-        )
-          ? (activeFile.source as "url" | "files-page" | "manual")
-          : "manual";
+        const validSource = ['url', 'files-page', 'manual'].includes(activeFile.source)
+          ? (activeFile.source as 'url' | 'files-page' | 'manual')
+          : 'manual';
 
         const restoredData = {
           content: loadedFile.content,
@@ -197,7 +179,7 @@ export const useSmartFileRestoration = (
         };
 
         setFileData(restoredData);
-        setState("success");
+        setState('success');
 
         // Clear timeout on success
         if (timeoutRef.current) {
@@ -205,23 +187,20 @@ export const useSmartFileRestoration = (
           timeoutRef.current = null;
         }
 
-        safeConsole.dev("File restoration successful:", loadedFile.title);
+        safeConsole.dev('File restoration successful:', loadedFile.title);
       } else {
         // File not found in storage
-        safeConsole.warn(
-          "Active file not found in storage:",
-          activeFile.fileName
-        );
+        safeConsole.warn('Active file not found in storage:', activeFile.fileName);
 
         if (clearInvalidContext) {
           // Clear invalid file context
-          const { fileContextManager } = await import("@/utils/fileContext");
+          const { fileContextManager } = await import('@/utils/fileContext');
           fileContextManager.clearActiveFile();
-          safeConsole.dev("Cleared invalid file context");
+          safeConsole.dev('Cleared invalid file context');
         }
 
-        setError("File not found in storage");
-        setState("error");
+        setError('File not found in storage');
+        setState('error');
 
         // Clear timeout on error
         if (timeoutRef.current) {
@@ -230,11 +209,10 @@ export const useSmartFileRestoration = (
         }
       }
     } catch (err) {
-      const errorMessage =
-        err instanceof Error ? err.message : "Unknown error occurred";
-      safeConsole.error("File restoration failed:", err);
+      const errorMessage = err instanceof Error ? err.message : 'Unknown error occurred';
+      safeConsole.error('File restoration failed:', err);
       setError(errorMessage);
-      setState("error");
+      setState('error');
 
       // Clear timeout on error
       if (timeoutRef.current) {
@@ -258,7 +236,7 @@ export const useSmartFileRestoration = (
   useEffect(() => {
     // If the initial state is 'checking', start restoration once the active file is available from the context.
     if (
-      state === "checking" &&
+      state === 'checking' &&
       !restorationAttemptedRef.current &&
       activeFile?.fileId &&
       !contextLoading
@@ -272,9 +250,9 @@ export const useSmartFileRestoration = (
    * Reset state when navigating away from editor (prevent reset loops)
    */
   useEffect(() => {
-    if (location.pathname !== "/") {
+    if (location.pathname !== '/') {
       // Only reset when navigating away from editor
-      setState("idle");
+      setState('idle');
       setError(null);
       setFileData(null);
       restorationAttemptedRef.current = false;
@@ -287,7 +265,7 @@ export const useSmartFileRestoration = (
    */
   useEffect(() => {
     // Only reset if we're not currently loading and there's no active restoration
-    if (state === "idle" && !restorationAttemptedRef.current) {
+    if (state === 'idle' && !restorationAttemptedRef.current) {
       restorationAttemptedRef.current = false;
     }
   }, [state]); // Reset only when state changes
@@ -306,7 +284,7 @@ export const useSmartFileRestoration = (
 
   return {
     state,
-    isLoading: state === "checking" || state === "loading",
+    isLoading: state === 'checking' || state === 'loading',
     error,
     fileData,
     hasActiveFile: !!activeFile?.fileId,
@@ -320,23 +298,70 @@ export const useSmartFileRestoration = (
  * Hook for file restoration with automatic loading
  */
 export const useAutoFileRestoration = (
-  onFileRestored?: (
-    fileData: NonNullable<FileRestorationResult["fileData"]>
-  ) => void,
+  onFileRestored?: (fileData: NonNullable<FileRestorationResult['fileData']>) => void,
   options?: FileRestorationOptions
 ) => {
   const { isSignedIn, isLoaded } = useAuth();
+  const immediateLoading = useImmediateFileLoading();
   const lastOpenedFile = useLastOpenedFile();
   const restoration = useSmartFileRestoration(options);
   const [hasRestored, setHasRestored] = useState(false);
   const [hasTriedLastOpened, setHasTriedLastOpened] = useState(false);
+  const [hasTriedImmediate, setHasTriedImmediate] = useState(false);
 
-  // For authenticated users, try to load last opened file from Supabase first
+  // For authenticated users, try immediate loading first (highest priority)
+  useEffect(() => {
+    if (
+      isLoaded &&
+      isSignedIn &&
+      !hasTriedImmediate &&
+      immediateLoading.hasChecked &&
+      !immediateLoading.isLoading &&
+      immediateLoading.fileData &&
+      onFileRestored
+    ) {
+      setHasTriedImmediate(true);
+      setHasTriedLastOpened(true); // Skip lastOpenedFile since we got data from immediate loading
+
+      // Use setTimeout to ensure smooth transition and prevent flicker
+      setTimeout(() => {
+        // Double check fileData is still available
+        if (immediateLoading.fileData) {
+          // Load the file from immediate loading
+          onFileRestored({
+            content: immediateLoading.fileData.content,
+            title: immediateLoading.fileData.title,
+            id: immediateLoading.fileData.id || 'temp-id',
+            source: 'manual',
+          });
+
+          safeConsole.dev(
+            '✅ Loaded file from immediate loading:',
+            immediateLoading.fileData.title
+          );
+        }
+      }, 10); // Small delay to ensure UI state is stable
+      return;
+    }
+  }, [
+    isLoaded,
+    isSignedIn,
+    immediateLoading.hasChecked,
+    immediateLoading.isLoading,
+    immediateLoading.fileData,
+    onFileRestored,
+    hasTriedImmediate,
+  ]);
+
+  // Fallback: For authenticated users, try to load last opened file from Supabase
   useEffect(() => {
     if (
       isLoaded &&
       isSignedIn &&
       !hasTriedLastOpened &&
+      !hasTriedImmediate &&
+      immediateLoading.hasChecked &&
+      !immediateLoading.fileData &&
       !lastOpenedFile.isLoading &&
       lastOpenedFile.fileData &&
       onFileRestored
@@ -347,12 +372,12 @@ export const useAutoFileRestoration = (
       onFileRestored({
         content: lastOpenedFile.fileData.content,
         title: lastOpenedFile.fileData.title,
-        id: lastOpenedFile.fileData.id || "temp-id",
-        source: "manual",
+        id: lastOpenedFile.fileData.id || 'temp-id',
+        source: 'manual',
       });
 
       safeConsole.dev(
-        "Loaded last opened file from Supabase:",
+        '📄 Loaded last opened file from Supabase (fallback):',
         lastOpenedFile.fileData.title
       );
       return;
@@ -360,6 +385,9 @@ export const useAutoFileRestoration = (
   }, [
     isLoaded,
     isSignedIn,
+    hasTriedImmediate,
+    immediateLoading.hasChecked,
+    immediateLoading.fileData,
     lastOpenedFile.isLoading,
     lastOpenedFile.fileData,
     onFileRestored,
@@ -369,7 +397,7 @@ export const useAutoFileRestoration = (
   // Auto-load file when restoration is successful (only once) - fallback for file context restoration
   useEffect(() => {
     if (
-      restoration.state === "success" &&
+      restoration.state === 'success' &&
       restoration.fileData &&
       onFileRestored &&
       !hasRestored &&
@@ -381,31 +409,26 @@ export const useAutoFileRestoration = (
       // Don't clear restoration state immediately - let the UI settle first
       // This prevents the glitch where data appears and disappears
     }
-  }, [
-    restoration.state,
-    restoration.fileData,
-    onFileRestored,
-    hasRestored,
-    hasTriedLastOpened,
-  ]);
+  }, [restoration.state, restoration.fileData, onFileRestored, hasRestored, hasTriedLastOpened]);
 
   // Reset hasRestored when file context changes
   useEffect(() => {
-    if (restoration.state === "idle") {
+    if (restoration.state === 'idle') {
       setHasRestored(false);
     }
   }, [restoration.state]);
 
-  // Reset hasTriedLastOpened when authentication state changes
+  // Reset state when authentication state changes
   useEffect(() => {
     if (!isLoaded || !isSignedIn) {
       setHasTriedLastOpened(false);
+      setHasTriedImmediate(false);
     }
   }, [isLoaded, isSignedIn]);
 
   // Clear restoration state after file is successfully loaded and UI has settled
   useEffect(() => {
-    if (restoration.state === "success" && hasRestored) {
+    if (restoration.state === 'success' && hasRestored) {
       // Wait longer to ensure the editor has fully loaded the content
       const timer = setTimeout(() => {
         restoration.clearRestoration();
@@ -420,6 +443,10 @@ export const useAutoFileRestoration = (
     // Add last opened file loading state for authenticated users
     isLoadingLastOpened: isSignedIn && lastOpenedFile.isLoading,
     lastOpenedError: lastOpenedFile.error,
+    // Add immediate loading state
+    immediateLoading,
+    isImmediateLoading: immediateLoading.isLoading,
+    hasImmediateFile: !!immediateLoading.fileData,
   };
 };
 

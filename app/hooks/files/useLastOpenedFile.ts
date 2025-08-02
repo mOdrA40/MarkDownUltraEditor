@@ -3,18 +3,18 @@
  * @author MarkDownUltraRemix Team
  */
 
-import { useAuth } from "@clerk/react-router";
-import { useCallback, useEffect, useState } from "react";
-import { useFileContext } from "@/contexts/FileContextProvider";
-import type { FileData } from "@/lib/supabase";
-import { useSupabase } from "@/lib/supabase";
-import { createUserPreferencesService } from "@/services/userPreferencesService";
-import { safeConsole } from "@/utils/console";
+import { useAuth } from '@clerk/react-router';
+import { useCallback, useEffect, useState } from 'react';
+import { useFileContext } from '@/contexts/FileContextProvider';
+import type { FileData } from '@/lib/supabase';
+import { useSupabase } from '@/lib/supabase';
+import { createUserPreferencesService } from '@/services/userPreferencesService';
+import { safeConsole } from '@/utils/console';
 import {
   clearLastOpenedFile,
   getLastOpenedFile,
   saveLastOpenedFile,
-} from "@/utils/editorPreferences";
+} from '@/utils/editorPreferences';
 
 export interface LastOpenedFileState {
   /** Last opened file data */
@@ -24,9 +24,7 @@ export interface LastOpenedFileState {
   /** Whether there was an error loading the file */
   error: string | null;
   /** Save the current file as last opened */
-  saveLastOpened: (
-    file: Pick<FileData, "id" | "title" | "content">
-  ) => Promise<boolean>;
+  saveLastOpened: (file: Pick<FileData, 'id' | 'title' | 'content'>) => Promise<boolean>;
   /** Clear the last opened file */
   clearLastOpened: () => Promise<boolean>;
 }
@@ -68,16 +66,12 @@ export const useLastOpenedFile = (): LastOpenedFileState => {
 
         if (preferences?.last_opened_file_id) {
           // Check for conflicts with other devices
-          const mostRecentFile =
-            await preferencesService.getMostRecentFileAcrossDevices(userId);
+          const mostRecentFile = await preferencesService.getMostRecentFileAcrossDevices(userId);
 
           let fileIdToLoad = preferences.last_opened_file_id;
 
           // If there's a more recent file from another device, use that
-          if (
-            mostRecentFile &&
-            mostRecentFile.fileId !== preferences.last_opened_file_id
-          ) {
+          if (mostRecentFile && mostRecentFile.fileId !== preferences.last_opened_file_id) {
             const mostRecentTime = new Date(mostRecentFile.lastActivity);
             const preferencesTime = new Date(preferences.last_activity_at);
 
@@ -88,14 +82,14 @@ export const useLastOpenedFile = (): LastOpenedFileState => {
 
           // Get the file data
           const { data: fileData, error: fileError } = await supabase
-            .from("user_files")
-            .select("*")
-            .eq("id", fileIdToLoad)
-            .eq("user_id", userId)
+            .from('user_files')
+            .select('*')
+            .eq('id', fileIdToLoad)
+            .eq('user_id', userId)
             .single();
 
           if (fileError) {
-            safeConsole.error("Error loading last opened file:", fileError);
+            safeConsole.error('Error loading last opened file:', fileError);
           } else if (fileData) {
             setFileData({
               id: fileData.id,
@@ -109,10 +103,7 @@ export const useLastOpenedFile = (): LastOpenedFileState => {
             });
 
             // Update current device session with this file
-            await preferencesService.updateDeviceSessionFile(
-              userId,
-              fileData.id
-            );
+            await preferencesService.updateDeviceSessionFile(userId, fileData.id);
             setIsLoading(false);
             return;
           }
@@ -131,8 +122,8 @@ export const useLastOpenedFile = (): LastOpenedFileState => {
         setFileData(null);
       }
     } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : "Unknown error";
-      safeConsole.error("Error loading last opened file:", err);
+      const errorMessage = err instanceof Error ? err.message : 'Unknown error';
+      safeConsole.error('Error loading last opened file:', err);
       setError(errorMessage);
       setFileData(null);
     } finally {
@@ -144,9 +135,7 @@ export const useLastOpenedFile = (): LastOpenedFileState => {
    * Save the current file as last opened with device session tracking
    */
   const saveLastOpened = useCallback(
-    async (
-      file: Pick<FileData, "id" | "title" | "content">
-    ): Promise<boolean> => {
+    async (file: Pick<FileData, 'id' | 'title' | 'content'>): Promise<boolean> => {
       try {
         // For authenticated users, save to Supabase
         if (isSignedIn && userId && supabase) {
@@ -159,10 +148,7 @@ export const useLastOpenedFile = (): LastOpenedFileState => {
           const preferencesService = createUserPreferencesService(supabase);
 
           // Update user preferences
-          const success = await preferencesService.updateLastOpenedFile(
-            userId,
-            file.id
-          );
+          const success = await preferencesService.updateLastOpenedFile(userId, file.id);
 
           if (success) {
             // Also update device session
@@ -175,7 +161,7 @@ export const useLastOpenedFile = (): LastOpenedFileState => {
         saveLastOpenedFile(file);
         return true;
       } catch (err) {
-        safeConsole.error("Error saving last opened file:", err);
+        safeConsole.error('Error saving last opened file:', err);
         return false;
       }
     },
@@ -198,7 +184,7 @@ export const useLastOpenedFile = (): LastOpenedFileState => {
 
         if (success) {
           // Also clear from current device session
-          await preferencesService.updateDeviceSessionFile(userId, "");
+          await preferencesService.updateDeviceSessionFile(userId, '');
 
           setFileData(null);
           return true;
@@ -210,19 +196,37 @@ export const useLastOpenedFile = (): LastOpenedFileState => {
       setFileData(null);
       return true;
     } catch (err) {
-      safeConsole.error("Error clearing last opened file:", err);
+      safeConsole.error('Error clearing last opened file:', err);
       return false;
     }
   }, [isSignedIn, userId, supabase]);
 
   /**
    * Load the last opened file on mount and when authentication state changes
+   * Prioritize immediate loading for authenticated users
    */
   useEffect(() => {
     if (isLoaded) {
-      loadLastOpenedFile();
+      // For authenticated users, load immediately to prevent welcome template flash
+      if (isSignedIn) {
+        loadLastOpenedFile();
+      } else {
+        // For guest users, also load immediately but from localStorage
+        const lastOpened = getLastOpenedFile();
+        if (lastOpened) {
+          setFileData({
+            id: lastOpened.id,
+            title: lastOpened.title,
+            content: lastOpened.content,
+          });
+          setIsLoading(false);
+        } else {
+          setFileData(null);
+          setIsLoading(false);
+        }
+      }
     }
-  }, [isLoaded, loadLastOpenedFile]);
+  }, [isLoaded, isSignedIn, loadLastOpenedFile]);
 
   /**
    * For guest users, load immediately from localStorage without waiting for Clerk
@@ -252,7 +256,7 @@ export const useLastOpenedFile = (): LastOpenedFileState => {
   useEffect(() => {
     if (activeFile?.fileId && activeFile?.fileName) {
       // Get file content from localStorage or session storage
-      const content = localStorage.getItem("markdownEditor_content") || "";
+      const content = localStorage.getItem('markdownEditor_content') || '';
 
       if (content) {
         saveLastOpened({
