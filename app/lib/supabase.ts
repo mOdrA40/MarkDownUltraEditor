@@ -62,6 +62,88 @@ export interface Database {
           deleted_at?: string | null;
         };
       };
+      user_preferences: {
+        Row: {
+          id: string;
+          user_id: string;
+          last_opened_file_id: string | null;
+          editor_theme: string;
+          auto_save_enabled: boolean;
+          preview_mode: string;
+          font_size: number;
+          line_numbers: boolean;
+          word_wrap: boolean;
+          last_activity_at: string;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          user_id: string;
+          last_opened_file_id?: string | null;
+          editor_theme?: string;
+          auto_save_enabled?: boolean;
+          preview_mode?: string;
+          font_size?: number;
+          line_numbers?: boolean;
+          word_wrap?: boolean;
+          last_activity_at?: string;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          id?: string;
+          user_id?: string;
+          last_opened_file_id?: string | null;
+          editor_theme?: string;
+          auto_save_enabled?: boolean;
+          preview_mode?: string;
+          font_size?: number;
+          line_numbers?: boolean;
+          word_wrap?: boolean;
+          last_activity_at?: string;
+          created_at?: string;
+          updated_at?: string;
+        };
+      };
+      user_device_sessions: {
+        Row: {
+          id: string;
+          user_id: string;
+          device_fingerprint: string;
+          device_name: string | null;
+          browser_info: Record<string, unknown> | null;
+          last_opened_file_id: string | null;
+          last_activity_at: string;
+          is_active: boolean;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          user_id: string;
+          device_fingerprint: string;
+          device_name?: string | null;
+          browser_info?: Record<string, unknown> | null;
+          last_opened_file_id?: string | null;
+          last_activity_at?: string;
+          is_active?: boolean;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          id?: string;
+          user_id?: string;
+          device_fingerprint?: string;
+          device_name?: string | null;
+          browser_info?: Record<string, unknown> | null;
+          last_opened_file_id?: string | null;
+          last_activity_at?: string;
+          is_active?: boolean;
+          created_at?: string;
+          updated_at?: string;
+        };
+      };
       user_sessions: {
         Row: {
           id: string;
@@ -149,34 +231,8 @@ export const createClerkSupabaseClient = (
     accessToken: async () => {
       try {
         const token = await getToken();
-        if (process.env.NODE_ENV === 'development') {
-          import('@/utils/console').then(({ safeConsole }) => {
-            safeConsole.dev(
-              '🔐 Clerk token for Supabase:',
-              token ? '✅ Token exists' : '❌ No token'
-            );
-            if (token) {
-              // Only log token details in development
-              try {
-                const payload = JSON.parse(atob(token.split('.')[1]));
-                safeConsole.dev('🔍 Token payload preview:', {
-                  sub: payload.sub,
-                  role: payload.role,
-                  exp: new Date(payload.exp * 1000).toISOString(),
-                });
-              } catch (_e) {
-                safeConsole.dev('🔍 Token parsing failed (expected in some cases)');
-              }
-            }
-          });
-        }
         return token;
-      } catch (error) {
-        if (process.env.NODE_ENV === 'development') {
-          import('@/utils/console').then(({ safeConsole }) => {
-            safeConsole.error('❌ Error getting Clerk token for Supabase:', error);
-          });
-        }
+      } catch (_error) {
         return null;
       }
     },
@@ -184,16 +240,18 @@ export const createClerkSupabaseClient = (
 };
 
 export const useSupabase = (): SupabaseClient<Database> | null => {
-  const { isSignedIn } = useAuth();
+  const { isSignedIn, getToken } = useAuth();
 
   if (!isSignedIn) {
-    import('@/utils/console').then(({ safeConsole }) => {
-      safeConsole.dev('User not signed in, returning base Supabase client');
-    });
     return supabaseClient; // Return base client for non-authenticated users
   }
 
-  // Return base client for now - will be enhanced with proper async handling
+  // Return authenticated client for signed-in users
+  if (getToken) {
+    return createClerkSupabaseClient(getToken);
+  }
+
+  // Fallback to base client if getToken is not available
   return supabaseClient;
 };
 
@@ -205,31 +263,14 @@ export const getAuthenticatedSupabaseClient = async (
   getToken: () => Promise<string | null>
 ): Promise<SupabaseClient<Database> | null> => {
   try {
-    import('@/utils/console').then(({ safeConsole }) => {
-      safeConsole.dev('Getting authenticated Supabase client with Native Third Party Auth');
-    });
-
-    // Test if we can get a token
     const token = await getToken();
-    import('@/utils/console').then(({ safeConsole }) => {
-      safeConsole.dev('Token test:', token ? '✅ Token available' : '❌ No token');
-    });
 
     if (!token) {
-      import('@/utils/console').then(({ safeConsole }) => {
-        safeConsole.warn('No Clerk token available, using base client');
-      });
       return supabaseClient;
     }
 
-    import('@/utils/console').then(({ safeConsole }) => {
-      safeConsole.dev('✓ Creating authenticated client with native accessToken()');
-    });
     return createClerkSupabaseClient(getToken);
-  } catch (error) {
-    import('@/utils/console').then(({ safeConsole }) => {
-      safeConsole.error('Error getting authenticated Supabase client:', error);
-    });
+  } catch (_error) {
     return supabaseClient; // Fallback to base client
   }
 };
@@ -241,21 +282,8 @@ export const testSupabaseConnection = async (): Promise<boolean> => {
   try {
     const { error } = await supabaseClient.from('user_files').select('count').limit(1);
 
-    if (error) {
-      import('@/utils/console').then(({ safeConsole }) => {
-        safeConsole.error('Supabase connection test failed:', error);
-      });
-      return false;
-    }
-
-    import('@/utils/console').then(({ safeConsole }) => {
-      safeConsole.dev('Supabase connection test successful');
-    });
-    return true;
-  } catch (error) {
-    import('@/utils/console').then(({ safeConsole }) => {
-      safeConsole.error('Supabase connection test error:', error);
-    });
+    return !error;
+  } catch (_error) {
     return false;
   }
 };

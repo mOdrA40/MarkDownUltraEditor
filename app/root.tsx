@@ -1,17 +1,19 @@
 import { ClerkProvider } from '@clerk/react-router';
 import { rootAuthLoader } from '@clerk/react-router/ssr.server';
 import type React from 'react';
-import { useEffect } from 'react';
+import { Suspense, useEffect } from 'react';
 import type { HeadersFunction, LinksFunction } from 'react-router';
-import { Links, Meta, Outlet, Scripts, ScrollRestoration } from 'react-router';
+import { Links, Meta, Outlet, Scripts, ScrollRestoration, useNavigation } from 'react-router';
 import SessionManager from '@/components/auth/SessionManager';
 import { ThemeProvider } from '@/components/features/ThemeSelector';
+import { PageLoader } from '@/components/shared/PageLoader';
 import { FileContextProvider } from '@/contexts/FileContextProvider';
 import { fixRedirectLoop } from '@/utils/auth/redirects';
 import type { Route } from './+types/root';
 
 import './tailwind.css';
 import './styles/dropdown-improvements.css';
+import './styles/transitions.css';
 
 if (typeof window !== 'undefined') {
   import('@/utils/performance').then(({ initializePerformanceOptimizations }) => {
@@ -249,6 +251,7 @@ export function ErrorBoundary() {
 
 export default function App({ loaderData }: Route.ComponentProps) {
   const publishableKey = process.env.VITE_CLERK_PUBLISHABLE_KEY;
+  const navigation = useNavigation();
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
@@ -275,7 +278,15 @@ export default function App({ loaderData }: Route.ComponentProps) {
       <ThemeProvider>
         <FileContextProvider>
           <SessionManager />
-          <Outlet />
+          <div
+            className={`transition-opacity duration-300 ${
+              navigation.state === 'loading' ? 'opacity-25' : 'opacity-100'
+            }`}
+          >
+            <Suspense fallback={<PageLoader />}>
+              <Outlet />
+            </Suspense>
+          </div>
         </FileContextProvider>
       </ThemeProvider>
     </ClerkProvider>

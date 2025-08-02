@@ -17,7 +17,8 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
-import { getStorageItem, removeStorageItem, setStorageItem } from '@/utils/common';
+import { getStorageItem, setStorageItem } from '@/utils/common';
+import { isFirstVisit, markVisited } from '@/utils/editorPreferences';
 
 /**
  * Props for WelcomeDialog component
@@ -220,8 +221,7 @@ export const useWelcomeDialog = () => {
     }
 
     // Check if first-time visitor (guest user)
-    const hasVisited = getStorageItem('markdownEditor_hasVisited');
-    if (!hasVisited) {
+    if (isFirstVisit()) {
       // Small delay to ensure page is loaded
       const timer = setTimeout(() => {
         setIsOpen(true);
@@ -239,7 +239,7 @@ export const useWelcomeDialog = () => {
   }, [isSignedIn, isOpen]);
 
   const handleClose = () => {
-    setStorageItem('markdownEditor_hasVisited', 'true');
+    markVisited();
     setIsOpen(false);
   };
 
@@ -260,7 +260,9 @@ export const useWelcomeDialog = () => {
         setWasSignedIn(true);
       } else if (wasSignedIn && !isSignedIn) {
         // User just logged out, reset hasVisited flag for future guest sessions
-        removeStorageItem('markdownEditor_hasVisited');
+        // We don't reset the first visit flag here to maintain a better UX
+        // If we want to show the welcome dialog again after logout, uncomment:
+        // removeStorageItem('markdownEditor_hasVisited');
         setWasSignedIn(false);
       }
     }

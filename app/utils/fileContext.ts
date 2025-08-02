@@ -188,7 +188,6 @@ class FileContextManager {
     try {
       sessionStorage.removeItem(SESSION_KEYS.ACTIVE_FILE);
       sessionStorage.removeItem(SESSION_KEYS.FILE_HISTORY);
-      safeConsole.dev('All file context data cleared');
       return true;
     } catch (error) {
       safeConsole.error('Failed to clear file context data:', error);

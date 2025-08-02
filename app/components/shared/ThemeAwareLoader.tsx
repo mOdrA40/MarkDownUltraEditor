@@ -4,7 +4,7 @@
  */
 
 import { FileText, Loader2, RefreshCw } from 'lucide-react';
-import type React from 'react';
+import React from 'react';
 import { useTheme } from '@/components/features/ThemeSelector';
 import { cn } from '@/lib/utils';
 
@@ -248,8 +248,20 @@ export const FullPageLoader: React.FC<{
  */
 export const ContentRestorationLoader: React.FC<{
   fileName?: string;
-}> = ({ fileName }) => {
+  onTimeout?: () => void;
+}> = ({ fileName, onTimeout }) => {
   const { currentTheme } = useTheme();
+
+  // Timeout handling
+  React.useEffect(() => {
+    if (onTimeout) {
+      const timeout = setTimeout(() => {
+        onTimeout();
+      }, 12000); // 12 second timeout for content restoration
+
+      return () => clearTimeout(timeout);
+    }
+  }, [onTimeout]);
 
   return (
     <div

@@ -194,6 +194,23 @@ export const DEFAULT_FILE = {
 } as const;
 
 /**
+ * Empty file for non-first-time visitors
+ */
+export const EMPTY_FILE = {
+  NAME: 'untitled.md',
+  CONTENT: '',
+} as const;
+
+/**
+ * Loading placeholder for initial file restoration
+ * This prevents template flash during loading
+ */
+export const LOADING_PLACEHOLDER = {
+  NAME: 'Loading...',
+  CONTENT: '', // Empty content to prevent template flash
+} as const;
+
+/**
  * Keyboard shortcuts configuration
  */
 export const KEYBOARD_SHORTCUTS = {

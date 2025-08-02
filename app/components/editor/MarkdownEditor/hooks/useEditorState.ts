@@ -3,8 +3,9 @@
  * @author Axel Modra
  */
 
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useToast, useUndoRedo } from '@/hooks/core';
+import { isFirstVisit } from '@/utils/editorPreferences';
 import { fileContextManager } from '@/utils/fileContext';
 import type { EditorState, UseEditorStateReturn } from '../types';
 import { DEFAULT_FILE, STORAGE_KEYS, SUCCESS_MESSAGES } from '../utils/constants';
@@ -16,70 +17,30 @@ import { DEFAULT_FILE, STORAGE_KEYS, SUCCESS_MESSAGES } from '../utils/constants
 export const useEditorState = (
   initialMarkdown?: string,
   initialFileName?: string
-): UseEditorStateReturn => {
+): UseEditorStateReturn & { isRestoring: boolean } => {
   const { toast } = useToast();
+  const [isRestoring, setIsRestoring] = useState(true);
 
-  // Get initial content - prioritize active file context over everything
-  const getInitialContent = () => {
-    // Check if there's an active file context that should be preserved FIRST
-    const activeFileContext = fileContextManager.getActiveFile();
-    if (activeFileContext) {
-      // If there's an active file context, check localStorage for its content
+  const getInitialValue = useCallback(
+    (storageKey: string, fallback: string, contextKey?: 'fileName' | 'fileId') => {
+      // Context takes first priority
+      const activeFileContext = fileContextManager.getActiveFile();
+      if (activeFileContext && contextKey && activeFileContext[contextKey]) {
+        return activeFileContext[contextKey] as string;
+      }
+      // Then check localStorage
       if (typeof localStorage !== 'undefined') {
-        const savedContent = localStorage.getItem(STORAGE_KEYS.CONTENT);
-        if (savedContent !== null) {
-          import('@/utils/console').then(({ safeConsole }) => {
-            safeConsole.dev('Restoring content for active file:', activeFileContext.fileName);
-          });
-          return savedContent;
+        const savedValue = localStorage.getItem(storageKey);
+        if (savedValue !== null) {
+          return savedValue;
         }
       }
-      // If no saved content but active file context exists, return empty to prevent default content flash
-      // This will trigger file restoration instead of showing welcome template
-      import('@/utils/console').then(({ safeConsole }) => {
-        safeConsole.dev(
-          'Active file context found, returning empty content to trigger restoration:',
-          activeFileContext.fileName
-        );
-      });
-      return '';
-    }
+      // Finally, use the fallback
+      return fallback;
+    },
+    []
+  );
 
-    // Only use passed initialMarkdown if no active file context
-    if (initialMarkdown !== undefined) return initialMarkdown;
-
-    // Only check localStorage if no initialMarkdown was provided and no active file context
-    if (typeof localStorage !== 'undefined') {
-      const savedContent = localStorage.getItem(STORAGE_KEYS.CONTENT);
-      if (savedContent !== null) return savedContent;
-    }
-
-    return DEFAULT_FILE.CONTENT;
-  };
-
-  // Get initial filename - prioritize passed initialFileName over localStorage
-  const getInitialFileName = () => {
-    if (initialFileName !== undefined) return initialFileName;
-
-    // Check if there's an active file context that should be preserved
-    const activeFileContext = fileContextManager.getActiveFile();
-    if (activeFileContext) {
-      import('@/utils/console').then(({ safeConsole }) => {
-        safeConsole.dev('Restoring filename for active file:', activeFileContext.fileName);
-      });
-      return activeFileContext.fileName;
-    }
-
-    // Only check localStorage if no initialFileName was provided and no active file context
-    if (typeof localStorage !== 'undefined') {
-      const savedFileName = localStorage.getItem(STORAGE_KEYS.FILE_NAME);
-      if (savedFileName !== null) return savedFileName;
-    }
-
-    return DEFAULT_FILE.NAME;
-  };
-
-  // Initialize undo/redo functionality with proper initial content
   const {
     value: markdown,
     setValue: setMarkdown,
@@ -88,19 +49,44 @@ export const useEditorState = (
     canUndo,
     canRedo,
     clearHistory,
-  } = useUndoRedo(getInitialContent(), {
+  } = useUndoRedo(getInitialValue(STORAGE_KEYS.CONTENT, initialMarkdown ?? DEFAULT_FILE.CONTENT), {
     maxHistorySize: 50,
     debounceMs: 300,
   });
 
-  // File state management
-  const [fileName, setFileName] = useState(getInitialFileName());
+  const [fileName, setFileName] = useState(() =>
+    getInitialValue(STORAGE_KEYS.FILE_NAME, initialFileName ?? DEFAULT_FILE.NAME, 'fileName')
+  );
   const [isModified, setIsModified] = useState(false);
   const [autoSave] = useState(true);
 
-  /**
-   * Handle markdown content changes
-   */
+  useEffect(() => {
+    const activeFile = fileContextManager.getActiveFile();
+    const isFirstTime = isFirstVisit();
+    const hasInitialContent = initialMarkdown !== undefined;
+
+    // Show loader if we are a returning user and there's no overriding initial content
+    if (!isFirstTime && !hasInitialContent && activeFile) {
+      setIsRestoring(true);
+      // Content will be loaded by useAutoFileRestoration, we just show the loader
+    } else {
+      setIsRestoring(false);
+    }
+
+    // On initial load, if there's content from localStorage, set it
+    const savedContent = localStorage.getItem(STORAGE_KEYS.CONTENT);
+    if (savedContent) {
+      setMarkdown(savedContent); // Set without adding to history
+    }
+
+    // Set a timeout to prevent infinite loading screen
+    const timeoutId = setTimeout(() => {
+      setIsRestoring(false);
+    }, 5000);
+
+    return () => clearTimeout(timeoutId);
+  }, [initialMarkdown, setMarkdown]);
+
   const handleMarkdownChange = useCallback(
     (value: string) => {
       setMarkdown(value);
@@ -109,31 +95,21 @@ export const useEditorState = (
     [setMarkdown]
   );
 
-  /**
-   * Handle file name changes
-   */
   const handleFileNameChange = useCallback((name: string) => {
     setFileName(name);
     setIsModified(true);
   }, []);
 
-  /**
-   * Set modification status
-   */
   const handleSetModified = useCallback((modified: boolean) => {
     setIsModified(modified);
   }, []);
 
-  /**
-   * Update file context when a file is loaded
-   */
   const updateFileContext = useCallback(
     (
       fileName: string,
       fileId?: string,
       source: 'url' | 'files-page' | 'manual' | 'auto-save' = 'manual'
     ) => {
-      // Generate a file ID if not provided (for new files or files without ID)
       const contextFileId =
         fileId || `file_${Date.now()}_${Math.random().toString(36).substring(2, 11)}`;
 
@@ -154,9 +130,6 @@ export const useEditorState = (
     []
   );
 
-  /**
-   * Create a new file
-   */
   const handleNewFile = useCallback(() => {
     import('@/utils/console').then(({ safeConsole }) => {
       safeConsole.dev('handleNewFile called - isModified:', isModified);
@@ -174,26 +147,20 @@ export const useEditorState = (
       }
     }
 
-    // Create empty file for "New" button
     const newFileContent = '';
     const newFileName = 'untitled.md';
 
     import('@/utils/console').then(({ safeConsole }) => {
       safeConsole.dev('Creating new file with content:', newFileContent);
-    });
-    import('@/utils/console').then(({ safeConsole }) => {
       safeConsole.dev('Setting filename to:', newFileName);
     });
 
-    // Clear history first with the new content to prevent race conditions
     clearHistory(newFileContent);
 
-    // Update state
     setMarkdown(newFileContent);
     setFileName(newFileName);
     setIsModified(false);
 
-    // Immediately update localStorage to prevent race conditions
     if (typeof localStorage !== 'undefined') {
       try {
         localStorage.setItem(STORAGE_KEYS.CONTENT, newFileContent);
@@ -215,9 +182,6 @@ export const useEditorState = (
     });
   }, [isModified, setMarkdown, clearHistory, toast]);
 
-  /**
-   * Load file content
-   */
   const handleLoadFile = useCallback(
     (
       content: string,
@@ -225,7 +189,7 @@ export const useEditorState = (
       bypassDialog = false,
       fileId?: string,
       source: 'url' | 'files-page' | 'manual' | 'auto-save' = 'manual',
-      silent = false // Add silent parameter to suppress notifications
+      silent = false
     ) => {
       if (!bypassDialog && isModified) {
         const confirmed = window.confirm(
@@ -233,20 +197,16 @@ export const useEditorState = (
         );
         if (!confirmed) return;
       }
-
-      // Debug logging (development only)
       if (process.env.NODE_ENV === 'development') {
         import('@/utils/console').then(({ safeConsole }) => {
           safeConsole.dev('Loading file:', name, 'with content length:', content.length);
         });
       }
 
-      // Clear history first with the new content to prevent race conditions
       clearHistory(content);
-
-      // Update state - setMarkdown will handle the content update
       setMarkdown(content);
       setFileName(name);
+      setIsRestoring(false); // Done restoring
 
       const isTemplate =
         name.includes('Template') ||
@@ -255,14 +215,10 @@ export const useEditorState = (
         content.includes('# API Documentation');
       setIsModified(isTemplate);
 
-      // Update file context to maintain state across navigation
       updateFileContext(name, fileId, source);
 
-      // Only update localStorage for guest users to prevent conflict with Supabase
-      // For authenticated users, let auto-save handle the Supabase storage
       if (typeof localStorage !== 'undefined') {
         try {
-          // Always update current editor state in localStorage for editor functionality
           localStorage.setItem(STORAGE_KEYS.CONTENT, content);
           localStorage.setItem(STORAGE_KEYS.FILE_NAME, name);
           import('@/utils/console').then(({ safeConsole }) => {
@@ -275,7 +231,6 @@ export const useEditorState = (
         }
       }
 
-      // Only show toast for manual file loading, not for automatic restoration
       if (!silent && source !== 'auto-save') {
         toast({
           title: SUCCESS_MESSAGES.FILE_LOADED,
@@ -290,7 +245,6 @@ export const useEditorState = (
     [isModified, setMarkdown, clearHistory, toast, updateFileContext]
   );
 
-  // Create state object
   const state: EditorState = {
     markdown,
     fileName,
@@ -298,7 +252,6 @@ export const useEditorState = (
     autoSave,
   };
 
-  // Create actions object
   const actions = {
     setMarkdown: handleMarkdownChange,
     setFileName: handleFileNameChange,
@@ -307,7 +260,6 @@ export const useEditorState = (
     loadFile: handleLoadFile,
   };
 
-  // Return undo/redo functionality as well
   return {
     state,
     actions,
@@ -318,6 +270,7 @@ export const useEditorState = (
       canRedo,
       clearHistory,
     },
+    isRestoring,
   };
 };
 
