@@ -617,7 +617,30 @@ export class HybridFileStorage implements FileStorageService {
     // For local storage, we can get immediate info
     if (!this.isAuthenticated) {
       const files = this.listLocalFiles();
-      const totalSize = files.reduce((sum, file) => sum + (file.content?.length || 0), 0);
+
+      // Calculate total size more accurately by checking actual stored content
+      const totalSize = files.reduce((sum, file) => {
+        try {
+          // Get the actual stored file to measure compressed size
+          const fileKey = `${STORAGE_KEYS.FILE_PREFIX}${file.id}`;
+          const storedFile = getStorageJSON<FileData>(fileKey);
+          if (storedFile?.content) {
+            // Use the compressed content length for accurate storage calculation
+            return sum + storedFile.content.length;
+          }
+          // Fallback to original content length if stored file not found
+          return sum + (file.content?.length || 0);
+        } catch (_error) {
+          // Fallback to original content length on error
+          return sum + (file.content?.length || 0);
+        }
+      }, 0);
+
+      safeConsole.log('Local storage info calculated:', {
+        totalFiles: files.length,
+        totalSize,
+        formattedSize: formatFileSize(totalSize),
+      });
 
       return {
         isAuthenticated: false,
@@ -649,8 +672,34 @@ export class HybridFileStorage implements FileStorageService {
     }
 
     try {
-      const files = await this.listCloudFiles();
-      const totalSize = files.reduce((sum, file) => sum + (file.content?.length || 0), 0);
+      if (!this.supabaseClient) {
+        throw new Error('Supabase client not available');
+      }
+
+      // Get files with file_size from database for accurate calculation
+      const { data, error } = await this.supabaseClient
+        .from('user_files')
+        .select('id, file_size')
+        .eq('user_id', this.userId)
+        .eq('is_deleted', false);
+
+      if (error) {
+        handleSupabaseError(error, 'get storage info');
+        throw error;
+      }
+
+      const files = data || [];
+      const totalSize = files.reduce(
+        (sum: number, file: { id: string; file_size: number | null }) =>
+          sum + (file.file_size || 0),
+        0
+      );
+
+      safeConsole.log('Cloud storage info calculated:', {
+        totalFiles: files.length,
+        totalSize,
+        formattedSize: formatFileSize(totalSize),
+      });
 
       return {
         isAuthenticated: true,

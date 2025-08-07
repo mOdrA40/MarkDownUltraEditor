@@ -3,9 +3,22 @@
  * @author Axel Modra
  */
 
-import React from 'react';
-import { safeConsole } from '@/utils/console';
-import { checkCSPImageSupport } from '@/utils/imageUtils';
+import React from "react";
+import { safeConsole } from "@/utils/console";
+
+const checkCSPImageSupport = async (): Promise<boolean> => {
+  try {
+    const testImg = new Image();
+    testImg.src = "https://picsum.photos/1/1";
+    return new Promise((resolve) => {
+      testImg.onload = () => resolve(true);
+      testImg.onerror = () => resolve(false);
+      setTimeout(() => resolve(false), 3000);
+    });
+  } catch {
+    return false;
+  }
+};
 
 interface CSPDetectionResult {
   isCSPBlocking: boolean;
@@ -32,12 +45,12 @@ export const useCSPDetection = (): CSPDetectionResult => {
       setHasChecked(true);
 
       if (!isSupported) {
-        safeConsole.warn('CSP is blocking external images');
+        safeConsole.warn("CSP is blocking external images");
       } else {
-        safeConsole.log('External images are loading correctly');
+        safeConsole.log("External images are loading correctly");
       }
     } catch (error) {
-      safeConsole.error('Error checking CSP support:', error);
+      safeConsole.error("Error checking CSP support:", error);
       setIsCSPBlocking(true);
       setHasChecked(true);
     } finally {
@@ -54,11 +67,11 @@ export const useCSPDetection = (): CSPDetectionResult => {
     if (!isCSPBlocking) return [];
 
     return [
-      'Use images from trusted domains (Unsplash, Pixabay, GitHub, etc.)',
-      'Convert images to base64 data URLs for small images',
-      'Upload images to your own domain or CDN',
-      'Use placeholder images for development',
-      'Consider implementing an image proxy service',
+      "Use images from trusted domains (Unsplash, Pixabay, GitHub, etc.)",
+      "Convert images to base64 data URLs for small images",
+      "Upload images to your own domain or CDN",
+      "Use placeholder images for development",
+      "Consider implementing an image proxy service",
     ];
   }, [isCSPBlocking]);
 
@@ -83,23 +96,28 @@ export const useCSPDetection = (): CSPDetectionResult => {
  */
 export const useImageFailureTracking = () => {
   const [failedImages, setFailedImages] = React.useState<string[]>([]);
-  const [failureReasons, setFailureReasons] = React.useState<Record<string, string>>({});
+  const [failureReasons, setFailureReasons] = React.useState<
+    Record<string, string>
+  >({});
 
-  const trackFailure = React.useCallback((url: string, reason = 'Unknown error') => {
-    setFailedImages((prev) => {
-      if (!prev.includes(url)) {
-        return [...prev, url];
-      }
-      return prev;
-    });
+  const trackFailure = React.useCallback(
+    (url: string, reason = "Unknown error") => {
+      setFailedImages((prev) => {
+        if (!prev.includes(url)) {
+          return [...prev, url];
+        }
+        return prev;
+      });
 
-    setFailureReasons((prev) => ({
-      ...prev,
-      [url]: reason,
-    }));
+      setFailureReasons((prev) => ({
+        ...prev,
+        [url]: reason,
+      }));
 
-    safeConsole.warn(`Image failed to load: ${url} - ${reason}`);
-  }, []);
+      safeConsole.warn(`Image failed to load: ${url} - ${reason}`);
+    },
+    []
+  );
 
   const clearFailures = React.useCallback(() => {
     setFailedImages([]);
@@ -108,7 +126,7 @@ export const useImageFailureTracking = () => {
 
   const getFailureReason = React.useCallback(
     (url: string) => {
-      return failureReasons[url] || 'Unknown error';
+      return failureReasons[url] || "Unknown error";
     },
     [failureReasons]
   );
@@ -142,11 +160,11 @@ export const useImageRecommendations = () => {
 
         // If it's already from a trusted domain, keep it
         const trustedDomains = [
-          'picsum.photos',
-          'via.placeholder.com',
-          'images.unsplash.com',
-          'cdn.pixabay.com',
-          'raw.githubusercontent.com',
+          "picsum.photos",
+          "via.placeholder.com",
+          "images.unsplash.com",
+          "cdn.pixabay.com",
+          "raw.githubusercontent.com",
         ];
 
         if (trustedDomains.some((trusted) => domain.includes(trusted))) {
@@ -157,43 +175,46 @@ export const useImageRecommendations = () => {
         return `https://picsum.photos/300/200?random=${Math.floor(Math.random() * 1000)}`;
       } catch {
         // If URL is invalid, return a placeholder
-        return 'https://via.placeholder.com/300x200/cccccc/666666?text=Image+Not+Available';
+        return "https://via.placeholder.com/300x200/cccccc/666666?text=Image+Not+Available";
       }
     },
     [isCSPBlocking]
   );
 
-  const getSuggestedAlternatives = React.useCallback((originalUrl: string): string[] => {
-    const alternatives: string[] = [];
+  const getSuggestedAlternatives = React.useCallback(
+    (originalUrl: string): string[] => {
+      const alternatives: string[] = [];
 
-    try {
-      const url = new URL(originalUrl);
-      const filename = url.pathname.split('/').pop() || 'image';
+      try {
+        const url = new URL(originalUrl);
+        const filename = url.pathname.split("/").pop() || "image";
 
-      // Suggest various placeholder services
-      alternatives.push(
-        `https://via.placeholder.com/300x200/cccccc/666666?text=${encodeURIComponent(filename)}`,
-        `https://picsum.photos/300/200?random=${Math.floor(Math.random() * 1000)}`,
-        `https://placehold.co/300x200/png?text=${encodeURIComponent(filename)}`
-      );
+        // Suggest various placeholder services
+        alternatives.push(
+          `https://via.placeholder.com/300x200/cccccc/666666?text=${encodeURIComponent(filename)}`,
+          `https://picsum.photos/300/200?random=${Math.floor(Math.random() * 1000)}`,
+          `https://placehold.co/300x200/png?text=${encodeURIComponent(filename)}`
+        );
 
-      // If it looks like a GitHub image, suggest raw.githubusercontent.com
-      if (url.hostname.includes('github.com')) {
-        const rawUrl = originalUrl
-          .replace('github.com', 'raw.githubusercontent.com')
-          .replace('/blob/', '/');
-        alternatives.unshift(rawUrl);
+        // If it looks like a GitHub image, suggest raw.githubusercontent.com
+        if (url.hostname.includes("github.com")) {
+          const rawUrl = originalUrl
+            .replace("github.com", "raw.githubusercontent.com")
+            .replace("/blob/", "/");
+          alternatives.unshift(rawUrl);
+        }
+      } catch {
+        // Fallback alternatives
+        alternatives.push(
+          "https://via.placeholder.com/300x200/cccccc/666666?text=Image+Not+Available",
+          "https://picsum.photos/300/200?grayscale"
+        );
       }
-    } catch {
-      // Fallback alternatives
-      alternatives.push(
-        'https://via.placeholder.com/300x200/cccccc/666666?text=Image+Not+Available',
-        'https://picsum.photos/300/200?grayscale'
-      );
-    }
 
-    return alternatives;
-  }, []);
+      return alternatives;
+    },
+    []
+  );
 
   return {
     isCSPBlocking,
@@ -213,19 +234,25 @@ export const useGlobalImageState = () => {
     blockedByCSP: 0,
   });
 
-  const updateImageStats = React.useCallback((update: Partial<typeof globalImageStats>) => {
-    setGlobalImageStats((prev) => ({
-      ...prev,
-      ...update,
-    }));
-  }, []);
+  const updateImageStats = React.useCallback(
+    (update: Partial<typeof globalImageStats>) => {
+      setGlobalImageStats((prev) => ({
+        ...prev,
+        ...update,
+      }));
+    },
+    []
+  );
 
-  const incrementStat = React.useCallback((stat: keyof typeof globalImageStats) => {
-    setGlobalImageStats((prev) => ({
-      ...prev,
-      [stat]: prev[stat] + 1,
-    }));
-  }, []);
+  const incrementStat = React.useCallback(
+    (stat: keyof typeof globalImageStats) => {
+      setGlobalImageStats((prev) => ({
+        ...prev,
+        [stat]: prev[stat] + 1,
+      }));
+    },
+    []
+  );
 
   const resetStats = React.useCallback(() => {
     setGlobalImageStats({

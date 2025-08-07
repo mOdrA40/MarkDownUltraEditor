@@ -43,8 +43,8 @@ export const StorageTab: React.FC = memo(() => {
               </div>
               <p className="text-xs sm:text-sm text-muted-foreground mb-2">
                 {isSignedIn
-                  ? 'Cache for themes, preferences, and temporary data'
-                  : 'Browser storage for offline access'}
+                  ? 'Browser cache for app settings, themes, and preferences'
+                  : 'Local browser storage for offline access and data'}
               </p>
               <div className="space-y-2">
                 <div className="flex justify-between text-xs sm:text-sm">
@@ -58,11 +58,11 @@ export const StorageTab: React.FC = memo(() => {
                   />
                 </div>
               </div>
-              {isSignedIn && (
-                <p className="text-xs text-muted-foreground mt-2">
-                  Used for app settings, themes, and performance optimization
-                </p>
-              )}
+              <p className="text-xs text-muted-foreground mt-2">
+                {isSignedIn
+                  ? 'Includes editor preferences, theme settings, and temporary cache'
+                  : 'Contains your documents, settings, and editor preferences'}
+              </p>
             </div>
 
             {isSignedIn && state.cloudStorage && (
@@ -101,7 +101,7 @@ export const StorageTab: React.FC = memo(() => {
               onClick={actions.clearCache}
               disabled={state.isLoading}
             >
-              Clear Cache
+              {isSignedIn ? 'Clear Browser Cache' : 'Clear Local Storage'}
             </Button>
 
             <Button

@@ -3,15 +3,12 @@
  * @author Axel Modra
  */
 
-import type {
-  FileImportResult,
-  FileOperationCallbacks,
-} from "../types/fileOperations.types";
+import type { FileImportResult, FileOperationCallbacks } from '../types/fileOperations.types';
 
 /**
  * Supported file types for import
  */
-export const SUPPORTED_FILE_TYPES = [".md", ".txt", ".markdown"] as const;
+export const SUPPORTED_FILE_TYPES = ['.md', '.txt', '.markdown'] as const;
 
 /**
  * Type for supported file extensions
@@ -26,9 +23,7 @@ export const MAX_FILE_SIZE = 5 * 1024 * 1024;
 /**
  * Enhanced file validation with enterprise security
  */
-export const validateFile = (
-  file: File
-): { valid: boolean; error?: string } => {
+export const validateFile = (file: File): { valid: boolean; error?: string } => {
   // 1. Check file size first
   if (file.size > MAX_FILE_SIZE) {
     return {
@@ -39,10 +34,10 @@ export const validateFile = (
 
   // 2. Validate file extension and name
   const fileName = file.name.toLowerCase();
-  const fileExtension = fileName.split(".").pop() || "";
+  const fileExtension = fileName.split('.').pop() || '';
 
   // Block dangerous file extensions
-  const dangerousExtensions = ["exe", "bat", "cmd", "scr", "vbs", "js", "php"];
+  const dangerousExtensions = ['exe', 'bat', 'cmd', 'scr', 'vbs', 'js', 'php'];
 
   if (dangerousExtensions.includes(fileExtension)) {
     return {
@@ -52,14 +47,10 @@ export const validateFile = (
   }
 
   // 3. Block path traversal attempts
-  if (
-    fileName.includes("..") ||
-    fileName.includes("/") ||
-    fileName.includes("\\")
-  ) {
+  if (fileName.includes('..') || fileName.includes('/') || fileName.includes('\\')) {
     return {
       valid: false,
-      error: "File name contains invalid characters",
+      error: 'File name contains invalid characters',
     };
   }
 
@@ -70,7 +61,7 @@ export const validateFile = (
   if (!SUPPORTED_FILE_TYPES.includes(supportedExtension)) {
     return {
       valid: false,
-      error: `Unsupported file type. Supported types: ${SUPPORTED_FILE_TYPES.join(", ")}`,
+      error: `Unsupported file type. Supported types: ${SUPPORTED_FILE_TYPES.join(', ')}`,
     };
   }
 
@@ -88,7 +79,7 @@ export const importFile = async (
     // Validate file first
     const validation = validateFile(file);
     if (!validation.valid) {
-      callbacks.onError(validation.error || "Unknown validation error");
+      callbacks.onError(validation.error || 'Unknown validation error');
       return null;
     }
 
@@ -107,7 +98,7 @@ export const importFile = async (
     return result;
   } catch (error) {
     const errorMessage = `Failed to load file: ${
-      error instanceof Error ? error.message : "Unknown error"
+      error instanceof Error ? error.message : 'Unknown error'
     }`;
     callbacks.onError(errorMessage);
     return null;
@@ -126,12 +117,12 @@ const readFileContent = (file: File): Promise<string> => {
       if (content) {
         resolve(content);
       } else {
-        reject(new Error("Failed to read file content"));
+        reject(new Error('Failed to read file content'));
       }
     };
 
     reader.onerror = () => {
-      reject(new Error("File reading error"));
+      reject(new Error('File reading error'));
     };
 
     reader.readAsText(file);
@@ -155,5 +146,5 @@ export const handleFileInputChange = async (
   }
 
   // Clear input value to allow re-importing the same file
-  event.target.value = "";
+  event.target.value = '';
 };

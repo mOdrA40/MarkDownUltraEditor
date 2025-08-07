@@ -12,12 +12,31 @@ import type {
   UseToastReturn,
 } from '@/types/toast';
 import { safeConsole } from '@/utils/console';
-import {
-  clearAllToastTimeouts,
-  generateToastId,
-  sanitizeToastContent,
-  validateToastInput,
-} from '@/utils/toastUtils';
+
+// Inline toast utilities since toastUtils was removed
+let toastIdCounter = 0;
+const generateToastId = (): string => {
+  toastIdCounter = (toastIdCounter + 1) % Number.MAX_SAFE_INTEGER;
+  return toastIdCounter.toString();
+};
+
+const sanitizeToastContent = (content: React.ReactNode): React.ReactNode => {
+  if (typeof content === 'string') {
+    return content.replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '');
+  }
+  return content;
+};
+
+const validateToastInput = (input: ToastInput): boolean => {
+  return !!(input.title || input.description);
+};
+
+const toastTimeouts = new Map<string, ReturnType<typeof setTimeout>>();
+const clearAllToastTimeouts = (): void => {
+  toastTimeouts.forEach((timeout) => clearTimeout(timeout));
+  toastTimeouts.clear();
+};
+
 import { initialToastState, toastActionCreators, toastReducer } from '../toast/toastReducer';
 
 /**

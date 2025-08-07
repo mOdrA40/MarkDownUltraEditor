@@ -31,42 +31,49 @@ export const useStorageActions = (): UseStorageReturn => {
     error: null,
   });
 
-  // Calculate storage usage
-  const calculateStorageUsage = useCallback(() => {
+  // Calculate storage usage using consistent data from fileStorage
+  const calculateStorageUsage = useCallback(async () => {
     try {
-      let totalSize = 0;
+      const { storageUtils } = await import('../utils/storage');
 
-      // Calculate localStorage usage
-      for (const key in localStorage) {
-        if (Object.hasOwn(localStorage, key)) {
-          totalSize += localStorage[key].length + key.length;
-        }
+      // Use fileStorage.storageInfo for consistent calculation with My Files page
+      const storageInfo = fileStorage.storageInfo;
+
+      if (!storageInfo) {
+        safeConsole.log('Storage info not available yet');
+        return;
       }
 
-      const sizeInMB = (totalSize / (1024 * 1024)).toFixed(2);
-      const percentage = Math.min((totalSize / (5 * 1024 * 1024)) * 100, 100); // Assume 5MB limit
-
-      setState((prev) => ({
-        ...prev,
-        localStorage: {
-          type: 'local',
-          used: `${sizeInMB} MB`,
-          percentage: Math.round(percentage),
-          available: true,
-        },
-      }));
-
-      // Calculate cloud storage if signed in
-      if (isSignedIn) {
-        const cloudSizeInMB = (fileStorage.files.length * 0.1).toFixed(2); // Rough estimate
-        const cloudPercentage = Math.min((Number.parseFloat(cloudSizeInMB) / 50) * 100, 100); // Assume 50MB limit
+      if (storageInfo.storageType === 'local') {
+        // For local storage, use the consistent calculation from fileStorage
+        setState((prev) => ({
+          ...prev,
+          localStorage: {
+            type: 'local',
+            used: storageUtils.formatBytes(storageInfo.totalSize),
+            percentage: Math.round(
+              (storageInfo.totalSize / (storageInfo.quotaLimit || 5 * 1024 * 1024)) * 100
+            ),
+            available: true,
+          },
+          cloudStorage: null,
+        }));
+      } else {
+        // For cloud storage, use the data from fileStorage
+        const localStorageInfo = await storageUtils.getStorageInfo();
 
         setState((prev) => ({
           ...prev,
+          localStorage: {
+            type: 'local',
+            used: localStorageInfo.local.used,
+            percentage: Math.round(localStorageInfo.local.percentage),
+            available: true,
+          },
           cloudStorage: {
             type: 'cloud',
-            used: `${cloudSizeInMB} MB`,
-            percentage: Math.round(cloudPercentage),
+            used: storageUtils.formatBytes(storageInfo.totalSize),
+            percentage: Math.min((storageInfo.totalSize / (50 * 1024 * 1024)) * 100, 100), // 50MB limit
             available: true,
           },
         }));
@@ -74,7 +81,7 @@ export const useStorageActions = (): UseStorageReturn => {
     } catch (error) {
       safeConsole.error('Failed to calculate storage usage:', error);
     }
-  }, [isSignedIn, fileStorage.files.length]);
+  }, [fileStorage.storageInfo]);
 
   // Clear cache
   const clearCache = useCallback(async () => {
@@ -93,11 +100,13 @@ export const useStorageActions = (): UseStorageReturn => {
       });
 
       // Recalculate storage usage
-      calculateStorageUsage();
+      await calculateStorageUsage();
 
       toast({
-        title: 'Cache Cleared',
-        description: 'Local storage cache has been cleared successfully.',
+        title: isSignedIn ? 'Browser Cache Cleared' : 'Local Storage Cleared',
+        description: isSignedIn
+          ? 'Browser cache including preferences and temporary data has been cleared.'
+          : 'Local storage including documents and settings has been cleared.',
       });
     } catch (error) {
       safeConsole.error('Failed to clear cache:', error);
@@ -107,7 +116,7 @@ export const useStorageActions = (): UseStorageReturn => {
         variant: 'destructive',
       });
     }
-  }, [calculateStorageUsage, toast]);
+  }, [calculateStorageUsage, toast, isSignedIn]);
 
   // Export data
   const exportData = useCallback(async () => {
@@ -170,13 +179,15 @@ export const useStorageActions = (): UseStorageReturn => {
   // Refresh storage info
   const refreshStorageInfo = useCallback(async () => {
     setState((prev) => ({ ...prev, isLoading: true }));
-    calculateStorageUsage();
+    await calculateStorageUsage();
     setState((prev) => ({ ...prev, isLoading: false }));
   }, [calculateStorageUsage]);
 
   // Calculate storage usage on mount and when dependencies change
   useEffect(() => {
-    calculateStorageUsage();
+    calculateStorageUsage().catch((error) => {
+      safeConsole.error('Failed to calculate storage usage on mount:', error);
+    });
   }, [calculateStorageUsage]);
 
   return {

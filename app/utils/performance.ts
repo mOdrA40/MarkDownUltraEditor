@@ -3,7 +3,7 @@
  * @author Axel Modra
  */
 
-import { safeConsole } from "@/utils/console";
+import { safeConsole } from '@/utils/console';
 
 /**
  * Memory info interface
@@ -52,20 +52,17 @@ class PerformanceMonitor {
    */
   private initializeObservers(): void {
     // Only run in browser
-    if (typeof window === "undefined") return;
+    if (typeof window === 'undefined') return;
 
     try {
       // First Contentful Paint & Largest Contentful Paint
-      if ("PerformanceObserver" in window) {
+      if ('PerformanceObserver' in window) {
         this.observePaintMetrics();
         this.observeLayoutShift();
       }
     } catch (error) {
-      import("@/utils/console").then(({ safeConsole }) => {
-        safeConsole.warn(
-          "Performance monitoring initialization failed:",
-          error
-        );
+      import('@/utils/console').then(({ safeConsole }) => {
+        safeConsole.warn('Performance monitoring initialization failed:', error);
       });
     }
   }
@@ -77,26 +74,23 @@ class PerformanceMonitor {
     try {
       const observer = new PerformanceObserver((list) => {
         for (const entry of list.getEntries()) {
-          if (
-            entry.entryType === "paint" &&
-            entry.name === "first-contentful-paint"
-          ) {
-            import("@/utils/console").then(({ safeConsole }) => {
+          if (entry.entryType === 'paint' && entry.name === 'first-contentful-paint') {
+            import('@/utils/console').then(({ safeConsole }) => {
               safeConsole.dev(`FCP: ${entry.startTime.toFixed(2)}ms`);
             });
-          } else if (entry.entryType === "largest-contentful-paint") {
-            import("@/utils/console").then(({ safeConsole }) => {
+          } else if (entry.entryType === 'largest-contentful-paint') {
+            import('@/utils/console').then(({ safeConsole }) => {
               safeConsole.dev(`LCP: ${entry.startTime.toFixed(2)}ms`);
             });
           }
         }
       });
 
-      observer.observe({ entryTypes: ["paint", "largest-contentful-paint"] });
+      observer.observe({ entryTypes: ['paint', 'largest-contentful-paint'] });
       this.observers.push(observer);
     } catch (error) {
-      import("@/utils/console").then(({ safeConsole }) => {
-        safeConsole.warn("Failed to observe paint metrics:", error);
+      import('@/utils/console').then(({ safeConsole }) => {
+        safeConsole.warn('Failed to observe paint metrics:', error);
       });
     }
   }
@@ -109,23 +103,23 @@ class PerformanceMonitor {
       const observer = new PerformanceObserver((list) => {
         for (const entry of list.getEntries()) {
           if (
-            entry.entryType === "layout-shift" &&
+            entry.entryType === 'layout-shift' &&
             !(entry as unknown as { hadRecentInput: boolean }).hadRecentInput
           ) {
             // Simplified: just log, don't accumulate complex metrics
             const value = (entry as unknown as { value: number }).value;
-            import("@/utils/console").then(({ safeConsole }) => {
+            import('@/utils/console').then(({ safeConsole }) => {
               safeConsole.dev(`Layout shift: ${value.toFixed(4)}`);
             });
           }
         }
       });
 
-      observer.observe({ entryTypes: ["layout-shift"] });
+      observer.observe({ entryTypes: ['layout-shift'] });
       this.observers.push(observer);
     } catch (error) {
-      import("@/utils/console").then(({ safeConsole }) => {
-        safeConsole.warn("Failed to observe layout shift:", error);
+      import('@/utils/console').then(({ safeConsole }) => {
+        safeConsole.warn('Failed to observe layout shift:', error);
       });
     }
   }
@@ -151,7 +145,7 @@ class PerformanceMonitor {
       try {
         callback({ ...this.metrics });
       } catch (error) {
-        safeConsole.error("Performance callback error:", error);
+        safeConsole.error('Performance callback error:', error);
       }
     });
   }
@@ -159,9 +153,7 @@ class PerformanceMonitor {
   /**
    * Add a callback for metric updates
    */
-  public onMetricsUpdate(
-    callback: (metrics: PerformanceMetrics) => void
-  ): () => void {
+  public onMetricsUpdate(callback: (metrics: PerformanceMetrics) => void): () => void {
     this.callbacks.push(callback);
 
     // Return unsubscribe function
@@ -184,7 +176,7 @@ class PerformanceMonitor {
    * Mark a custom timing
    */
   public mark(name: string): void {
-    if (typeof performance !== "undefined" && performance.mark) {
+    if (typeof performance !== 'undefined' && performance.mark) {
       performance.mark(name);
     }
   }
@@ -192,20 +184,16 @@ class PerformanceMonitor {
   /**
    * Measure time between marks
    */
-  public measure(
-    name: string,
-    startMark: string,
-    endMark?: string
-  ): number | null {
+  public measure(name: string, startMark: string, endMark?: string): number | null {
     try {
-      if (typeof performance !== "undefined" && performance.measure) {
+      if (typeof performance !== 'undefined' && performance.measure) {
         performance.measure(name, startMark, endMark);
-        const entries = performance.getEntriesByName(name, "measure");
+        const entries = performance.getEntriesByName(name, 'measure');
         return entries.length > 0 ? entries[entries.length - 1].duration : null;
       }
     } catch (error) {
-      import("@/utils/console").then(({ safeConsole }) => {
-        safeConsole.warn("Performance measure failed:", error);
+      import('@/utils/console').then(({ safeConsole }) => {
+        safeConsole.warn('Performance measure failed:', error);
       });
     }
     return null;
@@ -214,10 +202,7 @@ class PerformanceMonitor {
   /**
    * Record custom metric
    */
-  public recordCustomMetric(
-    key: keyof PerformanceMetrics,
-    value: number
-  ): void {
+  public recordCustomMetric(key: keyof PerformanceMetrics, value: number): void {
     this.updateMetric(key, value);
   }
 
@@ -263,8 +248,8 @@ class PerformanceMonitor {
       try {
         observer.disconnect();
       } catch (error) {
-        import("@/utils/console").then(({ safeConsole }) => {
-          safeConsole.warn("Failed to disconnect performance observer:", error);
+        import('@/utils/console').then(({ safeConsole }) => {
+          safeConsole.warn('Failed to disconnect performance observer:', error);
         });
       }
     });
@@ -340,7 +325,7 @@ export const performanceUtils = {
    * Memory usage monitoring
    */
   getMemoryUsage: (): MemoryInfo | null => {
-    if (typeof window !== "undefined" && "memory" in performance) {
+    if (typeof window !== 'undefined' && 'memory' in performance) {
       return (performance as Performance & { memory: MemoryInfo }).memory;
     }
     return null;
@@ -351,9 +336,9 @@ export const performanceUtils = {
    */
   isSupported: (): boolean => {
     return (
-      typeof window !== "undefined" &&
-      typeof performance !== "undefined" &&
-      "PerformanceObserver" in window
+      typeof window !== 'undefined' &&
+      typeof performance !== 'undefined' &&
+      'PerformanceObserver' in window
     );
   },
 };
@@ -375,32 +360,29 @@ export const initializePerformanceMonitoring = (): PerformanceMonitor => {
  * Preload critical resources
  */
 export const preloadCriticalResources = () => {
-  if (typeof window === "undefined") return;
+  if (typeof window === 'undefined') return;
 
   // Preload critical fonts
-  const fontPreloads = [
-    "/fonts/inter-var.woff2",
-    "/fonts/inter-var-latin.woff2",
-  ];
+  const fontPreloads = ['/fonts/inter-var.woff2', '/fonts/inter-var-latin.woff2'];
 
   fontPreloads.forEach((href) => {
-    const link = document.createElement("link");
-    link.rel = "preload";
+    const link = document.createElement('link');
+    link.rel = 'preload';
     link.href = href;
-    link.as = "font";
-    link.type = "font/woff2";
-    link.crossOrigin = "anonymous";
+    link.as = 'font';
+    link.type = 'font/woff2';
+    link.crossOrigin = 'anonymous';
     document.head.appendChild(link);
   });
 
   // Preload critical images
-  const imagePreloads = ["/logo-light.png", "/logo-dark.png"];
+  const imagePreloads = ['/logo-light.png', '/logo-dark.png'];
 
   imagePreloads.forEach((href) => {
-    const link = document.createElement("link");
-    link.rel = "preload";
+    const link = document.createElement('link');
+    link.rel = 'preload';
     link.href = href;
-    link.as = "image";
+    link.as = 'image';
     document.head.appendChild(link);
   });
 };
@@ -409,7 +391,7 @@ export const preloadCriticalResources = () => {
  * Optimize images with lazy loading
  */
 export const optimizeImages = () => {
-  if (typeof window === "undefined") return;
+  if (typeof window === 'undefined') return;
 
   const imageObserver = new IntersectionObserver((entries) => {
     entries.forEach((entry) => {
@@ -417,14 +399,14 @@ export const optimizeImages = () => {
         const img = entry.target as HTMLImageElement;
         if (img.dataset.src) {
           img.src = img.dataset.src;
-          img.removeAttribute("data-src");
+          img.removeAttribute('data-src');
           imageObserver.unobserve(img);
         }
       }
     });
   });
 
-  document.querySelectorAll("img[data-src]").forEach((img) => {
+  document.querySelectorAll('img[data-src]').forEach((img) => {
     imageObserver.observe(img);
   });
 };
@@ -433,33 +415,26 @@ export const optimizeImages = () => {
  * Add resource hints for better performance
  */
 export const addResourceHints = () => {
-  if (typeof window === "undefined") return;
+  if (typeof window === 'undefined') return;
 
   // DNS prefetch for external domains
-  const domains = [
-    "fonts.googleapis.com",
-    "fonts.gstatic.com",
-    "cdn.jsdelivr.net",
-  ];
+  const domains = ['fonts.googleapis.com', 'fonts.gstatic.com', 'cdn.jsdelivr.net'];
 
   domains.forEach((domain) => {
-    const link = document.createElement("link");
-    link.rel = "dns-prefetch";
+    const link = document.createElement('link');
+    link.rel = 'dns-prefetch';
     link.href = `//${domain}`;
     document.head.appendChild(link);
   });
 
   // Preconnect to critical origins
-  const criticalOrigins = [
-    "https://fonts.googleapis.com",
-    "https://fonts.gstatic.com",
-  ];
+  const criticalOrigins = ['https://fonts.googleapis.com', 'https://fonts.gstatic.com'];
 
   criticalOrigins.forEach((origin) => {
-    const link = document.createElement("link");
-    link.rel = "preconnect";
+    const link = document.createElement('link');
+    link.rel = 'preconnect';
     link.href = origin;
-    link.crossOrigin = "anonymous";
+    link.crossOrigin = 'anonymous';
     document.head.appendChild(link);
   });
 };
@@ -468,15 +443,15 @@ export const addResourceHints = () => {
  * Initialize all performance optimizations
  */
 export const initializePerformanceOptimizations = () => {
-  if (typeof window === "undefined") return;
+  if (typeof window === 'undefined') return;
 
   // Run immediately
   preloadCriticalResources();
   addResourceHints();
 
   // Run when DOM is ready
-  if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", () => {
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', () => {
       optimizeImages();
     });
   } else {

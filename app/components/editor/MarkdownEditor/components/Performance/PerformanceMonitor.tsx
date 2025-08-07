@@ -3,9 +3,9 @@
  * @author Axel Modra
  */
 
-import type React from "react";
-import { useCallback, useEffect, useRef, useState } from "react";
-import type { PerformanceMetrics } from "../../types";
+import type React from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
+import type { PerformanceMetrics } from '../../types';
 
 /**
  * Performance monitor props
@@ -21,7 +21,7 @@ interface PerformanceMonitorProps {
  * Performance monitoring component that tracks render times and memory usage
  */
 export const PerformanceMonitor: React.FC<PerformanceMonitorProps> = ({
-  enabled = process.env.NODE_ENV === "development",
+  enabled = process.env.NODE_ENV === 'development',
   sampleRate = 0.1,
   onMetricsUpdate,
   children,
@@ -40,9 +40,8 @@ export const PerformanceMonitor: React.FC<PerformanceMonitorProps> = ({
    * Measure memory usage
    */
   const measureMemoryUsage = useCallback((): number => {
-    if (typeof window !== "undefined" && "memory" in performance) {
-      const memory = (performance as { memory: { usedJSHeapSize?: number } })
-        .memory;
+    if (typeof window !== 'undefined' && 'memory' in performance) {
+      const memory = (performance as { memory: { usedJSHeapSize?: number } }).memory;
       return memory?.usedJSHeapSize || 0;
     }
     return 0;
@@ -53,13 +52,13 @@ export const PerformanceMonitor: React.FC<PerformanceMonitorProps> = ({
    */
   const measureBundleSize = useCallback((): number => {
     // This is an approximation based on script tags
-    const scripts = document.querySelectorAll("script[src]");
+    const scripts = document.querySelectorAll('script[src]');
     let totalSize = 0;
 
     scripts.forEach((script) => {
       // This is a rough estimate - in production you'd want more accurate measurements
-      const src = script.getAttribute("src");
-      if (src && !src.startsWith("http")) {
+      const src = script.getAttribute('src');
+      if (src && !src.startsWith('http')) {
         totalSize += 1024; // Rough estimate per script
       }
     });
@@ -82,19 +81,13 @@ export const PerformanceMonitor: React.FC<PerformanceMonitorProps> = ({
 
     setMetrics(newMetrics);
     onMetricsUpdate?.(newMetrics);
-  }, [
-    enabled,
-    sampleRate,
-    measureMemoryUsage,
-    measureBundleSize,
-    onMetricsUpdate,
-  ]);
+  }, [enabled, sampleRate, measureMemoryUsage, measureBundleSize, onMetricsUpdate]);
 
   /**
    * Track component mount time
    */
   useEffect(() => {
-    if (typeof window !== "undefined") {
+    if (typeof window !== 'undefined') {
       componentMountTime.current = performance.now();
     }
   }, []);
@@ -103,7 +96,7 @@ export const PerformanceMonitor: React.FC<PerformanceMonitorProps> = ({
    * Track render times
    */
   useEffect(() => {
-    if (typeof window !== "undefined") {
+    if (typeof window !== 'undefined') {
       renderStartTime.current = performance.now();
 
       // Use requestAnimationFrame to measure after render
@@ -119,31 +112,23 @@ export const PerformanceMonitor: React.FC<PerformanceMonitorProps> = ({
    * Set up performance observer for Core Web Vitals
    */
   useEffect(() => {
-    if (
-      !enabled ||
-      typeof window === "undefined" ||
-      !window.PerformanceObserver
-    )
-      return;
+    if (!enabled || typeof window === 'undefined' || !window.PerformanceObserver) return;
 
     const observer = new PerformanceObserver((list) => {
       const entries = list.getEntries();
 
       entries.forEach((entry) => {
-        if (
-          entry.entryType === "measure" &&
-          process.env.NODE_ENV === "development"
-        ) {
+        if (entry.entryType === 'measure' && process.env.NODE_ENV === 'development') {
           // Performance logging only in development
         }
       });
     });
 
     try {
-      observer.observe({ entryTypes: ["measure", "navigation"] });
+      observer.observe({ entryTypes: ['measure', 'navigation'] });
     } catch (error) {
-      import("@/utils/console").then(({ safeConsole }) => {
-        safeConsole.warn("Performance observer not supported:", error);
+      import('@/utils/console').then(({ safeConsole }) => {
+        safeConsole.warn('Performance observer not supported:', error);
       });
     }
 
@@ -171,12 +156,12 @@ export const PerformanceMonitor: React.FC<PerformanceMonitorProps> = ({
  */
 export const usePerformanceMeasure = (name: string, enabled = true) => {
   const startMeasure = useCallback(() => {
-    if (!enabled || typeof window === "undefined") return;
+    if (!enabled || typeof window === 'undefined') return;
     performance.mark(`${name}-start`);
   }, [name, enabled]);
 
   const endMeasure = useCallback(() => {
-    if (!enabled || typeof window === "undefined") return;
+    if (!enabled || typeof window === 'undefined') return;
     performance.mark(`${name}-end`);
     performance.measure(name, `${name}-start`, `${name}-end`);
   }, [name, enabled]);
@@ -192,13 +177,13 @@ export const useRenderTime = (_componentName: string) => {
   const [renderTime, setRenderTime] = useState<number>(0);
 
   useEffect(() => {
-    if (typeof window !== "undefined") {
+    if (typeof window !== 'undefined') {
       renderStartTime.current = performance.now();
     }
   });
 
   useEffect(() => {
-    if (typeof window !== "undefined") {
+    if (typeof window !== 'undefined') {
       const endTime = performance.now();
       const duration = endTime - renderStartTime.current;
       setRenderTime(duration);
@@ -217,12 +202,11 @@ export const useMemoryUsage = () => {
   const [memoryUsage, setMemoryUsage] = useState<number>(0);
 
   useEffect(() => {
-    if (typeof window === "undefined") return;
+    if (typeof window === 'undefined') return;
 
     const updateMemoryUsage = () => {
-      if ("memory" in performance) {
-        const memory = (performance as { memory: { usedJSHeapSize?: number } })
-          .memory;
+      if ('memory' in performance) {
+        const memory = (performance as { memory: { usedJSHeapSize?: number } }).memory;
         setMemoryUsage(memory?.usedJSHeapSize || 0);
       }
     };
@@ -237,10 +221,7 @@ export const useMemoryUsage = () => {
 };
 
 // Import common utilities to avoid duplication
-import {
-  debounce as commonDebounce,
-  throttle as commonThrottle,
-} from "@/utils/common";
+import { debounce as commonDebounce, throttle as commonThrottle } from '@/utils/common';
 
 /**
  * Performance optimization utilities

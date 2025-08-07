@@ -4,13 +4,13 @@
  */
 
 // Re-export main hook
-export { toast, useToast } from '@/hooks/core';
+export { toast, useToast } from "@/hooks/core";
 // Re-export reducer dan action creators
 export {
   initialToastState,
   toastActionCreators,
   toastReducer,
-} from '@/hooks/toast/toastReducer';
+} from "@/hooks/toast/toastReducer";
 // Re-export types
 export type {
   ToasterToast,
@@ -18,27 +18,15 @@ export type {
   ToastReturn,
   UseToastOptions,
   UseToastReturn,
-} from '@/types/toast';
-// Re-export utilities
-export {
-  addToRemoveQueue,
-  clearAllToastTimeouts,
-  clearToastTimeout,
-  formatToastForA11y,
-  generateToastId,
-  getToastDuration,
-  sanitizeToastContent,
-  shouldAutoDismiss,
-  validateToastInput,
-} from '@/utils/toastUtils';
+} from "@/types/toast";
 
 /**
  * Toast provider component untuk global toast management
  */
-import React, { createContext, type ReactNode, useContext } from 'react';
-import type { ToastActionElement } from '@/components/ui/toast';
-import { useToast } from '@/hooks/core';
-import type { UseToastReturn } from '@/types/toast';
+import React, { createContext, type ReactNode, useContext } from "react";
+import type { ToastActionElement } from "@/components/ui/toast";
+import { useToast } from "@/hooks/core";
+import type { UseToastReturn } from "@/types/toast";
 
 const ToastContext = createContext<UseToastReturn | null>(null);
 
@@ -49,7 +37,9 @@ interface ToastProviderProps {
 export const ToastProvider: React.FC<ToastProviderProps> = ({ children }) => {
   const toastApi = useToast();
 
-  return <ToastContext.Provider value={toastApi}>{children}</ToastContext.Provider>;
+  return (
+    <ToastContext.Provider value={toastApi}>{children}</ToastContext.Provider>
+  );
 };
 
 /**
@@ -58,7 +48,7 @@ export const ToastProvider: React.FC<ToastProviderProps> = ({ children }) => {
 export const useToastContext = (): UseToastReturn => {
   const context = useContext(ToastContext);
   if (!context) {
-    throw new Error('useToastContext must be used within a ToastProvider');
+    throw new Error("useToastContext must be used within a ToastProvider");
   }
   return context;
 };
@@ -69,7 +59,7 @@ export const useToastContext = (): UseToastReturn => {
 interface ToastNotificationProps {
   title?: React.ReactNode;
   description?: React.ReactNode;
-  variant?: 'default' | 'destructive';
+  variant?: "default" | "destructive";
   duration?: number;
   action?: ToastActionElement | null;
   onClose?: () => void;
@@ -78,7 +68,7 @@ interface ToastNotificationProps {
 export const ToastNotification: React.FC<ToastNotificationProps> = ({
   title,
   description,
-  variant = 'default',
+  variant = "default",
   duration,
   action,
   onClose,
