@@ -4,7 +4,7 @@ import type React from 'react';
 import { Suspense, useEffect } from 'react';
 import type { HeadersFunction, LinksFunction } from 'react-router';
 import { Links, Meta, Outlet, Scripts, ScrollRestoration, useNavigation } from 'react-router';
-import SessionManager from '@/components/auth/SessionManager';
+
 import { ThemeProvider } from '@/components/features/ThemeSelector';
 import { PageLoader } from '@/components/shared/PageLoader';
 import { FileContextProvider } from '@/contexts/FileContextProvider';
@@ -156,7 +156,7 @@ export const headers: HeadersFunction = () => {
         "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://clerk.com https://*.clerk.accounts.dev https://cdnjs.cloudflare.com",
         "img-src * 'self' data: blob: https: http:", // Very permissive for development
         "font-src 'self' data: https://fonts.googleapis.com https://fonts.gstatic.com",
-        "connect-src 'self' https://*.supabase.co https://clerk.com https://*.clerk.accounts.dev https://*.clerk.com wss://*.supabase.co wss://*.clerk.com https://*.ingest.sentry.io https://*.ingest.us.sentry.io https://sentry.io https://api.ipify.org https://ipapi.co https://ipinfo.io https://api.ip.sb https://clerk-telemetry.com",
+        "connect-src 'self' https://*.supabase.co https://clerk.com https://*.clerk.accounts.dev https://*.clerk.com wss://*.supabase.co wss://*.clerk.com https://*.ingest.sentry.io https://*.ingest.us.sentry.io https://sentry.io https://api.ipify.org https://ipapi.co https://ipinfo.io https://api.ip.sb https://clerk-telemetry.com ws://localhost:* http://localhost:*",
         "media-src 'self' blob:",
         "object-src 'none'",
         "child-src 'none'",
@@ -277,7 +277,6 @@ export default function App({ loaderData }: Route.ComponentProps) {
     >
       <ThemeProvider>
         <FileContextProvider>
-          <SessionManager />
           <div
             className={`transition-opacity duration-300 ${
               navigation.state === 'loading' ? 'opacity-25' : 'opacity-100'

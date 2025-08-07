@@ -9,13 +9,7 @@ export type {
   AccountState,
   UseAccountReturn,
 } from './account';
-export type {
-  SessionData,
-  SessionManagementActions,
-  SessionManagementState,
-  SessionStats,
-  UseSessionManagementReturn,
-} from './session';
+
 // Re-export all settings types
 export type {
   AppPreferences,

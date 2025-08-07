@@ -6,7 +6,7 @@
 import { SignUpButton, useAuth } from '@clerk/react-router';
 import { Check, Cloud, HardDrive, Shield, Smartphone, X, Zap } from 'lucide-react';
 import type React from 'react';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import {
@@ -17,8 +17,13 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
-import { getStorageItem, setStorageItem } from '@/utils/common';
-import { isFirstVisit, markVisited } from '@/utils/editorPreferences';
+import { useSupabase } from '@/lib/supabase';
+import {
+  isFirstVisit,
+  isFirstVisitWithAuth,
+  markVisited,
+  markVisitedWithAuth,
+} from '@/utils/editorPreferences';
 
 /**
  * Props for WelcomeDialog component
@@ -40,23 +45,9 @@ export const WelcomeDialog: React.FC<WelcomeDialogProps> = ({
   onSignUp,
   onContinueAsGuest,
 }) => {
-  const [internalIsOpen, setInternalIsOpen] = useState(false);
-
-  // Check if this is first visit
-  useEffect(() => {
-    const hasVisited = getStorageItem('markdownEditor_hasVisited');
-    if (!hasVisited && controlledIsOpen === undefined) {
-      setInternalIsOpen(true);
-      setStorageItem('markdownEditor_hasVisited', 'true');
-    }
-  }, [controlledIsOpen]);
-
-  const isOpen = controlledIsOpen !== undefined ? controlledIsOpen : internalIsOpen;
+  const isOpen = controlledIsOpen || false;
 
   const handleClose = () => {
-    if (controlledIsOpen === undefined) {
-      setInternalIsOpen(false);
-    }
     onClose();
   };
 
@@ -200,36 +191,62 @@ export const WelcomeDialog: React.FC<WelcomeDialogProps> = ({
 };
 
 /**
- * Hook to manage welcome dialog state
+ * Hook to manage welcome dialog state with UI restoring coordination
  */
 export const useWelcomeDialog = () => {
   const [isOpen, setIsOpen] = useState(false);
-  const { isSignedIn, isLoaded } = useAuth();
+  const [isCheckingFirstVisit, setIsCheckingFirstVisit] = useState(true);
+  const { isSignedIn, isLoaded, userId } = useAuth();
+  const supabase = useSupabase();
 
   const showWelcomeDialog = () => setIsOpen(true);
   const hideWelcomeDialog = () => setIsOpen(false);
 
-  // Check if should show welcome dialog on mount
-  useEffect(() => {
-    // Wait for Clerk to finish loading
+  // Check if should show welcome dialog on mount with Supabase integration
+  const checkFirstVisit = useCallback(async () => {
     if (!isLoaded) return;
 
-    // If user is already signed in, don't show welcome dialog
-    if (isSignedIn) {
-      setIsOpen(false);
-      return;
-    }
+    setIsCheckingFirstVisit(true);
 
-    // Check if first-time visitor (guest user)
-    if (isFirstVisit()) {
-      // Small delay to ensure page is loaded
-      const timer = setTimeout(() => {
-        setIsOpen(true);
-      }, 1000);
+    try {
+      // If user is already signed in, don't show welcome dialog
+      if (isSignedIn) {
+        setIsOpen(false);
+        setIsCheckingFirstVisit(false);
+        return;
+      }
 
-      return () => clearTimeout(timer);
+      // Check if first-time visitor with auth integration
+      const isFirst = await isFirstVisitWithAuth(Boolean(isSignedIn), userId, supabase);
+
+      if (isFirst) {
+        // Small delay to ensure page is loaded and UI restoring has had a chance to run
+        const timer = setTimeout(() => {
+          setIsOpen(true);
+          setIsCheckingFirstVisit(false);
+        }, 1200); // Slightly longer delay to avoid conflict with UI restoring
+
+        return () => clearTimeout(timer);
+      }
+      setIsCheckingFirstVisit(false);
+    } catch (_error) {
+      // Fallback to localStorage check on error
+      if (isFirstVisit()) {
+        const timer = setTimeout(() => {
+          setIsOpen(true);
+          setIsCheckingFirstVisit(false);
+        }, 1200);
+
+        return () => clearTimeout(timer);
+      }
+      setIsCheckingFirstVisit(false);
     }
-  }, [isLoaded, isSignedIn]);
+  }, [isLoaded, isSignedIn, userId, supabase]);
+
+  // Run first visit check when dependencies change
+  useEffect(() => {
+    checkFirstVisit();
+  }, [checkFirstVisit]);
 
   // Auto-close dialog if user signs in while dialog is open
   useEffect(() => {
@@ -238,18 +255,29 @@ export const useWelcomeDialog = () => {
     }
   }, [isSignedIn, isOpen]);
 
-  const handleClose = () => {
-    markVisited();
+  const handleClose = useCallback(async () => {
+    try {
+      await markVisitedWithAuth(Boolean(isSignedIn), userId, supabase);
+    } catch (_error) {
+      // Fallback to localStorage only
+      markVisited();
+    }
     setIsOpen(false);
-  };
+  }, [isSignedIn, userId, supabase]);
 
-  const handleContinueAsGuest = () => {
-    handleClose();
-  };
+  const handleContinueAsGuest = useCallback(async () => {
+    try {
+      await markVisitedWithAuth(Boolean(isSignedIn), userId, supabase);
+    } catch (_error) {
+      // Fallback to localStorage only
+      markVisited();
+    }
+    setIsOpen(false);
+  }, [isSignedIn, userId, supabase]);
 
-  const handleSignUp = () => {
+  const handleSignUp = useCallback(() => {
     handleClose();
-  };
+  }, [handleClose]);
 
   // Track previous sign-in state to detect logout
   const [wasSignedIn, setWasSignedIn] = useState(false);
@@ -259,10 +287,7 @@ export const useWelcomeDialog = () => {
       if (isSignedIn) {
         setWasSignedIn(true);
       } else if (wasSignedIn && !isSignedIn) {
-        // User just logged out, reset hasVisited flag for future guest sessions
-        // We don't reset the first visit flag here to maintain a better UX
-        // If we want to show the welcome dialog again after logout, uncomment:
-        // removeStorageItem('markdownEditor_hasVisited');
+        setIsCheckingFirstVisit(true);
         setWasSignedIn(false);
       }
     }
@@ -270,6 +295,7 @@ export const useWelcomeDialog = () => {
 
   return {
     isOpen,
+    isCheckingFirstVisit,
     showWelcomeDialog,
     hideWelcomeDialog,
     handleClose,

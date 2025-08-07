@@ -16,17 +16,14 @@
     "prebuild": "bun run check",
     "start": "react-router-serve ./build/server/index.js",
     "typecheck": "react-router typegen && tsc",
-    "build:production": "node scripts/build-production.js",
-    "build:secure": "vite build --config vite.config.production.secure.ts",
     "build:analyze": "ANALYZE=true react-router build",
     "preview": "react-router-serve ./build/server/index.js",
+    "security:audit": "node scripts/security-audit.js",
+    "security:audit:demo": "node scripts/security-audit.js --demo",
+    "security:check": "bun run security:audit && bun run typecheck && bun run lint:check",
+    "predeploy": "bun run security:check && bun run build",
     "bundle-size": "du -sh build/ && find build -name '*.js' -exec du -h {} + | sort -hr",
-    "clean": "rm -rf build dist .react-router node_modules/.cache",
-    "production-check": "node scripts/production-check.js",
-    "pre-deploy": "bun run production-check && bun run build:secure",
-    "security-audit": "npm audit && bun run production-check",
-    "console-audit": "node scripts/production-check.js --console-only",
-    "fix-console": "node scripts/fix-remaining-console.js"
+    "clean": "rm -rf build dist .react-router node_modules/.cache"
   },
   "dependencies": {
     "@clerk/react-router": "^1.6.3",

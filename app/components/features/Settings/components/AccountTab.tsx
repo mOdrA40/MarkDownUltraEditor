@@ -5,7 +5,6 @@ import { memo } from 'react';
 import { DeleteAccount } from '@/components/settings/DeleteAccount';
 import { Card, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { AccountInfo } from './AccountInfo';
-import { SessionManagement } from './SessionManagement';
 
 interface AccountTabProps {
   isEditingName: boolean;
@@ -57,9 +56,6 @@ export const AccountTab: React.FC<AccountTabProps> = memo(
           onSetEditFirstName={onSetEditFirstName}
           onSetEditLastName={onSetEditLastName}
         />
-
-        {/* Session Management */}
-        <SessionManagement />
 
         {/* Delete Account */}
         <DeleteAccount />

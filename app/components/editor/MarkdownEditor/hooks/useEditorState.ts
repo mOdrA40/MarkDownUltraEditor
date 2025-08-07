@@ -82,8 +82,9 @@ export const useEditorState = (
     }
 
     // On initial load, if there's content from localStorage, set it
+    // But only for returning users, not first-time visitors (let welcome dialog handle that)
     const savedContent = localStorage.getItem(STORAGE_KEYS.CONTENT);
-    if (savedContent) {
+    if (savedContent && !isFirstTime) {
       setMarkdown(savedContent); // Set without adding to history
     }
 

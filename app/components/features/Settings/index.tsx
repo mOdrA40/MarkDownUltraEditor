@@ -4,7 +4,6 @@ export {
   AppearanceTab,
   BehaviorTab,
   EditorTab,
-  SessionManagement,
   SettingsHeader,
   SettingsTabs,
   StorageTab,
@@ -21,7 +20,6 @@ export {
 // Hooks
 export {
   useAccountActions,
-  useSessionManagement,
   useSettingsState,
   useStorageActions,
 } from './hooks';
@@ -33,9 +31,6 @@ export type {
   AccountInfo,
   AccountState,
   AppPreferences,
-  SessionData,
-  SessionManagementState,
-  SessionStats,
   SettingsActions,
   SettingsState,
   SettingsTab,
@@ -43,7 +38,6 @@ export type {
   StorageState,
   TabConfig,
   UseAccountReturn,
-  UseSessionManagementReturn,
   UseSettingsReturn,
   UseStorageReturn,
 } from './types';

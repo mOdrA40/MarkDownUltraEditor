@@ -18,16 +18,14 @@ const devLog = (message, ...args) => {
 };
 
 const devError = (message, ...args) => {
-  // Always log errors for debugging, but prefix for development
+  // Only log errors in development - silent in production for security
   if (
     self.location.hostname === "localhost" ||
     self.location.hostname === "127.0.0.1"
   ) {
     console.error(message, ...args);
-  } else {
-    // In production, only log critical errors
-    console.error("SW Error:", message);
   }
+  // Completely silent in production to prevent information disclosure
 };
 
 // Files to cache immediately

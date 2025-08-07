@@ -353,7 +353,7 @@ export const useAutoFileRestoration = (
     hasTriedImmediate,
   ]);
 
-  // Fallback: For authenticated users, try to load last opened file from Supabase
+  // Fallback: Try to load last opened file from localStorage
   useEffect(() => {
     if (
       isLoaded &&
@@ -368,7 +368,7 @@ export const useAutoFileRestoration = (
     ) {
       setHasTriedLastOpened(true);
 
-      // Load the last opened file from Supabase
+      // Load the last opened file from localStorage
       onFileRestored({
         content: lastOpenedFile.fileData.content,
         title: lastOpenedFile.fileData.title,
@@ -377,7 +377,7 @@ export const useAutoFileRestoration = (
       });
 
       safeConsole.dev(
-        '📄 Loaded last opened file from Supabase (fallback):',
+        '📄 Loaded last opened file from localStorage (fallback):',
         lastOpenedFile.fileData.title
       );
       return;

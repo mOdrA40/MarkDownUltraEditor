@@ -25,3 +25,4 @@ scripts/build-production.js
 test-image.txt
 .vscode/mcp.json
 .vscode/settings.json
+netlify.toml

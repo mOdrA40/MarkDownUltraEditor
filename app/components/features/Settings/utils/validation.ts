@@ -3,7 +3,7 @@
  * @author Axel Modra
  */
 
-import type { AppPreferences, SessionData, StorageInfo } from '../types';
+import type { AppPreferences, StorageInfo } from '../types';
 
 /**
  * Validation utilities
@@ -29,26 +29,6 @@ export const validationUtils = {
         typeof prefs.theme === 'object' &&
         prefs.writingSettings &&
         typeof prefs.writingSettings === 'object'
-    );
-  },
-
-  /**
-   * Validate session data
-   */
-  validateSessionData: (data: unknown): data is SessionData => {
-    if (!data || typeof data !== 'object') {
-      return false;
-    }
-
-    const session = data as Record<string, unknown>;
-
-    return (
-      typeof session.id === 'string' &&
-      typeof session.session_id === 'string' &&
-      typeof session.user_id === 'string' &&
-      typeof session.ip_address === 'string' &&
-      typeof session.last_activity === 'string' &&
-      typeof session.created_at === 'string'
     );
   },
 

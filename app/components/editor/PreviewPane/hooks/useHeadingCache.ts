@@ -49,40 +49,9 @@ export const useHeadingCache = (markdown: string) => {
     headingCache.clear();
   }, []);
 
-  // Setup debugging tools untuk development
+  // Development-only cache debugging (removed for production security)
   useEffect(() => {
-    if (typeof window !== 'undefined' && process.env.NODE_ENV === 'development') {
-      // Expose cache untuk debugging
-      (window as unknown as { headingCache: typeof headingCache }).headingCache = headingCache;
-
-      // Expose utility functions untuk debugging
-      const debugUtils = {
-        getHeadingLineNumber,
-        clearCache: () => headingCache.clear(),
-        getCacheSize: () => headingCache.size,
-        getCacheEntries: () => Array.from(headingCache.entries()),
-        findHeadingInCache: (text: string) => {
-          for (const [key, entry] of headingCache.entries()) {
-            if (entry.text === text) {
-              return { key, entry };
-            }
-          }
-          return null;
-        },
-      };
-
-      (window as unknown as { headingCacheUtils: typeof debugUtils }).headingCacheUtils =
-        debugUtils;
-
-      // Only show debug tools once in development
-      if (process.env.NODE_ENV === 'development' && !import.meta.env.VITE_PRODUCTION_BUILD) {
-        import('@/utils/console').then(({ safeConsole }) => {
-          safeConsole.dev(
-            '🔧 Heading Cache Debug tools available (use headingCacheUtils in console)'
-          );
-        });
-      }
-    }
+    // Debug tools removed for production security
   }, []);
 
   /**

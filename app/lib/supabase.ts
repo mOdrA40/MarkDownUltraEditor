@@ -66,7 +66,6 @@ export interface Database {
         Row: {
           id: string;
           user_id: string;
-          last_opened_file_id: string | null;
           editor_theme: string;
           auto_save_enabled: boolean;
           preview_mode: string;
@@ -80,7 +79,6 @@ export interface Database {
         Insert: {
           id?: string;
           user_id: string;
-          last_opened_file_id?: string | null;
           editor_theme?: string;
           auto_save_enabled?: boolean;
           preview_mode?: string;
@@ -94,7 +92,6 @@ export interface Database {
         Update: {
           id?: string;
           user_id?: string;
-          last_opened_file_id?: string | null;
           editor_theme?: string;
           auto_save_enabled?: boolean;
           preview_mode?: string;
@@ -104,94 +101,6 @@ export interface Database {
           last_activity_at?: string;
           created_at?: string;
           updated_at?: string;
-        };
-      };
-      user_device_sessions: {
-        Row: {
-          id: string;
-          user_id: string;
-          device_fingerprint: string;
-          device_name: string | null;
-          browser_info: Record<string, unknown> | null;
-          last_opened_file_id: string | null;
-          last_activity_at: string;
-          is_active: boolean;
-          created_at: string;
-          updated_at: string;
-        };
-        Insert: {
-          id?: string;
-          user_id: string;
-          device_fingerprint: string;
-          device_name?: string | null;
-          browser_info?: Record<string, unknown> | null;
-          last_opened_file_id?: string | null;
-          last_activity_at?: string;
-          is_active?: boolean;
-          created_at?: string;
-          updated_at?: string;
-        };
-        Update: {
-          id?: string;
-          user_id?: string;
-          device_fingerprint?: string;
-          device_name?: string | null;
-          browser_info?: Record<string, unknown> | null;
-          last_opened_file_id?: string | null;
-          last_activity_at?: string;
-          is_active?: boolean;
-          created_at?: string;
-          updated_at?: string;
-        };
-      };
-      user_sessions: {
-        Row: {
-          id: string;
-          user_id: string;
-          session_id: string | null;
-          session_token: string | null;
-          ip_address: string | null;
-          user_agent: string | null;
-          location: Record<string, unknown> | null;
-          device_info: Record<string, unknown> | null;
-          security_flags: Record<string, unknown> | null;
-          is_active: boolean | null;
-          last_activity: string | null;
-          created_at: string | null;
-          updated_at: string | null;
-          expires_at: string | null;
-        };
-        Insert: {
-          id?: string;
-          user_id?: string;
-          session_id?: string | null;
-          session_token?: string | null;
-          ip_address?: string | null;
-          user_agent?: string | null;
-          location?: Record<string, unknown> | null;
-          device_info?: Record<string, unknown> | null;
-          security_flags?: Record<string, unknown> | null;
-          is_active?: boolean | null;
-          last_activity?: string | null;
-          created_at?: string | null;
-          updated_at?: string | null;
-          expires_at?: string | null;
-        };
-        Update: {
-          id?: string;
-          user_id?: string;
-          session_id?: string | null;
-          session_token?: string | null;
-          ip_address?: string | null;
-          user_agent?: string | null;
-          location?: Record<string, unknown> | null;
-          device_info?: Record<string, unknown> | null;
-          security_flags?: Record<string, unknown> | null;
-          is_active?: boolean | null;
-          last_activity?: string | null;
-          created_at?: string | null;
-          updated_at?: string | null;
-          expires_at?: string | null;
         };
       };
     };

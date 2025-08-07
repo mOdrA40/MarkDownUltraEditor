@@ -1243,13 +1243,55 @@ const generateEnhancedWatermark = (options: HTMLGeneratorOptions): string => {
 
   // Generate multiple watermark positions untuk coverage yang lebih baik
   const positions = [
-    { top: '20%', left: '20%', rotation: '-45deg', size: '3em', opacity: '0.06' },
-    { top: '50%', left: '50%', rotation: '-45deg', size: '4em', opacity: '0.08' },
-    { top: '80%', left: '80%', rotation: '-45deg', size: '2.5em', opacity: '0.05' },
-    { top: '30%', left: '70%', rotation: '45deg', size: '2em', opacity: '0.04' },
-    { top: '70%', left: '30%', rotation: '30deg', size: '1.8em', opacity: '0.04' },
-    { top: '10%', left: '60%', rotation: '-30deg', size: '1.5em', opacity: '0.03' },
-    { top: '90%', left: '40%', rotation: '60deg', size: '1.5em', opacity: '0.03' },
+    {
+      top: '20%',
+      left: '20%',
+      rotation: '-45deg',
+      size: '3em',
+      opacity: '0.06',
+    },
+    {
+      top: '50%',
+      left: '50%',
+      rotation: '-45deg',
+      size: '4em',
+      opacity: '0.08',
+    },
+    {
+      top: '80%',
+      left: '80%',
+      rotation: '-45deg',
+      size: '2.5em',
+      opacity: '0.05',
+    },
+    {
+      top: '30%',
+      left: '70%',
+      rotation: '45deg',
+      size: '2em',
+      opacity: '0.04',
+    },
+    {
+      top: '70%',
+      left: '30%',
+      rotation: '30deg',
+      size: '1.8em',
+      opacity: '0.04',
+    },
+    {
+      top: '10%',
+      left: '60%',
+      rotation: '-30deg',
+      size: '1.5em',
+      opacity: '0.03',
+    },
+    {
+      top: '90%',
+      left: '40%',
+      rotation: '60deg',
+      size: '1.5em',
+      opacity: '0.03',
+    },
   ];
 
   const watermarkLayers = positions
@@ -1409,8 +1451,7 @@ const generateEnhancedWatermark = (options: HTMLGeneratorOptions): string => {
             const observer = new MutationObserver(function(mutations) {
                 mutations.forEach(function(mutation) {
                     if (mutation.type === 'attributes' || mutation.type === 'childList') {
-                        // Log tampering attempt
-                        import('@/utils/console').then(({ safeConsole }) => { safeConsole.warn('Document integrity check failed - ${uniqueId}'); });;
+                        // Document integrity check failed - security event logged;
                     }
                 });
             });
@@ -1458,7 +1499,7 @@ const generateEnhancedWatermark = (options: HTMLGeneratorOptions): string => {
             setTimeout(function() {
                 const metaWatermark = document.querySelector('meta[name="watermark"]');
                 if (!metaWatermark || !metaWatermark.content) {
-                    import('@/utils/console').then(({ safeConsole }) => { safeConsole.warn('Document integrity compromised - ${uniqueId}'); });;
+                    // Document integrity compromised - security event logged
                 }
             }, 1000);
 

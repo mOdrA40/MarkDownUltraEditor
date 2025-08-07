@@ -36,7 +36,6 @@ export const STORAGE_KEYS = {
  * Activity intervals in milliseconds
  */
 export const ACTIVITY_INTERVALS = {
-  SESSION_UPDATE: 15 * 60 * 1000, // 15 minutes
   AUTO_SAVE: 30 * 1000, // 30 seconds
   STORAGE_REFRESH: 5 * 60 * 1000, // 5 minutes
 } as const;
@@ -47,13 +46,4 @@ export const ACTIVITY_INTERVALS = {
 export const STORAGE_LIMITS = {
   LOCAL_STORAGE_WARNING: 5 * 1024 * 1024, // 5MB
   CLOUD_STORAGE_WARNING: 50 * 1024 * 1024, // 50MB
-} as const;
-
-/**
- * Session management constants
- */
-export const SESSION_CONSTANTS = {
-  MAX_SESSIONS_DISPLAY: 5,
-  SESSION_TIMEOUT: 24 * 60 * 60 * 1000, // 24 hours
-  SUSPICIOUS_ACTIVITY_THRESHOLD: 3,
 } as const;

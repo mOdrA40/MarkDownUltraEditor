@@ -70,16 +70,33 @@ export class SecureSentryIntegration {
     const dsn = import.meta.env?.VITE_SENTRY_DSN || process.env.VITE_SENTRY_DSN || '';
     const environment = import.meta.env?.MODE || process.env.NODE_ENV || 'development';
 
+    // Security: Validate DSN format to prevent injection
+    const isDsnValid = dsn ? this.validateDsn(dsn) : false;
+
     this.config = {
-      dsn,
+      dsn: isDsnValid ? dsn : '',
       environment,
-      tracesSampleRate: environment === 'production' ? 0.05 : 1.0, // Reduced for production
+      tracesSampleRate: environment === 'production' ? 0.01 : 0.1, // Very low for production
       enableInDevelopment: environment === 'development',
       enableRequestId: true,
       enableUserContext: environment === 'production', // Only in production
       enablePerformanceMonitoring: environment === 'production', // Only in production
+      // Security: Enhanced data scrubbing
+      beforeSend: this.secureBeforeSend.bind(this),
       ...config,
     };
+  }
+
+  /**
+   * Validate DSN format for security
+   */
+  private validateDsn(dsn: string): boolean {
+    try {
+      const url = new URL(dsn);
+      return url.protocol === 'https:' && url.hostname.includes('sentry.io');
+    } catch {
+      return false;
+    }
   }
 
   /**

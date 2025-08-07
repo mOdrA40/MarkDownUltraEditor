@@ -10,7 +10,6 @@ import { safeConsole } from '@/utils/console';
 export interface UserCleanupResult {
   success: boolean;
   deletedFiles: number;
-  deletedSessions: number;
   deletedStats: number;
   errors: string[];
 }
@@ -28,7 +27,6 @@ export class UserCleanupService {
     const result: UserCleanupResult = {
       success: false,
       deletedFiles: 0,
-      deletedSessions: 0,
       deletedStats: 0,
       errors: [],
     };
@@ -43,14 +41,7 @@ export class UserCleanupService {
         result.errors.push(`Files cleanup error: ${filesResult.error}`);
       }
 
-      // 2. Delete user sessions
-      const sessionsResult = await this.deleteUserSessions(userId);
-      result.deletedSessions = sessionsResult.count;
-      if (sessionsResult.error) {
-        result.errors.push(`Sessions cleanup error: ${sessionsResult.error}`);
-      }
-
-      // 3. Delete user stats and analytics data
+      // 2. Delete user stats and analytics data
       const statsResult = await this.deleteUserStats(userId);
       result.deletedStats = statsResult.count;
       if (statsResult.error) {
@@ -77,27 +68,6 @@ export class UserCleanupService {
     try {
       const { data, error } = await this.supabaseClient
         .from('user_files')
-        .delete()
-        .eq('user_id', userId)
-        .select('id');
-
-      if (error) {
-        return { count: 0, error: error.message };
-      }
-
-      return { count: data?.length || 0 };
-    } catch (error) {
-      return { count: 0, error: String(error) };
-    }
-  }
-
-  /**
-   * Delete all user sessions
-   */
-  private async deleteUserSessions(userId: string): Promise<{ count: number; error?: string }> {
-    try {
-      const { data, error } = await this.supabaseClient
-        .from('user_sessions')
         .delete()
         .eq('user_id', userId)
         .select('id');

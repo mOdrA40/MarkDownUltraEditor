@@ -6,6 +6,7 @@
  */
 
 import { useCallback, useEffect, useState } from 'react';
+import { smartCleanup } from '@/utils/editorPreferences';
 import {
   cleanupStorage,
   formatBytes,
@@ -24,6 +25,14 @@ interface UseStorageMonitorOptions {
   autoCleanup?: boolean;
 }
 
+interface AdaptiveLimits {
+  maxFileSize: number;
+  maxTotalSize: number;
+  maxFiles: number;
+  warningThreshold: number;
+  criticalThreshold: number;
+}
+
 interface UseStorageMonitorReturn {
   /** Current storage information */
   storageInfo: StorageInfo;
@@ -31,8 +40,12 @@ interface UseStorageMonitorReturn {
   isNearCapacity: boolean;
   /** Whether storage is at critical level */
   isCritical: boolean;
+  /** Adaptive storage limits */
+  adaptiveLimits: AdaptiveLimits | null;
   /** Manually trigger cleanup */
   triggerCleanup: () => Promise<number>;
+  /** Intelligent cleanup with multiple strategies */
+  intelligentCleanup: () => Promise<StorageInfo>;
   /** Refresh storage info */
   refreshInfo: () => void;
   /** Check if there's enough space for data */
@@ -73,6 +86,155 @@ export const useStorageMonitor = (
     }
     return getStorageInfo();
   });
+
+  const [adaptiveLimits, setAdaptiveLimits] = useState<AdaptiveLimits | null>(null);
+
+  /**
+   * Time-based cleanup utility
+   */
+  const timeBasedCleanup = useCallback(() => {
+    if (typeof localStorage === 'undefined') return;
+
+    const now = Date.now();
+    const TIME_LIMITS = {
+      HOUR: 60 * 60 * 1000,
+      DAY: 24 * 60 * 60 * 1000,
+      WEEK: 7 * 24 * 60 * 60 * 1000,
+    };
+
+    Object.keys(localStorage).forEach((key) => {
+      try {
+        const data = JSON.parse(localStorage.getItem(key) || '{}');
+        const age = now - (data.timestamp || 0);
+
+        // Cleanup rules
+        if (key.startsWith('markdownEditor_temp_') && age > TIME_LIMITS.HOUR) {
+          localStorage.removeItem(key);
+        } else if (key.startsWith('markdownEditor_cache_') && age > TIME_LIMITS.DAY) {
+          localStorage.removeItem(key);
+        } else if (key.startsWith('markdownEditor_backup_') && age > TIME_LIMITS.WEEK) {
+          localStorage.removeItem(key);
+        }
+      } catch (_e) {
+        // Invalid JSON, remove it
+        localStorage.removeItem(key);
+      }
+    });
+  }, []);
+
+  /**
+   * LRU cleanup utility
+   */
+  const lruCleanup = useCallback(
+    (targetBytes: number) => {
+      if (typeof localStorage === 'undefined') return 0;
+
+      // Simple LRU based on access patterns
+      const items = Object.keys(localStorage).map((key) => ({
+        key,
+        size: new Blob([localStorage.getItem(key) || '']).size,
+        lastAccessed: Date.now(), // Simplified - in real implementation, track actual access
+      }));
+
+      // Sort by last accessed (oldest first)
+      items.sort((a, b) => a.lastAccessed - b.lastAccessed);
+
+      let freedBytes = 0;
+      for (const item of items) {
+        if (freedBytes >= targetBytes) break;
+
+        // Don't remove critical items
+        if (!preserveKeys.some((pattern) => item.key.startsWith(pattern))) {
+          localStorage.removeItem(item.key);
+          freedBytes += item.size;
+        }
+      }
+
+      return freedBytes;
+    },
+    [preserveKeys]
+  );
+
+  /**
+   * File deduplication utility
+   */
+  const deduplicateFiles = useCallback(() => {
+    if (typeof localStorage === 'undefined') return;
+
+    const fileKeys = Object.keys(localStorage).filter((key) =>
+      key.startsWith('markdownEditor_file_')
+    );
+
+    const hashMap = new Map<string, string>();
+
+    fileKeys.forEach((key) => {
+      try {
+        const fileData = JSON.parse(localStorage.getItem(key) || '{}');
+        const content = fileData.content || '';
+
+        // Simple hash based on content length and first/last 100 chars
+        const hash = `${content.length}:${content.slice(0, 100)}:${content.slice(-100)}`;
+
+        if (hashMap.has(hash)) {
+          // Duplicate found, remove the older one
+          const existingKey = hashMap.get(hash);
+          if (!existingKey) return; // Skip this iteration
+
+          const existingData = JSON.parse(localStorage.getItem(existingKey) || '{}');
+
+          if (new Date(fileData.updatedAt || 0) > new Date(existingData.updatedAt || 0)) {
+            localStorage.removeItem(existingKey);
+            hashMap.set(hash, key);
+          } else {
+            localStorage.removeItem(key);
+          }
+        } else {
+          hashMap.set(hash, key);
+        }
+      } catch (_e) {
+        // Invalid data, remove it
+        localStorage.removeItem(key);
+      }
+    });
+  }, []);
+
+  /**
+   * Calculate adaptive storage limits based on available quota
+   */
+  const calculateAdaptiveLimits = useCallback(async (): Promise<AdaptiveLimits> => {
+    let totalQuota = 5 * 1024 * 1024; // 5MB default
+
+    // Try to get actual storage quota
+    if (
+      typeof navigator !== 'undefined' &&
+      'storage' in navigator &&
+      'estimate' in navigator.storage
+    ) {
+      try {
+        const estimate = await navigator.storage.estimate();
+        totalQuota = estimate.quota || totalQuota;
+      } catch (error) {
+        import('@/utils/console').then(({ safeConsole }) => {
+          safeConsole.warn('Failed to get storage quota:', error);
+        });
+      }
+    }
+
+    return {
+      maxFileSize: Math.min(totalQuota * 0.1, 1024 * 1024), // 10% of quota or 1MB
+      maxTotalSize: totalQuota * 0.8, // 80% of quota
+      maxFiles: Math.max(10, Math.floor(totalQuota / (50 * 1024))), // Min 10 files
+      warningThreshold: totalQuota * 0.7, // 70% warning
+      criticalThreshold: totalQuota * 0.9, // 90% critical
+    };
+  }, []);
+
+  /**
+   * Initialize adaptive limits
+   */
+  useEffect(() => {
+    calculateAdaptiveLimits().then(setAdaptiveLimits);
+  }, [calculateAdaptiveLimits]);
 
   /**
    * Refresh storage information
@@ -118,6 +280,45 @@ export const useStorageMonitor = (
   }, [preserveKeys, refreshInfo]);
 
   /**
+   * Intelligent cleanup with multiple strategies
+   */
+  const intelligentCleanup = useCallback(async (): Promise<StorageInfo> => {
+    import('@/utils/console').then(({ safeConsole }) => {
+      safeConsole.dev('🧠 Starting intelligent cleanup...');
+    });
+
+    // 1. Time-based cleanup (remove old temporary data)
+    timeBasedCleanup();
+
+    // 2. Smart cleanup using priorities
+    const currentUsage = getStorageInfo();
+    if (currentUsage.usedPercentage > 70) {
+      const targetBytes = currentUsage.used * 0.2; // Free 20%
+      smartCleanup(targetBytes);
+    }
+
+    // 3. LRU cleanup if still needed
+    const afterSmartCleanup = getStorageInfo();
+    if (afterSmartCleanup.usedPercentage > 60) {
+      lruCleanup(afterSmartCleanup.used * 0.1); // Free 10% more
+    }
+
+    // 4. Deduplication
+    deduplicateFiles();
+
+    const finalInfo = getStorageInfo();
+    refreshInfo();
+
+    import('@/utils/console').then(({ safeConsole }) => {
+      safeConsole.dev(
+        `🧠 Intelligent cleanup completed: ${currentUsage.usedPercentage.toFixed(1)}% → ${finalInfo.usedPercentage.toFixed(1)}%`
+      );
+    });
+
+    return finalInfo;
+  }, [refreshInfo, timeBasedCleanup, lruCleanup, deduplicateFiles]);
+
+  /**
    * Auto cleanup when threshold is reached
    */
   const autoCleanupIfNeeded = useCallback(async () => {
@@ -127,12 +328,12 @@ export const useStorageMonitor = (
     if (info.usedPercentage >= cleanupThreshold) {
       import('@/utils/console').then(({ safeConsole }) => {
         safeConsole.dev(
-          `⚠️ Storage threshold reached (${info.usedPercentage.toFixed(1)}%), triggering cleanup...`
+          `⚠️ Storage threshold reached (${info.usedPercentage.toFixed(1)}%), triggering intelligent cleanup...`
         );
       });
-      await triggerCleanup();
+      await intelligentCleanup();
     }
-  }, [autoCleanup, cleanupThreshold, triggerCleanup]);
+  }, [autoCleanup, cleanupThreshold, intelligentCleanup]);
 
   /**
    * Periodic storage monitoring
@@ -161,7 +362,9 @@ export const useStorageMonitor = (
     storageInfo,
     isNearCapacity,
     isCritical,
+    adaptiveLimits,
     triggerCleanup,
+    intelligentCleanup,
     refreshInfo,
     hasSpaceFor,
   };

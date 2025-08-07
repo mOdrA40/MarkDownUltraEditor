@@ -697,7 +697,9 @@ Now let's add some advanced functionality:
 \`\`\`javascript
 class ErrorHandler {
   static handle(error, context = '') {
-    import('@/utils/console').then(({ safeConsole }) => { safeConsole.error(); });console.error(\`Error in \${context}:\`, error);
+    import('@/utils/console').then(({ safeConsole }) => {
+      safeConsole.error(\`Error in \${context}:\`, error);
+    });
 
     // Log to external service in production
     if (process.env.NODE_ENV === 'production') {

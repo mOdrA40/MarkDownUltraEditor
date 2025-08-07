@@ -9,7 +9,6 @@ import { useLocation, useSearchParams } from 'react-router';
 
 import { usePerformanceDebug, useRenderPerformance } from '@/hooks/core/usePerformance';
 import { useAutoFileRestoration, useFileStorage, useImmediateFileLoading } from '@/hooks/files';
-import { isFirstVisit, markVisited } from '@/utils/editorPreferences';
 
 import { useWelcomeDialog, WelcomeDialog } from '../../auth/WelcomeDialog';
 import { type Theme, useTheme } from '../../features/ThemeSelector';
@@ -77,13 +76,8 @@ export const MarkdownEditor: React.FC<MarkdownEditorProps> = ({
       return '';
     }
 
-    // For guest users, show welcome template on first visit
-    if (isFirstVisit()) {
-      markVisited();
-      return DEFAULT_FILE.CONTENT;
-    }
-
-    // For returning guest users, useEditorState will handle restoration from localStorage
+    // For guest users, DON'T mark visited here - let welcome dialog handle it
+    // Just return undefined to let welcome dialog show first, then load template
     return undefined;
   };
 
@@ -107,10 +101,8 @@ export const MarkdownEditor: React.FC<MarkdownEditorProps> = ({
       return 'untitled.md';
     }
 
-    // For guest users, show default name on first visit
-    if (isFirstVisit()) return DEFAULT_FILE.NAME;
-
-    // For returning guest users, useEditorState will handle restoration
+    // For guest users, DON'T check first visit here - let welcome dialog handle it
+    // Just return undefined to let welcome dialog show first, then load filename
     return undefined;
   };
 
@@ -155,6 +147,24 @@ export const MarkdownEditor: React.FC<MarkdownEditorProps> = ({
   const editorSettings = useEditorSettings();
   const welcomeDialog = useWelcomeDialog();
   const fileStorage = useFileStorage();
+
+  // Handle welcome dialog close for guest users - load template
+  const handleWelcomeDialogClose = React.useCallback(() => {
+    if (!isSignedIn && welcomeDialog.isOpen) {
+      // Load welcome template after dialog closes
+      setTimeout(() => {
+        editorState.actions.loadFile(
+          DEFAULT_FILE.CONTENT,
+          DEFAULT_FILE.NAME,
+          true, // bypass dialog
+          undefined, // no file ID
+          'manual', // source
+          true // silent
+        );
+      }, 100); // Small delay to ensure dialog is closed
+    }
+    welcomeDialog.hideWelcomeDialog();
+  }, [isSignedIn, welcomeDialog.isOpen, welcomeDialog.hideWelcomeDialog, editorState.actions]);
 
   const fileRestoration = useAutoFileRestoration(
     (fileData) => {
@@ -410,12 +420,16 @@ export const MarkdownEditor: React.FC<MarkdownEditorProps> = ({
             }, 50);
           } else {
             if (fileStorage.isAuthenticated) {
-              console.error('File not found in cloud storage');
+              import('@/utils/console').then(({ safeConsole }) => {
+                safeConsole.error('File not found in cloud storage');
+              });
             }
             setSearchParams({}, { replace: true });
           }
         } catch (error) {
-          console.error('Error loading file from storage:', error);
+          import('@/utils/console').then(({ safeConsole }) => {
+            safeConsole.error('Error loading file from storage:', error);
+          });
           setSearchParams({}, { replace: true });
         }
       };
@@ -447,6 +461,10 @@ export const MarkdownEditor: React.FC<MarkdownEditorProps> = ({
   // Show loading for file restoration
   if (editorState.isRestoring) {
     return <ContentRestorationLoader fileName={fileRestoration.activeFileName || undefined} />;
+  }
+
+  if (welcomeDialog.isCheckingFirstVisit && !isSignedIn) {
+    return <ContentRestorationLoader fileName="checking user status" />;
   }
 
   return (
@@ -573,9 +591,9 @@ export const MarkdownEditor: React.FC<MarkdownEditorProps> = ({
 
           <WelcomeDialog
             isOpen={welcomeDialog.isOpen}
-            onClose={welcomeDialog.handleClose}
+            onClose={handleWelcomeDialogClose}
             onSignUp={welcomeDialog.handleSignUp}
-            onContinueAsGuest={welcomeDialog.handleContinueAsGuest}
+            onContinueAsGuest={handleWelcomeDialogClose}
           />
         </EditorContainer>
       </PerformanceMonitor>

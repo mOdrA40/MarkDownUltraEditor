@@ -1,0 +1,65 @@
+# Redirects for MarkDownUltraRemix
+# Security-focused redirects to block sensitive files
+
+# Block access to sensitive files
+/.env                    /404    404!
+/.env.*                  /404    404!
+/config/*               /404    404!
+/.git/*                 /404    404!
+/node_modules/*         /404    404!
+/.vscode/*              /404    404!
+/.idea/*                /404    404!
+/package.json           /404    404!
+/package-lock.json      /404    404!
+/bun.lockb              /404    404!
+/yarn.lock              /404    404!
+/tsconfig.json          /404    404!
+/vite.config.ts         /404    404!
+/netlify.toml           /404    404!
+/README.md              /404    404!
+/.gitignore             /404    404!
+/src/*                  /404    404!
+/app/*                  /404    404!
+
+# Block common attack vectors
+/wp-admin/*             /404    404!
+/wp-content/*           /404    404!
+/wp-includes/*          /404    404!
+/admin/*                /404    404!
+/administrator/*        /404    404!
+/phpmyadmin/*           /404    404!
+/phpMyAdmin/*           /404    404!
+/mysql/*                /404    404!
+/database/*             /404    404!
+/db/*                   /404    404!
+/backup/*               /404    404!
+/backups/*              /404    404!
+/test/*                 /404    404!
+/tests/*                /404    404!
+/temp/*                 /404    404!
+/tmp/*                  /404    404!
+/logs/*                 /404    404!
+/log/*                  /404    404!
+
+# Block common file extensions that shouldn't be accessible
+*.log                   /404    404!
+*.bak                   /404    404!
+*.backup                /404    404!
+*.old                   /404    404!
+*.orig                  /404    404!
+*.save                  /404    404!
+*.swp                   /404    404!
+*.tmp                   /404    404!
+*.temp                  /404    404!
+*.sql                   /404    404!
+*.db                    /404    404!
+*.sqlite                /404    404!
+*.sqlite3               /404    404!
+
+# Security headers for specific paths
+/sign-in/*              /sign-in/   200
+/sign-up/*              /sign-up/   200
+/files/*                /files/     200
+
+# SPA fallback - must be last
+/*                      /index.html 200

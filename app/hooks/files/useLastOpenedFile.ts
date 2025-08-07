@@ -7,8 +7,7 @@ import { useAuth } from '@clerk/react-router';
 import { useCallback, useEffect, useState } from 'react';
 import { useFileContext } from '@/contexts/FileContextProvider';
 import type { FileData } from '@/lib/supabase';
-import { useSupabase } from '@/lib/supabase';
-import { createUserPreferencesService } from '@/services/userPreferencesService';
+
 import { safeConsole } from '@/utils/console';
 import {
   clearLastOpenedFile,
@@ -37,12 +36,11 @@ export const useLastOpenedFile = (): LastOpenedFileState => {
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
-  const { userId, isSignedIn, isLoaded } = useAuth();
-  const supabase = useSupabase();
+  const { isSignedIn, isLoaded } = useAuth();
   const { activeFile } = useFileContext();
 
   /**
-   * Load the last opened file with multi-device conflict resolution
+   * Load the last opened file (localStorage-only approach)
    */
   const loadLastOpenedFile = useCallback(async () => {
     if (!isLoaded) return;
@@ -51,66 +49,7 @@ export const useLastOpenedFile = (): LastOpenedFileState => {
     setError(null);
 
     try {
-      // For authenticated users, get from Supabase
-      if (isSignedIn && userId && supabase) {
-        const preferencesService = createUserPreferencesService(supabase);
-
-        // Initialize or update device session
-        await preferencesService.getOrCreateDeviceSession(userId);
-
-        // Clean up old sessions
-        await preferencesService.deactivateOldSessions(userId, 24);
-
-        // Get user preferences
-        const preferences = await preferencesService.getUserPreferences(userId);
-
-        if (preferences?.last_opened_file_id) {
-          // Check for conflicts with other devices
-          const mostRecentFile = await preferencesService.getMostRecentFileAcrossDevices(userId);
-
-          let fileIdToLoad = preferences.last_opened_file_id;
-
-          // If there's a more recent file from another device, use that
-          if (mostRecentFile && mostRecentFile.fileId !== preferences.last_opened_file_id) {
-            const mostRecentTime = new Date(mostRecentFile.lastActivity);
-            const preferencesTime = new Date(preferences.last_activity_at);
-
-            if (mostRecentTime > preferencesTime) {
-              fileIdToLoad = mostRecentFile.fileId;
-            }
-          }
-
-          // Get the file data
-          const { data: fileData, error: fileError } = await supabase
-            .from('user_files')
-            .select('*')
-            .eq('id', fileIdToLoad)
-            .eq('user_id', userId)
-            .single();
-
-          if (fileError) {
-            safeConsole.error('Error loading last opened file:', fileError);
-          } else if (fileData) {
-            setFileData({
-              id: fileData.id,
-              title: fileData.title,
-              content: fileData.content,
-              fileType: fileData.file_type,
-              tags: fileData.tags,
-              isTemplate: fileData.is_template,
-              createdAt: fileData.created_at,
-              updatedAt: fileData.updated_at,
-            });
-
-            // Update current device session with this file
-            await preferencesService.updateDeviceSessionFile(userId, fileData.id);
-            setIsLoading(false);
-            return;
-          }
-        }
-      }
-
-      // For guest users or if Supabase failed, get from localStorage
+      // Use localStorage for all users (guest and authenticated)
       const lastOpened = getLastOpenedFile();
       if (lastOpened) {
         setFileData({
@@ -129,35 +68,15 @@ export const useLastOpenedFile = (): LastOpenedFileState => {
     } finally {
       setIsLoading(false);
     }
-  }, [isLoaded, isSignedIn, userId, supabase]);
+  }, [isLoaded]);
 
   /**
-   * Save the current file as last opened with device session tracking
+   * Save the current file as last opened (localStorage-only approach)
    */
   const saveLastOpened = useCallback(
     async (file: Pick<FileData, 'id' | 'title' | 'content'>): Promise<boolean> => {
       try {
-        // For authenticated users, save to Supabase
-        if (isSignedIn && userId && supabase) {
-          if (!file.id) {
-            // File ID missing, fallback to localStorage
-            saveLastOpenedFile(file);
-            return true;
-          }
-
-          const preferencesService = createUserPreferencesService(supabase);
-
-          // Update user preferences
-          const success = await preferencesService.updateLastOpenedFile(userId, file.id);
-
-          if (success) {
-            // Also update device session
-            await preferencesService.updateDeviceSessionFile(userId, file.id);
-            return true;
-          }
-        }
-
-        // For guest users or if Supabase failed, save to localStorage
+        // Use localStorage for all users (guest and authenticated)
         saveLastOpenedFile(file);
         return true;
       } catch (err) {
@@ -165,33 +84,15 @@ export const useLastOpenedFile = (): LastOpenedFileState => {
         return false;
       }
     },
-    [isSignedIn, userId, supabase]
+    []
   );
 
   /**
-   * Clear the last opened file from all devices
+   * Clear the last opened file (localStorage-only approach)
    */
   const clearLastOpened = useCallback(async (): Promise<boolean> => {
     try {
-      // For authenticated users, clear from Supabase
-      if (isSignedIn && userId && supabase) {
-        const preferencesService = createUserPreferencesService(supabase);
-
-        // Clear from user preferences
-        const success = await preferencesService.upsertUserPreferences(userId, {
-          last_opened_file_id: null,
-        });
-
-        if (success) {
-          // Also clear from current device session
-          await preferencesService.updateDeviceSessionFile(userId, '');
-
-          setFileData(null);
-          return true;
-        }
-      }
-
-      // For guest users or if Supabase failed, clear from localStorage
+      // Use localStorage for all users (guest and authenticated)
       clearLastOpenedFile();
       setFileData(null);
       return true;
@@ -199,7 +100,7 @@ export const useLastOpenedFile = (): LastOpenedFileState => {
       safeConsole.error('Error clearing last opened file:', err);
       return false;
     }
-  }, [isSignedIn, userId, supabase]);
+  }, []);
 
   /**
    * Load the last opened file on mount and when authentication state changes

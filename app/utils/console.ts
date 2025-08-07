@@ -244,6 +244,34 @@ export class ConsoleProtection {
 }
 
 /**
+ * Sanitize error messages to remove sensitive information
+ */
+const sanitizeErrorMessage = (message: string): string => {
+  const sensitivePatterns = [
+    /password[=:]\s*[^\s]+/gi,
+    /token[=:]\s*[^\s]+/gi,
+    /key[=:]\s*[^\s]+/gi,
+    /secret[=:]\s*[^\s]+/gi,
+    /api[_-]?key[=:]\s*[^\s]+/gi,
+    /authorization[=:]\s*[^\s]+/gi,
+    /bearer\s+[^\s]+/gi,
+    /\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b/g, // Email
+    /\b\d{4}[-\s]?\d{4}[-\s]?\d{4}[-\s]?\d{4}\b/g, // Credit card
+    /VITE_[A-Z_]+[=:]\s*[^\s]+/gi, // Environment variables
+    /supabase[_-]?url[=:]\s*[^\s]+/gi,
+    /clerk[_-]?key[=:]\s*[^\s]+/gi,
+    /sentry[_-]?dsn[=:]\s*[^\s]+/gi,
+  ];
+
+  let sanitized = message;
+  sensitivePatterns.forEach((pattern) => {
+    sanitized = sanitized.replace(pattern, '[REDACTED]');
+  });
+
+  return sanitized;
+};
+
+/**
  * Global console protection instance
  */
 export const consoleProtection = new ConsoleProtection();
@@ -256,7 +284,7 @@ export const safeConsole = {
    * Development-only logging
    */
   dev: (...args: unknown[]) => {
-    if (process.env.NODE_ENV === 'development' && !import.meta.env.VITE_PRODUCTION_BUILD) {
+    if (process.env.NODE_ENV === 'development' && !import.meta.env?.VITE_PRODUCTION_BUILD) {
       // Filter out noisy debug messages
       const message = args[0];
       if (
@@ -272,19 +300,34 @@ export const safeConsole = {
   },
 
   /**
-   * Production-safe error logging
+   * Production-safe error logging (sanitized)
    */
   error: (...args: unknown[]) => {
-    originalConsole.error(...args);
+    if (process.env.NODE_ENV === 'production') {
+      // In production, sanitize error messages
+      const sanitizedArgs = args.map((arg) => {
+        if (typeof arg === 'string') {
+          return sanitizeErrorMessage(arg);
+        }
+        if (arg instanceof Error) {
+          return new Error(sanitizeErrorMessage(arg.message));
+        }
+        return '[REDACTED]';
+      });
+      originalConsole.error(...sanitizedArgs);
+    } else {
+      originalConsole.error(...args);
+    }
   },
 
   /**
-   * Conditional logging based on environment
+   * Conditional logging based on environment (development only)
    */
   log: (...args: unknown[]) => {
     if (process.env.NODE_ENV === 'development') {
       originalConsole.log(...args);
     }
+    // Completely silent in production
   },
 
   /**
@@ -294,6 +337,7 @@ export const safeConsole = {
     if (process.env.NODE_ENV === 'development') {
       originalConsole.warn(...args);
     }
+    // Completely silent in production
   },
 
   /**
@@ -304,13 +348,25 @@ export const safeConsole = {
       const perfMessage = duration ? `⚡ ${message}: ${duration.toFixed(2)}ms` : `⚡ ${message}`;
       originalConsole.log(perfMessage);
     }
+    // Completely silent in production
   },
 
   /**
-   * Security logging (always enabled)
+   * Security logging (production-safe, sanitized)
    */
   security: (...args: unknown[]) => {
-    originalConsole.warn('🔒 [SECURITY]', ...args);
+    if (process.env.NODE_ENV === 'production') {
+      // In production, only log sanitized security events
+      const sanitizedArgs = args.map((arg) => {
+        if (typeof arg === 'string') {
+          return sanitizeErrorMessage(arg);
+        }
+        return '[SECURITY_EVENT]';
+      });
+      originalConsole.warn('🔒 [SECURITY]', ...sanitizedArgs);
+    } else {
+      originalConsole.warn('🔒 [SECURITY]', ...args);
+    }
   },
 
   /**
@@ -322,6 +378,27 @@ export const safeConsole = {
       callback();
       originalConsole.groupEnd();
     }
+    // Completely silent in production
+  },
+
+  /**
+   * Info logging (development only)
+   */
+  info: (...args: unknown[]) => {
+    if (process.env.NODE_ENV === 'development') {
+      originalConsole.info(...args);
+    }
+    // Completely silent in production
+  },
+
+  /**
+   * Debug logging (development only)
+   */
+  debug: (...args: unknown[]) => {
+    if (process.env.NODE_ENV === 'development') {
+      originalConsole.debug(...args);
+    }
+    // Completely silent in production
   },
 };
 

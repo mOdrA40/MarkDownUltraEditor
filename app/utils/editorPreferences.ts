@@ -3,7 +3,9 @@
  * @author MarkDownUltraRemix Team
  */
 
+import type { SupabaseClient } from '@supabase/supabase-js';
 import type { FileData } from '@/lib/supabase';
+import { compressContent, decompressContent } from '@/utils/compression';
 import { safeConsole } from '@/utils/console';
 
 // Extended Navigator interface for device memory and connection
@@ -18,8 +20,18 @@ interface ExtendedNavigator {
 // Storage keys for editor preferences
 export const EDITOR_PREFERENCES = {
   FIRST_VISIT: 'markdownEditor_firstVisit',
+  HAS_VISITED: 'markdownEditor_hasVisited', // Legacy key for compatibility
   LAST_OPENED_FILE: 'markdownEditor_lastOpenedFile',
   DEVICE_FINGERPRINT: 'markdownEditor_deviceFingerprint',
+  LRU_TRACKER: 'markdownEditor_lruTracker',
+  FILE_INDEX: 'markdownEditor_fileIndex',
+};
+
+// Last opened file optimization limits
+export const LAST_OPENED_LIMITS = {
+  MAX_CONTENT_LENGTH: 50000, // 50KB untuk last opened
+  PREVIEW_LENGTH: 1000, // 1KB untuk preview saja
+  COMPRESSION_THRESHOLD: 500, // Compress jika > 500 bytes
 };
 
 /**
@@ -31,6 +43,9 @@ export interface LastOpenedFile {
   content: string;
   timestamp: number;
   deviceFingerprint?: string;
+  isPreview?: boolean;
+  compressed?: boolean;
+  originalSize?: number;
 }
 
 /**
@@ -39,7 +54,6 @@ export interface LastOpenedFile {
 export interface UserPreferences {
   id: string;
   user_id: string;
-  last_opened_file_id: string | null;
   editor_theme: string;
   auto_save_enabled: boolean;
   preview_mode: string;
@@ -52,30 +66,26 @@ export interface UserPreferences {
 }
 
 /**
- * Interface for device session data
- */
-export interface DeviceSession {
-  id: string;
-  user_id: string;
-  device_fingerprint: string;
-  device_name: string | null;
-  browser_info: Record<string, unknown> | null;
-  last_opened_file_id: string | null;
-  last_activity_at: string;
-  is_active: boolean;
-  created_at: string;
-  updated_at: string;
-}
-
-/**
  * Check if this is the user's first visit
+ * Unified function that checks both new and legacy keys for compatibility
  */
 export const isFirstVisit = (): boolean => {
   if (typeof localStorage === 'undefined') return true;
 
   try {
+    // Check new key first
     const visited = localStorage.getItem(EDITOR_PREFERENCES.FIRST_VISIT);
-    return visited !== 'true';
+    if (visited === 'true') return false;
+
+    // Check legacy key for backward compatibility
+    const hasVisited = localStorage.getItem(EDITOR_PREFERENCES.HAS_VISITED);
+    if (hasVisited === 'true') {
+      // Migrate to new key
+      localStorage.setItem(EDITOR_PREFERENCES.FIRST_VISIT, 'true');
+      return false;
+    }
+
+    return true;
   } catch (error) {
     safeConsole.error('Error checking first visit status:', error);
     return true; // Default to first visit on error
@@ -84,12 +94,14 @@ export const isFirstVisit = (): boolean => {
 
 /**
  * Mark that the user has visited the site
+ * Sets both new and legacy keys for compatibility
  */
 export const markVisited = (): void => {
   if (typeof localStorage === 'undefined') return;
 
   try {
     localStorage.setItem(EDITOR_PREFERENCES.FIRST_VISIT, 'true');
+    localStorage.setItem(EDITOR_PREFERENCES.HAS_VISITED, 'true'); // Keep legacy key for compatibility
     safeConsole.dev('User marked as visited');
   } catch (error) {
     safeConsole.error('Error marking user as visited:', error);
@@ -97,27 +109,164 @@ export const markVisited = (): void => {
 };
 
 /**
- * Save the last opened file for guest users
+ * Reset visit status (useful for testing or after logout)
  */
-export const saveLastOpenedFile = (file: Pick<FileData, 'id' | 'title' | 'content'>): void => {
+export const resetVisitStatus = (): void => {
   if (typeof localStorage === 'undefined') return;
 
   try {
-    const lastOpenedFile: LastOpenedFile = {
-      id: file.id,
-      title: file.title,
-      content: file.content,
-      timestamp: Date.now(),
-    };
-
-    localStorage.setItem(EDITOR_PREFERENCES.LAST_OPENED_FILE, JSON.stringify(lastOpenedFile));
+    localStorage.removeItem(EDITOR_PREFERENCES.FIRST_VISIT);
+    localStorage.removeItem(EDITOR_PREFERENCES.HAS_VISITED);
+    safeConsole.dev('Visit status reset');
   } catch (error) {
-    safeConsole.error('Error saving last opened file:', error);
+    safeConsole.error('Error resetting visit status:', error);
   }
 };
 
 /**
- * Get the last opened file for guest users
+ * Check if user is first-time visitor with Supabase integration for authenticated users
+ * Uses the existing UserPreferencesService for better integration
+ */
+export const isFirstVisitWithAuth = async (
+  isSignedIn: boolean,
+  userId?: string | null,
+  supabase?: SupabaseClient | null
+): Promise<boolean> => {
+  // For guest users, use localStorage
+  if (!isSignedIn || !userId || !supabase) {
+    return isFirstVisit();
+  }
+
+  try {
+    // Use the existing UserPreferencesService for consistency
+    const { createUserPreferencesService } = await import('@/services/userPreferencesService');
+    const preferencesService = createUserPreferencesService(supabase);
+
+    // Check if user has preferences (indicates not first visit)
+    const preferences = await preferencesService.getUserPreferences(userId);
+
+    // If no preferences found, this is first visit
+    const isFirst = !preferences;
+
+    // Also check localStorage for consistency
+    const localFirst = isFirstVisit();
+
+    // If there's a mismatch, prefer Supabase data for authenticated users
+    if (isFirst !== localFirst && !isFirst) {
+      markVisited(); // Sync localStorage with Supabase
+    }
+
+    return isFirst;
+  } catch (error) {
+    safeConsole.error('Error in isFirstVisitWithAuth:', error);
+    return isFirstVisit(); // Fallback to localStorage
+  }
+};
+
+/**
+ * Mark user as visited with Supabase integration for authenticated users
+ * Uses the existing UserPreferencesService for better integration
+ */
+export const markVisitedWithAuth = async (
+  isSignedIn: boolean,
+  userId?: string | null,
+  supabase?: SupabaseClient | null
+): Promise<void> => {
+  // Always mark in localStorage
+  markVisited();
+
+  // For authenticated users, also create/update preferences in Supabase
+  if (isSignedIn && userId && supabase) {
+    try {
+      // Use the existing UserPreferencesService for consistency
+      const { createUserPreferencesService } = await import('@/services/userPreferencesService');
+      const preferencesService = createUserPreferencesService(supabase);
+
+      // Try to get existing preferences
+      const existing = await preferencesService.getUserPreferences(userId);
+
+      if (!existing) {
+        // Create new preferences record with default values
+        await preferencesService.upsertUserPreferences(userId, {
+          editor_theme: 'light',
+          auto_save_enabled: true,
+          preview_mode: 'side',
+          font_size: 14,
+          line_numbers: true,
+          word_wrap: true,
+        });
+
+        safeConsole.dev('User preferences created for first visit');
+      }
+    } catch (error) {
+      safeConsole.error('Error in markVisitedWithAuth:', error);
+    }
+  }
+};
+
+/**
+ * Save the last opened file to localStorage (optimized for all users)
+ */
+export const saveLastOpenedFile = (file: Pick<FileData, 'id' | 'title' | 'content'>): void => {
+  if (typeof localStorage === 'undefined') return;
+
+  const originalSize = file.content.length;
+  let optimizedContent = file.content;
+  let isPreview = false;
+  let compressed = false;
+
+  // Smart content optimization
+  if (originalSize > LAST_OPENED_LIMITS.MAX_CONTENT_LENGTH) {
+    // Use preview for very large files
+    optimizedContent = `${file.content.substring(0, LAST_OPENED_LIMITS.PREVIEW_LENGTH)}...[preview]`;
+    isPreview = true;
+    safeConsole.dev(`📄 Large file detected (${originalSize} bytes), using preview mode`);
+  } else if (originalSize > LAST_OPENED_LIMITS.COMPRESSION_THRESHOLD) {
+    // Compress medium-sized files
+    const compressionResult = compressContent(file.content);
+    if (compressionResult.isCompressed) {
+      optimizedContent = compressionResult.content;
+      compressed = true;
+      safeConsole.dev(
+        `🗜️ Compressed last opened file: ${originalSize} → ${compressionResult.compressedSize} bytes (${(compressionResult.compressionRatio * 100).toFixed(1)}%)`
+      );
+    }
+  }
+
+  const lastOpenedFile: LastOpenedFile = {
+    id: file.id,
+    title: file.title,
+    content: optimizedContent,
+    timestamp: Date.now(),
+    isPreview,
+    compressed,
+    originalSize,
+  };
+
+  try {
+    localStorage.setItem(EDITOR_PREFERENCES.LAST_OPENED_FILE, JSON.stringify(lastOpenedFile));
+
+    // Track access for LRU
+    trackAccess(EDITOR_PREFERENCES.LAST_OPENED_FILE);
+  } catch (error) {
+    if (error instanceof Error && error.name === 'QuotaExceededError') {
+      const canRetry = handleQuotaExceeded('saveLastOpened', file);
+      if (canRetry) {
+        // Retry once after cleanup
+        try {
+          localStorage.setItem(EDITOR_PREFERENCES.LAST_OPENED_FILE, JSON.stringify(lastOpenedFile));
+        } catch (retryError) {
+          safeConsole.error('Retry failed after cleanup:', retryError);
+        }
+      }
+    } else {
+      safeConsole.error('Error saving last opened file:', error);
+    }
+  }
+};
+
+/**
+ * Get the last opened file from localStorage (optimized for all users)
  */
 export const getLastOpenedFile = (): LastOpenedFile | null => {
   if (typeof localStorage === 'undefined') return null;
@@ -134,6 +283,19 @@ export const getLastOpenedFile = (): LastOpenedFile | null => {
       clearLastOpenedFile();
       return null;
     }
+
+    // Decompress content if it was compressed
+    if (lastOpenedFile.compressed && lastOpenedFile.content) {
+      try {
+        lastOpenedFile.content = decompressContent(lastOpenedFile.content);
+        safeConsole.dev(`🗜️ Decompressed last opened file: ${lastOpenedFile.title}`);
+      } catch (decompressError) {
+        safeConsole.warn('Failed to decompress last opened file, using as-is:', decompressError);
+      }
+    }
+
+    // Track access for LRU
+    trackAccess(EDITOR_PREFERENCES.LAST_OPENED_FILE);
 
     return lastOpenedFile;
   } catch (error) {
@@ -287,4 +449,116 @@ export const resetEditorPreferences = (): void => {
   } catch (error) {
     safeConsole.error('Error resetting editor preferences:', error);
   }
+};
+
+// ============================================================================
+// STORAGE OPTIMIZATION UTILITIES
+// ============================================================================
+
+/**
+ * Interface for access tracking
+ */
+interface AccessTracker {
+  [key: string]: {
+    lastAccessed: number;
+    accessCount: number;
+    size: number;
+  };
+}
+
+/**
+ * Track access for LRU cleanup
+ */
+export const trackAccess = (key: string): void => {
+  if (typeof localStorage === 'undefined') return;
+
+  try {
+    const tracker = JSON.parse(
+      localStorage.getItem(EDITOR_PREFERENCES.LRU_TRACKER) || '{}'
+    ) as AccessTracker;
+    const itemSize = getItemSize(key);
+
+    tracker[key] = {
+      lastAccessed: Date.now(),
+      accessCount: (tracker[key]?.accessCount || 0) + 1,
+      size: itemSize,
+    };
+
+    localStorage.setItem(EDITOR_PREFERENCES.LRU_TRACKER, JSON.stringify(tracker));
+  } catch (error) {
+    safeConsole.warn('Failed to track access:', error);
+  }
+};
+
+/**
+ * Get item size in bytes
+ */
+export const getItemSize = (key: string): number => {
+  if (typeof localStorage === 'undefined') return 0;
+
+  try {
+    const item = localStorage.getItem(key);
+    return item ? new Blob([item]).size + key.length : 0;
+  } catch (_error) {
+    return 0;
+  }
+};
+
+/**
+ * Handle quota exceeded error
+ */
+export const handleQuotaExceeded = (operation: string, data: unknown): boolean => {
+  safeConsole.warn(`Storage quota exceeded during ${operation}`);
+
+  try {
+    // Try cleanup first
+    const freedBytes = smartCleanup(JSON.stringify(data).length * 2);
+
+    if (freedBytes > 0) {
+      safeConsole.dev(`🧹 Freed ${freedBytes} bytes, retrying ${operation}`);
+      return true; // Indicate retry is possible
+    }
+
+    // Show user message
+    safeConsole.error('Storage full and cleanup failed. Please clear some data manually.');
+    return false;
+  } catch (error) {
+    safeConsole.error('Error handling quota exceeded:', error);
+    return false;
+  }
+};
+
+/**
+ * Smart cleanup based on priorities
+ */
+export const smartCleanup = (targetBytes: number): number => {
+  if (typeof localStorage === 'undefined') return 0;
+
+  const CLEANUP_PRIORITIES = {
+    NEVER: ['markdownEditor_lastOpenedFile', 'markdownEditor_preferences'],
+    LOW: ['markdownEditor_theme', 'markdownEditor_settings'],
+    MEDIUM: ['markdownEditor_filesList', 'markdownEditor_content'],
+    HIGH: ['markdownEditor_temp_', 'markdownEditor_backup_'],
+    IMMEDIATE: ['markdownEditor_cache_', 'markdownEditor_preview_'],
+  };
+
+  let freedBytes = 0;
+
+  // Cleanup berdasarkan prioritas
+  for (const [priority, patterns] of Object.entries(CLEANUP_PRIORITIES)) {
+    if (freedBytes >= targetBytes) break;
+    if (priority === 'NEVER') continue;
+
+    patterns.forEach((pattern) => {
+      Object.keys(localStorage).forEach((key) => {
+        if (key.startsWith(pattern)) {
+          const size = getItemSize(key);
+          localStorage.removeItem(key);
+          freedBytes += size;
+        }
+      });
+    });
+  }
+
+  return freedBytes;
 };

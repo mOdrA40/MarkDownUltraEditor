@@ -1,14 +1,13 @@
 /**
- * @fileoverview Hook for immediate file loading for authenticated users
+ * @fileoverview Hook for immediate file loading from localStorage
  * @author MarkDownUltraRemix Team
  */
 
 import { useAuth } from '@clerk/react-router';
 import { useCallback, useEffect, useState } from 'react';
 import type { FileData } from '@/lib/supabase';
-import { useSupabase } from '@/lib/supabase';
-import { createUserPreferencesService } from '@/services/userPreferencesService';
 import { safeConsole } from '@/utils/console';
+import { getLastOpenedFile } from '@/utils/editorPreferences';
 
 /**
  * Interface for immediate file loading result
@@ -22,18 +21,17 @@ export interface ImmediateFileLoadingResult {
   hasChecked: boolean;
   /** Error message if any */
   error: string | null;
-  /** Whether user is authenticated and ready for database check */
+  /** Whether user is ready for localStorage check */
   isReady: boolean;
 }
 
 /**
- * Hook for immediate file loading for authenticated users
- * This hook performs database check as soon as authentication is confirmed
+ * Hook for immediate file loading from localStorage
+ * This hook performs localStorage check as soon as possible
  * to prevent welcome template flash for returning users
  */
 export const useImmediateFileLoading = (): ImmediateFileLoadingResult => {
-  const { isSignedIn, isLoaded, userId } = useAuth();
-  const supabase = useSupabase();
+  const { isLoaded } = useAuth();
 
   const [fileData, setFileData] = useState<Pick<FileData, 'id' | 'title' | 'content'> | null>(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -41,77 +39,34 @@ export const useImmediateFileLoading = (): ImmediateFileLoadingResult => {
   const [error, setError] = useState<string | null>(null);
 
   /**
-   * Check if user is ready for database check
+   * Check if ready for localStorage check
    */
-  const isReady = Boolean(isLoaded && isSignedIn && userId && supabase);
+  const isReady = Boolean(isLoaded);
 
   /**
-   * Load last opened file immediately from database
+   * Load last opened file immediately from localStorage
    */
   const loadImmediateFile = useCallback(async () => {
-    if (!isReady || hasChecked || !supabase || !userId) return;
+    if (!isReady || hasChecked) return;
 
     setIsLoading(true);
     setError(null);
 
     try {
-      safeConsole.dev('🚀 Starting immediate file loading for authenticated user');
+      safeConsole.dev('🚀 Starting immediate file loading from localStorage');
 
-      const preferencesService = createUserPreferencesService(supabase);
+      // Use localStorage for all users (guest and authenticated)
+      const lastOpened = getLastOpenedFile();
 
-      // Get user preferences with last opened file
-      const preferences = await preferencesService.getUserPreferences(userId);
-
-      if (preferences?.last_opened_file_id) {
-        // Check for conflicts with other devices
-        const mostRecentFile = await preferencesService.getMostRecentFileAcrossDevices(userId);
-
-        let fileIdToLoad = preferences.last_opened_file_id;
-
-        // If there's a more recent file from another device, use that
-        if (mostRecentFile && mostRecentFile.fileId !== preferences.last_opened_file_id) {
-          const mostRecentTime = new Date(mostRecentFile.lastActivity);
-          const preferencesTime = new Date(preferences.last_activity_at);
-
-          if (mostRecentTime > preferencesTime) {
-            fileIdToLoad = mostRecentFile.fileId;
-            safeConsole.dev(
-              '📱 Using more recent file from another device:',
-              mostRecentFile.fileId
-            );
-          }
-        }
-
-        // Get the file data
-        const { data: fileDataResult, error: fileError } = await supabase
-          .from('user_files')
-          .select('*')
-          .eq('id', fileIdToLoad)
-          .eq('user_id', userId)
-          .single();
-
-        if (fileError) {
-          safeConsole.error('❌ Error loading immediate file:', fileError);
-          setError('Failed to load last opened file');
-        } else if (fileDataResult) {
-          const loadedFile = {
-            id: fileDataResult.id,
-            title: fileDataResult.title,
-            content: fileDataResult.content,
-          };
-
-          setFileData(loadedFile);
-
-          // Update current device session with this file
-          await preferencesService.updateDeviceSessionFile(userId, fileDataResult.id);
-
-          safeConsole.dev('✅ Immediate file loaded successfully:', fileDataResult.title);
-        } else {
-          safeConsole.dev('📄 No file data found for ID:', fileIdToLoad);
-          setFileData(null);
-        }
+      if (lastOpened) {
+        setFileData({
+          id: lastOpened.id,
+          title: lastOpened.title,
+          content: lastOpened.content,
+        });
+        safeConsole.dev('✅ Immediate file loaded successfully:', lastOpened.title);
       } else {
-        safeConsole.dev('🆕 No last opened file found - new user');
+        safeConsole.dev('🆕 No last opened file found');
         setFileData(null);
       }
     } catch (err) {
@@ -122,7 +77,7 @@ export const useImmediateFileLoading = (): ImmediateFileLoadingResult => {
       setIsLoading(false);
       setHasChecked(true);
     }
-  }, [isReady, hasChecked, supabase, userId]);
+  }, [isReady, hasChecked]);
 
   /**
    * Trigger immediate loading when user is ready
@@ -153,13 +108,13 @@ export const useImmediateFileLoading = (): ImmediateFileLoadingResult => {
    * Reset state when authentication changes
    */
   useEffect(() => {
-    if (!isLoaded || !isSignedIn) {
+    if (!isLoaded) {
       setFileData(null);
       setIsLoading(false);
       setHasChecked(false);
       setError(null);
     }
-  }, [isLoaded, isSignedIn]);
+  }, [isLoaded]);
 
   return {
     fileData,
