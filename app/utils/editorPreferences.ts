@@ -5,8 +5,8 @@
 
 import type { SupabaseClient } from '@supabase/supabase-js';
 import type { FileData } from '@/lib/supabase';
-import { compressContent, decompressContent } from '@/utils/compression';
 import { safeConsole } from '@/utils/console';
+import { compressContent, decompressContent } from '@/utils/simpleCompression';
 
 // Extended Navigator interface for device memory and connection
 interface ExtendedNavigator {

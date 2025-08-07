@@ -5,7 +5,15 @@
  */
 
 import * as Sentry from '@sentry/react';
-import { generateSecureToken } from './security/core';
+
+/**
+ * Simple token generator to replace security token
+ */
+const generateSimpleToken = (length: number): string => {
+  return Math.random()
+    .toString(36)
+    .substring(2, 2 + length);
+};
 
 /**
  * Sentry configuration interface
@@ -250,7 +258,7 @@ export class SecureSentryIntegration {
    * Generate and set request context
    */
   public setRequestContext(route: string, additionalContext?: Record<string, unknown>): string {
-    const requestId = generateSecureToken(16);
+    const requestId = generateSimpleToken(16);
     const sessionId = this.getOrCreateSessionId();
 
     this.currentRequestContext = {
@@ -278,7 +286,7 @@ export class SecureSentryIntegration {
 
     let sessionId = sessionStorage.getItem('sentry_session_id');
     if (!sessionId) {
-      sessionId = generateSecureToken(12);
+      sessionId = generateSimpleToken(12);
       sessionStorage.setItem('sentry_session_id', sessionId);
     }
     return sessionId;

@@ -17,8 +17,8 @@ import {
   fileDataToDbInsert,
   handleSupabaseError,
 } from '@/lib/supabase';
-import { compressContent, decompressContent, formatFileSize } from '@/utils/compression';
 import { safeConsole } from '@/utils/console';
+import { compressContent, decompressContent, formatFileSize } from '@/utils/simpleCompression';
 
 // Storage keys for localStorage
 const STORAGE_KEYS = {

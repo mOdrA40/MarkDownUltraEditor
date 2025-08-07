@@ -7,7 +7,6 @@ import { Toaster } from '@/components/ui/toaster';
 import { TooltipProvider } from '@/components/ui/tooltip';
 
 import { queryClient } from '@/lib/queryClient';
-import { securityMiddleware } from '@/utils/security/routeMiddleware';
 import { ErrorCategory } from '@/utils/sentry';
 
 export const meta: MetaFunction = () => {
@@ -42,10 +41,9 @@ export const meta: MetaFunction = () => {
   ];
 };
 
-export async function loader(args: LoaderFunctionArgs) {
-  // Apply minimal security middleware for public route (guest access allowed)
-  const security = await securityMiddleware.public(args);
-  return security;
+export async function loader(_args: LoaderFunctionArgs) {
+  // Simple loader without security middleware
+  return {};
 }
 
 export default function Index() {

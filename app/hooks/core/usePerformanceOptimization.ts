@@ -18,14 +18,9 @@ import { debounce as commonDebounce, throttle as commonThrottle } from '@/utils/
 export const usePerformanceOptimization = () => {
   const frameRef = useRef<number>();
 
-  // Use centralized debounce/throttle functions
-  const debounce = useCallback((fn: (...args: unknown[]) => void, delay = 300) => {
-    return commonDebounce(fn, delay);
-  }, []);
-
-  const throttle = useCallback((fn: (...args: unknown[]) => void, delay = 100) => {
-    return commonThrottle(fn, delay);
-  }, []);
+  // Use centralized debounce/throttle functions directly
+  const debounce = commonDebounce;
+  const throttle = commonThrottle;
 
   const requestAnimationFrame = useCallback((fn: () => void) => {
     if (typeof window === 'undefined') return;

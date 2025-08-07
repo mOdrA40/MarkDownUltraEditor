@@ -9,6 +9,7 @@ hasilconsole.txt
 hasil.txt
 .cursor
 .windsurf
+.kiro
 # Mengabaikan semua file .md
 *.md
 
@@ -16,11 +17,9 @@ hasil.txt
 !README.md
 bash.exe.stackdump
 
-# Ignore debug components folder
+# Ignore debug components folder (if created in future)
 app/components/debug/
 app/routes/debug.*.tsx
-app/utils/storageAnalyzer.ts
-scripts/build-production.js
 .kiro/settings/mcp.json
 test-image.txt
 .vscode/mcp.json

@@ -4,7 +4,7 @@
  * @version 1.0.0
  */
 
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef } from "react";
 
 /**
  * Memory leak detection and prevention utilities
@@ -13,7 +13,9 @@ export class MemoryManager {
   private static instance: MemoryManager;
   private cleanupFunctions: Set<() => void> = new Set();
   private timers: Set<NodeJS.Timeout> = new Set();
-  private observers: Set<IntersectionObserver | MutationObserver | ResizeObserver> = new Set();
+  private observers: Set<
+    IntersectionObserver | MutationObserver | ResizeObserver
+  > = new Set();
   private eventListeners: Set<{
     target: EventTarget;
     type: string;
@@ -44,14 +46,20 @@ export class MemoryManager {
   /**
    * Register observer for automatic cleanup
    */
-  registerObserver(observer: IntersectionObserver | MutationObserver | ResizeObserver): void {
+  registerObserver(
+    observer: IntersectionObserver | MutationObserver | ResizeObserver
+  ): void {
     this.observers.add(observer);
   }
 
   /**
    * Register event listener for automatic cleanup
    */
-  registerEventListener(target: EventTarget, type: string, listener: EventListener): void {
+  registerEventListener(
+    target: EventTarget,
+    type: string,
+    listener: EventListener
+  ): void {
     this.eventListeners.add({ target, type, listener });
   }
 
@@ -78,8 +86,8 @@ export class MemoryManager {
       try {
         cleanup();
       } catch (error) {
-        import('@/utils/console').then(({ safeConsole }) => {
-          safeConsole.warn('Cleanup function failed:', error);
+        import("@/utils/console").then(({ safeConsole }) => {
+          safeConsole.warn("Cleanup function failed:", error);
         });
       }
     });
@@ -90,7 +98,7 @@ export class MemoryManager {
    * Get memory usage information
    */
   getMemoryInfo(): { used: number; total: number; percentage: number } | null {
-    if (typeof window !== 'undefined' && 'memory' in performance) {
+    if (typeof window !== "undefined" && "memory" in performance) {
       // biome-ignore lint/suspicious/noExplicitAny: Performance memory API is not fully typed
       const memory = (performance as any).memory;
       return {
@@ -100,19 +108,6 @@ export class MemoryManager {
       };
     }
     return null;
-  }
-
-  /**
-   * Force garbage collection (if available)
-   */
-  forceGC(): void {
-    if (typeof window !== 'undefined') {
-      // biome-ignore lint/suspicious/noExplicitAny: GC API is not standardized
-      const windowWithGC = window as any;
-      if (windowWithGC.gc) {
-        windowWithGC.gc();
-      }
-    }
   }
 }
 
@@ -140,13 +135,19 @@ export function useMemoryManager() {
     return interval;
   };
 
-  const addEventListener = (target: EventTarget, type: string, listener: EventListener) => {
+  const addEventListener = (
+    target: EventTarget,
+    type: string,
+    listener: EventListener
+  ) => {
     target.addEventListener(type, listener);
     manager.registerEventListener(target, type, listener);
     return () => target.removeEventListener(type, listener);
   };
 
-  const addObserver = (observer: IntersectionObserver | MutationObserver | ResizeObserver) => {
+  const addObserver = (
+    observer: IntersectionObserver | MutationObserver | ResizeObserver
+  ) => {
     manager.registerObserver(observer);
     return observer;
   };
@@ -166,7 +167,7 @@ export function useMemoryManager() {
     addEventListener,
     addObserver,
     getMemoryInfo: manager.getMemoryInfo.bind(manager),
-    forceGC: manager.forceGC.bind(manager),
+    // Removed forceGC - not reliable in browsers
   };
 }
 
@@ -181,7 +182,7 @@ export function useMemoryMonitor(threshold = 80) {
   } | null>(null);
 
   useEffect(() => {
-    if (process.env.NODE_ENV !== 'production') return;
+    if (process.env.NODE_ENV !== "production") return;
 
     const checkMemory = () => {
       const manager = MemoryManager.getInstance();
@@ -189,17 +190,18 @@ export function useMemoryMonitor(threshold = 80) {
 
       if (memoryInfo && memoryInfo.percentage > threshold) {
         // Report high memory usage to Sentry
-        import('@/utils/sentry').then(({ secureSentry, ErrorCategory, ErrorSeverity }) => {
-          secureSentry.logError(
-            `High memory usage detected: ${memoryInfo.percentage.toFixed(2)}%`,
-            ErrorCategory.PERFORMANCE,
-            ErrorSeverity.MEDIUM,
-            memoryInfo
-          );
-        });
+        import("@/utils/sentry").then(
+          ({ secureSentry, ErrorCategory, ErrorSeverity }) => {
+            secureSentry.logError(
+              `High memory usage detected: ${memoryInfo.percentage.toFixed(2)}%`,
+              ErrorCategory.PERFORMANCE,
+              ErrorSeverity.MEDIUM,
+              memoryInfo
+            );
+          }
+        );
 
-        // Force garbage collection if available
-        manager.forceGC();
+        // Removed forceGC call - not reliable in browsers
       }
 
       memoryRef.current = memoryInfo;
@@ -215,78 +217,33 @@ export function useMemoryMonitor(threshold = 80) {
 }
 
 /**
- * Debounced function creator with automatic cleanup
- */
-// biome-ignore lint/suspicious/noExplicitAny: Generic function type requires any for flexibility
-export function createDebouncedFunction<T extends (...args: any[]) => any>(
-  func: T,
-  delay: number
-): T & { cancel: () => void } {
-  let timeoutId: NodeJS.Timeout;
-  const manager = MemoryManager.getInstance();
-
-  const debouncedFunc = ((...args: Parameters<T>) => {
-    clearTimeout(timeoutId);
-    timeoutId = setTimeout(() => func(...args), delay);
-    manager.registerTimer(timeoutId);
-  }) as T & { cancel: () => void };
-
-  debouncedFunc.cancel = () => {
-    clearTimeout(timeoutId);
-  };
-
-  return debouncedFunc;
-}
-
-/**
- * Throttled function creator with automatic cleanup
- */
-// biome-ignore lint/suspicious/noExplicitAny: Generic function type requires any for flexibility
-export function createThrottledFunction<T extends (...args: any[]) => any>(
-  func: T,
-  delay: number
-): T {
-  let lastCall = 0;
-
-  return ((...args: Parameters<T>) => {
-    const now = Date.now();
-    if (now - lastCall >= delay) {
-      lastCall = now;
-      return func(...args);
-    }
-  }) as T;
-}
-
-/**
  * Initialize memory optimization for the app
  */
 export function initializeMemoryOptimization() {
-  if (typeof window === 'undefined') return;
+  if (typeof window === "undefined") return;
 
   const manager = MemoryManager.getInstance();
 
   // Clean up on page unload
-  window.addEventListener('beforeunload', () => {
+  window.addEventListener("beforeunload", () => {
     manager.cleanup();
   });
 
   // Clean up on visibility change (tab switch)
-  document.addEventListener('visibilitychange', () => {
+  document.addEventListener("visibilitychange", () => {
     if (document.hidden) {
-      // Force garbage collection when tab is hidden
-      manager.forceGC();
+      // Browser will handle GC automatically
     }
   });
 
   // Monitor memory usage in production
-  if (process.env.NODE_ENV === 'production') {
+  if (process.env.NODE_ENV === "production") {
     setInterval(() => {
       const memoryInfo = manager.getMemoryInfo();
       if (memoryInfo && memoryInfo.percentage > 90) {
-        import('@/utils/console').then(({ safeConsole }) => {
-          safeConsole.log('Critical memory usage:', memoryInfo);
+        import("@/utils/console").then(({ safeConsole }) => {
+          safeConsole.log("Critical memory usage:", memoryInfo);
         });
-        manager.forceGC();
       }
     }, 60000); // Check every minute
   }

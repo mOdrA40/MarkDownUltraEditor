@@ -26,10 +26,6 @@ if (typeof window !== 'undefined') {
 }
 
 if (typeof window !== 'undefined') {
-  import('@/utils/security/integration').then(({ initializeAppSecurity }) => {
-    initializeAppSecurity();
-  });
-
   import('@/utils/errorHandling').then(({ initializeErrorHandler }) => {
     initializeErrorHandler();
   });
