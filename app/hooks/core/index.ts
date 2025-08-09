@@ -3,7 +3,7 @@
  * @author Axel Modra
  */
 
-export { usePerformanceOptimization } from "./usePerformanceOptimization";
+export { usePerformanceOptimization } from './usePerformanceOptimization';
 // Re-export types
 export type {
   ToasterToast,
@@ -11,7 +11,7 @@ export type {
   ToastReturn,
   UseToastOptions,
   UseToastReturn,
-} from "./useToast";
+} from './useToast';
 // Core functionality hooks
-export { toast, useToast } from "./useToast";
-export { useUndoRedo } from "./useUndoRedo";
+export { toast, useToast } from './useToast';
+export { useUndoRedo } from './useUndoRedo';

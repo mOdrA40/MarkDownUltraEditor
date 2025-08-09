@@ -1,5 +1,5 @@
 /**
- * @fileoverview Enhanced Base Form Component with enterprise security
+ * @fileoverview Base Form Component with validation
  * @author Axel Modra
  */
 

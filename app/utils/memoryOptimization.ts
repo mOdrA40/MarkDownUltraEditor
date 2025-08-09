@@ -176,11 +176,9 @@ export function useMemoryMonitor(threshold = 80) {
 
       if (memoryInfo && memoryInfo.percentage > threshold) {
         // Report high memory usage to Sentry
-        import('@/utils/sentry').then(({ secureSentry, ErrorCategory, ErrorSeverity }) => {
-          secureSentry.logError(
-            `High memory usage detected: ${memoryInfo.percentage.toFixed(2)}%`,
-            ErrorCategory.PERFORMANCE,
-            ErrorSeverity.MEDIUM,
+        import('@/utils/sentry').then(({ SentryUtils }) => {
+          SentryUtils.logError(
+            new Error(`High memory usage detected: ${memoryInfo.percentage.toFixed(2)}%`),
             memoryInfo
           );
         });

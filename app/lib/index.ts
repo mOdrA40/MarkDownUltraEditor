@@ -15,11 +15,11 @@ export {
   meetsContrastRequirement,
   ScreenReader,
   trapFocus,
-} from "../utils/accessibility";
+} from '../utils/accessibility';
 export {
   codeTemplates,
   getTemplatesByCategory as getCodeTemplatesByCategory,
-} from "../utils/codeTemplates";
+} from '../utils/codeTemplates';
 // Import performance utilities from common (avoid duplication)
 export {
   debounce as headingDebounce,
@@ -27,24 +27,24 @@ export {
   debounce as writingSettingsDebounce,
   throttle as headingThrottle,
   throttle as responsiveThrottle,
-} from "../utils/common";
+} from '../utils/common';
 export {
   documentTemplates,
   getTemplatesByCategory as getDocumentTemplatesByCategory,
-} from "../utils/documentTemplates";
+} from '../utils/documentTemplates';
 export {
   generateHeadingId,
   isElementInViewport as isHeadingElementInViewport,
   parseMarkdownHeadings,
   scrollToHeading,
-} from "../utils/headingUtils";
+} from '../utils/headingUtils';
 export {
   calculateTargetIndex,
   getFocusableElements as getNavigationFocusableElements,
   isFocusable as isNavigationFocusable,
-} from "../utils/keyboardNavigationUtils";
-export { handleOutlineItemClick } from "../utils/outlineUtils";
-export { BREAKPOINTS, getDeviceType, MEDIA_QUERIES } from "../utils/responsive";
+} from '../utils/keyboardNavigationUtils';
+export { handleOutlineItemClick } from '../utils/outlineUtils';
+export { BREAKPOINTS, getDeviceType, MEDIA_QUERIES } from '../utils/responsive';
 export {
   formatCategoryName,
   formatDifficultyName,
@@ -59,8 +59,8 @@ export {
   getTruncatedTags,
   isValidTemplate,
   sortTemplates,
-} from "../utils/templateUtils";
-export * from "../utils/vimUtils";
+} from '../utils/templateUtils';
+export * from '../utils/vimUtils';
 export {
   areSettingsEqual,
   exportWritingSettings,
@@ -72,6 +72,6 @@ export {
   validateFontSize,
   validateLineHeight,
   validateWritingSettings,
-} from "../utils/writingSettingsUtils";
+} from '../utils/writingSettingsUtils';
 // Re-export utils with consistent naming
-export * from "./utils";
+export * from './utils';

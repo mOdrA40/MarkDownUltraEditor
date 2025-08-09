@@ -3,56 +3,66 @@
  * @author Axel Modra
  */
 
-import { isDarkMode } from '@/utils/common';
-import type { HTMLGeneratorOptions, ThemeConfig } from '../types/export.types';
-import { THEMES } from './constants';
+import { isDarkMode } from "@/utils/common";
+import type { HTMLGeneratorOptions, ThemeConfig } from "../types/export.types";
+import { THEMES } from "./constants";
 
 /**
  * Get appropriate text color based on current theme context
  */
 const getTextColorForTheme = (isDarkTheme: boolean): string => {
-  return isDarkTheme ? '#ffffff' : '#1f2937';
+  return isDarkTheme ? "#ffffff" : "#1f2937";
 };
 
 /**
  * Get description text color with better contrast
  */
 const getDescriptionTextColor = (isDarkTheme: boolean): string => {
-  return isDarkTheme ? '#d1d5db' : '#6b7280';
+  return isDarkTheme ? "#d1d5db" : "#6b7280";
 };
 
 /**
  * Get content text color for readability
  */
 const getContentTextColor = (isDarkTheme: boolean): string => {
-  return isDarkTheme ? '#f9fafb' : '#111827';
+  return isDarkTheme ? "#f9fafb" : "#111827";
 };
 
 /**
  * Get table header text color for better visibility
  */
-const getTableHeaderTextColor = (isDarkTheme: boolean, accentColor: string): string => {
+const getTableHeaderTextColor = (
+  isDarkTheme: boolean,
+  accentColor: string
+): string => {
   // Untuk theme dark, gunakan warna yang kontras dengan background dark
   if (isDarkTheme) {
     // Jika accent color adalah warna terang, gunakan warna gelap untuk teks
-    if (accentColor === '#60a5fa' || accentColor === '#3b82f6' || accentColor.includes('blue')) {
-      return '#1e3a8a'; // Navy blue untuk kontras yang baik
+    if (
+      accentColor === "#60a5fa" ||
+      accentColor === "#3b82f6" ||
+      accentColor.includes("blue")
+    ) {
+      return "#1e3a8a"; // Navy blue untuk kontras yang baik
     }
     // Untuk accent color gelap, gunakan putih
-    return '#ffffff';
+    return "#ffffff";
   }
   // Untuk theme light, selalu gunakan putih di atas accent color
-  return '#ffffff';
+  return "#ffffff";
 };
 
 /**
  * Get table header background color for better visibility
  */
-const getTableHeaderBackgroundColor = (isDarkTheme: boolean, accentColor: string): string => {
+const getTableHeaderBackgroundColor = (
+  isDarkTheme: boolean,
+  accentColor: string
+): string => {
   if (isDarkTheme) {
     // Untuk theme dark, pastikan background header terlihat dengan baik
-    if (accentColor === '#60a5fa') {
-      return '#3b82f6'; // Darker blue untuk kontras
+    if (accentColor === "#60a5fa") {
+      return "#3b82f6"; // Darker blue untuk kontras
     }
     return accentColor; // Gunakan accent color sebagai background
   }
@@ -66,7 +76,7 @@ const getTableHeaderBackgroundColor = (isDarkTheme: boolean, accentColor: string
  */
 const isDarkThemeContext = (options?: HTMLGeneratorOptions): boolean => {
   // Check if theme is explicitly dark
-  if (options?.theme === 'dark') {
+  if (options?.theme === "dark") {
     return true;
   }
 
@@ -76,18 +86,18 @@ const isDarkThemeContext = (options?: HTMLGeneratorOptions): boolean => {
     // Consider dark if background is dark
     const bgColor = theme.backgroundColor.toLowerCase();
     if (
-      bgColor.includes('#1') ||
-      bgColor.includes('#2') ||
-      bgColor.includes('#0') ||
-      bgColor.includes('black') ||
-      bgColor.includes('dark')
+      bgColor.includes("#1") ||
+      bgColor.includes("#2") ||
+      bgColor.includes("#0") ||
+      bgColor.includes("black") ||
+      bgColor.includes("dark")
     ) {
       return true;
     }
   }
 
   // Use comprehensive dark theme detection
-  if (typeof window !== 'undefined') {
+  if (typeof window !== "undefined") {
     const isDark = isDarkMode();
 
     // Additional fallback: check if body background is dark
@@ -99,15 +109,15 @@ const isDarkThemeContext = (options?: HTMLGeneratorOptions): boolean => {
 
       // If background is dark or text is light, assume dark theme
       const isDarkBg =
-        backgroundColor.includes('rgb(15, 23, 42)') || // slate-900
-        backgroundColor.includes('rgb(30, 41, 59)') || // slate-800
-        backgroundColor.includes('rgb(31, 41, 55)') || // gray-800
-        backgroundColor.includes('rgb(17, 24, 39)'); // gray-900
+        backgroundColor.includes("rgb(15, 23, 42)") || // slate-900
+        backgroundColor.includes("rgb(30, 41, 59)") || // slate-800
+        backgroundColor.includes("rgb(31, 41, 55)") || // gray-800
+        backgroundColor.includes("rgb(17, 24, 39)"); // gray-900
 
       const isLightText =
-        color.includes('rgb(241, 245, 249)') || // slate-100
-        color.includes('rgb(255, 255, 255)') || // white
-        color.includes('rgb(229, 231, 235)'); // gray-200
+        color.includes("rgb(241, 245, 249)") || // slate-100
+        color.includes("rgb(255, 255, 255)") || // white
+        color.includes("rgb(229, 231, 235)"); // gray-200
 
       if (isDarkBg || isLightText) {
         return true;
@@ -124,7 +134,7 @@ const isDarkThemeContext = (options?: HTMLGeneratorOptions): boolean => {
  * Escape HTML characters untuk security
  */
 const escapeHtml = (text: string): string => {
-  const div = document.createElement('div');
+  const div = document.createElement("div");
   div.textContent = text;
   return div.innerHTML;
 };
@@ -135,12 +145,12 @@ const escapeHtml = (text: string): string => {
 const getFontFamilyWithFallback = (fontFamily: string): string => {
   const fontMap: Record<string, string> = {
     Arial: '"Arial", "Helvetica Neue", Helvetica, sans-serif',
-    'Times New Roman': '"Times New Roman", Times, serif',
+    "Times New Roman": '"Times New Roman", Times, serif',
     Helvetica: '"Helvetica Neue", Helvetica, Arial, sans-serif',
     Georgia: 'Georgia, "Times New Roman", Times, serif',
-    Verdana: 'Verdana, Geneva, sans-serif',
+    Verdana: "Verdana, Geneva, sans-serif",
     Roboto: '"Roboto", "Segoe UI", Arial, sans-serif',
-    'Open Sans': '"Open Sans", "Segoe UI", Arial, sans-serif',
+    "Open Sans": '"Open Sans", "Segoe UI", Arial, sans-serif',
   };
 
   return fontMap[fontFamily] || `"${fontFamily}", Arial, sans-serif`;
@@ -149,49 +159,52 @@ const getFontFamilyWithFallback = (fontFamily: string): string => {
 /**
  * Generate page size specific styles
  */
-const generatePageSizeStyles = (pageSize: string, orientation: string): string => {
+const generatePageSizeStyles = (
+  pageSize: string,
+  orientation: string
+): string => {
   const pageSizes = {
-    a4: { width: '210mm', height: '297mm' },
-    letter: { width: '8.5in', height: '11in' },
-    legal: { width: '8.5in', height: '14in' },
+    a4: { width: "210mm", height: "297mm" },
+    letter: { width: "8.5in", height: "11in" },
+    legal: { width: "8.5in", height: "14in" },
   };
 
   const size = pageSizes[pageSize as keyof typeof pageSizes] || pageSizes.a4;
-  const isLandscape = orientation === 'landscape';
+  const isLandscape = orientation === "landscape";
 
   const width = isLandscape ? size.height : size.width;
   const height = isLandscape ? size.width : size.height;
 
   // Convert to approximate pixel values for preview
   const widthPx =
-    pageSize === 'a4'
+    pageSize === "a4"
       ? isLandscape
-        ? '842px'
-        : '595px'
-      : pageSize === 'letter'
+        ? "842px"
+        : "595px"
+      : pageSize === "letter"
         ? isLandscape
-          ? '792px'
-          : '612px'
-        : pageSize === 'legal'
+          ? "792px"
+          : "612px"
+        : pageSize === "legal"
           ? isLandscape
-            ? '1008px'
-            : '612px'
-          : '595px';
+            ? "1008px"
+            : "612px"
+          : "595px";
 
   const heightPx =
-    pageSize === 'a4'
+    pageSize === "a4"
       ? isLandscape
-        ? '595px'
-        : '842px'
-      : pageSize === 'letter'
+        ? "595px"
+        : "842px"
+      : pageSize === "letter"
         ? isLandscape
-          ? '612px'
-          : '792px'
-        : pageSize === 'legal'
+          ? "612px"
+          : "792px"
+        : pageSize === "legal"
           ? isLandscape
-            ? '612px'
-            : '1008px'
-          : '842px';
+            ? "612px"
+            : "1008px"
+          : "842px";
 
   return `
         .content {
@@ -230,7 +243,9 @@ const generatePageSizeStyles = (pageSize: string, orientation: string): string =
 /**
  * Generate RTF-style preview HTML
  */
-export const generateRTFPreviewHTML = (options: HTMLGeneratorOptions): string => {
+export const generateRTFPreviewHTML = (
+  options: HTMLGeneratorOptions
+): string => {
   const theme = THEMES[options.theme] || THEMES.default;
   const isDark = isDarkThemeContext(options);
   const textColor = getTextColorForTheme(isDark);
@@ -243,7 +258,7 @@ export const generateRTFPreviewHTML = (options: HTMLGeneratorOptions): string =>
     <title>${escapeHtml(options.title)}</title>
     <style>
         ${generateRTFStyles(theme, options)}
-        ${options.customCSS || ''}
+        ${options.customCSS || ""}
     </style>
 </head>
 <body>
@@ -260,7 +275,9 @@ export const generateRTFPreviewHTML = (options: HTMLGeneratorOptions): string =>
 /**
  * Generate EPUB/HTML-style preview HTML
  */
-export const generateEpubPreviewHTML = (options: HTMLGeneratorOptions): string => {
+export const generateEpubPreviewHTML = (
+  options: HTMLGeneratorOptions
+): string => {
   const theme = THEMES[options.theme] || THEMES.default;
   const isDark = isDarkThemeContext(options);
   const textColor = getTextColorForTheme(isDark);
@@ -273,7 +290,7 @@ export const generateEpubPreviewHTML = (options: HTMLGeneratorOptions): string =
     <title>${escapeHtml(options.title)}</title>
     <style>
         ${generateEpubStyles(theme, options)}
-        ${options.customCSS || ''}
+        ${options.customCSS || ""}
     </style>
 </head>
 <body>
@@ -290,7 +307,9 @@ export const generateEpubPreviewHTML = (options: HTMLGeneratorOptions): string =
 /**
  * Generate Slides/Presentation-style preview HTML
  */
-export const generateSlidesPreviewHTML = (options: HTMLGeneratorOptions): string => {
+export const generateSlidesPreviewHTML = (
+  options: HTMLGeneratorOptions
+): string => {
   const theme = THEMES[options.theme] || THEMES.default;
   const isDark = isDarkThemeContext(options);
   const textColor = getTextColorForTheme(isDark);
@@ -303,7 +322,7 @@ export const generateSlidesPreviewHTML = (options: HTMLGeneratorOptions): string
     <title>${escapeHtml(options.title)}</title>
     <style>
         ${generateSlidesStyles(theme, options)}
-        ${options.customCSS || ''}
+        ${options.customCSS || ""}
     </style>
 </head>
 <body>
@@ -320,12 +339,21 @@ export const generateSlidesPreviewHTML = (options: HTMLGeneratorOptions): string
 /**
  * Generate RTF-specific styles
  */
-const generateRTFStyles = (theme: ThemeConfig, options: HTMLGeneratorOptions): string => {
+const generateRTFStyles = (
+  theme: ThemeConfig,
+  options: HTMLGeneratorOptions
+): string => {
   // Detect dark theme context
   const isDark = isDarkThemeContext(options);
   const contentTextColor = getContentTextColor(isDark);
-  const tableHeaderTextColor = getTableHeaderTextColor(isDark, theme.accentColor);
-  const tableHeaderBgColor = getTableHeaderBackgroundColor(isDark, theme.accentColor);
+  const tableHeaderTextColor = getTableHeaderTextColor(
+    isDark,
+    theme.accentColor
+  );
+  const tableHeaderBgColor = getTableHeaderBackgroundColor(
+    isDark,
+    theme.accentColor
+  );
 
   return `
         * {
@@ -339,7 +367,7 @@ const generateRTFStyles = (theme: ThemeConfig, options: HTMLGeneratorOptions): s
             font-size: ${options.fontSize}px !important;
             line-height: 1.8;
             color: ${contentTextColor};
-            background-color: ${isDark ? '#1f2937' : theme.backgroundColor};
+            background-color: ${isDark ? "#1f2937" : theme.backgroundColor};
             max-width: 800px;
             margin: 0 auto;
             padding: 40px 30px;
@@ -357,7 +385,7 @@ const generateRTFStyles = (theme: ThemeConfig, options: HTMLGeneratorOptions): s
 
         /* Override specific elements that should keep their own colors */
         .content a {
-            color: ${isDark ? '#60a5fa' : '#3b82f6'} !important;
+            color: ${isDark ? "#60a5fa" : "#3b82f6"} !important;
         }
 
         h1, h2, h3, h4, h5, h6 {
@@ -405,11 +433,11 @@ const generateRTFStyles = (theme: ThemeConfig, options: HTMLGeneratorOptions): s
 
         /* RTF-specific formatting */
         .content {
-            background-color: ${isDark ? '#1f2937' : '#ffffff'};
-            border: 1px solid ${isDark ? '#4b5563' : '#e0e0e0'};
+            background-color: ${isDark ? "#1f2937" : "#ffffff"};
+            border: 1px solid ${isDark ? "#4b5563" : "#e0e0e0"};
             border-radius: 8px;
             padding: 40px;
-            box-shadow: 0 4px 12px ${isDark ? 'rgba(0,0,0,0.3)' : 'rgba(0,0,0,0.1)'};
+            box-shadow: 0 4px 12px ${isDark ? "rgba(0,0,0,0.3)" : "rgba(0,0,0,0.1)"};
         }
 
         ul, ol {
@@ -428,13 +456,13 @@ const generateRTFStyles = (theme: ThemeConfig, options: HTMLGeneratorOptions): s
             border-left: 4px solid ${theme.accentColor};
             margin: 2em 0;
             padding: 1.5em 2em;
-            background-color: ${isDark ? '#374151' : '#f9f9f9'};
+            background-color: ${isDark ? "#374151" : "#f9f9f9"};
             font-style: italic;
             color: ${contentTextColor};
         }
 
         code {
-            background-color: ${isDark ? '#374151' : '#f1f1f1'};
+            background-color: ${isDark ? "#374151" : "#f1f1f1"};
             color: ${contentTextColor};
             padding: 0.3em 0.5em;
             border-radius: 3px;
@@ -443,26 +471,26 @@ const generateRTFStyles = (theme: ThemeConfig, options: HTMLGeneratorOptions): s
         }
 
         pre {
-            background-color: ${isDark ? '#374151' : '#f8f8f8'};
+            background-color: ${isDark ? "#374151" : "#f8f8f8"};
             color: ${contentTextColor};
             padding: 1.5em;
             border-radius: 5px;
             overflow-x: auto;
             margin: 2em 0;
-            border: 1px solid ${isDark ? '#4b5563' : '#e0e0e0'};
+            border: 1px solid ${isDark ? "#4b5563" : "#e0e0e0"};
         }
 
         table {
             width: 100%;
             border-collapse: collapse;
             margin: 2em 0;
-            box-shadow: 0 2px 8px ${isDark ? 'rgba(0,0,0,0.3)' : 'rgba(0,0,0,0.1)'};
+            box-shadow: 0 2px 8px ${isDark ? "rgba(0,0,0,0.3)" : "rgba(0,0,0,0.1)"};
             border-radius: 8px;
             overflow: hidden;
         }
 
         th, td {
-            border: 1px solid ${isDark ? '#4b5563' : '#ccc'};
+            border: 1px solid ${isDark ? "#4b5563" : "#ccc"};
             padding: 0.8em;
             text-align: left;
             color: ${contentTextColor};
@@ -475,7 +503,7 @@ const generateRTFStyles = (theme: ThemeConfig, options: HTMLGeneratorOptions): s
         }
 
         tr:nth-child(even) {
-            background-color: ${isDark ? '#374151' : '#f9f9f9'};
+            background-color: ${isDark ? "#374151" : "#f9f9f9"};
         }
 
         tr:nth-child(even) td {
@@ -499,12 +527,21 @@ const generateRTFStyles = (theme: ThemeConfig, options: HTMLGeneratorOptions): s
 /**
  * Generate EPUB/HTML-specific styles
  */
-const generateEpubStyles = (theme: ThemeConfig, options: HTMLGeneratorOptions): string => {
+const generateEpubStyles = (
+  theme: ThemeConfig,
+  options: HTMLGeneratorOptions
+): string => {
   // Detect dark theme context
   const isDark = isDarkThemeContext(options);
   const contentTextColor = getContentTextColor(isDark);
-  const tableHeaderTextColor = getTableHeaderTextColor(isDark, theme.accentColor);
-  const tableHeaderBgColor = getTableHeaderBackgroundColor(isDark, theme.accentColor);
+  const tableHeaderTextColor = getTableHeaderTextColor(
+    isDark,
+    theme.accentColor
+  );
+  const tableHeaderBgColor = getTableHeaderBackgroundColor(
+    isDark,
+    theme.accentColor
+  );
 
   return `
         * {
@@ -518,7 +555,7 @@ const generateEpubStyles = (theme: ThemeConfig, options: HTMLGeneratorOptions): 
             font-size: ${options.fontSize}px !important;
             line-height: 1.7;
             color: ${contentTextColor};
-            background-color: ${isDark ? '#1f2937' : theme.backgroundColor};
+            background-color: ${isDark ? "#1f2937" : theme.backgroundColor};
             max-width: 800px;
             margin: 0 auto;
             padding: 40px 30px;
@@ -536,7 +573,7 @@ const generateEpubStyles = (theme: ThemeConfig, options: HTMLGeneratorOptions): 
 
         /* Override specific elements that should keep their own colors */
         .content a {
-            color: ${isDark ? '#60a5fa' : '#3b82f6'} !important;
+            color: ${isDark ? "#60a5fa" : "#3b82f6"} !important;
         }
 
         h1, h2, h3, h4, h5, h6 {
@@ -595,14 +632,14 @@ const generateEpubStyles = (theme: ThemeConfig, options: HTMLGeneratorOptions): 
             border-left: 4px solid ${theme.accentColor};
             margin: 2em 0;
             padding: 1.5em 2em;
-            background-color: ${isDark ? '#374151' : '#f8f9fa'};
+            background-color: ${isDark ? "#374151" : "#f8f9fa"};
             font-style: italic;
             border-radius: 0 8px 8px 0;
             color: ${contentTextColor};
         }
 
         code {
-            background-color: ${isDark ? '#374151' : '#f8f9fa'};
+            background-color: ${isDark ? "#374151" : "#f8f9fa"};
             color: ${contentTextColor};
             padding: 0.2em 0.4em;
             border-radius: 4px;
@@ -611,13 +648,13 @@ const generateEpubStyles = (theme: ThemeConfig, options: HTMLGeneratorOptions): 
         }
 
         pre {
-            background-color: ${isDark ? '#374151' : '#f8f9fa'};
+            background-color: ${isDark ? "#374151" : "#f8f9fa"};
             color: ${contentTextColor};
             padding: 1.5em;
             border-radius: 8px;
             overflow-x: auto;
             margin: 2em 0;
-            border: 1px solid ${isDark ? '#4b5563' : '#e9ecef'};
+            border: 1px solid ${isDark ? "#4b5563" : "#e9ecef"};
         }
 
         img {
@@ -625,20 +662,20 @@ const generateEpubStyles = (theme: ThemeConfig, options: HTMLGeneratorOptions): 
             height: auto;
             margin: 2em 0;
             border-radius: 8px;
-            box-shadow: 0 4px 12px ${isDark ? 'rgba(0,0,0,0.3)' : 'rgba(0,0,0,0.1)'};
+            box-shadow: 0 4px 12px ${isDark ? "rgba(0,0,0,0.3)" : "rgba(0,0,0,0.1)"};
         }
 
         table {
             width: 100%;
             border-collapse: collapse;
             margin: 2em 0;
-            box-shadow: 0 2px 8px ${isDark ? 'rgba(0,0,0,0.3)' : 'rgba(0,0,0,0.1)'};
+            box-shadow: 0 2px 8px ${isDark ? "rgba(0,0,0,0.3)" : "rgba(0,0,0,0.1)"};
             border-radius: 8px;
             overflow: hidden;
         }
 
         th, td {
-            border: 1px solid ${isDark ? '#4b5563' : '#e1e5e9'};
+            border: 1px solid ${isDark ? "#4b5563" : "#e1e5e9"};
             padding: 1em;
             text-align: left;
             color: ${contentTextColor};
@@ -651,7 +688,7 @@ const generateEpubStyles = (theme: ThemeConfig, options: HTMLGeneratorOptions): 
         }
 
         tr:nth-child(even) {
-            background-color: ${isDark ? '#374151' : '#f8f9fa'};
+            background-color: ${isDark ? "#374151" : "#f8f9fa"};
         }
 
         tr:nth-child(even) td {
@@ -660,11 +697,11 @@ const generateEpubStyles = (theme: ThemeConfig, options: HTMLGeneratorOptions): 
 
         /* HTML/EPUB-specific formatting */
         .content {
-            background-color: ${isDark ? '#1f2937' : '#ffffff'};
+            background-color: ${isDark ? "#1f2937" : "#ffffff"};
             border-radius: 12px;
             padding: 50px;
-            box-shadow: 0 8px 24px ${isDark ? 'rgba(0,0,0,0.3)' : 'rgba(0,0,0,0.12)'};
-            border: 1px solid ${isDark ? '#4b5563' : '#e5e7eb'};
+            box-shadow: 0 8px 24px ${isDark ? "rgba(0,0,0,0.3)" : "rgba(0,0,0,0.12)"};
+            border: 1px solid ${isDark ? "#4b5563" : "#e5e7eb"};
         }
 
         /* Enhanced typography for web reading */
@@ -691,12 +728,21 @@ const generateEpubStyles = (theme: ThemeConfig, options: HTMLGeneratorOptions): 
 /**
  * Generate Slides/Presentation-specific styles
  */
-const generateSlidesStyles = (theme: ThemeConfig, options: HTMLGeneratorOptions): string => {
+const generateSlidesStyles = (
+  theme: ThemeConfig,
+  options: HTMLGeneratorOptions
+): string => {
   // Detect dark theme context
   const isDark = isDarkThemeContext(options);
   const contentTextColor = getContentTextColor(isDark);
-  const tableHeaderTextColor = getTableHeaderTextColor(isDark, theme.accentColor);
-  const tableHeaderBgColor = getTableHeaderBackgroundColor(isDark, theme.accentColor);
+  const tableHeaderTextColor = getTableHeaderTextColor(
+    isDark,
+    theme.accentColor
+  );
+  const tableHeaderBgColor = getTableHeaderBackgroundColor(
+    isDark,
+    theme.accentColor
+  );
 
   return `
         * {
@@ -710,7 +756,7 @@ const generateSlidesStyles = (theme: ThemeConfig, options: HTMLGeneratorOptions)
             font-size: ${Math.max(options.fontSize + 2, 14)}px !important;
             line-height: 1.5;
             color: ${contentTextColor};
-            background-color: ${isDark ? '#1e293b' : theme.backgroundColor};
+            background-color: ${isDark ? "#1e293b" : theme.backgroundColor};
             padding: 20px;
         }
 
@@ -726,7 +772,7 @@ const generateSlidesStyles = (theme: ThemeConfig, options: HTMLGeneratorOptions)
 
         /* Override specific elements that should keep their own colors */
         .slides-content a {
-            color: ${isDark ? '#60a5fa' : '#3b82f6'} !important;
+            color: ${isDark ? "#60a5fa" : "#3b82f6"} !important;
         }
 
         .slide h1, .slide h2, .slide h3, .slide h4, .slide h5, .slide h6 {
@@ -742,19 +788,19 @@ const generateSlidesStyles = (theme: ThemeConfig, options: HTMLGeneratorOptions)
         .slides-content {
             max-width: 900px;
             margin: 0 auto;
-            background: linear-gradient(135deg, ${isDark ? '#1e293b' : theme.backgroundColor}, ${isDark ? '#0f172a' : `${theme.backgroundColor}dd`});
+            background: linear-gradient(135deg, ${isDark ? "#1e293b" : theme.backgroundColor}, ${isDark ? "#0f172a" : `${theme.backgroundColor}dd`});
             border-radius: 16px;
             padding: 20px;
         }
 
         .slide {
-            background-color: ${isDark ? '#1f2937' : '#ffffff'};
+            background-color: ${isDark ? "#1f2937" : "#ffffff"};
             border: 2px solid ${theme.accentColor};
             border-radius: 12px;
             padding: 40px;
             margin: 30px 0;
             min-height: 400px;
-            box-shadow: 0 8px 24px ${isDark ? 'rgba(0,0,0,0.3)' : 'rgba(0,0,0,0.15)'};
+            box-shadow: 0 8px 24px ${isDark ? "rgba(0,0,0,0.3)" : "rgba(0,0,0,0.15)"};
             position: relative;
             display: flex;
             flex-direction: column;
@@ -814,7 +860,7 @@ const generateSlidesStyles = (theme: ThemeConfig, options: HTMLGeneratorOptions)
         .slide li {
             margin: 1em 0;
             padding: 0.8em 1.5em;
-            background-color: ${isDark ? '#374151' : '#f8f9fa'};
+            background-color: ${isDark ? "#374151" : "#f8f9fa"};
             border-radius: 8px;
             border-left: 4px solid ${theme.accentColor};
             font-size: 1.1em;
@@ -852,7 +898,7 @@ const generateSlidesStyles = (theme: ThemeConfig, options: HTMLGeneratorOptions)
         }
 
         .slide code {
-            background-color: ${isDark ? '#374151' : '#f1f1f1'};
+            background-color: ${isDark ? "#374151" : "#f1f1f1"};
             color: ${contentTextColor};
             padding: 0.3em 0.6em;
             border-radius: 6px;
@@ -862,7 +908,7 @@ const generateSlidesStyles = (theme: ThemeConfig, options: HTMLGeneratorOptions)
         }
 
         .slide pre {
-            background-color: ${isDark ? '#374151' : '#f8f8f8'};
+            background-color: ${isDark ? "#374151" : "#f8f8f8"};
             color: ${contentTextColor};
             padding: 2em;
             border-radius: 12px;
@@ -878,7 +924,7 @@ const generateSlidesStyles = (theme: ThemeConfig, options: HTMLGeneratorOptions)
             margin: 2em auto;
             display: block;
             border-radius: 12px;
-            box-shadow: 0 8px 24px ${isDark ? 'rgba(0,0,0,0.3)' : 'rgba(0,0,0,0.2)'};
+            box-shadow: 0 8px 24px ${isDark ? "rgba(0,0,0,0.3)" : "rgba(0,0,0,0.2)"};
             border: 3px solid ${theme.accentColor};
         }
 
@@ -888,7 +934,7 @@ const generateSlidesStyles = (theme: ThemeConfig, options: HTMLGeneratorOptions)
             margin: 2em 0;
             border-radius: 12px;
             overflow: hidden;
-            box-shadow: 0 8px 24px ${isDark ? 'rgba(0,0,0,0.3)' : 'rgba(0,0,0,0.15)'};
+            box-shadow: 0 8px 24px ${isDark ? "rgba(0,0,0,0.3)" : "rgba(0,0,0,0.15)"};
         }
 
         .slide th, .slide td {
@@ -907,7 +953,7 @@ const generateSlidesStyles = (theme: ThemeConfig, options: HTMLGeneratorOptions)
         }
 
         .slide tr:nth-child(even) {
-            background-color: ${isDark ? '#374151' : '#f8f9fa'};
+            background-color: ${isDark ? "#374151" : "#f8f9fa"};
         }
 
         .slide tr:nth-child(even) td {
@@ -931,8 +977,11 @@ const generateSlidesStyles = (theme: ThemeConfig, options: HTMLGeneratorOptions)
 /**
  * Generate RTF header section
  */
-const generateRTFHeader = (options: HTMLGeneratorOptions, textColor?: string): string => {
-  if (!options.headerFooter) return '';
+const generateRTFHeader = (
+  options: HTMLGeneratorOptions,
+  textColor?: string
+): string => {
+  if (!options.headerFooter) return "";
 
   const isDark = isDarkThemeContext(options);
   const theme = THEMES[options.theme];
@@ -940,18 +989,20 @@ const generateRTFHeader = (options: HTMLGeneratorOptions, textColor?: string): s
   let authorColor = textColor;
   if (!authorColor) {
     const isDarkTheme =
-      options.theme === 'dark' ||
-      (theme && theme.backgroundColor !== '#ffffff' && theme.backgroundColor !== '#fafafa');
+      options.theme === "dark" ||
+      (theme &&
+        theme.backgroundColor !== "#ffffff" &&
+        theme.backgroundColor !== "#fafafa");
 
     if (isDark || isDarkTheme) {
-      authorColor = '#e5e7eb';
+      authorColor = "#e5e7eb";
     } else {
-      authorColor = theme?.primaryColor || '#374151';
+      authorColor = theme?.primaryColor || "#374151";
     }
   }
 
-  const titleColor = theme.accentColor || (isDark ? '#60a5fa' : '#2563eb');
-  const borderColor = theme.accentColor || (isDark ? '#4b5563' : '#d1d5db');
+  const titleColor = theme.accentColor || (isDark ? "#60a5fa" : "#2563eb");
+  const borderColor = theme.accentColor || (isDark ? "#4b5563" : "#d1d5db");
   const descriptionColor = getDescriptionTextColor(isDark);
 
   return `
@@ -986,7 +1037,7 @@ const generateRTFHeader = (options: HTMLGeneratorOptions, textColor?: string): s
             font-style: italic;
         ">${escapeHtml(options.description)}</div>
         `
-            : ''
+            : ""
         }
     </div>`;
 };
@@ -994,8 +1045,11 @@ const generateRTFHeader = (options: HTMLGeneratorOptions, textColor?: string): s
 /**
  * Generate EPUB header section
  */
-const generateEpubHeader = (options: HTMLGeneratorOptions, textColor?: string): string => {
-  if (!options.headerFooter) return '';
+const generateEpubHeader = (
+  options: HTMLGeneratorOptions,
+  textColor?: string
+): string => {
+  if (!options.headerFooter) return "";
 
   const isDark = isDarkThemeContext(options);
   const theme = THEMES[options.theme];
@@ -1003,18 +1057,20 @@ const generateEpubHeader = (options: HTMLGeneratorOptions, textColor?: string): 
   let authorColor = textColor;
   if (!authorColor) {
     const isDarkTheme =
-      options.theme === 'dark' ||
-      (theme && theme.backgroundColor !== '#ffffff' && theme.backgroundColor !== '#fafafa');
+      options.theme === "dark" ||
+      (theme &&
+        theme.backgroundColor !== "#ffffff" &&
+        theme.backgroundColor !== "#fafafa");
 
     if (isDark || isDarkTheme) {
-      authorColor = '#e5e7eb';
+      authorColor = "#e5e7eb";
     } else {
-      authorColor = theme?.primaryColor || '#374151';
+      authorColor = theme?.primaryColor || "#374151";
     }
   }
 
-  const titleColor = theme.accentColor || (isDark ? '#60a5fa' : '#2563eb');
-  const borderColor = theme.accentColor || (isDark ? '#4b5563' : '#d1d5db');
+  const titleColor = theme.accentColor || (isDark ? "#60a5fa" : "#2563eb");
+  const borderColor = theme.accentColor || (isDark ? "#4b5563" : "#d1d5db");
   const descriptionColor = getDescriptionTextColor(isDark);
 
   return `
@@ -1048,7 +1104,7 @@ const generateEpubHeader = (options: HTMLGeneratorOptions, textColor?: string): 
             margin-top: 0.5em;
         ">${escapeHtml(options.description)}</div>
         `
-            : ''
+            : ""
         }
     </div>`;
 };
@@ -1056,8 +1112,11 @@ const generateEpubHeader = (options: HTMLGeneratorOptions, textColor?: string): 
 /**
  * Generate Slides header section
  */
-const generateSlidesHeader = (options: HTMLGeneratorOptions, textColor?: string): string => {
-  if (!options.headerFooter) return '';
+const generateSlidesHeader = (
+  options: HTMLGeneratorOptions,
+  textColor?: string
+): string => {
+  if (!options.headerFooter) return "";
 
   const isDark = isDarkThemeContext(options);
   const theme = THEMES[options.theme];
@@ -1065,17 +1124,19 @@ const generateSlidesHeader = (options: HTMLGeneratorOptions, textColor?: string)
   let authorColor = textColor;
   if (!authorColor) {
     const isDarkTheme =
-      options.theme === 'dark' ||
-      (theme && theme.backgroundColor !== '#ffffff' && theme.backgroundColor !== '#fafafa');
+      options.theme === "dark" ||
+      (theme &&
+        theme.backgroundColor !== "#ffffff" &&
+        theme.backgroundColor !== "#fafafa");
 
     if (isDark || isDarkTheme) {
-      authorColor = '#e5e7eb';
+      authorColor = "#e5e7eb";
     } else {
-      authorColor = theme?.primaryColor || '#374151';
+      authorColor = theme?.primaryColor || "#374151";
     }
   }
 
-  const titleColor = theme.accentColor || (isDark ? '#60a5fa' : '#2563eb');
+  const titleColor = theme.accentColor || (isDark ? "#60a5fa" : "#2563eb");
   const descriptionColor = getDescriptionTextColor(isDark);
 
   return `
@@ -1105,7 +1166,7 @@ const generateSlidesHeader = (options: HTMLGeneratorOptions, textColor?: string)
             margin-top: 1em;
         ">${escapeHtml(options.description)}</div>
         `
-            : ''
+            : ""
         }
     </div>`;
 };
@@ -1114,7 +1175,7 @@ const generateSlidesHeader = (options: HTMLGeneratorOptions, textColor?: string)
  * Generate RTF footer section
  */
 const generateRTFFooter = (options: HTMLGeneratorOptions): string => {
-  if (!options.headerFooter) return '';
+  if (!options.headerFooter) return "";
 
   return `
     <div class="footer" style="
@@ -1134,7 +1195,7 @@ const generateRTFFooter = (options: HTMLGeneratorOptions): string => {
  * Generate EPUB footer section
  */
 const generateEpubFooter = (options: HTMLGeneratorOptions): string => {
-  if (!options.headerFooter) return '';
+  if (!options.headerFooter) return "";
 
   return `
     <div class="footer" style="
@@ -1154,7 +1215,7 @@ const generateEpubFooter = (options: HTMLGeneratorOptions): string => {
  * Generate Slides footer section
  */
 const generateSlidesFooter = (options: HTMLGeneratorOptions): string => {
-  if (!options.headerFooter) return '';
+  if (!options.headerFooter) return "";
 
   return `
     <div class="slide footer-slide" style="text-align: center;">
@@ -1179,7 +1240,7 @@ const generateSlidesFooter = (options: HTMLGeneratorOptions): string => {
 const convertContentToSlides = (htmlContent: string): string => {
   // Split content by headings to create slides
   const slides: string[] = [];
-  let currentSlide = '';
+  let currentSlide = "";
   let slideNumber = 2; // Start from 2 since title slide is 1
 
   // Split by h1, h2 tags to create new slides
@@ -1226,283 +1287,60 @@ const convertContentToSlides = (htmlContent: string): string => {
         </div>`);
   }
 
-  return slides.join('\n');
+  return slides.join("\n");
 };
 
-/**
- * Generate enhanced watermark dengan multiple layers untuk keamanan tinggi
- */
 const generateEnhancedWatermark = (options: HTMLGeneratorOptions): string => {
-  if (!options.watermark) return '';
+  if (!options.watermark) return "";
 
   const theme = THEMES[options.theme];
   const watermarkText = escapeHtml(options.watermark);
-  const timestamp = new Date().toISOString();
-  const uniqueId = Math.random().toString(36).substring(2, 15);
-  const checksum = btoa(watermarkText + timestamp).substring(0, 16);
 
-  // Generate multiple watermark positions untuk coverage yang lebih baik
-  const positions = [
-    {
-      top: '20%',
-      left: '20%',
-      rotation: '-45deg',
-      size: '3em',
-      opacity: '0.06',
-    },
-    {
-      top: '50%',
-      left: '50%',
-      rotation: '-45deg',
-      size: '4em',
-      opacity: '0.08',
-    },
-    {
-      top: '80%',
-      left: '80%',
-      rotation: '-45deg',
-      size: '2.5em',
-      opacity: '0.05',
-    },
-    {
-      top: '30%',
-      left: '70%',
-      rotation: '45deg',
-      size: '2em',
-      opacity: '0.04',
-    },
-    {
-      top: '70%',
-      left: '30%',
-      rotation: '30deg',
-      size: '1.8em',
-      opacity: '0.04',
-    },
-    {
-      top: '10%',
-      left: '60%',
-      rotation: '-30deg',
-      size: '1.5em',
-      opacity: '0.03',
-    },
-    {
-      top: '90%',
-      left: '40%',
-      rotation: '60deg',
-      size: '1.5em',
-      opacity: '0.03',
-    },
-  ];
-
-  const watermarkLayers = positions
-    .map(
-      (pos, index) => `
-    <div class="watermark-layer-${index + 1}" style="
+  return `
+    <!-- Simple CSS-only watermark -->
+    <div class="watermark" style="
         position: fixed;
-        top: ${pos.top};
-        left: ${pos.left};
-        transform: translate(-50%, -50%) rotate(${pos.rotation});
-        font-size: ${pos.size};
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%) rotate(-45deg);
+        font-size: 4em;
         color: ${theme.accentColor};
-        opacity: ${pos.opacity};
-        z-index: -${index + 1};
+        opacity: 0.08;
+        z-index: -1;
         pointer-events: none;
         user-select: none;
-        font-weight: ${index % 2 === 0 ? 'bold' : '300'};
+        font-weight: bold;
         text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
         font-family: 'Arial', sans-serif;
         letter-spacing: 2px;
         text-transform: uppercase;
         white-space: nowrap;
-        overflow: hidden;
-    " data-layer="${index + 1}" data-checksum="${checksum}">${watermarkText}</div>`
-    )
-    .join('');
+    ">${watermarkText}</div>
 
-  return `
-    <!-- Multi-layer security watermark system -->
-    ${watermarkLayers}
-
-    <!-- Invisible tracking elements -->
-    <div style="position: absolute; top: -9999px; left: -9999px; width: 1px; height: 1px; overflow: hidden;"
-         data-watermark-hash="${btoa(watermarkText)}"
-         data-timestamp="${timestamp}"
-         data-id="${uniqueId}"
-         data-checksum="${checksum}"
-         data-layers="${positions.length}">
-        <!-- Hidden watermark text for forensic analysis -->
-        <span>${watermarkText}</span>
-    </div>
-
-    <!-- Repeated watermark in document metadata -->
-    <meta name="watermark" content="${btoa(watermarkText + timestamp)}">
-    <meta name="document-id" content="${uniqueId}">
-    <meta name="security-level" content="enhanced">
-
-    <!-- Advanced CSS untuk maximum security -->
+    <!-- Simple CSS for print protection -->
     <style>
-        /* Prevent all forms of text selection and manipulation */
-        [class*="watermark-layer"] {
-            -webkit-touch-callout: none !important;
+        .watermark {
             -webkit-user-select: none !important;
-            -khtml-user-select: none !important;
             -moz-user-select: none !important;
             -ms-user-select: none !important;
             user-select: none !important;
-            -webkit-print-color-adjust: exact !important;
-            print-color-adjust: exact !important;
-            -webkit-appearance: none !important;
-            -moz-appearance: none !important;
-            appearance: none !important;
-            cursor: default !important;
-            outline: none !important;
-            border: none !important;
-            background: none !important;
-            resize: none !important;
-            -webkit-text-size-adjust: none !important;
-            -moz-text-size-adjust: none !important;
-            -ms-text-size-adjust: none !important;
-            text-size-adjust: none !important;
+            pointer-events: none !important;
+            position: fixed !important;
+            z-index: -1 !important;
         }
 
-        /* Prevent context menu and drag operations */
-        [class*="watermark-layer"]::-moz-selection {
-            background: transparent !important;
-        }
-
-        [class*="watermark-layer"]::selection {
-            background: transparent !important;
-        }
-
-        /* Enhanced print protection */
+        /* Print protection */
         @media print {
-            [class*="watermark-layer"] {
-                opacity: 0.2 !important;
+            .watermark {
+                opacity: 0.15 !important;
                 display: block !important;
                 visibility: visible !important;
                 -webkit-print-color-adjust: exact !important;
                 print-color-adjust: exact !important;
                 color-adjust: exact !important;
             }
-
-            /* Add additional print watermarks */
-            body::before {
-                content: "${watermarkText}";
-                position: fixed;
-                top: 50%;
-                left: 50%;
-                transform: translate(-50%, -50%) rotate(-45deg);
-                font-size: 5em;
-                color: ${theme.accentColor};
-                opacity: 0.1;
-                z-index: 9999;
-                pointer-events: none;
-                font-weight: bold;
-                text-transform: uppercase;
-                letter-spacing: 3px;
-            }
-        }
-
-        /* Prevent CSS manipulation via developer tools */
-        [class*="watermark-layer"] {
-            animation: watermark-protection 0.1s infinite;
-        }
-
-        @keyframes watermark-protection {
-            0% { opacity: var(--watermark-opacity, 0.08); }
-            100% { opacity: var(--watermark-opacity, 0.08); }
-        }
-
-        /* Additional security measures */
-        body {
-            -webkit-user-modify: read-only !important;
-            -moz-user-modify: read-only !important;
-        }
-
-        /* Prevent screenshot tools from easily removing watermarks */
-        html {
-            -webkit-user-select: none;
-            -moz-user-select: none;
-            -ms-user-select: none;
-            user-select: none;
-        }
-
-        /* Forensic CSS - leaves traces if modified */
-        [class*="watermark-layer"]:hover::after {
-            content: "Protected Content - ${uniqueId}";
-            position: absolute;
-            top: -20px;
-            left: 0;
-            font-size: 8px;
-            color: transparent;
-            pointer-events: none;
         }
     </style>
 
-    <!-- JavaScript protection (if enabled) -->
-    <script>
-        (function() {
-            'use strict';
-
-            // Prevent console access to watermark elements
-            const watermarkElements = document.querySelectorAll('[class*="watermark-layer"]');
-
-            // Monitor for tampering attempts
-            const observer = new MutationObserver(function(mutations) {
-                mutations.forEach(function(mutation) {
-                    if (mutation.type === 'attributes' || mutation.type === 'childList') {
-                        // Document integrity check failed - security event logged;
-                    }
-                });
-            });
-
-            // Observe watermark elements
-            watermarkElements.forEach(function(element) {
-                observer.observe(element, {
-                    attributes: true,
-                    childList: true,
-                    subtree: true
-                });
-
-                // Prevent element removal
-                Object.defineProperty(element, 'remove', {
-                    value: function() {
-                        import('@/utils/console').then(({ safeConsole }) => { safeConsole.warn('Watermark removal attempt detected - ${uniqueId}'); });;
-                        return false;
-                    },
-                    writable: false,
-                    configurable: false
-                });
-            });
-
-            // Prevent right-click context menu
-            document.addEventListener('contextmenu', function(e) {
-                if (e.target.className && e.target.className.includes('watermark-layer')) {
-                    e.preventDefault();
-                    return false;
-                }
-            });
-
-            // Prevent drag and drop
-            document.addEventListener('dragstart', function(e) {
-                if (e.target.className && e.target.className.includes('watermark-layer')) {
-                    e.preventDefault();
-                    return false;
-                }
-            });
-
-            // Add timestamp verification
-            const timestamp = '${timestamp}';
-            const checksum = '${checksum}';
-
-            // Verify document integrity
-            setTimeout(function() {
-                const metaWatermark = document.querySelector('meta[name="watermark"]');
-                if (!metaWatermark || !metaWatermark.content) {
-                    // Document integrity compromised - security event logged
-                }
-            }, 1000);
-
-        })();
-    </script>`;
+`;
 };

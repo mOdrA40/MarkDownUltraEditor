@@ -1,5 +1,5 @@
 /**
- * @fileoverview Enhanced file import service with enterprise security
+ * @fileoverview File import service with security validation
  * @author Axel Modra
  */
 

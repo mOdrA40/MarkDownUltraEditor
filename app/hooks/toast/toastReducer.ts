@@ -9,13 +9,10 @@ import {
   type ToastAction,
   type ToasterToast,
   type ToastState,
-} from "@/types/toast";
+} from '@/types/toast';
 
 // Inline addToRemoveQueue since toastUtils was removed
-const addToRemoveQueue = (
-  toastId: string,
-  dispatch?: (action: ToastAction) => void
-): void => {
+const addToRemoveQueue = (toastId: string, dispatch?: (action: ToastAction) => void): void => {
   setTimeout(() => {
     if (dispatch) {
       dispatch({ type: TOAST_ACTION_TYPES.DISMISS_TOAST, toastId });
@@ -40,10 +37,7 @@ export const toastReducer = (
 ): ToastState => {
   switch (action.type) {
     case TOAST_ACTION_TYPES.ADD_TOAST: {
-      const newToasts = [action.toast, ...state.toasts].slice(
-        0,
-        TOAST_CONFIG.LIMIT
-      );
+      const newToasts = [action.toast, ...state.toasts].slice(0, TOAST_CONFIG.LIMIT);
 
       return {
         ...state,
@@ -53,8 +47,8 @@ export const toastReducer = (
 
     case TOAST_ACTION_TYPES.UPDATE_TOAST: {
       if (!action.toast.id) {
-        import("@/utils/console").then(({ safeConsole }) => {
-          safeConsole.warn("Toast update requires an ID");
+        import('@/utils/console').then(({ safeConsole }) => {
+          safeConsole.warn('Toast update requires an ID');
         });
         return state;
       }
@@ -94,9 +88,7 @@ export const toastReducer = (
 
       // Update state to mark toasts as closed
       const dismissedToasts = state.toasts.map((toast) =>
-        toast.id === toastId || toastId === undefined
-          ? { ...toast, open: false }
-          : toast
+        toast.id === toastId || toastId === undefined ? { ...toast, open: false } : toast
       );
 
       return {
@@ -116,9 +108,7 @@ export const toastReducer = (
         };
       }
 
-      const filteredToasts = state.toasts.filter(
-        (toast) => toast.id !== toastId
-      );
+      const filteredToasts = state.toasts.filter((toast) => toast.id !== toastId);
 
       return {
         ...state,
@@ -127,10 +117,8 @@ export const toastReducer = (
     }
 
     default: {
-      import("@/utils/console").then(({ safeConsole }) => {
-        safeConsole.warn(
-          `Unknown toast action type: ${(action as { type: string }).type}`
-        );
+      import('@/utils/console').then(({ safeConsole }) => {
+        safeConsole.warn(`Unknown toast action type: ${(action as { type: string }).type}`);
       });
       return state;
     }
