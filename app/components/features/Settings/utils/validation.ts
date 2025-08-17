@@ -3,7 +3,7 @@
  * @author Axel Modra
  */
 
-import type { AppPreferences, StorageInfo } from "../types";
+import type { AppPreferences, StorageInfo } from '../types';
 
 /**
  * Validation utilities
@@ -13,22 +13,22 @@ export const validationUtils = {
    * Validate app preferences
    */
   validatePreferences: (data: unknown): data is AppPreferences => {
-    if (!data || typeof data !== "object") {
+    if (!data || typeof data !== 'object') {
       return false;
     }
 
     const prefs = data as Record<string, unknown>;
 
     return Boolean(
-      typeof prefs.showLineNumbers === "boolean" &&
-        typeof prefs.showWordCount === "boolean" &&
-        typeof prefs.showCharacterCount === "boolean" &&
-        typeof prefs.reducedMotion === "boolean" &&
-        typeof prefs.soundEffects === "boolean" &&
+      typeof prefs.showLineNumbers === 'boolean' &&
+        typeof prefs.showWordCount === 'boolean' &&
+        typeof prefs.showCharacterCount === 'boolean' &&
+        typeof prefs.reducedMotion === 'boolean' &&
+        typeof prefs.soundEffects === 'boolean' &&
         prefs.theme &&
-        typeof prefs.theme === "object" &&
+        typeof prefs.theme === 'object' &&
         prefs.writingSettings &&
-        typeof prefs.writingSettings === "object"
+        typeof prefs.writingSettings === 'object'
     );
   },
 
@@ -36,17 +36,17 @@ export const validationUtils = {
    * Validate storage info
    */
   validateStorageInfo: (data: unknown): data is StorageInfo => {
-    if (!data || typeof data !== "object") {
+    if (!data || typeof data !== 'object') {
       return false;
     }
 
     const storage = data as Record<string, unknown>;
 
     return (
-      (storage.type === "local" || storage.type === "cloud") &&
-      typeof storage.used === "string" &&
-      typeof storage.percentage === "number" &&
-      typeof storage.available === "boolean"
+      (storage.type === 'local' || storage.type === 'cloud') &&
+      typeof storage.used === 'string' &&
+      typeof storage.percentage === 'number' &&
+      typeof storage.available === 'boolean'
     );
   },
 
@@ -71,11 +71,11 @@ export const validationUtils = {
   sanitizeString: (input: string): string => {
     return input
       .trim()
-      .replace(/[<>]/g, "")
-      .replace(/javascript:/gi, "")
-      .replace(/data:/gi, "")
-      .replace(/vbscript:/gi, "")
-      .replace(/on\w+=/gi, "");
+      .replace(/[<>]/g, '')
+      .replace(/javascript:/gi, '')
+      .replace(/data:/gi, '')
+      .replace(/vbscript:/gi, '')
+      .replace(/on\w+=/gi, '');
   },
 
   /**
@@ -93,10 +93,7 @@ export const validationUtils = {
   /**
    * Validate file size (in bytes)
    */
-  validateFileSize: (
-    size: number,
-    maxSize: number = 10 * 1024 * 1024
-  ): boolean => {
+  validateFileSize: (size: number, maxSize: number = 10 * 1024 * 1024): boolean => {
     return size > 0 && size <= maxSize;
   },
 
