@@ -5,7 +5,7 @@
 
 import { ImageIcon, Link } from 'lucide-react';
 import type React from 'react';
-import { useState } from 'react';
+import { useId, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import {
   Dialog,
@@ -40,6 +40,10 @@ export const ImageLinkDialog: React.FC<ImageLinkDialogProps> = ({
   const [altText, setAltText] = useState('');
   const [isValidating, setIsValidating] = useState(false);
   const { toast } = useToast();
+
+  // Generate unique IDs for form elements
+  const imageUrlId = useId();
+  const altTextId = useId();
 
   /**
    * Validate if URL is a valid image URL
@@ -109,7 +113,10 @@ export const ImageLinkDialog: React.FC<ImageLinkDialogProps> = ({
 
       // Debug log to check what we're sending
       import('@/utils/console').then(({ safeConsole }) => {
-        safeConsole.dev('Sending to onImageInsert:', { finalImageUrl, finalAltText });
+        safeConsole.dev('Sending to onImageInsert:', {
+          finalImageUrl,
+          finalAltText,
+        });
       });
 
       onImageInsert(finalImageUrl, finalAltText);
@@ -171,12 +178,12 @@ export const ImageLinkDialog: React.FC<ImageLinkDialogProps> = ({
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="space-y-2">
-            <Label htmlFor="imageUrl" className="flex items-center gap-2">
+            <Label htmlFor={imageUrlId} className="flex items-center gap-2">
               <Link className="h-4 w-4" />
               Image URL
             </Label>
             <Input
-              id="imageUrl"
+              id={imageUrlId}
               type="url"
               placeholder="https://example.com/image.jpg"
               value={imageUrl}
@@ -191,9 +198,9 @@ export const ImageLinkDialog: React.FC<ImageLinkDialogProps> = ({
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="altText">Alt Text (Optional)</Label>
+            <Label htmlFor={altTextId}>Alt Text (Optional)</Label>
             <Input
-              id="altText"
+              id={altTextId}
               type="text"
               placeholder="Describe the image"
               value={altText}

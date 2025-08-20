@@ -23,7 +23,7 @@ export const useTypewriterMode = (config: TypewriterConfig): void => {
      * Handle scroll to center current line
      */
     const handleScroll = (): void => {
-      const lineHeight = Number.parseInt(getComputedStyle(textarea).lineHeight);
+      const lineHeight = Number.parseInt(getComputedStyle(textarea).lineHeight, 10);
       const scrollTop = textarea.scrollTop;
       const clientHeight = textarea.clientHeight;
       const centerOffset = clientHeight / 2 - lineHeight / 2;

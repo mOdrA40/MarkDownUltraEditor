@@ -4,12 +4,14 @@
  */
 
 import type React from 'react';
+import { useId } from 'react';
 import type { TocHeaderProps } from '../types/toc.types';
 
 /**
  * Komponen header untuk Table of Contents
  */
 export const TocHeader: React.FC<TocHeaderProps> = ({ itemCount, theme }) => {
+  const headingId = useId();
   return (
     <div
       className="px-4 py-3 border-b backdrop-blur-md"
@@ -21,7 +23,7 @@ export const TocHeader: React.FC<TocHeaderProps> = ({ itemCount, theme }) => {
       <h3
         className="text-sm font-semibold flex items-center"
         style={{ color: theme?.text || 'inherit' }}
-        id="toc-heading"
+        id={headingId}
       >
         📋 Table of Contents
         {itemCount > 0 && <span className="ml-2 text-xs opacity-60">({itemCount})</span>}

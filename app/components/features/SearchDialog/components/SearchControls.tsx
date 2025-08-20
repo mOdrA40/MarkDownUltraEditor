@@ -4,6 +4,7 @@
  */
 
 import type React from 'react';
+import { useId } from 'react';
 import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -27,16 +28,20 @@ export const SearchControls: React.FC<
   matchCount = 0,
   currentMatch = 0,
 }) => {
+  // Generate unique IDs for form elements
+  const searchId = useId();
+  const replaceId = useId();
+  const caseSensitiveId = useId();
   return (
     <div className="space-y-4">
       {/* Search Input */}
       <div className="space-y-2">
-        <Label htmlFor="search" className="text-sm font-medium">
+        <Label htmlFor={searchId} className="text-sm font-medium">
           Search
         </Label>
         <div className="flex space-x-2">
           <Input
-            id="search"
+            id={searchId}
             value={searchTerm}
             onChange={(e) => onSearchTermChange(e.target.value)}
             placeholder="Enter search term..."
@@ -52,11 +57,11 @@ export const SearchControls: React.FC<
 
       {/* Replace Input */}
       <div className="space-y-2">
-        <Label htmlFor="replace" className="text-sm font-medium">
+        <Label htmlFor={replaceId} className="text-sm font-medium">
           Replace with
         </Label>
         <Input
-          id="replace"
+          id={replaceId}
           value={replaceTerm}
           onChange={(e) => onReplaceTermChange(e.target.value)}
           placeholder="Enter replacement..."
@@ -67,12 +72,12 @@ export const SearchControls: React.FC<
       <div className="flex items-center space-x-2">
         <input
           type="checkbox"
-          id="caseSensitive"
+          id={caseSensitiveId}
           checked={caseSensitive}
           onChange={(e) => onCaseSensitiveChange(e.target.checked)}
           className="rounded"
         />
-        <Label htmlFor="caseSensitive" className="text-sm">
+        <Label htmlFor={caseSensitiveId} className="text-sm">
           Case sensitive
         </Label>
       </div>

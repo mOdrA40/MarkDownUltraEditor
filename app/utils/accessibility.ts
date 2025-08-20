@@ -237,7 +237,10 @@ export const KeyboardNavigation = {
       return;
     }
 
-    const currentIndex = items.findIndex((item) => item === document.activeElement);
+    const currentIndex =
+      document.activeElement && document.activeElement instanceof HTMLElement
+        ? items.indexOf(document.activeElement)
+        : -1;
     const startIndex = currentIndex + 1;
 
     // Search from current position forward

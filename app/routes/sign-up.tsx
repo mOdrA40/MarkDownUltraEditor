@@ -1,6 +1,6 @@
-import { SignUp } from "@clerk/react-router";
-import { rootAuthLoader } from "@clerk/react-router/ssr.server";
-import type { LoaderFunctionArgs } from "react-router";
+import { SignUp } from '@clerk/react-router';
+import { rootAuthLoader } from '@clerk/react-router/ssr.server';
+import type { LoaderFunctionArgs } from 'react-router';
 
 export async function loader(args: LoaderFunctionArgs) {
   return rootAuthLoader(args);
@@ -12,9 +12,9 @@ export default function SignUpPage() {
       <SignUp
         appearance={{
           elements: {
-            rootBox: "mx-auto",
-            card: "shadow-xl",
-            footerActionLink: "text-blue-600 hover:text-blue-800 font-medium",
+            rootBox: 'mx-auto',
+            card: 'shadow-xl',
+            footerActionLink: 'text-blue-600 hover:text-blue-800 font-medium',
           },
         }}
         signInUrl="/sign-in"

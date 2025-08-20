@@ -1,17 +1,26 @@
 /**
- * Header component untuk DocumentOutline
+ * Header component for DocumentOutline
  */
 
-import { List } from 'lucide-react';
-import type React from 'react';
-import { Badge } from '@/components/ui/badge';
-import type { OutlineHeaderProps } from '@/types/outline';
-import { formatHeadingCount, getBadgeStyles, getHeaderStyles } from '@/utils/outlineUtils';
+import { List } from "lucide-react";
+import type React from "react";
+import { useId } from "react";
+import { Badge } from "@/components/ui/badge";
+import type { OutlineHeaderProps } from "@/types/outline";
+import {
+  formatHeadingCount,
+  getBadgeStyles,
+  getHeaderStyles,
+} from "@/utils/outlineUtils";
 
 /**
- * Header dengan title dan badge count untuk outline
+ * Header with title and badge count for outline
  */
-export const OutlineHeader: React.FC<OutlineHeaderProps> = ({ theme, headingCount }) => {
+export const OutlineHeader: React.FC<OutlineHeaderProps> = ({
+  theme,
+  headingCount,
+}) => {
+  const headingId = useId();
   const headerStyles = getHeaderStyles(theme);
   const badgeStyles = getBadgeStyles(theme);
 
@@ -26,11 +35,15 @@ export const OutlineHeader: React.FC<OutlineHeaderProps> = ({ theme, headingCoun
       <h3
         className="text-sm font-medium flex items-center"
         style={{ color: headerStyles.color }}
-        id="outline-heading"
+        id={headingId}
       >
         <List className="h-4 w-4 mr-2" />
         🗺️ Outline
-        <Badge variant="secondary" className="ml-2 h-5 text-xs" style={badgeStyles}>
+        <Badge
+          variant="secondary"
+          className="ml-2 h-5 text-xs"
+          style={badgeStyles}
+        >
           {formatHeadingCount(headingCount)}
         </Badge>
       </h3>

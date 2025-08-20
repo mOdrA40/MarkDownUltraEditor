@@ -1,7 +1,7 @@
 import { useUser } from '@clerk/react-router';
 import { Edit, Loader2, User, X } from 'lucide-react';
 import type React from 'react';
-import { memo, useState } from 'react';
+import { memo, useId, useState } from 'react';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -29,6 +29,9 @@ export const AccountInfo: React.FC<AccountInfoProps> = memo(
     onSetEditFirstName,
     onSetEditLastName,
   }) => {
+    // Generate unique IDs for form elements
+    const firstNameId = useId();
+    const lastNameId = useId();
     const { user } = useUser();
     const { actions } = useAccountActions();
     const [isExporting, setIsExporting] = useState(false);
@@ -119,12 +122,12 @@ export const AccountInfo: React.FC<AccountInfoProps> = memo(
 
             <div className="grid gap-4 sm:grid-cols-1 lg:grid-cols-2">
               <div className="space-y-2">
-                <label htmlFor="firstName" className="text-sm font-medium">
+                <label htmlFor={firstNameId} className="text-sm font-medium">
                   First Name
                 </label>
                 {isEditingName ? (
                   <Input
-                    id="firstName"
+                    id={firstNameId}
                     value={editFirstName}
                     onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                       onSetEditFirstName(e.target.value);
@@ -139,12 +142,12 @@ export const AccountInfo: React.FC<AccountInfoProps> = memo(
               </div>
 
               <div className="space-y-2">
-                <label htmlFor="lastName" className="text-sm font-medium">
+                <label htmlFor={lastNameId} className="text-sm font-medium">
                   Last Name
                 </label>
                 {isEditingName ? (
                   <Input
-                    id="lastName"
+                    id={lastNameId}
                     value={editLastName}
                     onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                       onSetEditLastName(e.target.value);

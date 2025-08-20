@@ -253,7 +253,7 @@ export const handleEnterKey = (event: KeyboardEvent, textarea: HTMLTextAreaEleme
   if (orderedListMatch) {
     event.preventDefault();
     const [, indent, number] = orderedListMatch;
-    const nextNumber = Number.parseInt(number) + 1;
+    const nextNumber = Number.parseInt(number, 10) + 1;
     const newLine = `\n${indent}${nextNumber}. `;
     insertTextAtCursor(textarea, newLine, { focus: true });
     return true;

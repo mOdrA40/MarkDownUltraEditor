@@ -33,7 +33,9 @@ const validateToastInput = (input: ToastInput): boolean => {
 
 const toastTimeouts = new Map<string, ReturnType<typeof setTimeout>>();
 const clearAllToastTimeouts = (): void => {
-  toastTimeouts.forEach((timeout) => clearTimeout(timeout));
+  for (const timeout of toastTimeouts.values()) {
+    clearTimeout(timeout);
+  }
   toastTimeouts.clear();
 };
 

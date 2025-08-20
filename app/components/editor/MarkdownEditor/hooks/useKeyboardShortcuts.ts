@@ -280,7 +280,9 @@ export const useKeyboardShortcuts = (
 
     // Cleanup function
     return () => {
-      unregisterFunctions.forEach((unregister) => unregister());
+      for (const unregister of unregisterFunctions) {
+        unregister();
+      }
     };
   }, [context, registerShortcut]);
 

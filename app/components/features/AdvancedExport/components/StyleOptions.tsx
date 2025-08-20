@@ -1,4 +1,5 @@
 import type React from 'react';
+import { useId } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
 import {
@@ -33,6 +34,8 @@ export const StyleOptions: React.FC<StyleOptionsProps> = ({
   isMobile = false,
   isTablet = false,
 }) => {
+  // Generate unique ID for form elements
+  const fontSizeId = useId();
   return (
     <div className="space-y-3 sm:space-y-4">
       {/* Theme Selection */}
@@ -109,16 +112,16 @@ export const StyleOptions: React.FC<StyleOptionsProps> = ({
         </div>
 
         <div>
-          <Label htmlFor="fontSize" className={`${isMobile ? 'text-xs' : 'text-xs sm:text-sm'}`}>
+          <Label htmlFor={fontSizeId} className={`${isMobile ? 'text-xs' : 'text-xs sm:text-sm'}`}>
             Font Size: {options.fontSize}px
           </Label>
           <input
             type="range"
-            id="fontSize"
+            id={fontSizeId}
             min={FONT_SIZE_RANGE.min}
             max={FONT_SIZE_RANGE.max}
             value={options.fontSize}
-            onChange={(e) => onOptionsChange('fontSize', Number.parseInt(e.target.value))}
+            onChange={(e) => onOptionsChange('fontSize', Number.parseInt(e.target.value, 10))}
             className={`w-full ${isMobile ? 'h-6' : 'h-5'}`}
           />
           <div className="flex justify-between text-xs text-muted-foreground mt-1">

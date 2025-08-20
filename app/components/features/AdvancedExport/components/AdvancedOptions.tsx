@@ -1,4 +1,5 @@
 import type React from 'react';
+import { useId } from 'react';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
@@ -12,15 +13,18 @@ export const AdvancedOptions: React.FC<AdvancedOptionsProps> = ({
   onOptionsChange,
   isMobile = false,
 }) => {
+  // Generate unique IDs for form elements
+  const watermarkId = useId();
+  const customCSSId = useId();
   return (
     <div className="space-y-3 sm:space-y-4">
       {/* Watermark Settings */}
       <div>
-        <Label htmlFor="watermark" className={`${isMobile ? 'text-xs' : 'text-xs sm:text-sm'}`}>
+        <Label htmlFor={watermarkId} className={`${isMobile ? 'text-xs' : 'text-xs sm:text-sm'}`}>
           Watermark Text
         </Label>
         <Input
-          id="watermark"
+          id={watermarkId}
           value={options.watermark}
           onChange={(e) => onOptionsChange('watermark', e.target.value)}
           placeholder="Enter watermark text (optional)"
@@ -33,11 +37,11 @@ export const AdvancedOptions: React.FC<AdvancedOptionsProps> = ({
 
       {/* Custom CSS Settings */}
       <div>
-        <Label htmlFor="customCSS" className={`${isMobile ? 'text-xs' : 'text-xs sm:text-sm'}`}>
+        <Label htmlFor={customCSSId} className={`${isMobile ? 'text-xs' : 'text-xs sm:text-sm'}`}>
           Custom CSS
         </Label>
         <Textarea
-          id="customCSS"
+          id={customCSSId}
           value={options.customCSS}
           onChange={(e) => onOptionsChange('customCSS', e.target.value)}
           placeholder="/* Enter custom CSS styles (optional) */

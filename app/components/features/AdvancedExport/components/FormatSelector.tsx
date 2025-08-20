@@ -1,4 +1,5 @@
 import type React from 'react';
+import { useId } from 'react';
 import type { Theme } from '@/components/features/ThemeSelector';
 import { Card, CardContent } from '@/components/ui/card';
 import { Checkbox } from '@/components/ui/checkbox';
@@ -29,6 +30,14 @@ export const FormatSelector: React.FC<FormatSelectorComponentProps> = ({
   currentTheme,
 }) => {
   const textColor = getThemeTextColor(currentTheme);
+
+  // Generate unique IDs for form elements
+  const titleId = useId();
+  const authorId = useId();
+  const descriptionId = useId();
+  const tocId = useId();
+  const pageNumbersId = useId();
+  const headerFooterId = useId();
 
   return (
     <div className="space-y-3 sm:space-y-4">
@@ -81,11 +90,11 @@ export const FormatSelector: React.FC<FormatSelectorComponentProps> = ({
       {/* Document Information */}
       <div className={`space-y-2 ${isMobile ? 'space-y-2' : 'sm:space-y-3'}`}>
         <div>
-          <Label htmlFor="title" className={`${isMobile ? 'text-xs' : 'text-xs sm:text-sm'}`}>
+          <Label htmlFor={titleId} className={`${isMobile ? 'text-xs' : 'text-xs sm:text-sm'}`}>
             Document Title
           </Label>
           <Input
-            id="title"
+            id={titleId}
             value={options.title}
             onChange={(e) => onOptionsChange('title', e.target.value)}
             placeholder="Enter document title"
@@ -94,11 +103,11 @@ export const FormatSelector: React.FC<FormatSelectorComponentProps> = ({
         </div>
 
         <div>
-          <Label htmlFor="author" className={`${isMobile ? 'text-xs' : 'text-xs sm:text-sm'}`}>
+          <Label htmlFor={authorId} className={`${isMobile ? 'text-xs' : 'text-xs sm:text-sm'}`}>
             Author
           </Label>
           <Input
-            id="author"
+            id={authorId}
             value={options.author}
             onChange={(e) => onOptionsChange('author', e.target.value)}
             placeholder="Enter author name"
@@ -112,11 +121,14 @@ export const FormatSelector: React.FC<FormatSelectorComponentProps> = ({
         </div>
 
         <div>
-          <Label htmlFor="description" className={`${isMobile ? 'text-xs' : 'text-xs sm:text-sm'}`}>
+          <Label
+            htmlFor={descriptionId}
+            className={`${isMobile ? 'text-xs' : 'text-xs sm:text-sm'}`}
+          >
             Description
           </Label>
           <Textarea
-            id="description"
+            id={descriptionId}
             value={options.description}
             onChange={(e) => onOptionsChange('description', e.target.value)}
             placeholder="Enter document description"
@@ -132,39 +144,42 @@ export const FormatSelector: React.FC<FormatSelectorComponentProps> = ({
       <div className={`space-y-2 ${isMobile ? 'space-y-3' : 'sm:space-y-3'}`}>
         <div className="flex items-center space-x-2">
           <Checkbox
-            id="toc"
+            id={tocId}
             checked={options.includeTableOfContents}
             onCheckedChange={(checked) =>
               onOptionsChange('includeTableOfContents', checked as boolean)
             }
             className={`${isMobile ? 'h-5 w-5' : 'h-4 w-4'}`}
           />
-          <Label htmlFor="toc" className={`${isMobile ? 'text-sm' : 'text-xs sm:text-sm'}`}>
+          <Label htmlFor={tocId} className={`${isMobile ? 'text-sm' : 'text-xs sm:text-sm'}`}>
             Include Table of Contents
           </Label>
         </div>
 
         <div className="flex items-center space-x-2">
           <Checkbox
-            id="pageNumbers"
+            id={pageNumbersId}
             checked={options.includePageNumbers}
             onCheckedChange={(checked) => onOptionsChange('includePageNumbers', checked as boolean)}
             className={`${isMobile ? 'h-5 w-5' : 'h-4 w-4'}`}
           />
-          <Label htmlFor="pageNumbers" className={`${isMobile ? 'text-sm' : 'text-xs sm:text-sm'}`}>
+          <Label
+            htmlFor={pageNumbersId}
+            className={`${isMobile ? 'text-sm' : 'text-xs sm:text-sm'}`}
+          >
             Include Page Numbers
           </Label>
         </div>
 
         <div className="flex items-center space-x-2">
           <Checkbox
-            id="headerFooter"
+            id={headerFooterId}
             checked={options.headerFooter}
             onCheckedChange={(checked) => onOptionsChange('headerFooter', checked as boolean)}
             className={`${isMobile ? 'h-5 w-5' : 'h-4 w-4'}`}
           />
           <Label
-            htmlFor="headerFooter"
+            htmlFor={headerFooterId}
             className={`${isMobile ? 'text-sm' : 'text-xs sm:text-sm'}`}
           >
             Include Header & Footer

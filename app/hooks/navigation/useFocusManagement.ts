@@ -196,7 +196,7 @@ export const useFocusManagement = (
 
     if (!activeElement) return -1;
 
-    return focusableItems.findIndex((item) => item === activeElement);
+    return activeElement instanceof HTMLElement ? focusableItems.indexOf(activeElement) : -1;
   }, [getFocusableItems]);
 
   /**

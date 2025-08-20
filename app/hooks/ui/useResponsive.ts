@@ -150,7 +150,9 @@ export const useResponsiveDetection = (
     // Cleanup function
     cleanupRef.current = () => {
       cleanupResize();
-      cleanupMediaQueries.forEach((cleanup) => cleanup());
+      for (const cleanup of cleanupMediaQueries) {
+        cleanup();
+      }
     };
 
     return cleanupRef.current;

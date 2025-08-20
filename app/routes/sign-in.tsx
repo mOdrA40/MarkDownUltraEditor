@@ -1,6 +1,6 @@
-import { SignIn } from "@clerk/react-router";
-import { rootAuthLoader } from "@clerk/react-router/ssr.server";
-import type { LoaderFunctionArgs } from "react-router";
+import { SignIn } from '@clerk/react-router';
+import { rootAuthLoader } from '@clerk/react-router/ssr.server';
+import type { LoaderFunctionArgs } from 'react-router';
 
 // Add loader untuk authentication state
 export async function loader(args: LoaderFunctionArgs) {
@@ -13,9 +13,9 @@ export default function SignInPage() {
       <SignIn
         appearance={{
           elements: {
-            rootBox: "mx-auto",
-            card: "shadow-xl",
-            footerActionLink: "text-blue-600 hover:text-blue-800 font-medium",
+            rootBox: 'mx-auto',
+            card: 'shadow-xl',
+            footerActionLink: 'text-blue-600 hover:text-blue-800 font-medium',
           },
         }}
         signUpUrl="/sign-up"

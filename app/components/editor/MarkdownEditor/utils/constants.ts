@@ -3,17 +3,18 @@ Constants
 @author Axel Modra
  */
 
-import type { EditorConfig } from '../types';
-import type { Breakpoints } from '../types/responsive.types';
+import type { EditorConfig } from "../types";
+import type { Breakpoints } from "../types/responsive.types";
 
 /**
  * Application metadata
  */
 export const APP_INFO = {
-  NAME: 'Advanced Markdown Editor',
-  VERSION: '1.0.0',
-  AUTHOR: 'Axel Modra',
-  DESCRIPTION: 'A beautiful markdown editor with live preview and amazing features',
+  NAME: "Advanced Markdown Editor",
+  VERSION: "1.0.0",
+  AUTHOR: "Axel Modra",
+  DESCRIPTION:
+    "A beautiful markdown editor with live preview and amazing features",
 } as const;
 
 /**
@@ -58,18 +59,18 @@ export const BREAKPOINTS: Breakpoints = {
 /**
  * Media queries
  */
-export { MEDIA_QUERIES } from '@/utils/responsive';
+export { MEDIA_QUERIES } from "@/utils/responsive";
 
 /**
  * Local storage keys
  */
 export const STORAGE_KEYS = {
-  CONTENT: 'markdownEditor_content',
-  FILE_NAME: 'markdownEditor_fileName',
-  THEME: 'markdownEditor_theme',
-  SETTINGS: 'markdownEditor_settings',
-  UI_STATE: 'markdownEditor_uiState',
-  WINDOW_STATE: 'markdownEditor_windowState',
+  CONTENT: "markdownEditor_content",
+  FILE_NAME: "markdownEditor_fileName",
+  THEME: "markdownEditor_theme",
+  SETTINGS: "markdownEditor_settings",
+  UI_STATE: "markdownEditor_uiState",
+  WINDOW_STATE: "markdownEditor_windowState",
 } as const;
 
 /**
@@ -191,7 +192,7 @@ function hello() {
  * Default file names and content
  */
 export const DEFAULT_FILE = {
-  NAME: 'welcome-to-advanced-editor.md',
+  NAME: "welcome-to-advanced-editor.md",
   CONTENT: WELCOME_TEMPLATE,
 } as const;
 
@@ -199,71 +200,70 @@ export const DEFAULT_FILE = {
  * Empty file for non-first-time visitors
  */
 export const EMPTY_FILE = {
-  NAME: 'untitled.md',
-  CONTENT: '',
+  NAME: "untitled.md",
+  CONTENT: "",
 } as const;
 
 /**
  * Loading placeholder for initial file restoration
- * This prevents template flash during loading
  */
 export const LOADING_PLACEHOLDER = {
-  NAME: 'Loading...',
-  CONTENT: '', // Empty content to prevent template flash
+  NAME: "Loading...",
+  CONTENT: "",
 } as const;
 
 /**
  * Keyboard shortcuts configuration
  */
 export const KEYBOARD_SHORTCUTS = {
-  BOLD: { key: 'b', ctrlKey: true, text: '**Bold Text**' },
-  ITALIC: { key: 'i', ctrlKey: true, text: '*Italic Text*' },
-  LINK: { key: 'k', ctrlKey: true, text: '[Link Text](https://example.com)' },
-  CODE: { key: '`', ctrlKey: true, text: '`code`' },
-  UNDO: { key: 'z', ctrlKey: true },
-  REDO: { key: 'y', ctrlKey: true },
-  REDO_ALT: { key: 'z', ctrlKey: true, shiftKey: true },
-  TOGGLE_PREVIEW: { key: '/', ctrlKey: true },
-  TOGGLE_ZEN: { key: '.', ctrlKey: true },
-  SHOW_SHORTCUTS: { key: '?', ctrlKey: true },
-  FULLSCREEN: { key: 'F11' },
-  SAVE: { key: 's', ctrlKey: true },
-  NEW_FILE: { key: 'n', ctrlKey: true },
-  OPEN_FILE: { key: 'o', ctrlKey: true },
+  BOLD: { key: "b", ctrlKey: true, text: "**Bold Text**" },
+  ITALIC: { key: "i", ctrlKey: true, text: "*Italic Text*" },
+  LINK: { key: "k", ctrlKey: true, text: "[Link Text](https://example.com)" },
+  CODE: { key: "`", ctrlKey: true, text: "`code`" },
+  UNDO: { key: "z", ctrlKey: true },
+  REDO: { key: "y", ctrlKey: true },
+  REDO_ALT: { key: "z", ctrlKey: true, shiftKey: true },
+  TOGGLE_PREVIEW: { key: "/", ctrlKey: true },
+  TOGGLE_ZEN: { key: ".", ctrlKey: true },
+  SHOW_SHORTCUTS: { key: "?", ctrlKey: true },
+  FULLSCREEN: { key: "F11" },
+  SAVE: { key: "s", ctrlKey: true },
+  NEW_FILE: { key: "n", ctrlKey: true },
+  OPEN_FILE: { key: "o", ctrlKey: true },
 } as const;
 
 /**
  * UI element IDs and classes
  */
 export const UI_ELEMENTS = {
-  EDITOR_CONTAINER: 'markdown-editor-container',
-  EDITOR_TEXTAREA: 'markdown-editor-textarea',
-  PREVIEW_CONTAINER: 'markdown-preview-container',
-  TOOLBAR: 'markdown-toolbar',
-  SIDEBAR: 'markdown-sidebar',
-  HEADER: 'markdown-header',
-  FOOTER: 'markdown-footer',
+  EDITOR_CONTAINER: "markdown-editor-container",
+  EDITOR_TEXTAREA: "markdown-editor-textarea",
+  PREVIEW_CONTAINER: "markdown-preview-container",
+  TOOLBAR: "markdown-toolbar",
+  SIDEBAR: "markdown-sidebar",
+  HEADER: "markdown-header",
+  FOOTER: "markdown-footer",
 } as const;
 
 /**
  * CSS class names
  */
 export const CSS_CLASSES = {
-  MOBILE: 'mobile-device',
-  TABLET: 'tablet-device',
-  DESKTOP: 'desktop-device',
-  TOUCH_DEVICE: 'touch-device',
-  FOCUS_MODE: 'focus-mode',
-  ZEN_MODE: 'zen-mode',
-  TYPEWRITER_MODE: 'typewriter-mode',
-  VIM_MODE: 'vim-mode',
-  DARK_THEME: 'dark-theme',
-  LIGHT_THEME: 'light-theme',
-  SIDEBAR_COLLAPSED: 'sidebar-collapsed',
-  PREVIEW_HIDDEN: 'preview-hidden',
+  MOBILE: "mobile-device",
+  TABLET: "tablet-device",
+  DESKTOP: "desktop-device",
+  TOUCH_DEVICE: "touch-device",
+  FOCUS_MODE: "focus-mode",
+  ZEN_MODE: "zen-mode",
+  TYPEWRITER_MODE: "typewriter-mode",
+  VIM_MODE: "vim-mode",
+  DARK_THEME: "dark-theme",
+  LIGHT_THEME: "light-theme",
+  SIDEBAR_COLLAPSED: "sidebar-collapsed",
+  PREVIEW_HIDDEN: "preview-hidden",
 } as const;
 
-import { ANIMATION_DURATIONS, DEBOUNCE_DELAYS } from '@/utils/common';
+import { ANIMATION_DURATIONS, DEBOUNCE_DELAYS } from "@/utils/common";
 
 export const ANIMATION_DURATION = ANIMATION_DURATIONS;
 export const DEBOUNCE_DELAY = DEBOUNCE_DELAYS;
@@ -272,46 +272,51 @@ export const DEBOUNCE_DELAY = DEBOUNCE_DELAYS;
  * File size limits (in bytes)
  */
 export const FILE_LIMITS = {
-  MAX_FILE_SIZE: 10 * 1024 * 1024,
-  MAX_IMAGE_SIZE: 5 * 1024 * 1024,
-  MAX_HISTORY_SIZE: 50,
-  MAX_UNDO_STEPS: 100,
+  MAX_FILE_SIZE: 2 * 1024 * 1024,
+  MAX_IMAGE_SIZE: 1 * 1024 * 1024,
+  MAX_HISTORY_SIZE: 25,
+  MAX_UNDO_STEPS: 50,
+
+  MAX_FILES_PER_USER: 50,
+  MAX_TOTAL_STORAGE: 25 * 1024 * 1024,
+  MAX_FILENAME_LENGTH: 100,
+  MAX_CONTENT_LENGTH: 2 * 1024 * 1024,
 } as const;
 
 /**
  * Supported file types
  */
 export const SUPPORTED_FILE_TYPES = {
-  MARKDOWN: ['.md', '.markdown', '.mdown', '.mkd'],
-  TEXT: ['.txt'],
-  ALL: ['.md', '.markdown', '.mdown', '.mkd', '.txt'],
+  MARKDOWN: [".md", ".markdown", ".mdown", ".mkd"],
+  TEXT: [".txt"],
+  ALL: [".md", ".markdown", ".mdown", ".mkd", ".txt"],
 } as const;
 
 /**
  * Export formats
  */
 export const EXPORT_FORMATS = {
-  HTML: 'html',
-  PDF: 'pdf',
-  DOCX: 'docx',
-  MARKDOWN: 'md',
-  TEXT: 'txt',
+  HTML: "html",
+  PDF: "pdf",
+  DOCX: "docx",
+  MARKDOWN: "md",
+  TEXT: "txt",
 } as const;
 
 /**
  * Theme configuration
  */
 export const THEME_CONFIG = {
-  DEFAULT_THEME_ID: 'ocean',
+  DEFAULT_THEME_ID: "ocean",
   THEME_TRANSITION_DURATION: 300,
-  CSS_VARIABLE_PREFIX: '--theme-',
+  CSS_VARIABLE_PREFIX: "--theme-",
 } as const;
 
 /**
  * Performance monitoring
  */
 export const PERFORMANCE_CONFIG = {
-  ENABLE_MONITORING: process.env.NODE_ENV === 'development',
+  ENABLE_MONITORING: process.env.NODE_ENV === "development",
   SAMPLE_RATE: 0.1,
   MAX_METRICS_HISTORY: 100,
 } as const;
@@ -320,25 +325,25 @@ export const PERFORMANCE_CONFIG = {
  * Error messages
  */
 export const ERROR_MESSAGES = {
-  FILE_TOO_LARGE: 'File size exceeds the maximum limit',
-  INVALID_FILE_TYPE: 'Invalid file type. Please select a markdown file',
-  LOAD_ERROR: 'Failed to load the file',
-  SAVE_ERROR: 'Failed to save the file',
-  THEME_ERROR: 'Failed to apply theme',
-  NETWORK_ERROR: 'Network connection error',
-  UNKNOWN_ERROR: 'An unknown error occurred',
+  FILE_TOO_LARGE: "File size exceeds the maximum limit",
+  INVALID_FILE_TYPE: "Invalid file type. Please select a markdown file",
+  LOAD_ERROR: "Failed to load the file",
+  SAVE_ERROR: "Failed to save the file",
+  THEME_ERROR: "Failed to apply theme",
+  NETWORK_ERROR: "Network connection error",
+  UNKNOWN_ERROR: "An unknown error occurred",
 } as const;
 
 /**
  * Success messages
  */
 export const SUCCESS_MESSAGES = {
-  FILE_LOADED: 'File loaded successfully',
-  FILE_SAVED: 'File saved successfully',
-  AUTO_SAVED: 'Auto-saved',
-  THEME_APPLIED: 'Theme applied successfully',
-  TEMPLATE_LOADED: 'Template loaded successfully',
-  IMAGE_INSERTED: 'Image inserted successfully',
+  FILE_LOADED: "File loaded successfully",
+  FILE_SAVED: "File saved successfully",
+  AUTO_SAVED: "Auto-saved",
+  THEME_APPLIED: "Theme applied successfully",
+  TEMPLATE_LOADED: "Template loaded successfully",
+  IMAGE_INSERTED: "Image inserted successfully",
 } as const;
 
 /**
@@ -355,7 +360,7 @@ export const A11Y_CONFIG = {
  * Development configuration
  */
 export const DEV_CONFIG = {
-  ENABLE_LOGGING: process.env.NODE_ENV === 'development',
-  ENABLE_DEBUG_MODE: process.env.NODE_ENV === 'development',
-  SHOW_PERFORMANCE_METRICS: process.env.NODE_ENV === 'development',
+  ENABLE_LOGGING: process.env.NODE_ENV === "development",
+  ENABLE_DEBUG_MODE: process.env.NODE_ENV === "development",
+  SHOW_PERFORMANCE_METRICS: process.env.NODE_ENV === "development",
 } as const;

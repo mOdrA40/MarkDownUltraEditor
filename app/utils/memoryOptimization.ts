@@ -60,11 +60,15 @@ export class MemoryManager {
    */
   cleanup(): void {
     // Clear timers
-    this.timers.forEach((timer) => clearTimeout(timer));
+    for (const timer of this.timers) {
+      clearTimeout(timer);
+    }
     this.timers.clear();
 
     // Disconnect observers
-    this.observers.forEach((observer) => observer.disconnect());
+    for (const observer of this.observers) {
+      observer.disconnect();
+    }
     this.observers.clear();
 
     // Remove event listeners
@@ -141,7 +145,9 @@ export function useMemoryManager() {
   // Cleanup on unmount
   useEffect(() => {
     return () => {
-      cleanupRef.current.forEach((cleanup) => cleanup());
+      for (const cleanup of cleanupRef.current) {
+        cleanup();
+      }
       cleanupRef.current = [];
     };
   }, []);

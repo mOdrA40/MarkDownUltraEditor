@@ -299,12 +299,16 @@ export const registerDefaultCommands = (): void => {
   vimCommandRegistry.clear();
 
   // Register all commands
-  [
+  const commands = [
     ...normalModeCommands,
     ...insertModeCommands,
     ...visualModeCommands,
     ...commandModeCommands,
-  ].forEach((command) => vimCommandRegistry.register(command));
+  ];
+
+  for (const command of commands) {
+    vimCommandRegistry.register(command);
+  }
 };
 
 /**

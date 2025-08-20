@@ -3,7 +3,7 @@
  * Memastikan konsistensi antara TOC, Outline, dan Preview pane
  */
 
-import { safeConsole } from '@/utils/console';
+import { safeConsole } from "@/utils/console";
 
 export interface HeadingItem {
   text: string;
@@ -20,10 +20,10 @@ export const generateHeadingId = (text: string, lineNumber: number): string => {
   const slug = text
     .toLowerCase()
     .trim()
-    .replace(/[^\w\s-]/g, '') // Remove special characters except hyphens and spaces
-    .replace(/\s+/g, '-') // Replace spaces with hyphens
-    .replace(/-+/g, '-') // Replace multiple hyphens with single hyphen
-    .replace(/^-|-$/g, ''); // Remove leading/trailing hyphens
+    .replace(/[^\w\s-]/g, "") // Remove special characters except hyphens and spaces
+    .replace(/\s+/g, "-") // Replace spaces with hyphens
+    .replace(/-+/g, "-") // Replace multiple hyphens with single hyphen
+    .replace(/^-|-$/g, ""); // Remove leading/trailing hyphens
 
   return `heading-${lineNumber}-${slug}`;
 };
@@ -33,7 +33,7 @@ export const generateHeadingId = (text: string, lineNumber: number): string => {
  * Menggunakan regex yang konsisten untuk semua komponen
  */
 export const parseMarkdownHeadings = (markdown: string): HeadingItem[] => {
-  const lines = markdown.split('\n');
+  const lines = markdown.split("\n");
   const headings: HeadingItem[] = [];
 
   lines.forEach((line, index) => {
@@ -66,22 +66,24 @@ export const scrollToLineInEditor = (
   } = {}
 ): Promise<boolean> => {
   return new Promise((resolve) => {
-    const { behavior = 'smooth', highlight = true } = options;
+    const { behavior = "smooth", highlight = true } = options;
 
     requestAnimationFrame(() => {
       // Find editor textarea
-      const textarea = document.querySelector('textarea') as HTMLTextAreaElement;
+      const textarea = document.querySelector(
+        "textarea"
+      ) as HTMLTextAreaElement;
       if (!textarea) {
-        import('@/utils/console').then(({ safeConsole }) => {
-          safeConsole.warn('Editor textarea tidak ditemukan');
+        import("@/utils/console").then(({ safeConsole }) => {
+          safeConsole.warn("Editor textarea tidak ditemukan");
         });
         resolve(false);
         return;
       }
 
-      const lines = textarea.value.split('\n');
+      const lines = textarea.value.split("\n");
       if (lineNumber < 0 || lineNumber >= lines.length) {
-        import('@/utils/console').then(({ safeConsole }) => {
+        import("@/utils/console").then(({ safeConsole }) => {
           safeConsole.warn(`Line number ${lineNumber} out of range`);
         });
         resolve(false);
@@ -96,10 +98,14 @@ export const scrollToLineInEditor = (
 
       // Set cursor position and focus
       textarea.focus();
-      textarea.setSelectionRange(charPosition, charPosition + lines[lineNumber].length);
+      textarea.setSelectionRange(
+        charPosition,
+        charPosition + lines[lineNumber].length
+      );
 
       // Calculate scroll position
-      const lineHeight = Number.parseInt(getComputedStyle(textarea).lineHeight) || 20;
+      const lineHeight =
+        Number.parseInt(getComputedStyle(textarea).lineHeight, 10) || 20;
       const scrollTop = lineNumber * lineHeight;
       const containerHeight = textarea.clientHeight;
       const targetScrollTop = Math.max(0, scrollTop - containerHeight / 2);
@@ -119,16 +125,12 @@ export const scrollToLineInEditor = (
         () => {
           resolve(true);
         },
-        behavior === 'smooth' ? 500 : 0
+        behavior === "smooth" ? 500 : 0
       );
     });
   });
 };
 
-/**
- * Smooth scroll ke heading dengan offset yang tepat
- * Mempertimbangkan header/navbar height dan container yang tepat
- */
 export const scrollToHeading = (
   headingId: string,
   options: {
@@ -140,7 +142,7 @@ export const scrollToHeading = (
   return new Promise((resolve) => {
     const {
       offset = 100, // Increased default offset
-      behavior = 'smooth',
+      behavior = "smooth",
       container = null,
     } = options;
 
@@ -148,7 +150,7 @@ export const scrollToHeading = (
     requestAnimationFrame(() => {
       const element = safeGetElementById(headingId);
       if (!element) {
-        import('@/utils/console').then(({ safeConsole }) => {
+        import("@/utils/console").then(({ safeConsole }) => {
           safeConsole.warn(`Heading dengan ID "${headingId}" tidak ditemukan`);
         });
         resolve(false);
@@ -157,7 +159,8 @@ export const scrollToHeading = (
 
       // Find the correct scroll container
       const targetContainer =
-        container || findScrollContainer(element, ['[data-preview-pane]', '.prose']);
+        container ||
+        findScrollContainer(element, ["[data-preview-pane]", ".prose"]);
 
       // Calculate scroll position
       const elementRect = element.getBoundingClientRect();
@@ -170,7 +173,8 @@ export const scrollToHeading = (
         scrollTop = targetContainer.scrollTop;
       }
 
-      const targetPosition = elementRect.top - containerRect.top + scrollTop - offset;
+      const targetPosition =
+        elementRect.top - containerRect.top + scrollTop - offset;
 
       // Perform scroll
       if (targetContainer === document.documentElement) {
@@ -190,7 +194,7 @@ export const scrollToHeading = (
         () => {
           resolve(true);
         },
-        behavior === 'smooth' ? 500 : 0
+        behavior === "smooth" ? 500 : 0
       );
     });
   });
@@ -208,12 +212,12 @@ export const scrollToHeadingGlobal = async (
     preferEditor?: boolean;
   } = {}
 ): Promise<boolean> => {
-  const { offset = 120, behavior = 'smooth', preferEditor = false } = options;
+  const { offset = 120, behavior = "smooth", preferEditor = false } = options;
 
   // Parse heading info from ID
   const headingInfo = parseHeadingIdToInfo(headingId);
   if (!headingInfo) {
-    import('@/utils/console').then(({ safeConsole }) => {
+    import("@/utils/console").then(({ safeConsole }) => {
       safeConsole.warn(`Cannot parse heading ID: ${headingId}`);
     });
     return false;
@@ -223,13 +227,20 @@ export const scrollToHeadingGlobal = async (
 
   try {
     // Check if both editor and preview are visible
-    const editorPane = document.querySelector('textarea') as HTMLTextAreaElement;
-    const previewPane = document.querySelector('[data-preview-pane]') as HTMLElement;
-    const isEditorVisible = editorPane && (editorPane as HTMLElement).offsetParent !== null;
+    const editorPane = document.querySelector(
+      "textarea"
+    ) as HTMLTextAreaElement;
+    const previewPane = document.querySelector(
+      "[data-preview-pane]"
+    ) as HTMLElement;
+    const isEditorVisible =
+      editorPane && (editorPane as HTMLElement).offsetParent !== null;
     const isPreviewVisible = previewPane && previewPane.offsetParent !== null;
 
     safeConsole.log(`🎯 Scrolling to: "${text}" (line ${lineNumber})`);
-    safeConsole.log(`📱 Editor visible: ${isEditorVisible}, Preview visible: ${isPreviewVisible}`);
+    safeConsole.log(
+      `📱 Editor visible: ${isEditorVisible}, Preview visible: ${isPreviewVisible}`
+    );
 
     // Strategy 1: Both visible - scroll both simultaneously
     if (isEditorVisible && isPreviewVisible) {
@@ -242,7 +253,7 @@ export const scrollToHeadingGlobal = async (
         }),
       ]);
 
-      import('@/utils/console').then(({ safeConsole }) => {
+      import("@/utils/console").then(({ safeConsole }) => {
         safeConsole.dev(
           `📜 Dual scroll result: Editor=${editorSuccess}, Preview=${previewSuccess}`
         );
@@ -256,7 +267,7 @@ export const scrollToHeadingGlobal = async (
         behavior,
         highlight: true,
       });
-      import('@/utils/console').then(({ safeConsole }) => {
+      import("@/utils/console").then(({ safeConsole }) => {
         safeConsole.dev(`📝 Editor scroll result: ${success}`);
       });
       return success;
@@ -269,31 +280,35 @@ export const scrollToHeadingGlobal = async (
         behavior,
         container: previewPane,
       });
-      import('@/utils/console').then(({ safeConsole }) => {
+      import("@/utils/console").then(({ safeConsole }) => {
         safeConsole.dev(`👁️ Preview scroll result: ${success}`);
       });
       return success;
     }
 
     // Strategy 4: Fallback - try both anyway
-    import('@/utils/console').then(({ safeConsole }) => {
-      safeConsole.dev('🔄 Fallback: Trying both scroll methods');
+    import("@/utils/console").then(({ safeConsole }) => {
+      safeConsole.dev("🔄 Fallback: Trying both scroll methods");
     });
     const [editorSuccess, previewSuccess] = await Promise.allSettled([
       scrollToLineInEditor(lineNumber, { behavior, highlight: true }),
       scrollToHeading(headingId, { offset, behavior }),
     ]);
 
-    const editorResult = editorSuccess.status === 'fulfilled' ? editorSuccess.value : false;
-    const previewResult = previewSuccess.status === 'fulfilled' ? previewSuccess.value : false;
+    const editorResult =
+      editorSuccess.status === "fulfilled" ? editorSuccess.value : false;
+    const previewResult =
+      previewSuccess.status === "fulfilled" ? previewSuccess.value : false;
 
-    import('@/utils/console').then(({ safeConsole }) => {
-      safeConsole.dev(`🔄 Fallback result: Editor=${editorResult}, Preview=${previewResult}`);
+    import("@/utils/console").then(({ safeConsole }) => {
+      safeConsole.dev(
+        `🔄 Fallback result: Editor=${editorResult}, Preview=${previewResult}`
+      );
     });
     return editorResult || previewResult;
   } catch (error) {
-    import('@/utils/console').then(({ safeConsole }) => {
-      safeConsole.error('Error in global scroll:', error);
+    import("@/utils/console").then(({ safeConsole }) => {
+      safeConsole.error("Error in global scroll:", error);
     });
     return false;
   }
@@ -308,8 +323,8 @@ export const createAwesomeHighlight = (
   lineHeight: number
 ): void => {
   // Create highlight overlay element
-  const highlight = document.createElement('div');
-  highlight.className = 'editor-line-highlight';
+  const highlight = document.createElement("div");
+  highlight.className = "editor-line-highlight";
 
   // Position overlay
   const scrollTop = textarea.scrollTop;
@@ -317,34 +332,34 @@ export const createAwesomeHighlight = (
 
   // Styling yang super keren! 🔥
   Object.assign(highlight.style, {
-    position: 'absolute',
-    left: '0',
+    position: "absolute",
+    left: "0",
     top: `${lineTop}px`,
-    width: '100%',
+    width: "100%",
     height: `${lineHeight}px`,
     background:
-      'linear-gradient(135deg, rgba(59, 130, 246, 0.25) 0%, rgba(147, 51, 234, 0.2) 30%, rgba(236, 72, 153, 0.15) 60%, rgba(59, 130, 246, 0.1) 100%)',
-    borderLeft: '4px solid #3b82f6',
-    borderRight: '2px solid rgba(59, 130, 246, 0.3)',
-    borderRadius: '0 12px 12px 0',
+      "linear-gradient(135deg, rgba(59, 130, 246, 0.25) 0%, rgba(147, 51, 234, 0.2) 30%, rgba(236, 72, 153, 0.15) 60%, rgba(59, 130, 246, 0.1) 100%)",
+    borderLeft: "4px solid #3b82f6",
+    borderRight: "2px solid rgba(59, 130, 246, 0.3)",
+    borderRadius: "0 12px 12px 0",
     boxShadow: `
       0 4px 20px rgba(59, 130, 246, 0.4),
       inset 0 1px 0 rgba(255, 255, 255, 0.2),
       inset 0 -1px 0 rgba(59, 130, 246, 0.1),
       0 0 0 1px rgba(59, 130, 246, 0.1)
     `,
-    pointerEvents: 'none',
-    zIndex: '10',
-    animation: 'highlightPulse 2.5s cubic-bezier(0.4, 0, 0.2, 1)',
-    backdropFilter: 'blur(2px) saturate(1.2)',
-    transform: 'translateZ(0)', // Hardware acceleration
-    willChange: 'opacity, transform',
+    pointerEvents: "none",
+    zIndex: "10",
+    animation: "highlightPulse 2.5s cubic-bezier(0.4, 0, 0.2, 1)",
+    backdropFilter: "blur(2px) saturate(1.2)",
+    transform: "translateZ(0)", // Hardware acceleration
+    willChange: "opacity, transform",
   });
 
   // Add CSS animation if not exists
-  if (!document.querySelector('#highlight-animations')) {
-    const style = document.createElement('style');
-    style.id = 'highlight-animations';
+  if (!document.querySelector("#highlight-animations")) {
+    const style = document.createElement("style");
+    style.id = "highlight-animations";
     style.textContent = `
       @keyframes highlightPulse {
         0% {
@@ -456,14 +471,14 @@ export const createAwesomeHighlight = (
   // Position relative to textarea
   const container = textarea.parentElement;
   if (container) {
-    container.style.position = 'relative';
+    container.style.position = "relative";
     container.appendChild(highlight);
 
     // Remove after animation dengan fade out yang smooth
     setTimeout(() => {
       if (highlight.parentElement) {
-        highlight.style.transition = 'opacity 0.5s ease-out';
-        highlight.style.opacity = '0';
+        highlight.style.transition = "opacity 0.5s ease-out";
+        highlight.style.opacity = "0";
         setTimeout(() => {
           if (highlight.parentElement) {
             highlight.remove();
@@ -488,13 +503,18 @@ export const parseHeadingIdToInfo = (
   const slug = match[2];
 
   // Convert slug back to text (basic conversion)
-  const text = slug.replace(/-/g, ' ').replace(/\b\w/g, (l) => l.toUpperCase());
+  const text = slug.replace(/-/g, " ").replace(/\b\w/g, (l) => l.toUpperCase());
 
   return { lineNumber, text };
 };
 
 // Import common utilities to avoid duplication
-import { debounce, findScrollContainer, safeGetElementById, throttle } from './common';
+import {
+  debounce,
+  findScrollContainer,
+  safeGetElementById,
+  throttle,
+} from "./common";
 
 // Re-export for backward compatibility
 export { debounce, throttle };
@@ -511,11 +531,13 @@ export const isElementInViewport = (
 ): boolean => {
   const { threshold = 0.5 } = options;
   const rect = element.getBoundingClientRect();
-  const windowHeight = window.innerHeight || document.documentElement.clientHeight;
+  const windowHeight =
+    window.innerHeight || document.documentElement.clientHeight;
   const windowWidth = window.innerWidth || document.documentElement.clientWidth;
 
   const verticalInView =
-    rect.top <= windowHeight * (1 - threshold) && rect.bottom >= windowHeight * threshold;
+    rect.top <= windowHeight * (1 - threshold) &&
+    rect.bottom >= windowHeight * threshold;
   const horizontalInView = rect.left <= windowWidth && rect.right >= 0;
 
   return verticalInView && horizontalInView;
@@ -525,7 +547,8 @@ export const isElementInViewport = (
  * Get heading level styling classes
  */
 export const getHeadingLevelClasses = (level: number): string => {
-  const baseClasses = 'transition-all duration-200 hover:bg-muted/50 hover:text-foreground';
+  const baseClasses =
+    "transition-all duration-200 hover:bg-muted/50 hover:text-foreground";
 
   switch (level) {
     case 1:
@@ -549,15 +572,17 @@ export const getHeadingLevelClasses = (level: number): string => {
  * Get active heading styling classes
  */
 export const getActiveHeadingClasses = (isActive: boolean): string => {
-  return isActive ? 'bg-primary/10 text-primary border-l-2 border-primary font-medium' : '';
+  return isActive
+    ? "bg-primary/10 text-primary border-l-2 border-primary font-medium"
+    : "";
 };
 
 /**
  * Debug function untuk memeriksa heading elements
  */
 export const debugHeadings = (): void => {
-  safeConsole.group('🔍 Heading Debug Information', () => {
-    const headings = document.querySelectorAll('h1, h2, h3, h4, h5, h6');
+  safeConsole.group("🔍 Heading Debug Information", () => {
+    const headings = document.querySelectorAll("h1, h2, h3, h4, h5, h6");
     safeConsole.log(`Found ${headings.length} heading elements:`);
 
     headings.forEach((heading, index) => {
@@ -567,37 +592,54 @@ export const debugHeadings = (): void => {
       const rect = heading.getBoundingClientRect();
 
       safeConsole.log(`${index + 1}. ${level.toUpperCase()}: "${text}"`);
-      safeConsole.log(`   ID: ${id || 'NO ID'}`);
-      safeConsole.log(`   Position: top=${Math.round(rect.top)}, left=${Math.round(rect.left)}`);
-      safeConsole.log(`   Size: ${Math.round(rect.width)}x${Math.round(rect.height)}`);
-      safeConsole.log('---');
+      safeConsole.log(`   ID: ${id || "NO ID"}`);
+      safeConsole.log(
+        `   Position: top=${Math.round(rect.top)}, left=${Math.round(rect.left)}`
+      );
+      safeConsole.log(
+        `   Size: ${Math.round(rect.width)}x${Math.round(rect.height)}`
+      );
+      safeConsole.log("---");
     });
   });
 
-  const previewPane = document.querySelector('[data-preview-pane]');
+  const previewPane = document.querySelector("[data-preview-pane]");
   if (previewPane) {
     const rect = previewPane.getBoundingClientRect();
-    safeConsole.log('📱 Preview Pane Info:');
-    safeConsole.log(`   Position: top=${Math.round(rect.top)}, left=${Math.round(rect.left)}`);
-    safeConsole.log(`   Size: ${Math.round(rect.width)}x${Math.round(rect.height)}`);
-    safeConsole.log(`   Scroll: top=${previewPane.scrollTop}, left=${previewPane.scrollLeft}`);
+    safeConsole.log("📱 Preview Pane Info:");
+    safeConsole.log(
+      `   Position: top=${Math.round(rect.top)}, left=${Math.round(rect.left)}`
+    );
+    safeConsole.log(
+      `   Size: ${Math.round(rect.width)}x${Math.round(rect.height)}`
+    );
+    safeConsole.log(
+      `   Scroll: top=${previewPane.scrollTop}, left=${previewPane.scrollLeft}`
+    );
   }
 };
 
 /**
  * Detect current view mode
  */
-export const detectViewMode = (): 'editor-only' | 'preview-only' | 'split-view' | 'unknown' => {
-  const editorPane = document.querySelector('textarea') as HTMLTextAreaElement;
-  const previewPane = document.querySelector('[data-preview-pane]') as HTMLElement;
+export const detectViewMode = ():
+  | "editor-only"
+  | "preview-only"
+  | "split-view"
+  | "unknown" => {
+  const editorPane = document.querySelector("textarea") as HTMLTextAreaElement;
+  const previewPane = document.querySelector(
+    "[data-preview-pane]"
+  ) as HTMLElement;
 
-  const isEditorVisible = editorPane && (editorPane as HTMLElement).offsetParent !== null;
+  const isEditorVisible =
+    editorPane && (editorPane as HTMLElement).offsetParent !== null;
   const isPreviewVisible = previewPane && previewPane.offsetParent !== null;
 
-  if (isEditorVisible && isPreviewVisible) return 'split-view';
-  if (isEditorVisible && !isPreviewVisible) return 'editor-only';
-  if (!isEditorVisible && isPreviewVisible) return 'preview-only';
-  return 'unknown';
+  if (isEditorVisible && isPreviewVisible) return "split-view";
+  if (isEditorVisible && !isPreviewVisible) return "editor-only";
+  if (!isEditorVisible && isPreviewVisible) return "preview-only";
+  return "unknown";
 };
 
 /**
@@ -612,14 +654,16 @@ export const testScrollToHeading = async (headingId: string): Promise<void> => {
     return;
   }
 
-  safeConsole.log(`✅ Element found: ${element.tagName} - "${element.textContent?.trim()}"`);
+  safeConsole.log(
+    `✅ Element found: ${element.tagName} - "${element.textContent?.trim()}"`
+  );
 
   const success = await scrollToHeading(headingId, {
     offset: 120,
-    behavior: 'smooth',
+    behavior: "smooth",
   });
 
-  safeConsole.log(`📜 Scroll result: ${success ? '✅ Success' : '❌ Failed'}`);
+  safeConsole.log(`📜 Scroll result: ${success ? "✅ Success" : "❌ Failed"}`);
 };
 
 /**
@@ -631,13 +675,17 @@ export const testGlobalScroll = async (headingId: string): Promise<void> => {
 
   const headingInfo = parseHeadingIdToInfo(headingId);
   if (headingInfo) {
-    safeConsole.log(`📝 Heading info: Line ${headingInfo.lineNumber}, Text: "${headingInfo.text}"`);
+    safeConsole.log(
+      `📝 Heading info: Line ${headingInfo.lineNumber}, Text: "${headingInfo.text}"`
+    );
   }
 
   const success = await scrollToHeadingGlobal(headingId, {
     offset: 120,
-    behavior: 'smooth',
+    behavior: "smooth",
   });
 
-  safeConsole.log(`🌍 Global scroll result: ${success ? '✅ Success' : '❌ Failed'}`);
+  safeConsole.log(
+    `🌍 Global scroll result: ${success ? "✅ Success" : "❌ Failed"}`
+  );
 };

@@ -1,5 +1,5 @@
 {
-  "$schema": "https://biomejs.dev/schemas/2.1.2/schema.json",
+  "$schema": "https://biomejs.dev/schemas/2.2.0/schema.json",
   "assist": { "actions": { "source": { "organizeImports": "on" } } },
   "linter": {
     "enabled": true,
@@ -160,13 +160,13 @@
       "**/app/**/*.{js,jsx,ts,tsx}",
       "**/*.{js,jsx,ts,tsx}",
       "**/*.json",
-      "!**/node_modules/**",
-      "!**/build/**",
-      "!**/dist/**",
-      "!**/.react-router/**",
-      "!**/public/**",
+      "!**/node_modules",
+      "!**/build",
+      "!**/dist",
+      "!**/.react-router",
+      "!**/public",
       "!**/*.min.js",
-      "!**/coverage/**"
+      "!**/coverage"
     ]
   },
   "overrides": [
@@ -184,7 +184,11 @@
       }
     },
     {
-      "includes": ["**/*.config.{js,ts}", "**/vite.config.ts", "**/tailwind.config.ts"],
+      "includes": [
+        "**/*.config.{js,ts}",
+        "**/vite.config.ts",
+        "**/tailwind.config.ts"
+      ],
       "linter": {
         "rules": {
           "style": {

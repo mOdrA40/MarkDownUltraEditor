@@ -1,0 +1,108 @@
+# Security Headers for MarkDownUltraRemix
+# Content Security Policy and additional security measures
+
+# Global security headers for all routes
+/*
+  # Content Security Policy - Ketat namun tetap functional untuk Clerk + Supabase
+  Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://clerk.com https://*.clerk.accounts.dev https://*.clerk.dev https://js.sentry-cdn.com https://browser.sentry-cdn.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com data:; img-src 'self' data: https: blob: https://images.clerk.dev https://*.clerk.dev https://img.clerk.com; connect-src 'self' https://*.supabase.co https://clerk.com https://*.clerk.accounts.dev https://*.clerk.dev https://*.sentry.io https://sentry.io wss://*.supabase.co; frame-src 'self' https://clerk.com https://*.clerk.accounts.dev https://*.clerk.dev; worker-src 'self' blob:; child-src 'self' blob:; object-src 'none'; base-uri 'self'; form-action 'self' https://clerk.com https://*.clerk.accounts.dev; frame-ancestors 'none'; upgrade-insecure-requests;
+  
+  # Prevent clickjacking
+  X-Frame-Options: DENY
+  
+  # Prevent MIME type sniffing
+  X-Content-Type-Options: nosniff
+  
+  # Enable XSS protection
+  X-XSS-Protection: 1; mode=block
+  
+  # Control referrer information
+  Referrer-Policy: strict-origin-when-cross-origin
+  
+  # Restrict dangerous browser features
+  Permissions-Policy: camera=(), microphone=(), geolocation=(), payment=(), usb=(), magnetometer=(), gyroscope=(), accelerometer=(), autoplay=(), encrypted-media=(), fullscreen=(self), picture-in-picture=()
+  
+  # Force HTTPS in production
+  Strict-Transport-Security: max-age=31536000; includeSubDomains; preload
+  
+  # Additional security headers
+  X-DNS-Prefetch-Control: off
+  X-Permitted-Cross-Domain-Policies: none
+  Cross-Origin-Embedder-Policy: unsafe-none
+  Cross-Origin-Opener-Policy: same-origin-allow-popups
+  Cross-Origin-Resource-Policy: cross-origin
+
+# Static assets with long-term caching
+/*.js
+  Cache-Control: public, max-age=31536000, immutable
+  
+/*.css
+  Cache-Control: public, max-age=31536000, immutable
+  
+/*.woff2
+  Cache-Control: public, max-age=31536000, immutable
+  
+/*.png
+  Cache-Control: public, max-age=31536000, immutable
+  
+/*.jpg
+  Cache-Control: public, max-age=31536000, immutable
+  
+/*.jpeg
+  Cache-Control: public, max-age=31536000, immutable
+  
+/*.svg
+  Cache-Control: public, max-age=31536000, immutable
+  
+/*.webp
+  Cache-Control: public, max-age=31536000, immutable
+  
+/*.ico
+  Cache-Control: public, max-age=31536000, immutable
+
+# API routes security
+/api/*
+  X-Robots-Tag: noindex, nofollow
+  Cache-Control: no-cache, no-store, must-revalidate
+  Pragma: no-cache
+  Expires: 0
+
+# Authentication routes
+/sign-in/*
+  X-Robots-Tag: noindex, nofollow
+  Cache-Control: no-cache, no-store, must-revalidate
+  Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://clerk.com https://*.clerk.accounts.dev https://*.clerk.dev; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com data:; img-src 'self' data: https: https://images.clerk.dev https://*.clerk.dev https://img.clerk.com; connect-src 'self' https://clerk.com https://*.clerk.accounts.dev https://*.clerk.dev; frame-src 'self' https://clerk.com https://*.clerk.accounts.dev https://*.clerk.dev; object-src 'none'; base-uri 'self'; form-action 'self' https://clerk.com https://*.clerk.accounts.dev;
+  
+/sign-up/*
+  X-Robots-Tag: noindex, nofollow
+  Cache-Control: no-cache, no-store, must-revalidate
+  Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://clerk.com https://*.clerk.accounts.dev https://*.clerk.dev; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com data:; img-src 'self' data: https: https://images.clerk.dev https://*.clerk.dev https://img.clerk.com; connect-src 'self' https://clerk.com https://*.clerk.accounts.dev https://*.clerk.dev; frame-src 'self' https://clerk.com https://*.clerk.accounts.dev https://*.clerk.dev; object-src 'none'; base-uri 'self'; form-action 'self' https://clerk.com https://*.clerk.accounts.dev;
+
+# Settings and protected routes
+/settings/*
+  X-Robots-Tag: noindex, nofollow
+  Cache-Control: no-cache, no-store, must-revalidate
+  
+/files/*
+  X-Robots-Tag: noindex, nofollow
+  Cache-Control: no-cache, no-store, must-revalidate
+
+# Manifest and service worker
+/site.webmanifest
+  Content-Type: application/manifest+json
+  Cache-Control: public, max-age=86400
+  
+/sw.js
+  Cache-Control: no-cache, no-store, must-revalidate
+  
+/robots.txt
+  Cache-Control: public, max-age=86400
+
+# Block sensitive files (additional layer)
+/.env*
+  X-Robots-Tag: noindex, nofollow, noarchive, nosnippet
+  
+/config/*
+  X-Robots-Tag: noindex, nofollow, noarchive, nosnippet
+  
+/.git/*
+  X-Robots-Tag: noindex, nofollow, noarchive, nosnippet

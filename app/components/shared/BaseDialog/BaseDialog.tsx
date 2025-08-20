@@ -3,16 +3,16 @@
  * @author Axel Modra
  */
 
-import type React from 'react';
-import { useCallback, useEffect, useState } from 'react';
+import type React from "react";
+import { useCallback, useEffect, useId, useState } from "react";
 import {
   Dialog,
   DialogContent,
   DialogDescription,
   DialogHeader,
   DialogTitle,
-} from '@/components/ui/dialog';
-import { cn } from '@/lib/utils';
+} from "@/components/ui/dialog";
+import { cn } from "@/lib/utils";
 
 export interface BaseDialogProps {
   /** Whether the dialog is open */
@@ -28,7 +28,7 @@ export interface BaseDialogProps {
   /** Additional CSS classes for the dialog content */
   className?: string;
   /** Size variant for the dialog */
-  size?: 'sm' | 'md' | 'lg' | 'xl' | 'full';
+  size?: "sm" | "md" | "lg" | "xl" | "full";
   /** Whether to show close button */
   showCloseButton?: boolean;
   /** Whether to close on escape key */
@@ -49,11 +49,11 @@ export interface BaseDialogProps {
  * Size variants for dialog content
  */
 const sizeVariants = {
-  sm: 'max-w-sm',
-  md: 'max-w-md',
-  lg: 'max-w-lg',
-  xl: 'max-w-xl',
-  full: 'max-w-[95vw] max-h-[95vh]',
+  sm: "max-w-sm",
+  md: "max-w-md",
+  lg: "max-w-lg",
+  xl: "max-w-xl",
+  full: "max-w-[95vw] max-h-[95vh]",
 } as const;
 
 /**
@@ -67,7 +67,7 @@ export const BaseDialog: React.FC<BaseDialogProps> = ({
   description,
   children,
   className,
-  size = 'md',
+  size = "md",
   showCloseButton: _showCloseButton = true,
   closeOnEscape = true,
   closeOnOverlayClick = true,
@@ -76,21 +76,22 @@ export const BaseDialog: React.FC<BaseDialogProps> = ({
   error,
   success,
 }) => {
-  // Handle escape key
+  const titleId = useId();
+  const descriptionId = useId();
+
   useEffect(() => {
     if (!closeOnEscape || !isOpen) return;
 
     const handleEscape = (event: KeyboardEvent) => {
-      if (event.key === 'Escape') {
+      if (event.key === "Escape") {
         onClose();
       }
     };
 
-    document.addEventListener('keydown', handleEscape);
-    return () => document.removeEventListener('keydown', handleEscape);
+    document.addEventListener("keydown", handleEscape);
+    return () => document.removeEventListener("keydown", handleEscape);
   }, [closeOnEscape, isOpen, onClose]);
 
-  // Handle overlay click
   const handleOverlayClick = useCallback(
     (event: React.MouseEvent) => {
       if (closeOnOverlayClick && event.target === event.currentTarget) {
@@ -105,22 +106,25 @@ export const BaseDialog: React.FC<BaseDialogProps> = ({
       <DialogContent
         className={cn(
           sizeVariants[size],
-          'flex flex-col',
-          isLoading && 'pointer-events-none opacity-75',
+          "flex flex-col",
+          isLoading && "pointer-events-none opacity-75",
           className
         )}
         onClick={handleOverlayClick}
         role="dialog"
         aria-modal="true"
-        aria-labelledby="dialog-title"
-        aria-describedby={description ? 'dialog-description' : undefined}
+        aria-labelledby={titleId}
+        aria-describedby={description ? descriptionId : undefined}
       >
         <DialogHeader>
-          <DialogTitle id="dialog-title" className="text-lg font-semibold">
+          <DialogTitle id={titleId} className="text-lg font-semibold">
             {title}
           </DialogTitle>
           {description && (
-            <DialogDescription id="dialog-description" className="text-sm text-muted-foreground">
+            <DialogDescription
+              id={descriptionId}
+              className="text-sm text-muted-foreground"
+            >
               {description}
             </DialogDescription>
           )}
@@ -128,11 +132,15 @@ export const BaseDialog: React.FC<BaseDialogProps> = ({
 
         {/* Status Messages */}
         {error && (
-          <div className="rounded-md bg-destructive/10 p-3 text-sm text-destructive">{error}</div>
+          <div className="rounded-md bg-destructive/10 p-3 text-sm text-destructive">
+            {error}
+          </div>
         )}
 
         {success && (
-          <div className="rounded-md bg-green-50 p-3 text-sm text-green-700">{success}</div>
+          <div className="rounded-md bg-green-50 p-3 text-sm text-green-700">
+            {success}
+          </div>
         )}
 
         {/* Loading Overlay */}
@@ -149,7 +157,11 @@ export const BaseDialog: React.FC<BaseDialogProps> = ({
         <div className="flex-1 overflow-auto">{children}</div>
 
         {/* Footer */}
-        {footer && <div className="mt-4 flex justify-end space-x-2 border-t pt-4">{footer}</div>}
+        {footer && (
+          <div className="mt-4 flex justify-end space-x-2 border-t pt-4">
+            {footer}
+          </div>
+        )}
       </DialogContent>
     </Dialog>
   );

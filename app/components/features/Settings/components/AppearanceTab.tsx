@@ -1,14 +1,23 @@
-import { Eye, Monitor, Palette } from 'lucide-react';
-import type React from 'react';
-import { memo } from 'react';
-import { ThemeSelector } from '@/components/features/ThemeSelector';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Separator } from '@/components/ui/separator';
-import type { AppPreferences } from '../types/settings';
+import { Eye, Monitor, Palette } from "lucide-react";
+import type React from "react";
+import { memo, useId } from "react";
+import { ThemeSelector } from "@/components/features/ThemeSelector";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Separator } from "@/components/ui/separator";
+import type { AppPreferences } from "../types/settings";
 
 interface AppearanceTabProps {
   preferences: AppPreferences;
-  onUpdatePreference: <K extends keyof AppPreferences>(key: K, value: AppPreferences[K]) => void;
+  onUpdatePreference: <K extends keyof AppPreferences>(
+    key: K,
+    value: AppPreferences[K]
+  ) => void;
 }
 
 /**
@@ -16,6 +25,11 @@ interface AppearanceTabProps {
  */
 export const AppearanceTab: React.FC<AppearanceTabProps> = memo(
   ({ preferences, onUpdatePreference }) => {
+    const showLineNumbersId = useId();
+    const showWordCountId = useId();
+    const showCharacterCountId = useId();
+    const reducedMotionId = useId();
+    const soundEffectsId = useId();
     return (
       <Card>
         <CardHeader className="p-4 sm:p-6">
@@ -33,7 +47,7 @@ export const AppearanceTab: React.FC<AppearanceTabProps> = memo(
             <div className="p-3 sm:p-4 border rounded-lg bg-muted/50 overflow-hidden">
               <ThemeSelector
                 currentTheme={preferences.theme}
-                onThemeChange={(theme) => onUpdatePreference('theme', theme)}
+                onThemeChange={(theme) => onUpdatePreference("theme", theme)}
               />
             </div>
           </div>
@@ -50,12 +64,14 @@ export const AppearanceTab: React.FC<AppearanceTabProps> = memo(
               <div className="flex items-center space-x-3">
                 <input
                   type="checkbox"
-                  id="showLineNumbers"
+                  id={showLineNumbersId}
                   checked={preferences.showLineNumbers}
-                  onChange={(e) => onUpdatePreference('showLineNumbers', e.target.checked)}
+                  onChange={(e) =>
+                    onUpdatePreference("showLineNumbers", e.target.checked)
+                  }
                   className="rounded"
                 />
-                <label htmlFor="showLineNumbers" className="text-sm">
+                <label htmlFor={showLineNumbersId} className="text-sm">
                   Show line numbers
                 </label>
               </div>
@@ -63,12 +79,14 @@ export const AppearanceTab: React.FC<AppearanceTabProps> = memo(
               <div className="flex items-center space-x-3">
                 <input
                   type="checkbox"
-                  id="showWordCount"
+                  id={showWordCountId}
                   checked={preferences.showWordCount}
-                  onChange={(e) => onUpdatePreference('showWordCount', e.target.checked)}
+                  onChange={(e) =>
+                    onUpdatePreference("showWordCount", e.target.checked)
+                  }
                   className="rounded"
                 />
-                <label htmlFor="showWordCount" className="text-sm">
+                <label htmlFor={showWordCountId} className="text-sm">
                   Show word count
                 </label>
               </div>
@@ -76,12 +94,14 @@ export const AppearanceTab: React.FC<AppearanceTabProps> = memo(
               <div className="flex items-center space-x-3">
                 <input
                   type="checkbox"
-                  id="showCharacterCount"
+                  id={showCharacterCountId}
                   checked={preferences.showCharacterCount}
-                  onChange={(e) => onUpdatePreference('showCharacterCount', e.target.checked)}
+                  onChange={(e) =>
+                    onUpdatePreference("showCharacterCount", e.target.checked)
+                  }
                   className="rounded"
                 />
-                <label htmlFor="showCharacterCount" className="text-sm">
+                <label htmlFor={showCharacterCountId} className="text-sm">
                   Show character count
                 </label>
               </div>
@@ -96,12 +116,14 @@ export const AppearanceTab: React.FC<AppearanceTabProps> = memo(
               <div className="flex items-center space-x-3">
                 <input
                   type="checkbox"
-                  id="reducedMotion"
+                  id={reducedMotionId}
                   checked={preferences.reducedMotion}
-                  onChange={(e) => onUpdatePreference('reducedMotion', e.target.checked)}
+                  onChange={(e) =>
+                    onUpdatePreference("reducedMotion", e.target.checked)
+                  }
                   className="rounded"
                 />
-                <label htmlFor="reducedMotion" className="text-sm">
+                <label htmlFor={reducedMotionId} className="text-sm">
                   Reduce motion effects
                 </label>
               </div>
@@ -109,12 +131,14 @@ export const AppearanceTab: React.FC<AppearanceTabProps> = memo(
               <div className="flex items-center space-x-3">
                 <input
                   type="checkbox"
-                  id="soundEffects"
+                  id={soundEffectsId}
                   checked={preferences.soundEffects}
-                  onChange={(e) => onUpdatePreference('soundEffects', e.target.checked)}
+                  onChange={(e) =>
+                    onUpdatePreference("soundEffects", e.target.checked)
+                  }
                   className="rounded"
                 />
-                <label htmlFor="soundEffects" className="text-sm">
+                <label htmlFor={soundEffectsId} className="text-sm">
                   Enable sound effects
                 </label>
               </div>
@@ -126,4 +150,4 @@ export const AppearanceTab: React.FC<AppearanceTabProps> = memo(
   }
 );
 
-AppearanceTab.displayName = 'AppearanceTab';
+AppearanceTab.displayName = "AppearanceTab";
