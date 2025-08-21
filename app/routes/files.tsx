@@ -3,9 +3,8 @@
  * @author Axel Modra
  */
 
-import { rootAuthLoader } from '@clerk/react-router/ssr.server';
 import { QueryClientProvider } from '@tanstack/react-query';
-import type { LoaderFunctionArgs, MetaFunction } from 'react-router';
+import type { MetaFunction } from 'react-router';
 import { FilesManager } from '@/components/files/FilesManager';
 import SecureErrorBoundary from '@/components/shared/SecureErrorBoundary';
 import { Toaster as Sonner } from '@/components/ui/sonner';
@@ -37,12 +36,14 @@ export const meta: MetaFunction = () => {
   ];
 };
 
-export async function loader(args: LoaderFunctionArgs) {
-  // Load authentication state
-  const authData = await rootAuthLoader(args);
+// Loader removed for static build compatibility
+// Authentication state will be handled client-side
+// export async function loader(args: LoaderFunctionArgs) {
+//   // Load authentication state
+//   const authData = await rootAuthLoader(args);
 
-  return authData;
-}
+//   return authData;
+// }
 
 export default function FilesPage() {
   return (

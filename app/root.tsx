@@ -1,8 +1,7 @@
 import { ClerkProvider } from '@clerk/react-router';
-import { rootAuthLoader } from '@clerk/react-router/ssr.server';
 import type React from 'react';
 import { Suspense, useEffect } from 'react';
-import type { HeadersFunction, LinksFunction } from 'react-router';
+import type { LinksFunction } from 'react-router';
 import { Links, Meta, Outlet, Scripts, ScrollRestoration, useNavigation } from 'react-router';
 
 import { ThemeProvider } from '@/components/features/ThemeSelector';
@@ -31,9 +30,11 @@ if (typeof window !== 'undefined') {
   });
 }
 
-export async function loader(args: Route.LoaderArgs) {
-  return rootAuthLoader(args);
-}
+// Loader removed for static build compatibility
+// Authentication state will be handled client-side
+// export async function loader(args: Route.LoaderArgs) {
+//   return rootAuthLoader(args);
+// }
 
 export const links: LinksFunction = () => [
   { rel: 'icon', href: '/markdownlogo.svg?v=2024', type: 'image/svg+xml' },
@@ -53,9 +54,10 @@ export const links: LinksFunction = () => [
   },
 ];
 
-export const headers: HeadersFunction = () => {
-  return {};
-};
+// Headers function removed for static build compatibility
+// export const headers: HeadersFunction = () => {
+//   return {};
+// };
 
 export function Layout({ children }: { children: React.ReactNode }) {
   return (

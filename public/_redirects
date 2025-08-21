@@ -57,7 +57,9 @@
 *.sqlite3               /404    404!
 
 # Security headers for specific paths
+/settings/*             /settings/  200
 /files/*                /files/     200
 
-# SPA fallback - must be last
+# SPA fallback for React Router v7 - must be last
+# This handles client-side routing for all unmatched routes
 /*                      /index.html 200

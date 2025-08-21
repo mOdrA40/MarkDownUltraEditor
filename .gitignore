@@ -13,9 +13,10 @@ hasil.txt
 # Mengabaikan semua file .md
 *.md
 
-# Kecualikan README.md
-!README.md
 bash.exe.stackdump
+!README.md
+!README_EN.md
+
 
 # Ignore debug components folder (if created in future)
 app/components/debug/
@@ -24,4 +25,3 @@ app/routes/debug.*.tsx
 test-image.txt
 .vscode/mcp.json
 .vscode/settings.json
-netlify.toml

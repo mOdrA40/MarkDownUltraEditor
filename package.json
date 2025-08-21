@@ -15,6 +15,7 @@
     "start": "react-router-serve ./build/server/index.js",
     "typecheck": "react-router typegen && tsc",
     "predeploy": "bun run typecheck && bun run lint:check && bun run build",
+    "deploy:netlify": "node scripts/netlify-deploy.js",
     "clean": "rm -rf build dist .react-router node_modules/.cache"
   },
   "dependencies": {

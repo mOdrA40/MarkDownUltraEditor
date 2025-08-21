@@ -1,7 +1,6 @@
 import { useAuth } from '@clerk/react-router';
-import { rootAuthLoader } from '@clerk/react-router/ssr.server';
 import { useEffect } from 'react';
-import type { LoaderFunctionArgs, MetaFunction } from 'react-router';
+import type { MetaFunction } from 'react-router';
 import { useNavigate } from 'react-router';
 import { SettingsPage } from '@/components/features/Settings';
 import SecureErrorBoundary from '@/components/shared/SecureErrorBoundary';
@@ -32,10 +31,12 @@ export const meta: MetaFunction = () => {
   ];
 };
 
-export async function loader(args: LoaderFunctionArgs) {
-  // Load authentication state
-  return rootAuthLoader(args);
-}
+// Loader removed for static build compatibility
+// Authentication state will be handled client-side
+// export async function loader(args: LoaderFunctionArgs) {
+//   // Load authentication state
+//   return rootAuthLoader(args);
+// }
 
 /**
  * Protected wrapper component for settings

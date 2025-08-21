@@ -1,5 +1,5 @@
 import { QueryClientProvider } from '@tanstack/react-query';
-import type { LoaderFunctionArgs, MetaFunction } from 'react-router';
+import type { MetaFunction } from 'react-router';
 import { MarkdownEditor } from '@/components/editor/MarkdownEditor';
 import SecureErrorBoundary from '@/components/shared/SecureErrorBoundary';
 import { Toaster as Sonner } from '@/components/ui/sonner';
@@ -41,10 +41,11 @@ export const meta: MetaFunction = () => {
   ];
 };
 
-export async function loader(_args: LoaderFunctionArgs) {
-  // Simple loader without security middleware
-  return {};
-}
+// Loader removed for SPA mode compatibility
+// export async function loader(_args: LoaderFunctionArgs) {
+//   // Simple loader without security middleware
+//   return {};
+// }
 
 export default function Index() {
   return (
