@@ -57,8 +57,6 @@
 *.sqlite3               /404    404!
 
 # Security headers for specific paths
-/sign-in/*              /sign-in/   200
-/sign-up/*              /sign-up/   200
 /files/*                /files/     200
 
 # SPA fallback - must be last

@@ -132,8 +132,6 @@ export default function App({ loaderData }: Route.ComponentProps) {
     <ClerkProvider
       loaderData={loaderData}
       publishableKey={publishableKey}
-      signInUrl="/sign-in"
-      signUpUrl="/sign-up"
       appearance={{
         elements: {
           formButtonPrimary: 'normal-case',

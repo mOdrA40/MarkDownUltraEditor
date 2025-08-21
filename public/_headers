@@ -66,16 +66,7 @@
   Pragma: no-cache
   Expires: 0
 
-# Authentication routes
-/sign-in/*
-  X-Robots-Tag: noindex, nofollow
-  Cache-Control: no-cache, no-store, must-revalidate
-  Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://clerk.com https://*.clerk.accounts.dev https://*.clerk.dev; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com data:; img-src 'self' data: https: https://images.clerk.dev https://*.clerk.dev https://img.clerk.com; connect-src 'self' https://clerk.com https://*.clerk.accounts.dev https://*.clerk.dev; frame-src 'self' https://clerk.com https://*.clerk.accounts.dev https://*.clerk.dev; object-src 'none'; base-uri 'self'; form-action 'self' https://clerk.com https://*.clerk.accounts.dev;
-  
-/sign-up/*
-  X-Robots-Tag: noindex, nofollow
-  Cache-Control: no-cache, no-store, must-revalidate
-  Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://clerk.com https://*.clerk.accounts.dev https://*.clerk.dev; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com data:; img-src 'self' data: https: https://images.clerk.dev https://*.clerk.dev https://img.clerk.com; connect-src 'self' https://clerk.com https://*.clerk.accounts.dev https://*.clerk.dev; frame-src 'self' https://clerk.com https://*.clerk.accounts.dev https://*.clerk.dev; object-src 'none'; base-uri 'self'; form-action 'self' https://clerk.com https://*.clerk.accounts.dev;
+# Authentication handled via Clerk modals - no dedicated routes needed
 
 # Settings and protected routes
 /settings/*
