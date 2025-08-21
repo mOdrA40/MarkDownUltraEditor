@@ -7,14 +7,14 @@
 export type {
   KeyboardNavigationOptions,
   UseKeyboardNavigationReturn,
-} from "@/hooks/navigation";
+} from '@/hooks/navigation';
 // Re-export main hooks
-export { useFocusManagement, useKeyboardNavigation } from "@/hooks/navigation";
+export { useFocusManagement, useKeyboardNavigation } from '@/hooks/navigation';
 
 export type {
   UseFocusManagementOptions,
   UseFocusManagementReturn,
-} from "@/hooks/navigation/useFocusManagement";
+} from '@/hooks/navigation/useFocusManagement';
 
 // Re-export utilities
 export {
@@ -30,34 +30,26 @@ export {
   type ScrollOptions,
   scrollElementIntoView,
   throttleKeyboard,
-} from "@/utils/keyboardNavigationUtils";
+} from '@/utils/keyboardNavigationUtils';
 
 /**
  * Keyboard navigation provider component
  */
-import React, {
-  createContext,
-  type ReactNode,
-  useCallback,
-  useContext,
-} from "react";
-import type {
-  KeyboardNavigationOptions,
-  UseKeyboardNavigationReturn,
-} from "@/hooks/navigation";
-import { useKeyboardNavigation } from "@/hooks/navigation";
+import React, { createContext, type ReactNode, useCallback, useContext } from 'react';
+import type { KeyboardNavigationOptions, UseKeyboardNavigationReturn } from '@/hooks/navigation';
+import { useKeyboardNavigation } from '@/hooks/navigation';
 
-const KeyboardNavigationContext =
-  createContext<UseKeyboardNavigationReturn | null>(null);
+const KeyboardNavigationContext = createContext<UseKeyboardNavigationReturn | null>(null);
 
 interface KeyboardNavigationProviderProps {
   children: ReactNode;
   options: KeyboardNavigationOptions;
 }
 
-export const KeyboardNavigationProvider: React.FC<
-  KeyboardNavigationProviderProps
-> = ({ children, options }) => {
+export const KeyboardNavigationProvider: React.FC<KeyboardNavigationProviderProps> = ({
+  children,
+  options,
+}) => {
   const navigationApi = useKeyboardNavigation(options);
 
   return (
@@ -74,7 +66,7 @@ export const useKeyboardNavigationContext = (): UseKeyboardNavigationReturn => {
   const context = useContext(KeyboardNavigationContext);
   if (!context) {
     throw new Error(
-      "useKeyboardNavigationContext must be used within a KeyboardNavigationProvider"
+      'useKeyboardNavigationContext must be used within a KeyboardNavigationProvider'
     );
   }
   return context;
@@ -101,14 +93,14 @@ export const NavigableList: React.FC<NavigableListProps> = ({
   activeId,
   onActiveChange,
   onItemClick,
-  className = "",
-  itemClassName = "",
+  className = '',
+  itemClassName = '',
 }) => {
   const containerRef = React.useRef<HTMLUListElement>(null);
 
   const { handleKeyDown } = useKeyboardNavigation({
     headingIds: items.map((item) => item.id),
-    activeId: activeId || "",
+    activeId: activeId || '',
     onActiveChange,
     enabled: true,
     container: containerRef.current,
@@ -122,16 +114,12 @@ export const NavigableList: React.FC<NavigableListProps> = ({
       handleKeyDown(e);
     };
 
-    container.addEventListener("keydown", handleKeyDownEvent);
-    return () => container.removeEventListener("keydown", handleKeyDownEvent);
+    container.addEventListener('keydown', handleKeyDownEvent);
+    return () => container.removeEventListener('keydown', handleKeyDownEvent);
   }, [handleKeyDown]);
 
   return (
-    <ul
-      ref={containerRef}
-      className={`navigable-list ${className}`}
-      data-toc-container
-    >
+    <ul ref={containerRef} className={`navigable-list ${className}`} data-toc-container>
       {items.map((item) => (
         <button
           type="button"
@@ -139,7 +127,7 @@ export const NavigableList: React.FC<NavigableListProps> = ({
           data-heading-id={item.id}
           className={`
             navigable-item cursor-pointer p-2 rounded w-full text-left
-            ${activeId === item.id ? "bg-blue-100 dark:bg-blue-900" : "hover:bg-gray-100 dark:hover:bg-gray-800"}
+            ${activeId === item.id ? 'bg-blue-100 dark:bg-blue-900' : 'hover:bg-gray-100 dark:hover:bg-gray-800'}
             ${itemClassName}
           `}
           onClick={() => onItemClick?.(item.id)}
@@ -148,9 +136,7 @@ export const NavigableList: React.FC<NavigableListProps> = ({
         >
           <div className="font-medium">{item.label}</div>
           {item.content && (
-            <div className="text-sm text-gray-600 dark:text-gray-400 mt-1">
-              {item.content}
-            </div>
+            <div className="text-sm text-gray-600 dark:text-gray-400 mt-1">{item.content}</div>
           )}
         </button>
       ))}
@@ -171,23 +157,20 @@ interface KeyboardShortcutsHelpProps {
 
 export const KeyboardShortcutsHelp: React.FC<KeyboardShortcutsHelpProps> = ({
   shortcuts = [
-    { keys: ["↑", "↓"], description: "Navigate up/down" },
-    { keys: ["Home"], description: "Go to first item" },
-    { keys: ["End"], description: "Go to last item" },
-    { keys: ["Enter", "Space"], description: "Activate item" },
-    { keys: ["Escape"], description: "Exit navigation" },
+    { keys: ['↑', '↓'], description: 'Navigate up/down' },
+    { keys: ['Home'], description: 'Go to first item' },
+    { keys: ['End'], description: 'Go to last item' },
+    { keys: ['Enter', 'Space'], description: 'Activate item' },
+    { keys: ['Escape'], description: 'Exit navigation' },
   ],
-  className = "",
+  className = '',
 }) => {
   return (
     <div className={`keyboard-shortcuts-help ${className}`}>
       <h3 className="text-sm font-semibold mb-2">Keyboard Shortcuts</h3>
       <div className="space-y-1">
         {shortcuts.map((shortcut) => (
-          <div
-            key={shortcut.description}
-            className="flex items-center justify-between text-xs"
-          >
+          <div key={shortcut.description} className="flex items-center justify-between text-xs">
             <div className="flex space-x-1">
               {shortcut.keys.map((key) => (
                 <kbd
@@ -201,9 +184,7 @@ export const KeyboardShortcutsHelp: React.FC<KeyboardShortcutsHelpProps> = ({
                 </kbd>
               ))}
             </div>
-            <span className="text-gray-600 dark:text-gray-400">
-              {shortcut.description}
-            </span>
+            <span className="text-gray-600 dark:text-gray-400">{shortcut.description}</span>
           </div>
         ))}
       </div>
@@ -224,7 +205,7 @@ interface FocusTrapProps {
 export const FocusTrap: React.FC<FocusTrapProps> = ({
   children,
   enabled = true,
-  className = "",
+  className = '',
 }) => {
   const containerRef = React.useRef<HTMLDivElement>(null);
 
@@ -256,8 +237,7 @@ export const FocusTrap: React.FC<FocusTrapProps> = ({
     const currentIndex = document.activeElement
       ? Array.from(focusableElements).indexOf(document.activeElement)
       : -1;
-    const prevIndex =
-      currentIndex <= 0 ? focusableElements.length - 1 : currentIndex - 1;
+    const prevIndex = currentIndex <= 0 ? focusableElements.length - 1 : currentIndex - 1;
 
     if (focusableElements[prevIndex] instanceof HTMLElement) {
       focusableElements[prevIndex].focus();
@@ -271,7 +251,7 @@ export const FocusTrap: React.FC<FocusTrapProps> = ({
     if (!container) return;
 
     const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === "Tab") {
+      if (e.key === 'Tab') {
         e.preventDefault();
         if (e.shiftKey) {
           focusPrevious();
@@ -281,8 +261,8 @@ export const FocusTrap: React.FC<FocusTrapProps> = ({
       }
     };
 
-    container.addEventListener("keydown", handleKeyDown);
-    return () => container.removeEventListener("keydown", handleKeyDown);
+    container.addEventListener('keydown', handleKeyDown);
+    return () => container.removeEventListener('keydown', handleKeyDown);
   }, [enabled, focusNext, focusPrevious]);
 
   return (

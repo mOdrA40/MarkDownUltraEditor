@@ -2,7 +2,7 @@
  * Common utility functions
  */
 
-import { safeConsole } from "@/utils/console";
+import { safeConsole } from '@/utils/console';
 
 /**
  * ===== PERFORMANCE UTILITIES =====
@@ -52,7 +52,7 @@ export const throttle = <T extends (...args: unknown[]) => unknown>(
  */
 const calculateLuminance = (color: string): number => {
   // Convert hex to RGB
-  const hex = color.replace("#", "");
+  const hex = color.replace('#', '');
   const r = Number.parseInt(hex.substring(0, 2), 16) / 255;
   const g = Number.parseInt(hex.substring(2, 4), 16) / 255;
   const b = Number.parseInt(hex.substring(4, 6), 16) / 255;
@@ -68,10 +68,7 @@ const calculateLuminance = (color: string): number => {
 /**
  * Calculate contrast ratio between two colors
  */
-export const calculateContrastRatio = (
-  foreground: string,
-  background: string
-): number => {
+export const calculateContrastRatio = (foreground: string, background: string): number => {
   const l1 = calculateLuminance(foreground);
   const l2 = calculateLuminance(background);
   const lighter = Math.max(l1, l2);
@@ -86,15 +83,15 @@ export const calculateContrastRatio = (
 export const meetsContrastRequirement = (
   foreground: string,
   background: string,
-  level: "AA" | "AAA" = "AA",
-  size: "normal" | "large" = "normal"
+  level: 'AA' | 'AAA' = 'AA',
+  size: 'normal' | 'large' = 'normal'
 ): boolean => {
   const ratio = calculateContrastRatio(foreground, background);
 
-  if (level === "AAA") {
-    return size === "large" ? ratio >= 4.5 : ratio >= 7;
+  if (level === 'AAA') {
+    return size === 'large' ? ratio >= 4.5 : ratio >= 7;
   }
-  return size === "large" ? ratio >= 3 : ratio >= 4.5;
+  return size === 'large' ? ratio >= 3 : ratio >= 4.5;
 };
 
 /**
@@ -106,9 +103,9 @@ export const meetsContrastRequirement = (
  */
 export const isStorageAvailable = (): boolean => {
   try {
-    if (typeof localStorage === "undefined") return false;
-    const testKey = "__storage_test__";
-    localStorage.setItem(testKey, "test");
+    if (typeof localStorage === 'undefined') return false;
+    const testKey = '__storage_test__';
+    localStorage.setItem(testKey, 'test');
     localStorage.removeItem(testKey);
     return true;
   } catch {
@@ -124,7 +121,7 @@ export const getStorageItem = (key: string): string | null => {
     if (!isStorageAvailable()) return null;
     return localStorage.getItem(key);
   } catch (error) {
-    import("@/utils/console").then(({ safeConsole }) => {
+    import('@/utils/console').then(({ safeConsole }) => {
       safeConsole.warn(`Failed to get item from localStorage: ${key}`, error);
     });
     return null;
@@ -140,7 +137,7 @@ export const setStorageItem = (key: string, value: string): boolean => {
     localStorage.setItem(key, value);
     return true;
   } catch (error) {
-    import("@/utils/console").then(({ safeConsole }) => {
+    import('@/utils/console').then(({ safeConsole }) => {
       safeConsole.warn(`Failed to set item in localStorage: ${key}`, error);
     });
     return false;
@@ -156,11 +153,8 @@ export const removeStorageItem = (key: string): boolean => {
     localStorage.removeItem(key);
     return true;
   } catch (error) {
-    import("@/utils/console").then(({ safeConsole }) => {
-      safeConsole.warn(
-        `Failed to remove item from localStorage: ${key}`,
-        error
-      );
+    import('@/utils/console').then(({ safeConsole }) => {
+      safeConsole.warn(`Failed to remove item from localStorage: ${key}`, error);
     });
     return false;
   }
@@ -175,7 +169,7 @@ export const getStorageJSON = <T>(key: string, defaultValue?: T): T | null => {
     if (item === null) return defaultValue || null;
     return JSON.parse(item) as T;
   } catch (error) {
-    import("@/utils/console").then(({ safeConsole }) => {
+    import('@/utils/console').then(({ safeConsole }) => {
       safeConsole.warn(`Failed to parse JSON from localStorage: ${key}`, error);
     });
     return defaultValue || null;
@@ -190,11 +184,8 @@ export const setStorageJSON = <T>(key: string, value: T): boolean => {
     const jsonString = JSON.stringify(value);
     return setStorageItem(key, jsonString);
   } catch (error) {
-    import("@/utils/console").then(({ safeConsole }) => {
-      safeConsole.warn(
-        `Failed to stringify JSON for localStorage: ${key}`,
-        error
-      );
+    import('@/utils/console').then(({ safeConsole }) => {
+      safeConsole.warn(`Failed to stringify JSON for localStorage: ${key}`, error);
     });
     return false;
   }
@@ -207,10 +198,7 @@ export const setStorageJSON = <T>(key: string, value: T): boolean => {
 /**
  * Deep compare objects
  */
-export const deepEqual = <T extends Record<string, unknown>>(
-  obj1: T,
-  obj2: T
-): boolean => {
+export const deepEqual = <T extends Record<string, unknown>>(obj1: T, obj2: T): boolean => {
   const keys1 = Object.keys(obj1) as (keyof T)[];
   const keys2 = Object.keys(obj2) as (keyof T)[];
 
@@ -223,10 +211,10 @@ export const deepEqual = <T extends Record<string, unknown>>(
  * Format bytes to human readable string
  */
 export const formatBytes = (bytes: number): string => {
-  if (bytes === 0) return "0 Bytes";
+  if (bytes === 0) return '0 Bytes';
 
   const k = 1024;
-  const sizes = ["Bytes", "KB", "MB", "GB"];
+  const sizes = ['Bytes', 'KB', 'MB', 'GB'];
   const i = Math.floor(Math.log(bytes) / Math.log(k));
 
   return `${Number.parseFloat((bytes / k ** i).toFixed(2))} ${sizes[i]}`;
@@ -242,7 +230,7 @@ export const formatRelativeDate = (
   try {
     return formatDistanceToNow(new Date(dateString), { addSuffix: true });
   } catch {
-    return "Unknown";
+    return 'Unknown';
   }
 };
 
@@ -264,13 +252,11 @@ export const searchFilter = <T extends Record<string, unknown>>(
   return items.filter((item) =>
     searchFields.some((field) => {
       const value = item[field];
-      if (typeof value === "string") {
+      if (typeof value === 'string') {
         return value.toLowerCase().includes(lowerQuery);
       }
       if (Array.isArray(value)) {
-        return value.some(
-          (v) => typeof v === "string" && v.toLowerCase().includes(lowerQuery)
-        );
+        return value.some((v) => typeof v === 'string' && v.toLowerCase().includes(lowerQuery));
       }
       return false;
     })
@@ -283,7 +269,7 @@ export const searchFilter = <T extends Record<string, unknown>>(
 export const sortByField = <T extends Record<string, unknown>>(
   items: T[],
   field: keyof T,
-  direction: "asc" | "desc" = "asc"
+  direction: 'asc' | 'desc' = 'asc'
 ): T[] => {
   return [...items].sort((a, b) => {
     const aValue = a[field];
@@ -292,9 +278,9 @@ export const sortByField = <T extends Record<string, unknown>>(
     let comparison = 0;
 
     // Handle different data types
-    if (typeof aValue === "string" && typeof bValue === "string") {
+    if (typeof aValue === 'string' && typeof bValue === 'string') {
       comparison = aValue.localeCompare(bValue);
-    } else if (typeof aValue === "number" && typeof bValue === "number") {
+    } else if (typeof aValue === 'number' && typeof bValue === 'number') {
       comparison = aValue - bValue;
     } else if (aValue instanceof Date && bValue instanceof Date) {
       comparison = aValue.getTime() - bValue.getTime();
@@ -303,17 +289,14 @@ export const sortByField = <T extends Record<string, unknown>>(
       comparison = String(aValue).localeCompare(String(bValue));
     }
 
-    return direction === "asc" ? comparison : -comparison;
+    return direction === 'asc' ? comparison : -comparison;
   });
 };
 
 /**
  * Group array items by a specific field
  */
-export const groupByField = <
-  T extends Record<string, unknown>,
-  K extends keyof T,
->(
+export const groupByField = <T extends Record<string, unknown>, K extends keyof T>(
   items: T[],
   field: K
 ): Record<string, T[]> => {
@@ -338,7 +321,7 @@ export const groupByField = <
  * Escape special regex characters
  */
 export const escapeRegex = (string: string): string => {
-  return string.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 };
 
 /**
@@ -346,7 +329,7 @@ export const escapeRegex = (string: string): string => {
  */
 export const createSafeRegex = (
   pattern: string,
-  flags = "g",
+  flags = 'g',
   options: { shouldEscape?: boolean; wholeWord?: boolean } = {}
 ): RegExp => {
   const { shouldEscape = true, wholeWord = false } = options;
@@ -374,7 +357,7 @@ export const createSafeRegex = (
  */
 export const logError = (
   error: unknown,
-  context = "",
+  context = '',
   additionalData?: Record<string, unknown>
 ): void => {
   const errorObj = error instanceof Error ? error : new Error(String(error));
@@ -382,32 +365,32 @@ export const logError = (
   // Sanitize stack trace to remove sensitive paths
   const sanitizedStack = errorObj.stack
     ? errorObj.stack
-        .split("\n")
+        .split('\n')
         .map((line) => {
           // Remove absolute paths and keep only relative paths
           return line
-            .replace(/file:\/\/\/[^/]+/g, "file:///")
-            .replace(/at [^(]*\(/g, "at (")
-            .replace(/\([^)]*node_modules[^)]*\)/g, "(node_modules)")
-            .replace(/\([^)]*\.vite[^)]*\)/g, "(.vite)");
+            .replace(/file:\/\/\/[^/]+/g, 'file:///')
+            .replace(/at [^(]*\(/g, 'at (')
+            .replace(/\([^)]*node_modules[^)]*\)/g, '(node_modules)')
+            .replace(/\([^)]*\.vite[^)]*\)/g, '(.vite)');
         })
         .slice(0, 10) // Limit stack trace depth
-        .join("\n")
+        .join('\n')
     : undefined;
 
   const logData = {
     message: errorObj.message,
-    stack: process.env.NODE_ENV === "development" ? sanitizedStack : undefined,
+    stack: process.env.NODE_ENV === 'development' ? sanitizedStack : undefined,
     context,
     timestamp: new Date().toISOString(),
     ...additionalData,
   };
 
-  if (process.env.NODE_ENV === "development") {
+  if (process.env.NODE_ENV === 'development') {
     safeConsole.error(`Error in ${context}:`, logData);
   } else {
     // In production, only log essential information
-    safeConsole.error("Application error:", {
+    safeConsole.error('Application error:', {
       message: errorObj.message,
       context,
       timestamp: logData.timestamp,
@@ -418,11 +401,7 @@ export const logError = (
 /**
  * Safe error handler with fallback
  */
-export const safeExecute = <T>(
-  fn: () => T,
-  fallback: T,
-  context = "unknown"
-): T => {
+export const safeExecute = <T>(fn: () => T, fallback: T, context = 'unknown'): T => {
   try {
     return fn();
   } catch (error) {
@@ -443,20 +422,20 @@ export const generateKey = (
 ): string => {
   return components
     .map((component) => {
-      if (component === null || component === undefined) return "null";
-      if (typeof component === "string" && component.length > 50) {
+      if (component === null || component === undefined) return 'null';
+      if (typeof component === 'string' && component.length > 50) {
         // For long strings, use first 10 chars + hash-like suffix
         return `${component.substring(0, 10)}-${component.length}`;
       }
       return String(component);
     })
-    .join("-");
+    .join('-');
 };
 
 /**
  * Generate unique ID with prefix
  */
-export const generateId = (prefix = "id", suffix?: string): string => {
+export const generateId = (prefix = 'id', suffix?: string): string => {
   const timestamp = Date.now().toString(36);
   const random = Math.random().toString(36).substring(2, 8);
   const parts = [prefix, timestamp, random];
@@ -465,7 +444,7 @@ export const generateId = (prefix = "id", suffix?: string): string => {
     parts.push(suffix);
   }
 
-  return parts.join("-");
+  return parts.join('-');
 };
 
 /**
@@ -490,17 +469,16 @@ export const copyToClipboard = async (
     onSuccess?.();
     return true;
   } catch (error) {
-    const err =
-      error instanceof Error ? error : new Error("Clipboard operation failed");
+    const err = error instanceof Error ? error : new Error('Clipboard operation failed');
     onError?.(err);
 
     if (fallbackAlert) {
       // Improved fallback using Selection API instead of deprecated execCommand
-      const textArea = document.createElement("textarea");
+      const textArea = document.createElement('textarea');
       textArea.value = text;
-      textArea.style.position = "fixed";
-      textArea.style.left = "-999999px";
-      textArea.style.top = "-999999px";
+      textArea.style.position = 'fixed';
+      textArea.style.left = '-999999px';
+      textArea.style.top = '-999999px';
       document.body.appendChild(textArea);
 
       textArea.focus();
@@ -515,8 +493,8 @@ export const copyToClipboard = async (
         selection?.addRange(range);
 
         // Try to copy using keyboard shortcut simulation
-        const copyEvent = new KeyboardEvent("keydown", {
-          key: "c",
+        const copyEvent = new KeyboardEvent('keydown', {
+          key: 'c',
           ctrlKey: true,
           bubbles: true,
           cancelable: true,
@@ -528,12 +506,12 @@ export const copyToClipboard = async (
         return true;
       } catch (fallbackError) {
         document.body.removeChild(textArea);
-        logError(fallbackError, "clipboard-fallback");
+        logError(fallbackError, 'clipboard-fallback');
         return false;
       }
     }
 
-    logError(err, "clipboard");
+    logError(err, 'clipboard');
     return false;
   }
 };
@@ -550,11 +528,7 @@ export const copyWithButtonFeedback = async (
     resetDelay?: number;
   } = {}
 ): Promise<void> => {
-  const {
-    successText = "✅ Copied!",
-    successColor = "#10b981",
-    resetDelay = 1500,
-  } = options;
+  const { successText = '✅ Copied!', successColor = '#10b981', resetDelay = 1500 } = options;
 
   const originalText = button.textContent;
   const originalBgColor = button.style.backgroundColor;
@@ -564,13 +538,13 @@ export const copyWithButtonFeedback = async (
     onSuccess: () => {
       button.textContent = successText;
       button.style.backgroundColor = successColor;
-      button.style.color = "white";
+      button.style.color = 'white';
     },
     onError: (error) => {
-      button.textContent = "❌ Failed";
-      button.style.backgroundColor = "#ef4444";
-      button.style.color = "white";
-      logError(error, "copy-with-feedback");
+      button.textContent = '❌ Failed';
+      button.style.backgroundColor = '#ef4444';
+      button.style.color = 'white';
+      logError(error, 'copy-with-feedback');
     },
   });
 
@@ -590,27 +564,27 @@ export const copyWithButtonFeedback = async (
  * Detect if current theme is dark mode
  */
 export const isDarkMode = (): boolean => {
-  if (typeof window === "undefined") return false;
+  if (typeof window === 'undefined') return false;
 
   const body = document.body;
   const html = document.documentElement;
 
   // Check data attributes
-  const bodyTheme = body.getAttribute("data-theme");
-  const htmlTheme = html.getAttribute("data-theme");
+  const bodyTheme = body.getAttribute('data-theme');
+  const htmlTheme = html.getAttribute('data-theme');
 
   // Check classes
   const hasDarkClass =
-    body.classList.contains("dark") ||
-    body.classList.contains("theme-dark") ||
-    html.classList.contains("dark") ||
-    html.classList.contains("theme-dark");
+    body.classList.contains('dark') ||
+    body.classList.contains('theme-dark') ||
+    html.classList.contains('dark') ||
+    html.classList.contains('theme-dark');
 
   // Check theme attributes
-  const isDarkTheme = bodyTheme === "dark" || htmlTheme === "dark";
+  const isDarkTheme = bodyTheme === 'dark' || htmlTheme === 'dark';
 
   // Check system preference as fallback
-  const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+  const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
 
   return hasDarkClass || isDarkTheme || prefersDark;
 };
@@ -619,32 +593,32 @@ export const isDarkMode = (): boolean => {
  * Get current theme name from DOM
  */
 export const getCurrentTheme = (): string => {
-  if (typeof window === "undefined") return "default";
+  if (typeof window === 'undefined') return 'default';
 
   const body = document.body;
   const html = document.documentElement;
 
   // Check data attributes first
-  const bodyTheme = body.getAttribute("data-theme");
-  const htmlTheme = html.getAttribute("data-theme");
+  const bodyTheme = body.getAttribute('data-theme');
+  const htmlTheme = html.getAttribute('data-theme');
 
   if (bodyTheme) return bodyTheme;
   if (htmlTheme) return htmlTheme;
 
   // Check theme classes
   const classList = [...body.classList, ...html.classList];
-  const themeClass = classList.find((cls) => cls.startsWith("theme-"));
+  const themeClass = classList.find((cls) => cls.startsWith('theme-'));
 
   if (themeClass) {
-    return themeClass.replace("theme-", "");
+    return themeClass.replace('theme-', '');
   }
 
   // Check for dark class
-  if (classList.includes("dark")) {
-    return "dark";
+  if (classList.includes('dark')) {
+    return 'dark';
   }
 
-  return "default";
+  return 'default';
 };
 
 /**
@@ -655,7 +629,7 @@ export const getCurrentTheme = (): string => {
  * Create MediaQueryList safely
  */
 export const createMediaQueryList = (query: string): MediaQueryList | null => {
-  if (typeof window === "undefined") return null;
+  if (typeof window === 'undefined') return null;
   return window.matchMedia(query);
 };
 
@@ -663,26 +637,24 @@ export const createMediaQueryList = (query: string): MediaQueryList | null => {
  * Check if media query matches
  */
 export const matchesMediaQuery = (query: string): boolean => {
-  if (typeof window === "undefined") return false;
+  if (typeof window === 'undefined') return false;
   return window.matchMedia(query).matches;
 };
 
 /**
  * Get preferred color scheme
  */
-export const getPreferredColorScheme = (): "light" | "dark" => {
-  if (typeof window === "undefined") return "light";
-  return window.matchMedia("(prefers-color-scheme: dark)").matches
-    ? "dark"
-    : "light";
+export const getPreferredColorScheme = (): 'light' | 'dark' => {
+  if (typeof window === 'undefined') return 'light';
+  return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
 };
 
 /**
  * Check if user prefers reduced motion
  */
 export const prefersReducedMotion = (): boolean => {
-  if (typeof window === "undefined") return false;
-  return window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  if (typeof window === 'undefined') return false;
+  return window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 };
 
 /**
@@ -741,9 +713,7 @@ export const createSafeInterval = (
 /**
  * Clear all timeouts from a map
  */
-export const clearAllTimeouts = (
-  timeoutMap: Map<string, ReturnType<typeof setTimeout>>
-): void => {
+export const clearAllTimeouts = (timeoutMap: Map<string, ReturnType<typeof setTimeout>>): void => {
   for (const timeout of timeoutMap.values()) {
     clearTimeout(timeout);
   }
@@ -811,16 +781,16 @@ export const addMediaQueryListener = (
   query: string,
   callback: (event: MediaQueryListEvent) => void
 ): (() => void) => {
-  if (typeof window === "undefined")
+  if (typeof window === 'undefined')
     return () => {
       // No cleanup needed on server side
     };
 
   const mediaQuery = window.matchMedia(query);
-  mediaQuery.addEventListener("change", callback);
+  mediaQuery.addEventListener('change', callback);
 
   return () => {
-    mediaQuery.removeEventListener("change", callback);
+    mediaQuery.removeEventListener('change', callback);
   };
 };
 
@@ -835,7 +805,7 @@ export const safeQuerySelector = <T extends Element = Element>(
   selector: string,
   container: Document | Element = document
 ): T | null => {
-  if (typeof window === "undefined") return null;
+  if (typeof window === 'undefined') return null;
   try {
     return container.querySelector<T>(selector);
   } catch {
@@ -850,7 +820,7 @@ export const safeQuerySelectorAll = <T extends Element = Element>(
   selector: string,
   container: Document | Element = document
 ): T[] => {
-  if (typeof window === "undefined") return [];
+  if (typeof window === 'undefined') return [];
   try {
     return Array.from(container.querySelectorAll<T>(selector));
   } catch {
@@ -861,10 +831,8 @@ export const safeQuerySelectorAll = <T extends Element = Element>(
 /**
  * Safe getElementById with null check
  */
-export const safeGetElementById = <T extends HTMLElement = HTMLElement>(
-  id: string
-): T | null => {
-  if (typeof window === "undefined") return null;
+export const safeGetElementById = <T extends HTMLElement = HTMLElement>(id: string): T | null => {
+  if (typeof window === 'undefined') return null;
   try {
     return document.getElementById(id) as T | null;
   } catch {
@@ -877,9 +845,9 @@ export const safeGetElementById = <T extends HTMLElement = HTMLElement>(
  */
 export const findScrollContainer = (
   element: Element,
-  fallbackSelectors: string[] = [".prose", "[data-preview-pane]"]
+  fallbackSelectors: string[] = ['.prose', '[data-preview-pane]']
 ): Element => {
-  if (typeof window === "undefined") return element;
+  if (typeof window === 'undefined') return element;
 
   // Try fallback selectors first
   for (const selector of fallbackSelectors) {
@@ -892,10 +860,10 @@ export const findScrollContainer = (
   while (parent) {
     const style = getComputedStyle(parent);
     if (
-      style.overflow === "auto" ||
-      style.overflow === "scroll" ||
-      style.overflowY === "auto" ||
-      style.overflowY === "scroll"
+      style.overflow === 'auto' ||
+      style.overflow === 'scroll' ||
+      style.overflowY === 'auto' ||
+      style.overflowY === 'scroll'
     ) {
       return parent;
     }
@@ -947,10 +915,7 @@ export const updateLoadingProgress = (
 /**
  * Set loading error state
  */
-export const setLoadingError = (
-  state: LoadingState,
-  error: string
-): LoadingState => ({
+export const setLoadingError = (state: LoadingState, error: string): LoadingState => ({
   ...state,
   isLoading: false,
   progress: undefined,
@@ -1000,18 +965,14 @@ export const validateNumericRange = (
   value: unknown,
   min: number,
   max: number,
-  fieldName = "value"
+  fieldName = 'value'
 ): ValidationResult => {
-  if (typeof value !== "number" || Number.isNaN(value)) {
-    return createValidationResult(false, [
-      `${fieldName} must be a valid number`,
-    ]);
+  if (typeof value !== 'number' || Number.isNaN(value)) {
+    return createValidationResult(false, [`${fieldName} must be a valid number`]);
   }
 
   if (value < min || value > max) {
-    return createValidationResult(false, [
-      `${fieldName} must be between ${min} and ${max}`,
-    ]);
+    return createValidationResult(false, [`${fieldName} must be between ${min} and ${max}`]);
   }
 
   return createValidationResult(true);
@@ -1024,8 +985,8 @@ export const validateRequiredProperties = <T extends Record<string, unknown>>(
   obj: unknown,
   requiredProps: (keyof T)[]
 ): ValidationResult => {
-  if (!obj || typeof obj !== "object") {
-    return createValidationResult(false, ["Object is required"]);
+  if (!obj || typeof obj !== 'object') {
+    return createValidationResult(false, ['Object is required']);
   }
 
   const errors: string[] = [];
@@ -1051,7 +1012,7 @@ export const validateBooleanProperties = <T extends Record<string, unknown>>(
 
   for (const prop of booleanProps) {
     const propKey = String(prop);
-    if (typeof obj[propKey] !== "boolean") {
+    if (typeof obj[propKey] !== 'boolean') {
       errors.push(`Property '${propKey}' must be a boolean`);
     }
   }
