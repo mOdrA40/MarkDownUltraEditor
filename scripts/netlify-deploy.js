@@ -26,7 +26,9 @@ const requiredEnvVars = [
 const missingVars = requiredEnvVars.filter((varName) => !process.env[varName]);
 if (missingVars.length > 0) {
   console.error('❌ Missing required environment variables:');
-  missingVars.forEach((varName) => console.error(`   - ${varName}`));
+  missingVars.forEach((varName) => {
+    console.error(`   - ${varName}`);
+  });
   console.error('\n💡 Set these in Netlify dashboard: Site settings > Environment variables');
   process.exit(1);
 }

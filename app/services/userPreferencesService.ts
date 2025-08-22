@@ -45,7 +45,9 @@ export class UserPreferencesService {
     preferences: Partial<Omit<UserPreferences, 'id' | 'user_id' | 'created_at' | 'updated_at'>>
   ): Promise<UserPreferences | null> {
     try {
-      const { data, error } = await this.supabase
+      // biome-ignore lint/suspicious/noExplicitAny: Temporary workaround for Supabase type issues
+      const typedSupabase = this.supabase as any;
+      const { data, error } = await typedSupabase
         .from('user_preferences')
         .upsert(
           {

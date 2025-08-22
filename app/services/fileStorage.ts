@@ -97,6 +97,15 @@ export class HybridFileStorage implements FileStorageService {
     });
   }
 
+  // Helper method to get typed Supabase client
+  private getTypedSupabaseClient() {
+    if (!this.supabaseClient) {
+      throw new Error('Supabase client not available');
+    }
+    // biome-ignore lint/suspicious/noExplicitAny: Temporary workaround for Supabase type issues
+    return this.supabaseClient as any;
+  }
+
   // Generate content hash for duplicate detection
   private generateContentHash(content: string): string {
     // Simple hash based on content length and first/last 100 chars
@@ -193,7 +202,7 @@ export class HybridFileStorage implements FileStorageService {
       // Check if file exists (update) or create new
       if (file.id) {
         // Update existing file by ID
-        const { data, error } = await this.supabaseClient
+        const { data, error } = await this.getTypedSupabaseClient()
           .from('user_files')
           .update({
             ...dbInsert,
@@ -209,14 +218,15 @@ export class HybridFileStorage implements FileStorageService {
           throw error;
         }
 
-        safeConsole.log('File updated in cloud:', data.title);
-        return dbRowToFileData(data);
+        const fileRow = data as Database['public']['Tables']['user_files']['Row'];
+        safeConsole.log('File updated in cloud:', fileRow.title);
+        return dbRowToFileData(fileRow);
       }
 
       // Enhanced duplicate prevention: Check by title AND content hash
       const contentHash = this.generateContentHash(optimizedFile.content);
 
-      const { data: existingFile } = await this.supabaseClient
+      const { data: existingFile } = await this.getTypedSupabaseClient()
         .from('user_files')
         .select('id, title, content, updated_at')
         .eq('user_id', this.userId)
@@ -225,14 +235,13 @@ export class HybridFileStorage implements FileStorageService {
         .single();
 
       if (existingFile) {
-        const existingContentHash = this.generateContentHash(existingFile.content);
+        const existingFileRow = existingFile as Database['public']['Tables']['user_files']['Row'];
+        const existingContentHash = this.generateContentHash(existingFileRow.content);
 
         // If content is identical, skip save
         if (existingContentHash === contentHash) {
           safeConsole.log('Content identical, skipping duplicate save:', file.title);
-          const fileData = dbRowToFileData(
-            existingFile as Database['public']['Tables']['user_files']['Row']
-          );
+          const fileData = dbRowToFileData(existingFileRow);
           // Decompress content if it was compressed
           const decompressedContent = decompressContent(fileData.content);
           return {
@@ -242,13 +251,13 @@ export class HybridFileStorage implements FileStorageService {
         }
 
         // File exists with different content - update it
-        const { data, error } = await this.supabaseClient
+        const { data, error } = await this.getTypedSupabaseClient()
           .from('user_files')
           .update({
             ...dbInsert,
             updated_at: new Date().toISOString(),
           })
-          .eq('id', existingFile.id)
+          .eq('id', existingFileRow.id)
           .eq('user_id', this.userId)
           .select()
           .single();
@@ -258,12 +267,13 @@ export class HybridFileStorage implements FileStorageService {
           throw error;
         }
 
-        safeConsole.log('Existing file updated in cloud:', data.title);
-        return dbRowToFileData(data);
+        const updatedFileRow = data as Database['public']['Tables']['user_files']['Row'];
+        safeConsole.log('Existing file updated in cloud:', updatedFileRow.title);
+        return dbRowToFileData(updatedFileRow);
       }
 
       // File doesn't exist - create new
-      const { data, error } = await this.supabaseClient
+      const { data, error } = await this.getTypedSupabaseClient()
         .from('user_files')
         .insert(dbInsert)
         .select()
@@ -274,8 +284,9 @@ export class HybridFileStorage implements FileStorageService {
         throw error;
       }
 
-      safeConsole.log('File created in cloud:', data.title);
-      return dbRowToFileData(data);
+      const createdFileRow = data as Database['public']['Tables']['user_files']['Row'];
+      safeConsole.log('File created in cloud:', createdFileRow.title);
+      return dbRowToFileData(createdFileRow);
     } catch (error) {
       safeConsole.error('Error saving file to cloud:', error);
       throw error;
@@ -290,7 +301,7 @@ export class HybridFileStorage implements FileStorageService {
     try {
       safeConsole.log('Loading file from cloud:', fileId);
 
-      const { data, error } = await this.supabaseClient
+      const { data, error } = await this.getTypedSupabaseClient()
         .from('user_files')
         .select(
           'id, user_id, title, content, file_type, tags, created_at, updated_at, is_template, file_size, version, is_deleted, deleted_at'
@@ -309,8 +320,9 @@ export class HybridFileStorage implements FileStorageService {
         throw error;
       }
 
-      safeConsole.log('File loaded from cloud:', data.title);
-      const fileData = dbRowToFileData(data);
+      const fileRow = data as Database['public']['Tables']['user_files']['Row'];
+      safeConsole.log('File loaded from cloud:', fileRow.title);
+      const fileData = dbRowToFileData(fileRow);
 
       // Decompress content if it was compressed
       const decompressedContent = decompressContent(fileData.content);
@@ -334,7 +346,7 @@ export class HybridFileStorage implements FileStorageService {
       safeConsole.log('Listing files from cloud');
 
       // Optimized query - only select needed columns for listing
-      const { data, error } = await this.supabaseClient
+      const { data, error } = await this.getTypedSupabaseClient()
         .from('user_files')
         .select(
           'id, user_id, title, file_type, tags, created_at, updated_at, is_template, file_size, version, is_deleted, deleted_at'
@@ -351,7 +363,8 @@ export class HybridFileStorage implements FileStorageService {
 
       safeConsole.log(`Loaded ${data.length} files from cloud`);
       // Map data with content as empty string for listing (content not needed for file list)
-      return data.map((row) => dbRowToFileData({ ...row, content: '' }));
+      const fileRows = data as Database['public']['Tables']['user_files']['Row'][];
+      return fileRows.map((row) => dbRowToFileData({ ...row, content: '' }));
     } catch (error) {
       safeConsole.error('Error listing files from cloud:', error);
       throw error;
@@ -677,10 +690,10 @@ export class HybridFileStorage implements FileStorageService {
       }
 
       // Get files with file_size from database for accurate calculation
-      const { data, error } = await this.supabaseClient
+      const { data, error } = await this.getTypedSupabaseClient()
         .from('user_files')
         .select('id, file_size')
-        .eq('user_id', this.userId)
+        .eq('user_id', this.userId as string)
         .eq('is_deleted', false);
 
       if (error) {
