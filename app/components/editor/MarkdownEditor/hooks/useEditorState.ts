@@ -24,24 +24,41 @@ export const useEditorState = (
   const [isRestoring, setIsRestoring] = useState(true);
 
   const getInitialValue = useCallback(
-    (storageKey: string, fallback: string, contextKey?: 'fileName' | 'fileId') => {
-      // Context takes first priority
-      const activeFileContext = fileContextManager.getActiveFile();
-      if (activeFileContext && contextKey && activeFileContext[contextKey]) {
-        return activeFileContext[contextKey] as string;
+    (storageKey: string, fallback: string, debugKey?: 'content' | 'fileName' | 'fileId') => {
+      // CRITICAL: Check for new file request FIRST before localStorage
+      const isNewFileRequest = typeof window !== 'undefined' && 
+        new URLSearchParams(window.location.search).get('new') === 'true';
+      
+      if (isNewFileRequest) {
+        return debugKey === 'fileName' ? 'untitled.md' : '';
       }
-      // Then check localStorage
-      if (typeof localStorage !== 'undefined') {
+
+      // Check if navigating from files page - skip ALL localStorage to prevent flicker
+      const isFromFilesPage = typeof window !== 'undefined' && 
+        new URLSearchParams(window.location.search).has('file');
+      
+      if (isFromFilesPage) {
+        return debugKey === 'fileName' ? 'Loading...' : ''; // Return empty/loading state
+      }
+
+      try {
+        // Try to get from localStorage first
         const savedValue = localStorage.getItem(storageKey);
         if (savedValue !== null) {
           return savedValue;
         }
+      } catch (error) {
+        import('@/utils/console').then(({ safeConsole }) => {
+          safeConsole.warn(`Failed to get ${debugKey || 'value'} from localStorage:`, error);
+        });
       }
       // Finally, use the fallback
       return fallback;
     },
     []
   );
+
+  const initialContent = getInitialValue(STORAGE_KEYS.CONTENT, initialMarkdown ?? '');
 
   const {
     value: markdown,
@@ -51,7 +68,7 @@ export const useEditorState = (
     canUndo,
     canRedo,
     clearHistory,
-  } = useUndoRedo(getInitialValue(STORAGE_KEYS.CONTENT, initialMarkdown ?? DEFAULT_FILE.CONTENT), {
+  } = useUndoRedo(initialContent, {
     maxHistorySize: 50,
     debounceMs: 300,
   });
@@ -66,6 +83,10 @@ export const useEditorState = (
     const activeFile = fileContextManager.getActiveFile();
     const isFirstTime = isFirstVisit();
     const hasInitialContent = initialMarkdown !== undefined;
+    
+    // Check if this is a new file request from URL params
+    const isNewFileRequest = typeof window !== 'undefined' && 
+      new URLSearchParams(window.location.search).get('new') === 'true';
 
     // For authenticated users, loading state is handled by MarkdownEditor component
     // based on immediate loading state, so don't show restoration loading here
@@ -79,6 +100,18 @@ export const useEditorState = (
       } else {
         setIsRestoring(false);
       }
+    }
+
+    // Skip localStorage content loading if this is a new file request
+    if (isNewFileRequest) {
+      return;
+    }
+
+    // Skip localStorage loading if navigating from files page
+    const isFromFilesPage = typeof window !== 'undefined' && 
+      new URLSearchParams(window.location.search).has('file');
+    if (isFromFilesPage) {
+      return;
     }
 
     // On initial load, if there's content from localStorage, set it
@@ -200,6 +233,14 @@ export const useEditorState = (
       source: 'url' | 'files-page' | 'manual' | 'auto-save' = 'manual',
       silent = false
     ) => {
+      // Check if this is a new file request - block loading
+      const isNewFileRequest = typeof window !== 'undefined' && 
+        new URLSearchParams(window.location.search).get('new') === 'true';
+      
+      if (isNewFileRequest && content.includes('API Documentation')) {
+        return; // Block the loading
+      }
+      
       if (!bypassDialog && isModified) {
         const confirmed = window.confirm(
           'You have unsaved changes. Are you sure you want to load a new file?'

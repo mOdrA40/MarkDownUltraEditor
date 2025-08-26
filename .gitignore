@@ -10,6 +10,8 @@ hasil.txt
 .cursor
 .windsurf
 .kiro
+.vscode
+.github
 # Mengabaikan semua file .md
 *.md
 

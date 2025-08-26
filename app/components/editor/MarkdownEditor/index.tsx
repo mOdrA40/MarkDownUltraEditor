@@ -45,20 +45,43 @@ export const MarkdownEditor: React.FC<MarkdownEditorProps> = ({
   style = {},
 }) => {
   const [searchParams, setSearchParams] = useSearchParams();
-  const _location = useLocation();
-
+  const urlFile = searchParams.get('file');
   const urlTitle = searchParams.get('title');
   const urlContent = searchParams.get('content');
-  const urlFile = searchParams.get('file');
   const isNewFileRequest = searchParams.get('new') === 'true';
+  
+  // Force complete reset when navigating from files page
+  const isFromFilesPage = !!urlFile;
+  const [isManualLoading, setIsManualLoading] = React.useState(isFromFilesPage);
+  const [isContentReady, setIsContentReady] = React.useState(!isFromFilesPage);
+  const [preserveContent, setPreserveContent] = React.useState(false);
+  
 
   const { isSignedIn, isLoaded } = useAuth();
   const immediateLoading = useImmediateFileLoading();
   const [isFileRestored, setIsFileRestored] = React.useState(false);
+  const [isNewFileMode, setIsNewFileMode] = React.useState(isNewFileRequest);
 
   const getInitialContent = () => {
-    if (isNewFileRequest) return '';
+    // NEW FILE REQUEST: Always return empty content, no exceptions
+    if (isNewFileRequest || isNewFileMode) return '';
     if (urlContent) return urlContent;
+    
+    // CRITICAL: For files page navigation - preserve current content during loading
+    if (isFromFilesPage) {
+      // If file has been restored, don't interfere
+      if (isFileRestored) {
+        return undefined; // Let restored content show
+      }
+      
+      // If not authenticated, return empty content (fallback to guest mode)
+      if (isLoaded && !isSignedIn) {
+        return '';
+      }
+      
+      // Stay in loading state until file fully loaded
+      return undefined;
+    }
 
     // For authenticated users, wait for immediate loading to complete
     if (isLoaded && isSignedIn) {
@@ -82,8 +105,15 @@ export const MarkdownEditor: React.FC<MarkdownEditorProps> = ({
   };
 
   const getInitialFileName = () => {
-    if (isNewFileRequest) return 'untitled.md';
+    // NEW FILE REQUEST: Always return default name
+    if (isNewFileRequest || isNewFileMode) return 'untitled.md';
     if (urlTitle) return urlTitle;
+
+    // CRITICAL: For files page navigation, return target filename immediately
+    if (isFromFilesPage && urlFile) {
+      // Extract filename from file ID or use a loading placeholder
+      return urlFile.includes('.') ? urlFile : `${urlFile}.md`;
+    }
 
     // For authenticated users, wait for immediate loading to complete
     if (isLoaded && isSignedIn) {
@@ -107,10 +137,23 @@ export const MarkdownEditor: React.FC<MarkdownEditorProps> = ({
   };
 
   React.useEffect(() => {
+    // CRITICAL: Don't clear URL params if loading from files page
+    if (isFromFilesPage) {
+      return;
+    }
+
     if (urlTitle || urlContent || isNewFileRequest) {
       setSearchParams({}, { replace: true });
+      
+      // Clear all storage when creating new file to prevent old content loading
+      if (isNewFileRequest) {
+        sessionStorage.removeItem('active_file_context');
+        localStorage.removeItem('markdownEditor_content');
+        localStorage.removeItem('markdownEditor_fileName');
+        localStorage.removeItem('markdownEditor_lastOpenedFile');
+      }
     }
-  }, [urlTitle, urlContent, isNewFileRequest, setSearchParams]);
+  }, [urlTitle, urlContent, isNewFileRequest, setSearchParams, isFromFilesPage]);
 
   // Reset file restored state when authentication changes
   React.useEffect(() => {
@@ -140,6 +183,7 @@ export const MarkdownEditor: React.FC<MarkdownEditorProps> = ({
     isFileRestored,
   ]);
 
+  // Force fresh editor state for files page navigation
   const editorState = useEditorState(getInitialContent(), getInitialFileName());
   const responsiveLayout = useResponsiveLayout();
   const globalTheme = useTheme();
@@ -150,8 +194,8 @@ export const MarkdownEditor: React.FC<MarkdownEditorProps> = ({
 
   // Handle welcome dialog close for guest users - load template
   const handleWelcomeDialogClose = React.useCallback(() => {
-    if (!isSignedIn && welcomeDialog.isOpen) {
-      // Load welcome template after dialog closes
+    if (!isSignedIn && welcomeDialog.isOpen && !isNewFileRequest) {
+      // Load welcome template after dialog closes ONLY if not a new file request
       setTimeout(() => {
         editorState.actions.loadFile(
           DEFAULT_FILE.CONTENT,
@@ -164,10 +208,56 @@ export const MarkdownEditor: React.FC<MarkdownEditorProps> = ({
       }, 100); // Small delay to ensure dialog is closed
     }
     welcomeDialog.hideWelcomeDialog();
-  }, [isSignedIn, welcomeDialog.isOpen, welcomeDialog.hideWelcomeDialog, editorState.actions]);
+  }, [isSignedIn, welcomeDialog.isOpen, welcomeDialog.hideWelcomeDialog, editorState.actions, isNewFileRequest]);
+
+  // Manual file loading for files page navigation - bypass all restoration mechanisms  
+  React.useEffect(() => {
+    if (!urlFile || !isSignedIn || !isLoaded || !fileStorage.isInitialized) {
+      return;
+    }
+
+    const loadTargetFile = async () => {
+      try {
+        // Try loading file from Supabase
+        const loadedFile = await fileStorage.loadFile(urlFile);
+
+        if (loadedFile && loadedFile.content && loadedFile.content.trim() !== '') {
+          // CRITICAL: Load content directly without any flash
+          editorState.actions.loadFile(
+            loadedFile.content,
+            loadedFile.title,
+            true,
+            loadedFile.id,
+            'files-page',
+            true
+          );
+          // Immediately mark as complete - no delays
+          setIsFileRestored(true);
+          setIsManualLoading(false);
+          setIsContentReady(true);
+        } else {
+          editorState.actions.loadFile(
+            `# File Content Empty\n\nFile ID: ${urlFile}\nFile found: ${!!loadedFile}\nContent: ${loadedFile?.content || 'null'}\n\nThis file exists in Supabase but has no content.`,
+            'Content Missing',
+            true,
+            undefined,
+            'manual',
+            true
+          );
+          setIsFileRestored(true);
+          setIsManualLoading(false);
+        }
+      } catch (error) {
+        console.error('Error loading file:', error);
+      }
+    };
+
+    // Load immediately, no delay to prevent flicker
+    loadTargetFile();
+  }, [isFromFilesPage, urlFile, fileStorage.isInitialized, isManualLoading, editorState.actions, isLoaded, isSignedIn]);
 
   const fileRestoration = useAutoFileRestoration(
-    (fileData) => {
+    isFromFilesPage ? undefined : (fileData) => {
       editorState.actions.loadFile(
         fileData.content,
         fileData.title,
