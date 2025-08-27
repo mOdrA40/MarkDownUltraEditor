@@ -26,17 +26,18 @@ export const useEditorState = (
   const getInitialValue = useCallback(
     (storageKey: string, fallback: string, debugKey?: 'content' | 'fileName' | 'fileId') => {
       // CRITICAL: Check for new file request FIRST before localStorage
-      const isNewFileRequest = typeof window !== 'undefined' && 
+      const isNewFileRequest =
+        typeof window !== 'undefined' &&
         new URLSearchParams(window.location.search).get('new') === 'true';
-      
+
       if (isNewFileRequest) {
         return debugKey === 'fileName' ? 'untitled.md' : '';
       }
 
       // Check if navigating from files page - skip ALL localStorage to prevent flicker
-      const isFromFilesPage = typeof window !== 'undefined' && 
-        new URLSearchParams(window.location.search).has('file');
-      
+      const isFromFilesPage =
+        typeof window !== 'undefined' && new URLSearchParams(window.location.search).has('file');
+
       if (isFromFilesPage) {
         return debugKey === 'fileName' ? 'Loading...' : ''; // Return empty/loading state
       }
@@ -83,9 +84,10 @@ export const useEditorState = (
     const activeFile = fileContextManager.getActiveFile();
     const isFirstTime = isFirstVisit();
     const hasInitialContent = initialMarkdown !== undefined;
-    
+
     // Check if this is a new file request from URL params
-    const isNewFileRequest = typeof window !== 'undefined' && 
+    const isNewFileRequest =
+      typeof window !== 'undefined' &&
       new URLSearchParams(window.location.search).get('new') === 'true';
 
     // For authenticated users, loading state is handled by MarkdownEditor component
@@ -108,8 +110,8 @@ export const useEditorState = (
     }
 
     // Skip localStorage loading if navigating from files page
-    const isFromFilesPage = typeof window !== 'undefined' && 
-      new URLSearchParams(window.location.search).has('file');
+    const isFromFilesPage =
+      typeof window !== 'undefined' && new URLSearchParams(window.location.search).has('file');
     if (isFromFilesPage) {
       return;
     }
@@ -234,13 +236,14 @@ export const useEditorState = (
       silent = false
     ) => {
       // Check if this is a new file request - block loading
-      const isNewFileRequest = typeof window !== 'undefined' && 
+      const isNewFileRequest =
+        typeof window !== 'undefined' &&
         new URLSearchParams(window.location.search).get('new') === 'true';
-      
+
       if (isNewFileRequest && content.includes('API Documentation')) {
         return; // Block the loading
       }
-      
+
       if (!bypassDialog && isModified) {
         const confirmed = window.confirm(
           'You have unsaved changes. Are you sure you want to load a new file?'

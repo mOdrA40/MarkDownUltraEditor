@@ -50,8 +50,10 @@ export const useImmediateFileLoading = (): ImmediateFileLoadingResult => {
     if (!isReady || hasChecked) return;
 
     // Check if this is a new file request - skip loading if it is
-    const urlParams = typeof window !== 'undefined' ? 
-      new URLSearchParams(window.location.search) : new URLSearchParams();
+    const urlParams =
+      typeof window !== 'undefined'
+        ? new URLSearchParams(window.location.search)
+        : new URLSearchParams();
     const isNewFileRequest = urlParams.get('new') === 'true';
 
     if (isNewFileRequest) {
