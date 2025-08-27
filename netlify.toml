@@ -104,11 +104,12 @@
   node_bundler = "esbuild"
 
 # Build plugins for security scanning
-[[plugins]]
-  package = "@netlify/plugin-lighthouse"
-  
-  [plugins.inputs.thresholds]
-    performance = 0.8
-    accessibility = 0.9
-    best-practices = 0.9
-    seo = 0.8
+# Temporarily disabled lighthouse plugin due to dependency conflicts
+# [[plugins]]
+#   package = "@netlify/plugin-lighthouse"
+#
+#   [plugins.inputs.thresholds]
+#     performance = 0.8
+#     accessibility = 0.9
+#     best-practices = 0.9
+#     seo = 0.8
