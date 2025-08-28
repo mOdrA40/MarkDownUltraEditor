@@ -3,8 +3,8 @@
  * @author Axel Modra
  */
 
-import type { Theme } from '../../../features/ThemeSelector';
-import type { EditorStyles, ResponsiveConfig } from '../types/editorPane.types';
+import type { Theme } from "../../../features/ThemeSelector";
+import type { EditorStyles, ResponsiveConfig } from "../types/editorPane.types";
 
 /**
  * Calculate responsive font size and line height based on device type
@@ -45,13 +45,21 @@ export const generateEditorStyles = (
     lineHeight,
     fontFamily:
       'ui-monospace, SFMono-Regular, "SF Mono", Monaco, Consolas, "Liberation Mono", "Courier New", monospace',
-    whiteSpace: isMobileOrTablet ? 'pre-wrap' : wordWrap ? 'pre-wrap' : 'pre',
-    backgroundColor: theme?.surface || 'transparent',
-    borderColor: theme?.accent || 'transparent',
-    wordWrap: isMobileOrTablet ? 'break-word' : wordWrap ? 'break-word' : 'normal',
-    overflowWrap: isMobileOrTablet ? 'break-word' : wordWrap ? 'break-word' : 'normal',
-    overflowX: isMobileOrTablet ? 'hidden' : 'auto',
-    hyphens: isMobileOrTablet ? 'auto' : 'none',
+    whiteSpace: isMobileOrTablet ? "pre-wrap" : wordWrap ? "pre-wrap" : "pre",
+    backgroundColor: theme?.surface || "transparent",
+    borderColor: theme?.accent || "transparent",
+    wordWrap: isMobileOrTablet
+      ? "break-word"
+      : wordWrap
+        ? "break-word"
+        : "normal",
+    overflowWrap: isMobileOrTablet
+      ? "break-word"
+      : wordWrap
+        ? "break-word"
+        : "normal",
+    overflowX: isMobileOrTablet ? "hidden" : "auto",
+    hyphens: isMobileOrTablet ? "auto" : "none",
   } as EditorStyles;
 };
 
@@ -59,7 +67,7 @@ export const generateEditorStyles = (
  * Generate padding styles for textarea based on focus mode
  */
 export const generatePaddingStyles = (focusMode: boolean): string => {
-  return `1.5rem 1.5rem 1.5rem ${focusMode ? '2rem' : '3.5rem'}`;
+  return `1.5rem 1.5rem 1.5rem ${focusMode ? "2rem" : "3.5rem"}`;
 };
 
 /**
@@ -71,9 +79,9 @@ export const generateLineNumberStyles = (
   theme?: Theme
 ): React.CSSProperties => {
   return {
-    backgroundColor: theme?.surface ? `${theme.surface}60` : 'rgba(0,0,0,0.03)',
-    borderColor: theme?.accent ? `${theme.accent}40` : 'rgba(0,0,0,0.1)',
-    color: theme?.text ? `${theme.text}60` : 'rgba(0,0,0,0.4)',
+    backgroundColor: theme?.surface ? `${theme.surface}60` : "rgba(0,0,0,0.03)",
+    borderColor: theme?.accent ? `${theme.accent}40` : "rgba(0,0,0,0.1)",
+    color: theme?.text ? `${theme.text}60` : "rgba(0,0,0,0.4)",
     fontSize: `${Math.max(10, fontSize - 2)}px`,
     lineHeight,
   };
@@ -84,7 +92,7 @@ export const generateLineNumberStyles = (
  */
 const hexToRgba = (hex: string, opacity: number): string => {
   // Remove # if present
-  const cleanHex = hex.replace('#', '');
+  const cleanHex = hex.replace("#", "");
 
   // Parse hex to RGB
   const r = Number.parseInt(cleanHex.substring(0, 2), 16);
@@ -98,15 +106,14 @@ const hexToRgba = (hex: string, opacity: number): string => {
  * Generate header styles based on theme
  */
 export const generateHeaderStyles = (theme?: Theme) => {
-  // Use theme surface color with proper opacity, fallback to light gray
   const backgroundColor = theme?.surface
     ? hexToRgba(theme.surface, 0.8)
-    : 'rgba(248, 250, 252, 0.8)'; // bg-slate-50 with opacity
+    : "rgba(248, 250, 252, 0.8)";
 
   return {
     backgroundColor,
-    borderColor: theme?.accent || 'rgba(226, 232, 240, 1)', // border-slate-200
-    color: theme?.text || 'inherit',
+    borderColor: theme?.accent || "rgba(226, 232, 240, 1)",
+    color: theme?.text || "inherit",
   };
 };
 
@@ -114,7 +121,7 @@ export const generateHeaderStyles = (theme?: Theme) => {
  * Generate focus mode gradient background
  */
 export const generateFocusModeGradient = (theme?: Theme): string => {
-  const baseColor = theme?.background || 'white';
+  const baseColor = theme?.background || "white";
   return `linear-gradient(to bottom, 
     ${baseColor}00 0%, 
     ${baseColor}40 20%, 

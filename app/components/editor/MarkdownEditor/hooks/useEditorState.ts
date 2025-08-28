@@ -3,13 +3,17 @@
  * @author Axel Modra
  */
 
-import { useAuth } from '@clerk/react-router';
-import { useCallback, useEffect, useState } from 'react';
-import { useToast, useUndoRedo } from '@/hooks/core';
-import { isFirstVisit } from '@/utils/editorPreferences';
-import { fileContextManager } from '@/utils/fileContext';
-import type { EditorState, UseEditorStateReturn } from '../types';
-import { DEFAULT_FILE, STORAGE_KEYS, SUCCESS_MESSAGES } from '../utils/constants';
+import { useAuth } from "@clerk/react-router";
+import { useCallback, useEffect, useState } from "react";
+import { useToast, useUndoRedo } from "@/hooks/core";
+import { isFirstVisit } from "@/utils/editorPreferences";
+import { fileContextManager } from "@/utils/fileContext";
+import type { EditorState, UseEditorStateReturn } from "../types";
+import {
+  DEFAULT_FILE,
+  STORAGE_KEYS,
+  SUCCESS_MESSAGES,
+} from "../utils/constants";
 
 /**
  * Custom hook for managing editor state
@@ -24,42 +28,49 @@ export const useEditorState = (
   const [isRestoring, setIsRestoring] = useState(true);
 
   const getInitialValue = useCallback(
-    (storageKey: string, fallback: string, debugKey?: 'content' | 'fileName' | 'fileId') => {
-      // CRITICAL: Check for new file request FIRST before localStorage
+    (
+      storageKey: string,
+      fallback: string,
+      debugKey?: "content" | "fileName" | "fileId"
+    ) => {
       const isNewFileRequest =
-        typeof window !== 'undefined' &&
-        new URLSearchParams(window.location.search).get('new') === 'true';
+        typeof window !== "undefined" &&
+        new URLSearchParams(window.location.search).get("new") === "true";
 
       if (isNewFileRequest) {
-        return debugKey === 'fileName' ? 'untitled.md' : '';
+        return debugKey === "fileName" ? "untitled.md" : "";
       }
 
-      // Check if navigating from files page - skip ALL localStorage to prevent flicker
       const isFromFilesPage =
-        typeof window !== 'undefined' && new URLSearchParams(window.location.search).has('file');
+        typeof window !== "undefined" &&
+        new URLSearchParams(window.location.search).has("file");
 
       if (isFromFilesPage) {
-        return debugKey === 'fileName' ? 'Loading...' : ''; // Return empty/loading state
+        return debugKey === "fileName" ? "Loading..." : "";
       }
 
       try {
-        // Try to get from localStorage first
         const savedValue = localStorage.getItem(storageKey);
         if (savedValue !== null) {
           return savedValue;
         }
       } catch (error) {
-        import('@/utils/console').then(({ safeConsole }) => {
-          safeConsole.warn(`Failed to get ${debugKey || 'value'} from localStorage:`, error);
+        import("@/utils/console").then(({ safeConsole }) => {
+          safeConsole.warn(
+            `Failed to get ${debugKey || "value"} from localStorage:`,
+            error
+          );
         });
       }
-      // Finally, use the fallback
       return fallback;
     },
     []
   );
 
-  const initialContent = getInitialValue(STORAGE_KEYS.CONTENT, initialMarkdown ?? '');
+  const initialContent = getInitialValue(
+    STORAGE_KEYS.CONTENT,
+    initialMarkdown ?? ""
+  );
 
   const {
     value: markdown,
@@ -75,7 +86,11 @@ export const useEditorState = (
   });
 
   const [fileName, setFileName] = useState(() =>
-    getInitialValue(STORAGE_KEYS.FILE_NAME, initialFileName ?? DEFAULT_FILE.NAME, 'fileName')
+    getInitialValue(
+      STORAGE_KEYS.FILE_NAME,
+      initialFileName ?? DEFAULT_FILE.NAME,
+      "fileName"
+    )
   );
   const [isModified, setIsModified] = useState(false);
   const [autoSave] = useState(true);
@@ -85,45 +100,36 @@ export const useEditorState = (
     const isFirstTime = isFirstVisit();
     const hasInitialContent = initialMarkdown !== undefined;
 
-    // Check if this is a new file request from URL params
     const isNewFileRequest =
-      typeof window !== 'undefined' &&
-      new URLSearchParams(window.location.search).get('new') === 'true';
+      typeof window !== "undefined" &&
+      new URLSearchParams(window.location.search).get("new") === "true";
 
-    // For authenticated users, loading state is handled by MarkdownEditor component
-    // based on immediate loading state, so don't show restoration loading here
     if (isLoaded && isSignedIn) {
       setIsRestoring(false);
     } else {
-      // Show loader if we are a returning guest user and there's no overriding initial content
       if (!isFirstTime && !hasInitialContent && activeFile) {
         setIsRestoring(true);
-        // Content will be loaded by useAutoFileRestoration, we just show the loader
       } else {
         setIsRestoring(false);
       }
     }
 
-    // Skip localStorage content loading if this is a new file request
     if (isNewFileRequest) {
       return;
     }
 
-    // Skip localStorage loading if navigating from files page
     const isFromFilesPage =
-      typeof window !== 'undefined' && new URLSearchParams(window.location.search).has('file');
+      typeof window !== "undefined" &&
+      new URLSearchParams(window.location.search).has("file");
     if (isFromFilesPage) {
       return;
     }
 
-    // On initial load, if there's content from localStorage, set it
-    // But only for returning users, not first-time visitors (let welcome dialog handle that)
     const savedContent = localStorage.getItem(STORAGE_KEYS.CONTENT);
     if (savedContent && !isFirstTime) {
-      setMarkdown(savedContent); // Set without adding to history
+      setMarkdown(savedContent);
     }
 
-    // Set a timeout to prevent infinite loading screen for guest users
     const timeoutId = setTimeout(() => {
       setIsRestoring(false);
     }, 5000);
@@ -152,10 +158,11 @@ export const useEditorState = (
     (
       fileName: string,
       fileId?: string,
-      source: 'url' | 'files-page' | 'manual' | 'auto-save' = 'manual'
+      source: "url" | "files-page" | "manual" | "auto-save" = "manual"
     ) => {
       const contextFileId =
-        fileId || `file_${Date.now()}_${Math.random().toString(36).substring(2, 11)}`;
+        fileId ||
+        `file_${Date.now()}_${Math.random().toString(36).substring(2, 11)}`;
 
       fileContextManager.setActiveFile({
         fileId: contextFileId,
@@ -163,8 +170,8 @@ export const useEditorState = (
         source,
       });
 
-      import('@/utils/console').then(({ safeConsole }) => {
-        safeConsole.dev('File context updated:', {
+      import("@/utils/console").then(({ safeConsole }) => {
+        safeConsole.dev("File context updated:", {
           fileId: contextFileId,
           fileName,
           source,
@@ -175,28 +182,28 @@ export const useEditorState = (
   );
 
   const handleNewFile = useCallback(() => {
-    import('@/utils/console').then(({ safeConsole }) => {
-      safeConsole.dev('handleNewFile called - isModified:', isModified);
+    import("@/utils/console").then(({ safeConsole }) => {
+      safeConsole.dev("handleNewFile called - isModified:", isModified);
     });
 
     if (isModified) {
       const confirmed = window.confirm(
-        'You have unsaved changes. Are you sure you want to create a new file?'
+        "You have unsaved changes. Are you sure you want to create a new file?"
       );
       if (!confirmed) {
-        import('@/utils/console').then(({ safeConsole }) => {
-          safeConsole.dev('User cancelled new file creation');
+        import("@/utils/console").then(({ safeConsole }) => {
+          safeConsole.dev("User cancelled new file creation");
         });
         return;
       }
     }
 
-    const newFileContent = '';
-    const newFileName = 'untitled.md';
+    const newFileContent = "";
+    const newFileName = "untitled.md";
 
-    import('@/utils/console').then(({ safeConsole }) => {
-      safeConsole.dev('Creating new file with content:', newFileContent);
-      safeConsole.dev('Setting filename to:', newFileName);
+    import("@/utils/console").then(({ safeConsole }) => {
+      safeConsole.dev("Creating new file with content:", newFileContent);
+      safeConsole.dev("Setting filename to:", newFileName);
     });
 
     clearHistory(newFileContent);
@@ -205,24 +212,24 @@ export const useEditorState = (
     setFileName(newFileName);
     setIsModified(false);
 
-    if (typeof localStorage !== 'undefined') {
+    if (typeof localStorage !== "undefined") {
       try {
         localStorage.setItem(STORAGE_KEYS.CONTENT, newFileContent);
         localStorage.setItem(STORAGE_KEYS.FILE_NAME, newFileName);
       } catch (error) {
-        import('@/utils/console').then(({ safeConsole }) => {
-          safeConsole.warn('Failed to save to localStorage:', error);
+        import("@/utils/console").then(({ safeConsole }) => {
+          safeConsole.warn("Failed to save to localStorage:", error);
         });
       }
     }
 
     toast({
-      title: 'New file created',
-      description: 'Ready to start writing!',
+      title: "New file created",
+      description: "Ready to start writing!",
     });
 
-    import('@/utils/console').then(({ safeConsole }) => {
-      safeConsole.dev('New file created successfully');
+    import("@/utils/console").then(({ safeConsole }) => {
+      safeConsole.dev("New file created successfully");
     });
   }, [isModified, setMarkdown, clearHistory, toast]);
 
@@ -232,67 +239,75 @@ export const useEditorState = (
       name: string,
       bypassDialog = false,
       fileId?: string,
-      source: 'url' | 'files-page' | 'manual' | 'auto-save' = 'manual',
+      source: "url" | "files-page" | "manual" | "auto-save" = "manual",
       silent = false
     ) => {
-      // Check if this is a new file request - block loading
       const isNewFileRequest =
-        typeof window !== 'undefined' &&
-        new URLSearchParams(window.location.search).get('new') === 'true';
+        typeof window !== "undefined" &&
+        new URLSearchParams(window.location.search).get("new") === "true";
 
-      if (isNewFileRequest && content.includes('API Documentation')) {
-        return; // Block the loading
+      if (isNewFileRequest && content.includes("API Documentation")) {
+        return;
       }
 
       if (!bypassDialog && isModified) {
         const confirmed = window.confirm(
-          'You have unsaved changes. Are you sure you want to load a new file?'
+          "You have unsaved changes. Are you sure you want to load a new file?"
         );
         if (!confirmed) return;
       }
-      if (process.env.NODE_ENV === 'development') {
-        import('@/utils/console').then(({ safeConsole }) => {
-          safeConsole.dev('Loading file:', name, 'with content length:', content.length);
+      if (process.env.NODE_ENV === "development") {
+        import("@/utils/console").then(({ safeConsole }) => {
+          safeConsole.dev(
+            "Loading file:",
+            name,
+            "with content length:",
+            content.length
+          );
         });
       }
 
       clearHistory(content);
       setMarkdown(content);
       setFileName(name);
-      setIsRestoring(false); // Done restoring
+      setIsRestoring(false);
 
       const isTemplate =
-        name.includes('Template') ||
-        name.includes('template') ||
-        content.includes('# Template') ||
-        content.includes('# API Documentation');
+        name.includes("Template") ||
+        name.includes("template") ||
+        content.includes("# Template") ||
+        content.includes("# API Documentation");
       setIsModified(isTemplate);
 
       updateFileContext(name, fileId, source);
 
-      if (typeof localStorage !== 'undefined') {
+      if (typeof localStorage !== "undefined") {
         try {
           localStorage.setItem(STORAGE_KEYS.CONTENT, content);
           localStorage.setItem(STORAGE_KEYS.FILE_NAME, name);
-          import('@/utils/console').then(({ safeConsole }) => {
-            safeConsole.dev('Updated editor state in localStorage:', name);
+          import("@/utils/console").then(({ safeConsole }) => {
+            safeConsole.dev("Updated editor state in localStorage:", name);
           });
         } catch (error) {
-          import('@/utils/console').then(({ safeConsole }) => {
-            safeConsole.warn('Failed to update localStorage:', error);
+          import("@/utils/console").then(({ safeConsole }) => {
+            safeConsole.warn("Failed to update localStorage:", error);
           });
         }
       }
 
-      if (!silent && source !== 'auto-save') {
+      if (!silent && source !== "auto-save") {
         toast({
           title: SUCCESS_MESSAGES.FILE_LOADED,
           description: `${name} has been loaded successfully.`,
         });
       }
 
-      import('@/utils/console').then(({ safeConsole }) => {
-        safeConsole.dev('File loaded successfully:', name, silent ? '(silent)' : '');
+      import("@/utils/console").then(({ safeConsole }) => {
+        safeConsole.dev(
+          "File loaded successfully:",
+          name,
+          silent ? "(silent)" : ""
+        );
       });
     },
     [isModified, setMarkdown, clearHistory, toast, updateFileContext]

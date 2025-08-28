@@ -3,50 +3,69 @@
  * @author Axel Modra
  */
 
-import { useCallback, useEffect, useState } from 'react';
-import { type Theme, themes } from '../../../features/ThemeSelector';
-import type { ThemeState, UseThemeManagerReturn } from '../types';
-import { STORAGE_KEYS, THEME_CONFIG } from '../utils/constants';
+import { useCallback, useEffect, useState } from "react";
+import { type Theme, themes } from "../../../features/ThemeSelector";
+import type { ThemeState, UseThemeManagerReturn } from "../types";
+import { STORAGE_KEYS, THEME_CONFIG } from "../utils/constants";
 
 /**
  * Custom hook for managing theme state and operations
  * Handles theme switching, persistence, and CSS variable application
  */
-export const useThemeManager = (initialTheme?: Theme): UseThemeManagerReturn => {
+export const useThemeManager = (
+  initialTheme?: Theme
+): UseThemeManagerReturn => {
   // Theme state
-  const [currentTheme, setCurrentTheme] = useState<Theme>(initialTheme || themes[0]);
+  const [currentTheme, setCurrentTheme] = useState<Theme>(
+    initialTheme || themes[0]
+  );
 
   /**
    * Apply theme to document root
    */
   const applyTheme = useCallback((theme: Theme) => {
-    if (typeof document === 'undefined') return;
+    if (typeof document === "undefined") return;
 
     const root = document.documentElement;
 
     // Apply custom CSS properties for backward compatibility
-    root.style.setProperty(`${THEME_CONFIG.CSS_VARIABLE_PREFIX}primary`, theme.primary);
-    root.style.setProperty(`${THEME_CONFIG.CSS_VARIABLE_PREFIX}secondary`, theme.secondary);
-    root.style.setProperty(`${THEME_CONFIG.CSS_VARIABLE_PREFIX}background`, theme.background);
-    root.style.setProperty(`${THEME_CONFIG.CSS_VARIABLE_PREFIX}surface`, theme.surface);
-    root.style.setProperty(`${THEME_CONFIG.CSS_VARIABLE_PREFIX}text`, theme.text);
-    root.style.setProperty(`${THEME_CONFIG.CSS_VARIABLE_PREFIX}accent`, theme.accent);
+    root.style.setProperty(
+      `${THEME_CONFIG.CSS_VARIABLE_PREFIX}primary`,
+      theme.primary
+    );
+    root.style.setProperty(
+      `${THEME_CONFIG.CSS_VARIABLE_PREFIX}secondary`,
+      theme.secondary
+    );
+    root.style.setProperty(
+      `${THEME_CONFIG.CSS_VARIABLE_PREFIX}background`,
+      theme.background
+    );
+    root.style.setProperty(
+      `${THEME_CONFIG.CSS_VARIABLE_PREFIX}surface`,
+      theme.surface
+    );
+    root.style.setProperty(
+      `${THEME_CONFIG.CSS_VARIABLE_PREFIX}text`,
+      theme.text
+    );
+    root.style.setProperty(
+      `${THEME_CONFIG.CSS_VARIABLE_PREFIX}accent`,
+      theme.accent
+    );
 
-    // Remove all theme classes first
     document.documentElement.className = document.documentElement.className
-      .replace(/theme-\w+/g, '')
-      .replace(/\bdark\b/g, '')
+      .replace(/theme-\w+/g, "")
+      .replace(/\bdark\b/g, "")
       .trim();
 
-    // Handle dark mode class
-    if (theme.id === 'dark') {
-      document.documentElement.classList.add('dark');
+    if (theme.id === "dark") {
+      document.documentElement.classList.add("dark");
     } else {
-      // Add theme-specific class for non-dark themes
       document.documentElement.classList.add(`theme-${theme.id}`);
     }
 
-    import('@/utils/console').then(({ safeConsole }) => {
+    import("@/utils/console").then(({ safeConsole }) => {
       safeConsole.dev(
         `🎨 Theme applied: ${theme.id}, classes: ${document.documentElement.className}`
       );
@@ -60,8 +79,8 @@ export const useThemeManager = (initialTheme?: Theme): UseThemeManagerReturn => 
     try {
       localStorage.setItem(STORAGE_KEYS.THEME, theme.id);
     } catch (error) {
-      import('@/utils/console').then(({ safeConsole }) => {
-        safeConsole.warn('Failed to save theme to localStorage:', error);
+      import("@/utils/console").then(({ safeConsole }) => {
+        safeConsole.warn("Failed to save theme to localStorage:", error);
       });
     }
   }, []);
@@ -77,8 +96,8 @@ export const useThemeManager = (initialTheme?: Theme): UseThemeManagerReturn => 
         return savedTheme || null;
       }
     } catch (error) {
-      import('@/utils/console').then(({ safeConsole }) => {
-        safeConsole.warn('Failed to load theme from localStorage:', error);
+      import("@/utils/console").then(({ safeConsole }) => {
+        safeConsole.warn("Failed to load theme from localStorage:", error);
       });
     }
     return null;
@@ -107,7 +126,9 @@ export const useThemeManager = (initialTheme?: Theme): UseThemeManagerReturn => 
    * Get next theme in rotation
    */
   const getNextTheme = useCallback((): Theme => {
-    const currentIndex = themes.findIndex((theme) => theme.id === currentTheme.id);
+    const currentIndex = themes.findIndex(
+      (theme) => theme.id === currentTheme.id
+    );
     const nextIndex = (currentIndex + 1) % themes.length;
     return themes[nextIndex];
   }, [currentTheme.id]);
@@ -116,8 +137,11 @@ export const useThemeManager = (initialTheme?: Theme): UseThemeManagerReturn => 
    * Get previous theme in rotation
    */
   const getPreviousTheme = useCallback((): Theme => {
-    const currentIndex = themes.findIndex((theme) => theme.id === currentTheme.id);
-    const previousIndex = currentIndex === 0 ? themes.length - 1 : currentIndex - 1;
+    const currentIndex = themes.findIndex(
+      (theme) => theme.id === currentTheme.id
+    );
+    const previousIndex =
+      currentIndex === 0 ? themes.length - 1 : currentIndex - 1;
     return themes[previousIndex];
   }, [currentTheme.id]);
 
@@ -141,7 +165,7 @@ export const useThemeManager = (initialTheme?: Theme): UseThemeManagerReturn => 
    * Check if current theme is dark
    */
   const isDarkTheme = useCallback((): boolean => {
-    return currentTheme.id === 'dark';
+    return currentTheme.id === "dark";
   }, [currentTheme.id]);
 
   /**
@@ -149,12 +173,11 @@ export const useThemeManager = (initialTheme?: Theme): UseThemeManagerReturn => 
    */
   const toggleDarkMode = useCallback(() => {
     if (isDarkTheme()) {
-      // Switch to default light theme (ocean)
-      const lightTheme = themes.find((theme) => theme.id === 'ocean') || themes[0];
+      const lightTheme =
+        themes.find((theme) => theme.id === "ocean") || themes[0];
       handleSetTheme(lightTheme);
     } else {
-      // Switch to dark theme
-      const darkTheme = themes.find((theme) => theme.id === 'dark');
+      const darkTheme = themes.find((theme) => theme.id === "dark");
       if (darkTheme) {
         handleSetTheme(darkTheme);
       }
@@ -166,7 +189,7 @@ export const useThemeManager = (initialTheme?: Theme): UseThemeManagerReturn => 
    */
   const getLuminance = useCallback((color: string): number => {
     // Simple luminance calculation for hex colors
-    const hex = color.replace('#', '');
+    const hex = color.replace("#", "");
     const r = Number.parseInt(hex.substring(0, 2), 16) / 255;
     const g = Number.parseInt(hex.substring(2, 4), 16) / 255;
     const b = Number.parseInt(hex.substring(4, 6), 16) / 255;

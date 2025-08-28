@@ -1,21 +1,21 @@
 /**
- * @fileoverview Main EditorPane component - refactored with modular architecture
+ * @fileoverview Main EditorPane component
  * @author Axel Modra
  */
 
-import type React from 'react';
-import { useEffect } from 'react';
-import { EditorHeader } from './components/EditorHeader';
-import { EditorTextarea } from './components/EditorTextarea';
-import { FocusModeOverlay } from './components/FocusModeOverlay';
-import { LineNumbers } from './components/LineNumbers';
-import { useEditorState } from './hooks/useEditorState';
-import { useResponsiveEditor } from './hooks/useResponsiveEditor';
-import { useSimpleEditor } from './hooks/useSimpleEditor';
-import { useTypewriterMode } from './hooks/useTypewriterMode';
-import type { EditorPaneProps } from './types/editorPane.types';
-import { generateEditorStyles } from './utils/editorStyles';
-import { handleKeyDown } from './utils/keyboardHandlers';
+import type React from "react";
+import { useEffect } from "react";
+import { EditorHeader } from "./components/EditorHeader";
+import { EditorTextarea } from "./components/EditorTextarea";
+import { FocusModeOverlay } from "./components/FocusModeOverlay";
+import { LineNumbers } from "./components/LineNumbers";
+import { useEditorState } from "./hooks/useEditorState";
+import { useResponsiveEditor } from "./hooks/useResponsiveEditor";
+import { useSimpleEditor } from "./hooks/useSimpleEditor";
+import { useTypewriterMode } from "./hooks/useTypewriterMode";
+import type { EditorPaneProps } from "./types/editorPane.types";
+import { generateEditorStyles } from "./utils/editorStyles";
+import { handleKeyDown } from "./utils/keyboardHandlers";
 
 /**
  * Main EditorPane component with modular architecture
@@ -35,40 +35,41 @@ export const EditorPane: React.FC<EditorPaneProps> = ({
   isTablet = false,
   onInsertTextAtCursor,
 }) => {
-  // State management
-  const { vimModeState, textareaRef, vim } = useEditorState(markdown, onChange, vimMode);
+  const { vimModeState, textareaRef, vim } = useEditorState(
+    markdown,
+    onChange,
+    vimMode
+  );
 
-  // Ultra-simple editor without complex state management
   const { insertTextAtCursor, autoResize } = useSimpleEditor(textareaRef, {
     minHeight: 100,
     maxHeight: 1000,
   });
 
-  // Pass insertTextAtCursor to parent component
   useEffect(() => {
     if (onInsertTextAtCursor) {
       onInsertTextAtCursor(insertTextAtCursor);
     }
   }, [onInsertTextAtCursor, insertTextAtCursor]);
 
-  // Auto-resize on mount only - changes are handled by textarea onChange
   useEffect(() => {
     autoResize();
   }, [autoResize]);
 
-  // Responsive configuration
-  const responsiveConfig = useResponsiveEditor(fontSize, lineHeight, isMobile, isTablet);
+  const responsiveConfig = useResponsiveEditor(
+    fontSize,
+    lineHeight,
+    isMobile,
+    isTablet
+  );
 
-  // Typewriter mode functionality
   useTypewriterMode({
     enabled: typewriterMode,
     textareaRef,
   });
 
-  // Generate editor styles
   const editorStyles = generateEditorStyles(responsiveConfig, wordWrap, theme);
 
-  // Keyboard event handler
   const handleKeyDownEvent = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
     handleKeyDown(e, {
       vimMode,
@@ -81,7 +82,7 @@ export const EditorPane: React.FC<EditorPaneProps> = ({
   return (
     <div
       data-editor-pane
-      className={`h-full flex flex-col editor-pane ${responsiveConfig.isMobileOrTablet ? 'editor-pane-responsive' : ''}`}
+      className={`h-full flex flex-col editor-pane ${responsiveConfig.isMobileOrTablet ? "editor-pane-responsive" : ""}`}
     >
       {/* Editor Header */}
       <EditorHeader

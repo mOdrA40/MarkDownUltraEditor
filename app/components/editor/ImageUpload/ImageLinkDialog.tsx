@@ -3,10 +3,10 @@
  * @author Axel Modra
  */
 
-import { ImageIcon, Link } from 'lucide-react';
-import type React from 'react';
-import { useId, useState } from 'react';
-import { Button } from '@/components/ui/button';
+import { ImageIcon, Link } from "lucide-react";
+import type React from "react";
+import { useId, useState } from "react";
+import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
@@ -14,10 +14,10 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-} from '@/components/ui/dialog';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { useToast } from '@/hooks/core/useToast';
+} from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { useToast } from "@/hooks/core/useToast";
 
 interface ImageLinkDialogProps {
   /** Whether the dialog is open */
@@ -36,8 +36,8 @@ export const ImageLinkDialog: React.FC<ImageLinkDialogProps> = ({
   onOpenChange,
   onImageInsert,
 }) => {
-  const [imageUrl, setImageUrl] = useState('');
-  const [altText, setAltText] = useState('');
+  const [imageUrl, setImageUrl] = useState("");
+  const [altText, setAltText] = useState("");
   const [isValidating, setIsValidating] = useState(false);
   const { toast } = useToast();
 
@@ -52,26 +52,31 @@ export const ImageLinkDialog: React.FC<ImageLinkDialogProps> = ({
     try {
       const urlObj = new URL(url);
       const pathname = urlObj.pathname.toLowerCase();
-      const validExtensions = ['.jpg', '.jpeg', '.png', '.gif', '.webp', '.svg'];
+      const validExtensions = [
+        ".jpg",
+        ".jpeg",
+        ".png",
+        ".gif",
+        ".webp",
+        ".svg",
+      ];
 
-      // Check for file extensions
       if (validExtensions.some((ext) => pathname.endsWith(ext))) {
         return true;
       }
 
-      // Check for known image hosting services
       const validHosts = [
-        'unsplash.com',
-        'imgur.com',
-        'cloudinary.com',
-        'amazonaws.com',
-        'picsum.photos',
-        'via.placeholder.com',
-        'placehold.it',
-        'placekitten.com',
-        'images.unsplash.com',
-        'cdn.pixabay.com',
-        'images.pexels.com',
+        "unsplash.com",
+        "imgur.com",
+        "cloudinary.com",
+        "amazonaws.com",
+        "picsum.photos",
+        "via.placeholder.com",
+        "placehold.it",
+        "placekitten.com",
+        "images.unsplash.com",
+        "cdn.pixabay.com",
+        "images.pexels.com",
       ];
 
       return validHosts.some((host) => urlObj.hostname.includes(host));
@@ -88,18 +93,19 @@ export const ImageLinkDialog: React.FC<ImageLinkDialogProps> = ({
 
     if (!imageUrl.trim()) {
       toast({
-        title: 'URL Required',
-        description: 'Please enter an image URL',
-        variant: 'destructive',
+        title: "URL Required",
+        description: "Please enter an image URL",
+        variant: "destructive",
       });
       return;
     }
 
     if (!isValidImageUrl(imageUrl)) {
       toast({
-        title: 'Invalid URL',
-        description: 'Please enter a valid image URL (jpg, png, gif, webp, svg)',
-        variant: 'destructive',
+        title: "Invalid URL",
+        description:
+          "Please enter a valid image URL (jpg, png, gif, webp, svg)",
+        variant: "destructive",
       });
       return;
     }
@@ -107,13 +113,12 @@ export const ImageLinkDialog: React.FC<ImageLinkDialogProps> = ({
     setIsValidating(true);
 
     try {
-      // Insert image directly without validation to avoid CSP issues
-      const finalAltText = altText.trim() || 'Image';
+      const finalAltText = altText.trim() || "Image";
       const finalImageUrl = imageUrl.trim();
 
       // Debug log to check what we're sending
-      import('@/utils/console').then(({ safeConsole }) => {
-        safeConsole.dev('Sending to onImageInsert:', {
+      import("@/utils/console").then(({ safeConsole }) => {
+        safeConsole.dev("Sending to onImageInsert:", {
           finalImageUrl,
           finalAltText,
         });
@@ -121,14 +126,13 @@ export const ImageLinkDialog: React.FC<ImageLinkDialogProps> = ({
 
       onImageInsert(finalImageUrl, finalAltText);
       handleClose();
-      // Remove toast notification to prevent spam during auto-save
       setIsValidating(false);
     } catch (_error) {
       setIsValidating(false);
       toast({
-        title: 'Error',
-        description: 'An error occurred while inserting the image',
-        variant: 'destructive',
+        title: "Error",
+        description: "An error occurred while inserting the image",
+        variant: "destructive",
       });
     }
   };
@@ -137,8 +141,8 @@ export const ImageLinkDialog: React.FC<ImageLinkDialogProps> = ({
    * Handle dialog close
    */
   const handleClose = () => {
-    setImageUrl('');
-    setAltText('');
+    setImageUrl("");
+    setAltText("");
     setIsValidating(false);
     onOpenChange(false);
   };
@@ -148,13 +152,12 @@ export const ImageLinkDialog: React.FC<ImageLinkDialogProps> = ({
    */
   const handleUrlChange = (value: string) => {
     setImageUrl(value);
-    // Auto-generate alt text from URL if alt text is empty
     if (!altText && value) {
       try {
         const url = new URL(value);
-        const filename = url.pathname.split('/').pop()?.split('.')[0];
+        const filename = url.pathname.split("/").pop()?.split(".")[0];
         if (filename) {
-          setAltText(filename.replace(/[-_]/g, ' '));
+          setAltText(filename.replace(/[-_]/g, " "));
         }
       } catch {
         // Ignore invalid URLs during typing
@@ -171,8 +174,8 @@ export const ImageLinkDialog: React.FC<ImageLinkDialogProps> = ({
             Insert Image
           </DialogTitle>
           <DialogDescription>
-            Enter the URL of the image you want to insert. The image will be embedded using standard
-            markdown format.
+            Enter the URL of the image you want to insert. The image will be
+            embedded using standard markdown format.
           </DialogDescription>
         </DialogHeader>
 
@@ -228,7 +231,7 @@ export const ImageLinkDialog: React.FC<ImageLinkDialogProps> = ({
               disabled={!imageUrl.trim() || isValidating}
               className="w-full sm:w-auto"
             >
-              {isValidating ? 'Validating...' : 'Insert Image'}
+              {isValidating ? "Validating..." : "Insert Image"}
             </Button>
           </DialogFooter>
         </form>

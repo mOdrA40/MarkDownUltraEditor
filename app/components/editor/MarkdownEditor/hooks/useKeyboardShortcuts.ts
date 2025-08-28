@@ -3,8 +3,7 @@
  * @author Axel Modra
  */
 
-import { useCallback, useEffect, useRef } from 'react';
-// import { KEYBOARD_SHORTCUTS } from '../utils/constants';
+import { useCallback, useEffect, useRef } from "react";
 
 /**
  * Keyboard shortcut configuration
@@ -63,24 +62,27 @@ export const useKeyboardShortcuts = (
    */
   const getShortcutKey = useCallback((event: KeyboardEvent): string => {
     const parts = [];
-    if (event.ctrlKey || event.metaKey) parts.push('ctrl');
-    if (event.shiftKey) parts.push('shift');
-    if (event.altKey) parts.push('alt');
+    if (event.ctrlKey || event.metaKey) parts.push("ctrl");
+    if (event.shiftKey) parts.push("shift");
+    if (event.altKey) parts.push("alt");
     parts.push(event.key.toLowerCase());
-    return parts.join('+');
+    return parts.join("+");
   }, []);
 
   /**
    * Generate shortcut key from configuration
    */
-  const getConfigKey = useCallback((config: Partial<KeyboardShortcut>): string => {
-    const parts = [];
-    if (config.ctrlKey || config.metaKey) parts.push('ctrl');
-    if (config.shiftKey) parts.push('shift');
-    if (config.altKey) parts.push('alt');
-    parts.push(config.key?.toLowerCase() || '');
-    return parts.join('+');
-  }, []);
+  const getConfigKey = useCallback(
+    (config: Partial<KeyboardShortcut>): string => {
+      const parts = [];
+      if (config.ctrlKey || config.metaKey) parts.push("ctrl");
+      if (config.shiftKey) parts.push("shift");
+      if (config.altKey) parts.push("alt");
+      parts.push(config.key?.toLowerCase() || "");
+      return parts.join("+");
+    },
+    []
+  );
 
   /**
    * Register a keyboard shortcut
@@ -90,7 +92,6 @@ export const useKeyboardShortcuts = (
       const key = getConfigKey(shortcut);
       shortcutsRef.current.set(key, shortcut);
 
-      // Return unregister function
       return () => {
         shortcutsRef.current.delete(key);
       };
@@ -140,13 +141,13 @@ export const useKeyboardShortcuts = (
     (event: KeyboardEvent) => {
       if (!enabledRef.current) return;
 
-      // Don't handle shortcuts when typing in input fields (except textarea for editor)
       const target = event.target as HTMLElement;
       const isInputField =
-        target.tagName === 'INPUT' ||
-        target.tagName === 'SELECT' ||
-        (target.tagName === 'TEXTAREA' && !target.classList.contains('markdown-editor-textarea')) ||
-        target.contentEditable === 'true';
+        target.tagName === "INPUT" ||
+        target.tagName === "SELECT" ||
+        (target.tagName === "TEXTAREA" &&
+          !target.classList.contains("markdown-editor-textarea")) ||
+        target.contentEditable === "true";
 
       if (isInputField) return;
 
@@ -168,101 +169,101 @@ export const useKeyboardShortcuts = (
   useEffect(() => {
     const defaultShortcuts: KeyboardShortcut[] = [
       {
-        key: 'b',
+        key: "b",
         ctrlKey: true,
-        action: () => context.insertText('**Bold Text**'),
-        description: 'Bold text',
-        category: 'Formatting',
+        action: () => context.insertText("**Bold Text**"),
+        description: "Bold text",
+        category: "Formatting",
       },
       {
-        key: 'i',
+        key: "i",
         ctrlKey: true,
-        action: () => context.insertText('*Italic Text*'),
-        description: 'Italic text',
-        category: 'Formatting',
+        action: () => context.insertText("*Italic Text*"),
+        description: "Italic text",
+        category: "Formatting",
       },
       {
-        key: 'k',
+        key: "k",
         ctrlKey: true,
-        action: () => context.insertText('[Link Text](https://example.com)'),
-        description: 'Insert link',
-        category: 'Formatting',
+        action: () => context.insertText("[Link Text](https://example.com)"),
+        description: "Insert link",
+        category: "Formatting",
       },
       {
-        key: '`',
+        key: "`",
         ctrlKey: true,
-        action: () => context.insertText('`code`'),
-        description: 'Inline code',
-        category: 'Formatting',
+        action: () => context.insertText("`code`"),
+        description: "Inline code",
+        category: "Formatting",
       },
       {
-        key: 'z',
+        key: "z",
         ctrlKey: true,
         action: context.undo,
-        description: 'Undo',
-        category: 'Edit',
+        description: "Undo",
+        category: "Edit",
       },
       {
-        key: 'y',
+        key: "y",
         ctrlKey: true,
         action: context.redo,
-        description: 'Redo',
-        category: 'Edit',
+        description: "Redo",
+        category: "Edit",
       },
       {
-        key: 'z',
+        key: "z",
         ctrlKey: true,
         shiftKey: true,
         action: context.redo,
-        description: 'Redo (alternative)',
-        category: 'Edit',
+        description: "Redo (alternative)",
+        category: "Edit",
       },
       {
-        key: '/',
+        key: "/",
         ctrlKey: true,
         action: context.togglePreview,
-        description: 'Toggle preview',
-        category: 'View',
+        description: "Toggle preview",
+        category: "View",
       },
       {
-        key: '.',
+        key: ".",
         ctrlKey: true,
         action: context.toggleZenMode,
-        description: 'Toggle zen mode',
-        category: 'View',
+        description: "Toggle zen mode",
+        category: "View",
       },
       {
-        key: '?',
+        key: "?",
         ctrlKey: true,
         action: context.showShortcuts,
-        description: 'Show keyboard shortcuts',
-        category: 'Help',
+        description: "Show keyboard shortcuts",
+        category: "Help",
       },
       {
-        key: 'n',
+        key: "n",
         ctrlKey: true,
         action: context.newFile,
-        description: 'New file',
-        category: 'File',
+        description: "New file",
+        category: "File",
       },
       {
-        key: 's',
+        key: "s",
         ctrlKey: true,
         action: context.saveFile,
-        description: 'Save file',
-        category: 'File',
+        description: "Save file",
+        category: "File",
       },
       {
-        key: 'o',
+        key: "o",
         ctrlKey: true,
         action: context.openFile,
-        description: 'Open file',
-        category: 'File',
+        description: "Open file",
+        category: "File",
       },
       {
-        key: 'f11',
+        key: "f11",
         action: () => {
-          if (typeof document === 'undefined') return;
+          if (typeof document === "undefined") return;
 
           if (!document.fullscreenElement) {
             document.documentElement.requestFullscreen();
@@ -270,15 +271,15 @@ export const useKeyboardShortcuts = (
             document.exitFullscreen();
           }
         },
-        description: 'Toggle fullscreen',
-        category: 'View',
+        description: "Toggle fullscreen",
+        category: "View",
       },
     ];
 
-    // Register all default shortcuts
-    const unregisterFunctions = defaultShortcuts.map((shortcut) => registerShortcut(shortcut));
+    const unregisterFunctions = defaultShortcuts.map((shortcut) =>
+      registerShortcut(shortcut)
+    );
 
-    // Cleanup function
     return () => {
       for (const unregister of unregisterFunctions) {
         unregister();
@@ -290,12 +291,12 @@ export const useKeyboardShortcuts = (
    * Set up event listeners
    */
   useEffect(() => {
-    if (typeof document === 'undefined') return;
+    if (typeof document === "undefined") return;
 
-    document.addEventListener('keydown', handleKeyDown);
+    document.addEventListener("keydown", handleKeyDown);
 
     return () => {
-      document.removeEventListener('keydown', handleKeyDown);
+      document.removeEventListener("keydown", handleKeyDown);
     };
   }, [handleKeyDown]);
 
@@ -320,33 +321,37 @@ export const useKeyboardShortcuts = (
  * Hook for managing shortcut help display
  */
 export const useShortcutHelp = () => {
-  const getShortcutsByCategory = useCallback((shortcuts: KeyboardShortcut[]) => {
-    const categories: Record<string, KeyboardShortcut[]> = {};
+  const getShortcutsByCategory = useCallback(
+    (shortcuts: KeyboardShortcut[]) => {
+      const categories: Record<string, KeyboardShortcut[]> = {};
 
-    shortcuts.forEach((shortcut) => {
-      const category = shortcut.category || 'Other';
-      if (!categories[category]) {
-        categories[category] = [];
-      }
-      categories[category].push(shortcut);
-    });
+      shortcuts.forEach((shortcut) => {
+        const category = shortcut.category || "Other";
+        if (!categories[category]) {
+          categories[category] = [];
+        }
+        categories[category].push(shortcut);
+      });
 
-    return categories;
-  }, []);
+      return categories;
+    },
+    []
+  );
 
   const formatShortcut = useCallback((shortcut: KeyboardShortcut): string => {
     const parts = [];
     if (shortcut.ctrlKey || shortcut.metaKey) {
       const isMac =
-        typeof navigator !== 'undefined' &&
-        (navigator.userAgent.includes('Mac') || navigator.userAgent.includes('iPhone'));
-      parts.push(isMac ? '⌘' : 'Ctrl');
+        typeof navigator !== "undefined" &&
+        (navigator.userAgent.includes("Mac") ||
+          navigator.userAgent.includes("iPhone"));
+      parts.push(isMac ? "⌘" : "Ctrl");
     }
-    if (shortcut.shiftKey) parts.push('Shift');
-    if (shortcut.altKey) parts.push('Alt');
+    if (shortcut.shiftKey) parts.push("Shift");
+    if (shortcut.altKey) parts.push("Alt");
     parts.push(shortcut.key.toUpperCase());
 
-    return parts.join(' + ');
+    return parts.join(" + ");
   }, []);
 
   return {

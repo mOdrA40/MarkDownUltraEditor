@@ -13,7 +13,6 @@ export const EditorHeader: React.FC<EditorHeaderConfig> = ({
   vimModeState,
   theme,
 }) => {
-  // Don't render if not shown or in focus mode
   if (!show || focusMode) return null;
 
   const headerStyles = generateHeaderStyles(theme);

@@ -3,9 +3,9 @@
  * @author Axel Modra
  */
 
-import { useCallback, useEffect, useRef, useState } from 'react';
-import type { EditorSettings } from '../types';
-import { DEFAULT_EDITOR_CONFIG, STORAGE_KEYS } from '../utils/constants';
+import { useCallback, useEffect, useRef, useState } from "react";
+import type { EditorSettings } from "../types";
+import { DEFAULT_EDITOR_CONFIG, STORAGE_KEYS } from "../utils/constants";
 
 /**
  * Hook return type for editor settings
@@ -40,14 +40,13 @@ export const useEditorSettings = (
     ...initialSettings,
   });
 
-  // Track if initial load is complete
   const isInitialLoadRef = useRef(false);
 
   /**
    * Update font size
    */
   const updateFontSize = useCallback((size: number) => {
-    const clampedSize = Math.max(8, Math.min(32, size)); // Clamp between 8-32px
+    const clampedSize = Math.max(8, Math.min(32, size));
     setSettings((prev) => ({
       ...prev,
       fontSize: clampedSize,
@@ -58,7 +57,7 @@ export const useEditorSettings = (
    * Update line height
    */
   const updateLineHeight = useCallback((height: number) => {
-    const clampedHeight = Math.max(1.0, Math.min(3.0, height)); // Clamp between 1.0-3.0
+    const clampedHeight = Math.max(1.0, Math.min(3.0, height));
     setSettings((prev) => ({
       ...prev,
       lineHeight: clampedHeight,
@@ -136,13 +135,13 @@ export const useEditorSettings = (
    * Save settings to localStorage
    */
   const saveSettings = useCallback(() => {
-    if (typeof localStorage === 'undefined') return;
+    if (typeof localStorage === "undefined") return;
 
     try {
       localStorage.setItem(STORAGE_KEYS.SETTINGS, JSON.stringify(settings));
     } catch (error) {
-      import('@/utils/console').then(({ safeConsole }) => {
-        safeConsole.warn('Failed to save settings to localStorage:', error);
+      import("@/utils/console").then(({ safeConsole }) => {
+        safeConsole.warn("Failed to save settings to localStorage:", error);
       });
     }
   }, [settings]);
@@ -151,7 +150,7 @@ export const useEditorSettings = (
    * Load settings from localStorage
    */
   const loadSettings = useCallback(() => {
-    if (typeof localStorage === 'undefined') return;
+    if (typeof localStorage === "undefined") return;
 
     try {
       const savedSettings = localStorage.getItem(STORAGE_KEYS.SETTINGS);
@@ -163,8 +162,8 @@ export const useEditorSettings = (
         }));
       }
     } catch (error) {
-      import('@/utils/console').then(({ safeConsole }) => {
-        safeConsole.warn('Failed to load settings from localStorage:', error);
+      import("@/utils/console").then(({ safeConsole }) => {
+        safeConsole.warn("Failed to load settings from localStorage:", error);
       });
     }
   }, []);
@@ -176,7 +175,7 @@ export const useEditorSettings = (
     if (isInitialLoadRef.current) {
       const timer = setTimeout(() => {
         saveSettings();
-      }, 500); // Debounce saves
+      }, 500);
 
       return () => clearTimeout(timer);
     }
@@ -196,20 +195,19 @@ export const useEditorSettings = (
    * Handle page unload to save settings
    */
   useEffect(() => {
-    if (typeof window === 'undefined') return;
+    if (typeof window === "undefined") return;
 
     const handleBeforeUnload = () => {
       saveSettings();
     };
 
-    window.addEventListener('beforeunload', handleBeforeUnload);
+    window.addEventListener("beforeunload", handleBeforeUnload);
     return () => {
-      window.removeEventListener('beforeunload', handleBeforeUnload);
-      saveSettings(); // Save on unmount
+      window.removeEventListener("beforeunload", handleBeforeUnload);
+      saveSettings();
     };
   }, [saveSettings]);
 
-  // Create actions object
   const actions = {
     updateFontSize,
     updateLineHeight,

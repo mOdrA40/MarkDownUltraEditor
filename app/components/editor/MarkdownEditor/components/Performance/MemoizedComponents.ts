@@ -3,13 +3,21 @@
  * @author Axel Modra
  */
 
-import React, { memo, useCallback, useMemo } from 'react';
-// Removed import from deleted useMemoization hook - using React's built-in useMemo instead
-import { useTOCItems, VirtualizedTableOfContents } from '../../../VirtualizedTableOfContents';
-import { EditorFooter, type EditorFooterProps } from '../Layout/EditorFooter';
-import { EditorHeader, type EditorHeaderProps } from '../Layout/EditorHeader';
-import { EditorMainContent, type EditorMainContentProps } from '../Layout/EditorMainContent';
-import { EditorSidebar, type EditorSidebarProps } from '../Layout/EditorSidebar';
+import React, { memo, useCallback, useMemo } from "react";
+import {
+  useTOCItems,
+  VirtualizedTableOfContents,
+} from "../../../VirtualizedTableOfContents";
+import { EditorFooter, type EditorFooterProps } from "../Layout/EditorFooter";
+import { EditorHeader, type EditorHeaderProps } from "../Layout/EditorHeader";
+import {
+  EditorMainContent,
+  type EditorMainContentProps,
+} from "../Layout/EditorMainContent";
+import {
+  EditorSidebar,
+  type EditorSidebarProps,
+} from "../Layout/EditorSidebar";
 
 /**
  * Memoized editor header component
@@ -19,7 +27,6 @@ export const MemoizedEditorHeader = memo<EditorHeaderProps>(
     return React.createElement(EditorHeader, props);
   },
   (prevProps, nextProps) => {
-    // Custom comparison for better performance
     return (
       prevProps.fileName === nextProps.fileName &&
       prevProps.isModified === nextProps.isModified &&
@@ -36,13 +43,14 @@ export const MemoizedEditorHeader = memo<EditorHeaderProps>(
       prevProps.canRedo === nextProps.canRedo &&
       prevProps.responsive.isMobile === nextProps.responsive.isMobile &&
       prevProps.responsive.isTablet === nextProps.responsive.isTablet &&
-      prevProps.responsive.isSmallTablet === nextProps.responsive.isSmallTablet &&
+      prevProps.responsive.isSmallTablet ===
+        nextProps.responsive.isSmallTablet &&
       prevProps.zenMode === nextProps.zenMode
     );
   }
 );
 
-MemoizedEditorHeader.displayName = 'MemoizedEditorHeader';
+MemoizedEditorHeader.displayName = "MemoizedEditorHeader";
 
 /**
  * Memoized editor sidebar component
@@ -57,7 +65,8 @@ export const MemoizedEditorSidebar = memo<EditorSidebarProps>(
       prevProps.theme.id === nextProps.theme.id &&
       prevProps.uiState.showToc === nextProps.uiState.showToc &&
       prevProps.uiState.showOutline === nextProps.uiState.showOutline &&
-      prevProps.uiState.sidebarCollapsed === nextProps.uiState.sidebarCollapsed &&
+      prevProps.uiState.sidebarCollapsed ===
+        nextProps.uiState.sidebarCollapsed &&
       prevProps.responsive.isMobile === nextProps.responsive.isMobile &&
       prevProps.responsive.isTablet === nextProps.responsive.isTablet &&
       prevProps.zenMode === nextProps.zenMode
@@ -65,7 +74,7 @@ export const MemoizedEditorSidebar = memo<EditorSidebarProps>(
   }
 );
 
-MemoizedEditorSidebar.displayName = 'MemoizedEditorSidebar';
+MemoizedEditorSidebar.displayName = "MemoizedEditorSidebar";
 
 /**
  * Memoized editor main content component
@@ -89,12 +98,11 @@ export const MemoizedEditorMainContent = memo<EditorMainContentProps>(
       prevProps.responsive.isMobile === nextProps.responsive.isMobile &&
       prevProps.responsive.isTablet === nextProps.responsive.isTablet &&
       prevProps.responsive.isSmallTablet === nextProps.responsive.isSmallTablet
-      // Note: onInsertTextAtCursor is intentionally not compared as it's a function that may change
     );
   }
 );
 
-MemoizedEditorMainContent.displayName = 'MemoizedEditorMainContent';
+MemoizedEditorMainContent.displayName = "MemoizedEditorMainContent";
 
 /**
  * Memoized editor footer component
@@ -113,7 +121,7 @@ export const MemoizedEditorFooter = memo<EditorFooterProps>(
   }
 );
 
-MemoizedEditorFooter.displayName = 'MemoizedEditorFooter';
+MemoizedEditorFooter.displayName = "MemoizedEditorFooter";
 
 /**
  * Performance optimization hooks
@@ -133,7 +141,10 @@ export function useStableCallback<T extends (...args: unknown[]) => unknown>(
 /**
  * Memoized value hook with deep comparison
  */
-export function useStableValue<T>(factory: () => T, deps: React.DependencyList): T {
+export function useStableValue<T>(
+  factory: () => T,
+  deps: React.DependencyList
+): T {
   // biome-ignore lint/correctness/useExhaustiveDependencies: Custom hook with explicit dependency control
   return useMemo(factory, deps);
 }
@@ -165,12 +176,16 @@ export function useStableComputation<T>(
   return useMemo(() => {
     if (!shouldCompute) return undefined;
 
-    const start = typeof window !== 'undefined' ? performance.now() : Date.now();
+    const start =
+      typeof window !== "undefined" ? performance.now() : Date.now();
     const result = computation();
-    const duration = typeof window !== 'undefined' ? performance.now() - start : Date.now() - start;
+    const duration =
+      typeof window !== "undefined"
+        ? performance.now() - start
+        : Date.now() - start;
 
-    if (process.env.NODE_ENV === 'development' && duration > 16) {
-      import('@/utils/console').then(({ safeConsole }) => {
+    if (process.env.NODE_ENV === "development" && duration > 16) {
+      import("@/utils/console").then(({ safeConsole }) => {
         safeConsole.warn(`Expensive computation took ${duration.toFixed(2)}ms`);
       });
     }
@@ -234,14 +249,13 @@ export function withPerformanceOptimization<P extends Record<string, unknown>>(
   const OptimizedComponent = memo(Component, compareProps);
 
   const WrappedComponent: React.FC<P> = (props: P) => {
-    // Track render count in development
     const renderCount = React.useRef(0);
 
     React.useEffect(() => {
       renderCount.current += 1;
 
-      if (process.env.NODE_ENV === 'development') {
-        import('@/utils/console').then(({ safeConsole }) => {
+      if (process.env.NODE_ENV === "development") {
+        import("@/utils/console").then(({ safeConsole }) => {
           safeConsole.dev(
             `${Component.displayName || Component.name} rendered ${renderCount.current} times`
           );
@@ -264,10 +278,8 @@ export const VirtualizedEditorSidebar = memo<
   EditorSidebarProps & { enableVirtualization?: boolean }
 >(
   ({ markdown, enableVirtualization = false, ...props }) => {
-    // Extract TOC items from markdown
     const tocItems = useTOCItems(markdown);
 
-    // Use virtualization for large documents (>100 headings)
     const shouldVirtualize = enableVirtualization && tocItems.length > 100;
 
     const TOCComponent = useMemo(() => {
@@ -282,29 +294,30 @@ export const VirtualizedEditorSidebar = memo<
     };
 
     if (shouldVirtualize && TOCComponent) {
-      // Render with virtualized TOC using React.createElement
       return React.createElement(
-        'div',
-        { className: 'editor-sidebar-virtualized' },
+        "div",
+        { className: "editor-sidebar-virtualized" },
         React.createElement(EditorSidebar, memoizedProps),
         React.createElement(TOCComponent, {
           items: tocItems,
-          onItemClick: (item: { id: string; text: string; level: number; line: number }) => {
-            // Scroll to heading logic would go here
-            import('@/utils/console').then(({ safeConsole }) => {
-              safeConsole.dev('Navigate to:', item.text);
+          onItemClick: (item: {
+            id: string;
+            text: string;
+            level: number;
+            line: number;
+          }) => {
+            import("@/utils/console").then(({ safeConsole }) => {
+              safeConsole.dev("Navigate to:", item.text);
             });
           },
-          className: 'virtualized-toc',
+          className: "virtualized-toc",
         })
       );
     }
 
-    // Render normal sidebar
     return React.createElement(EditorSidebar, memoizedProps);
   },
   (prevProps, nextProps) => {
-    // Enhanced comparison including virtualization flag
     return (
       prevProps.markdown === nextProps.markdown &&
       prevProps.enableVirtualization === nextProps.enableVirtualization &&
@@ -318,4 +331,4 @@ export const VirtualizedEditorSidebar = memo<
   }
 );
 
-VirtualizedEditorSidebar.displayName = 'VirtualizedEditorSidebar';
+VirtualizedEditorSidebar.displayName = "VirtualizedEditorSidebar";

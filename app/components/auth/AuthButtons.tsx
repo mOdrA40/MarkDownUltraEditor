@@ -1,8 +1,3 @@
-/**
- * @fileoverview Authentication buttons component for header
- * @author Axel Modra
- */
-
 import { SignInButton, useAuth, useClerk, useUser } from '@clerk/react-router';
 import { Cloud, Files, HardDrive, LogOut, Settings, User } from 'lucide-react';
 import type React from 'react';

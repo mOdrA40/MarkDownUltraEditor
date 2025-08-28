@@ -12,7 +12,6 @@ export const LineNumbers: React.FC<LineNumbersConfig> = ({
   lineHeight,
   theme,
 }) => {
-  // Don't render if not shown
   if (!show) return null;
 
   const lineNumberStyles = generateLineNumberStyles(fontSize, lineHeight, theme);

@@ -3,11 +3,11 @@
  * @author Axel Modra
  */
 
-import { AlertTriangle, Bug, Copy, RefreshCw } from 'lucide-react';
-import React, { Component, type ErrorInfo, type ReactNode } from 'react';
-import { Button } from '@/components/ui/button';
-import { safeConsole } from '@/utils/console';
-import type { ErrorBoundaryState } from '../../types';
+import { AlertTriangle, Bug, Copy, RefreshCw } from "lucide-react";
+import React, { Component, type ErrorInfo, type ReactNode } from "react";
+import { Button } from "@/components/ui/button";
+import { safeConsole } from "@/utils/console";
+import type { ErrorBoundaryState } from "../../types";
 
 /**
  * Props for EditorErrorBoundary component
@@ -22,7 +22,10 @@ interface EditorErrorBoundaryProps {
 /**
  * Error boundary component that catches JavaScript errors in the editor
  */
-export class EditorErrorBoundary extends Component<EditorErrorBoundaryProps, ErrorBoundaryState> {
+export class EditorErrorBoundary extends Component<
+  EditorErrorBoundaryProps,
+  ErrorBoundaryState
+> {
   constructor(props: EditorErrorBoundaryProps) {
     super(props);
     this.state = { hasError: false };
@@ -46,7 +49,11 @@ export class EditorErrorBoundary extends Component<EditorErrorBoundaryProps, Err
     this.props.onError?.(error, errorInfo);
 
     // Log error to console in development
-    safeConsole.error('Editor Error Boundary caught an error:', error, errorInfo);
+    safeConsole.error(
+      "Editor Error Boundary caught an error:",
+      error,
+      errorInfo
+    );
 
     // Report error to monitoring service if enabled
     if (this.props.enableReporting) {
@@ -61,7 +68,7 @@ export class EditorErrorBoundary extends Component<EditorErrorBoundaryProps, Err
     try {
       // Here you would integrate with your error reporting service
       // e.g., Sentry, LogRocket, Bugsnag, etc.
-      safeConsole.log('Reporting error to monitoring service:', {
+      safeConsole.log("Reporting error to monitoring service:", {
         error: error.message,
         stack: error.stack,
         componentStack: errorInfo.componentStack,
@@ -70,7 +77,7 @@ export class EditorErrorBoundary extends Component<EditorErrorBoundaryProps, Err
         url: window.location.href,
       });
     } catch (reportingError) {
-      safeConsole.error('Failed to report error:', reportingError);
+      safeConsole.error("Failed to report error:", reportingError);
     }
   };
 
@@ -104,23 +111,23 @@ export class EditorErrorBoundary extends Component<EditorErrorBoundaryProps, Err
     };
 
     try {
-      await navigator.clipboard.writeText(JSON.stringify(errorDetails, null, 2));
-      alert('Error details copied to clipboard');
+      await navigator.clipboard.writeText(
+        JSON.stringify(errorDetails, null, 2)
+      );
+      alert("Error details copied to clipboard");
     } catch (err) {
-      import('@/utils/console').then(({ safeConsole }) => {
-        safeConsole.error('Failed to copy error details:', err);
+      import("@/utils/console").then(({ safeConsole }) => {
+        safeConsole.error("Failed to copy error details:", err);
       });
     }
   };
 
   render() {
     if (this.state.hasError) {
-      // Custom fallback UI
       if (this.props.fallback) {
         return this.props.fallback;
       }
 
-      // Default error UI
       return (
         <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900 p-4">
           <div className="max-w-md w-full bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6">
@@ -149,18 +156,26 @@ export class EditorErrorBoundary extends Component<EditorErrorBoundaryProps, Err
 
             {/* Action buttons */}
             <div className="flex flex-col space-y-2">
-              <Button onClick={this.handleReset} className="w-full" variant="default">
+              <Button
+                onClick={this.handleReset}
+                className="w-full"
+                variant="default"
+              >
                 <RefreshCw className="h-4 w-4 mr-2" />
                 Try Again
               </Button>
 
-              <Button onClick={this.handleReload} className="w-full" variant="outline">
+              <Button
+                onClick={this.handleReload}
+                className="w-full"
+                variant="outline"
+              >
                 <RefreshCw className="h-4 w-4 mr-2" />
                 Reload Page
               </Button>
 
               {/* Development/Debug actions */}
-              {process.env.NODE_ENV === 'development' && (
+              {process.env.NODE_ENV === "development" && (
                 <>
                   <Button
                     onClick={this.handleCopyError}
@@ -194,8 +209,8 @@ export class EditorErrorBoundary extends Component<EditorErrorBoundaryProps, Err
             {/* Help text */}
             <div className="mt-4 pt-4 border-t border-gray-200 dark:border-gray-700">
               <p className="text-xs text-gray-500 dark:text-gray-400">
-                If this problem persists, please try refreshing the page or clearing your browser
-                cache.
+                If this problem persists, please try refreshing the page or
+                clearing your browser cache.
               </p>
             </div>
           </div>
@@ -221,7 +236,6 @@ export const useErrorHandler = () => {
     setError(error);
   }, []);
 
-  // Throw error to be caught by error boundary
   React.useEffect(() => {
     if (error) {
       throw error;

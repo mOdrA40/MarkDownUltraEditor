@@ -3,29 +3,26 @@
  * @author Axel Modra
  */
 
-import type React from 'react';
-import { WritingStats } from '../../../../features/WritingStats';
-import type { ResponsiveState } from '../../types';
+import type React from "react";
+import { WritingStats } from "../../../../features/WritingStats";
+import type { ResponsiveState } from "../../types";
 
 /**
  * Props for EditorFooter component
  */
 export interface EditorFooterProps {
-  // Content
   markdown: string;
-
-  // Responsive
   responsive: ResponsiveState;
-
-  // Zen mode
   zenMode: boolean;
 }
 
 /**
  * Editor footer component with writing statistics and status information
  */
-export const EditorFooter: React.FC<EditorFooterProps> = ({ markdown, zenMode }) => {
-  // Don't render footer in zen mode
+export const EditorFooter: React.FC<EditorFooterProps> = ({
+  markdown,
+  zenMode,
+}) => {
   if (zenMode) return null;
 
   return (

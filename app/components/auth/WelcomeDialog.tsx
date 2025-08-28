@@ -1,8 +1,3 @@
-/**
- * @fileoverview Welcome dialog for first-time visitors
- * @author Axel Modra
- */
-
 import { SignUpButton, useAuth } from '@clerk/react-router';
 import { Check, Cloud, HardDrive, Shield, Smartphone, X, Zap } from 'lucide-react';
 import type React from 'react';
@@ -220,17 +215,15 @@ export const useWelcomeDialog = () => {
       const isFirst = await isFirstVisitWithAuth(Boolean(isSignedIn), userId, supabase);
 
       if (isFirst) {
-        // Small delay to ensure page is loaded and UI restoring has had a chance to run
         const timer = setTimeout(() => {
           setIsOpen(true);
           setIsCheckingFirstVisit(false);
-        }, 1200); // Slightly longer delay to avoid conflict with UI restoring
+        }, 1200); 
 
         return () => clearTimeout(timer);
       }
       setIsCheckingFirstVisit(false);
     } catch (_error) {
-      // Fallback to localStorage check on error
       if (isFirstVisit()) {
         const timer = setTimeout(() => {
           setIsOpen(true);
@@ -243,12 +236,9 @@ export const useWelcomeDialog = () => {
     }
   }, [isLoaded, isSignedIn, userId, supabase]);
 
-  // Run first visit check when dependencies change
   useEffect(() => {
     checkFirstVisit();
   }, [checkFirstVisit]);
-
-  // Auto-close dialog if user signs in while dialog is open
   useEffect(() => {
     if (isSignedIn && isOpen) {
       setIsOpen(false);
@@ -259,7 +249,6 @@ export const useWelcomeDialog = () => {
     try {
       await markVisitedWithAuth(Boolean(isSignedIn), userId, supabase);
     } catch (_error) {
-      // Fallback to localStorage only
       markVisited();
     }
     setIsOpen(false);
@@ -269,7 +258,6 @@ export const useWelcomeDialog = () => {
     try {
       await markVisitedWithAuth(Boolean(isSignedIn), userId, supabase);
     } catch (_error) {
-      // Fallback to localStorage only
       markVisited();
     }
     setIsOpen(false);
@@ -279,7 +267,6 @@ export const useWelcomeDialog = () => {
     handleClose();
   }, [handleClose]);
 
-  // Track previous sign-in state to detect logout
   const [wasSignedIn, setWasSignedIn] = useState(false);
 
   useEffect(() => {

@@ -3,15 +3,12 @@
  * @author Axel Modra
  */
 
-// Re-export types
-export type { ErrorBoundaryState, PerformanceMetrics } from '../../types';
-// Export error boundary
+export type { ErrorBoundaryState, PerformanceMetrics } from "../../types";
 export {
   EditorErrorBoundary,
   useErrorHandler,
   withErrorBoundary,
-} from '../ErrorBoundary/EditorErrorBoundary';
-// Export memoized components
+} from "../ErrorBoundary/EditorErrorBoundary";
 export {
   MemoizedEditorFooter,
   MemoizedEditorHeader,
@@ -25,12 +22,11 @@ export {
   useThrottledValue,
   VirtualizedEditorSidebar,
   withPerformanceOptimization,
-} from './MemoizedComponents';
-// Export performance monitoring
+} from "./MemoizedComponents";
 export {
   PerformanceMonitor,
   performanceUtils,
   useMemoryUsage,
   usePerformanceMeasure,
   useRenderTime,
-} from './PerformanceMonitor';
+} from "./PerformanceMonitor";

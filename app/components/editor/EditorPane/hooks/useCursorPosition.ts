@@ -3,7 +3,7 @@
  * @author Axel Modra
  */
 
-import { useCallback, useRef } from 'react';
+import { useCallback, useRef } from "react";
 
 interface CursorPosition {
   start: number;
@@ -65,7 +65,6 @@ export const useCursorPosition = (
       const textarea = textareaRef.current;
       const endPos = end ?? start;
 
-      // Use requestAnimationFrame to ensure DOM is ready
       requestAnimationFrame(() => {
         textarea.setSelectionRange(start, endPos);
         textarea.focus();

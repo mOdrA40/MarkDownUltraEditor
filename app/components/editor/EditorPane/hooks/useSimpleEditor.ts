@@ -3,8 +3,8 @@
  * @author Axel Modra
  */
 
-import { useCallback, useRef } from 'react';
-import { insertTextAtCursor } from '@/utils/editorUtils';
+import { useCallback, useRef } from "react";
+import { insertTextAtCursor } from "@/utils/editorUtils";
 
 interface UseSimpleEditorOptions {
   /** Minimum height for auto-resize */
@@ -38,7 +38,6 @@ export const useSimpleEditor = (
   const autoResize = useCallback(() => {
     if (!textareaRef.current || isOperating.current) return;
 
-    // Clear existing timer to throttle resize operations
     if (resizeTimer.current) {
       clearTimeout(resizeTimer.current);
     }
@@ -48,13 +47,15 @@ export const useSimpleEditor = (
 
       const textarea = textareaRef.current;
 
-      // Simple resize without cursor manipulation
-      textarea.style.height = 'auto';
-      const newHeight = Math.min(Math.max(textarea.scrollHeight, minHeight), maxHeight);
+      textarea.style.height = "auto";
+      const newHeight = Math.min(
+        Math.max(textarea.scrollHeight, minHeight),
+        maxHeight
+      );
       textarea.style.height = `${newHeight}px`;
 
       resizeTimer.current = null;
-    }, 16); // ~60fps for smooth resizing
+    }, 16);
   }, [textareaRef, minHeight, maxHeight]);
 
   /**
@@ -68,14 +69,12 @@ export const useSimpleEditor = (
 
       const textarea = textareaRef.current;
 
-      // Use centralized insertTextAtCursor
       insertTextAtCursor(textarea, text, {
         selectInserted,
         triggerInput: true,
         focus: false,
       });
 
-      // Auto-resize after insertion
       requestAnimationFrame(() => {
         autoResize();
         isOperating.current = false;

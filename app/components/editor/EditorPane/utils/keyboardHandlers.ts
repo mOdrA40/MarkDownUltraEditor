@@ -3,7 +3,7 @@
  * @author Axel Modra
  */
 
-import type { KeyboardHandlerConfig } from '../types/editorPane.types';
+import type { KeyboardHandlerConfig } from "../types/editorPane.types";
 
 /**
  * Handle tab key for indentation
@@ -21,7 +21,6 @@ export const handleTabIndentation = (
   const newValue = `${markdown.substring(0, start)}  ${markdown.substring(end)}`;
   onChange(newValue);
 
-  // Set cursor position after indentation
   setTimeout(() => {
     textarea.selectionStart = textarea.selectionEnd = start + 2;
   }, 0);
@@ -36,15 +35,12 @@ export const handleKeyDown = (
 ): void => {
   const { vimMode, vimHandler, markdown, onChange } = config;
 
-  // Handle Vim mode first if enabled
   if (vimMode) {
     vimHandler.handleKeyDown(e);
-    // If vim handled the event, don't process further
     if (e.defaultPrevented) return;
   }
 
-  // Handle Tab key for indentation
-  if (e.key === 'Tab') {
+  if (e.key === "Tab") {
     handleTabIndentation(e, markdown, onChange);
     return;
   }
@@ -68,14 +64,14 @@ export const handleEditorShortcuts = (
   if (!isModifierPressed || !callbacks) return false;
 
   switch (key.toLowerCase()) {
-    case 's':
+    case "s":
       if (callbacks.onSave) {
         e.preventDefault();
         callbacks.onSave();
         return true;
       }
       break;
-    case 'z':
+    case "z":
       if (callbacks.onUndo && !e.shiftKey) {
         e.preventDefault();
         callbacks.onUndo();
@@ -87,14 +83,14 @@ export const handleEditorShortcuts = (
         return true;
       }
       break;
-    case 'y':
+    case "y":
       if (callbacks.onRedo) {
         e.preventDefault();
         callbacks.onRedo();
         return true;
       }
       break;
-    case 'f':
+    case "f":
       if (callbacks.onFind) {
         e.preventDefault();
         callbacks.onFind();

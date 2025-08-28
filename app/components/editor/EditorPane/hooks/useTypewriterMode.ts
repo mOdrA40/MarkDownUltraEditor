@@ -3,9 +3,9 @@
  * @author Axel Modra
  */
 
-import { useEffect } from 'react';
-import { addMultipleEventListeners } from '@/utils/common';
-import type { TypewriterConfig } from '../types/editorPane.types';
+import { useEffect } from "react";
+import { addMultipleEventListeners } from "@/utils/common";
+import type { TypewriterConfig } from "../types/editorPane.types";
 
 /**
  * Custom hook for implementing typewriter mode
@@ -23,7 +23,10 @@ export const useTypewriterMode = (config: TypewriterConfig): void => {
      * Handle scroll to center current line
      */
     const handleScroll = (): void => {
-      const lineHeight = Number.parseInt(getComputedStyle(textarea).lineHeight, 10);
+      const lineHeight = Number.parseInt(
+        getComputedStyle(textarea).lineHeight,
+        10
+      );
       const scrollTop = textarea.scrollTop;
       const clientHeight = textarea.clientHeight;
       const centerOffset = clientHeight / 2 - lineHeight / 2;
@@ -33,10 +36,9 @@ export const useTypewriterMode = (config: TypewriterConfig): void => {
       }
     };
 
-    // Add event listeners for typewriter effect with centralized utility
     return addMultipleEventListeners(textarea, [
-      { type: 'input', listener: handleScroll },
-      { type: 'keyup', listener: handleScroll },
+      { type: "input", listener: handleScroll },
+      { type: "keyup", listener: handleScroll },
     ]);
   }, [enabled, textareaRef]);
 };

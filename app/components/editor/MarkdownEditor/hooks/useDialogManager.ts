@@ -3,15 +3,14 @@
  * @author Axel Modra
  */
 
-import { useCallback, useState } from 'react';
-import type { DialogState, UseDialogManagerReturn } from '../types';
+import { useCallback, useState } from "react";
+import type { DialogState, UseDialogManagerReturn } from "../types";
 
 /**
  * Custom hook for managing dialog visibility state
  * Centralizes all modal/dialog state management
  */
 export const useDialogManager = (): UseDialogManagerReturn => {
-  // Dialog state
   const [dialogState, setDialogState] = useState<DialogState>({
     showSearch: false,
     showShortcuts: false,
@@ -82,12 +81,10 @@ export const useDialogManager = (): UseDialogManagerReturn => {
    */
   const showSearchDialog = useCallback(
     (query?: string) => {
-      showDialog('showSearch');
-      // If query is provided, it can be passed to the search component
+      showDialog("showSearch");
       if (query) {
-        // This would typically be handled by the search component itself
-        import('@/utils/console').then(({ safeConsole }) => {
-          safeConsole.dev('Opening search with query:', query);
+        import("@/utils/console").then(({ safeConsole }) => {
+          safeConsole.dev("Opening search with query:", query);
         });
       }
     },
@@ -98,21 +95,21 @@ export const useDialogManager = (): UseDialogManagerReturn => {
    * Show templates dialog
    */
   const showTemplatesDialog = useCallback(() => {
-    showDialog('showTemplates');
+    showDialog("showTemplates");
   }, [showDialog]);
 
   /**
    * Show advanced export dialog
    */
   const showAdvancedExportDialog = useCallback(() => {
-    showDialog('showAdvancedExport');
+    showDialog("showAdvancedExport");
   }, [showDialog]);
 
   /**
    * Show keyboard shortcuts dialog
    */
   const showShortcutsDialog = useCallback(() => {
-    showDialog('showShortcuts');
+    showDialog("showShortcuts");
   }, [showDialog]);
 
   /**
@@ -121,7 +118,7 @@ export const useDialogManager = (): UseDialogManagerReturn => {
   const handleEscapeKey = useCallback(() => {
     if (isAnyDialogOpen()) {
       hideAllDialogs();
-      return true; // Indicates that escape was handled
+      return true;
     }
     return false;
   }, [isAnyDialogOpen, hideAllDialogs]);
@@ -129,15 +126,23 @@ export const useDialogManager = (): UseDialogManagerReturn => {
   /**
    * Dialog-specific close handlers
    */
-  const closeSearchDialog = useCallback(() => hideDialog('showSearch'), [hideDialog]);
-  const closeTemplatesDialog = useCallback(() => hideDialog('showTemplates'), [hideDialog]);
-  const closeAdvancedExportDialog = useCallback(
-    () => hideDialog('showAdvancedExport'),
+  const closeSearchDialog = useCallback(
+    () => hideDialog("showSearch"),
     [hideDialog]
   );
-  const closeShortcutsDialog = useCallback(() => hideDialog('showShortcuts'), [hideDialog]);
+  const closeTemplatesDialog = useCallback(
+    () => hideDialog("showTemplates"),
+    [hideDialog]
+  );
+  const closeAdvancedExportDialog = useCallback(
+    () => hideDialog("showAdvancedExport"),
+    [hideDialog]
+  );
+  const closeShortcutsDialog = useCallback(
+    () => hideDialog("showShortcuts"),
+    [hideDialog]
+  );
 
-  // Create actions object
   const actions = {
     showDialog,
     hideDialog,
@@ -148,14 +153,12 @@ export const useDialogManager = (): UseDialogManagerReturn => {
     showAdvancedExportDialog,
     showShortcutsDialog,
     handleEscapeKey,
-    // Specific close handlers
     closeSearchDialog,
     closeTemplatesDialog,
     closeAdvancedExportDialog,
     closeShortcutsDialog,
   };
 
-  // Create utility functions
   const utils = {
     isAnyDialogOpen,
     getOpenDialogs,
