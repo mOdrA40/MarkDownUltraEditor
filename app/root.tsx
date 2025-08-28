@@ -30,12 +30,6 @@ if (typeof window !== 'undefined') {
   });
 }
 
-// Loader removed for static build compatibility
-// Authentication state will be handled client-side
-// export async function loader(args: Route.LoaderArgs) {
-//   return rootAuthLoader(args);
-// }
-
 export const links: LinksFunction = () => [
   { rel: 'icon', href: '/markdownlogo.svg?v=2024', type: 'image/svg+xml' },
   { rel: 'apple-touch-icon', href: '/markdownlogo.svg?v=2024' },
@@ -53,11 +47,6 @@ export const links: LinksFunction = () => [
     href: 'https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap',
   },
 ];
-
-// Headers function removed for static build compatibility
-// export const headers: HeadersFunction = () => {
-//   return {};
-// };
 
 export function Layout({ children }: { children: React.ReactNode }) {
   return (

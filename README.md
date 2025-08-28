@@ -13,7 +13,7 @@
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.0-blue)](https://typescriptlang.org)
 [![Netlify](https://img.shields.io/badge/Deploy-Netlify-00C7B7)](https://netlify.com)
 
-[🌐 Live Demo](https://markdowneditorutlra.netlify.app) • [🐛 Laporkan Bug](https://github.com/mOdrA40/MarkDownUltraRemix/issues)
+[🌐 Live Demo](https://markdowneditorultra.netlify.app/) • [🐛 Laporkan Bug](https://github.com/mOdrA40/MarkDownUltraRemix/issues)
 
 </div>
 
@@ -427,6 +427,6 @@ Distributed under the MIT License. See `LICENSE` for more information.
 
 **⭐ Jika project ini membantu, berikan star di GitHub!**
 
-[🌐 Live Demo](https://markdowneditorutlra.netlify.app) • [🐛 Issues](https://github.com/mOdrA40/MarkDownUltraRemix/issues)
+[🌐 Live Demo](https://markdowneditorultra.netlify.app/) • [🐛 Issues](https://github.com/mOdrA40/MarkDownUltraRemix/issues)
 
 </div>

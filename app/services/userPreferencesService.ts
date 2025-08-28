@@ -18,7 +18,9 @@ export class UserPreferencesService {
     try {
       const { data, error } = await this.supabase
         .from('user_preferences')
-        .select('*')
+        .select(
+          'id, user_id, editor_theme, auto_save_enabled, preview_mode, font_size, line_numbers, word_wrap, last_activity_at, created_at, updated_at'
+        )
         .eq('user_id', userId)
         .single();
 

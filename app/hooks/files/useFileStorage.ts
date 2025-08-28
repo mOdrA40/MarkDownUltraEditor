@@ -2,7 +2,12 @@ import { useAuth } from '@clerk/react-router';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useToast } from '@/hooks/core/useToast';
-import { batchInvalidateQueries, invalidateQueries, queryKeys } from '@/lib/queryClient';
+import {
+  batchInvalidateQueries,
+  getCacheConfig,
+  invalidateQueries,
+  queryKeys,
+} from '@/lib/queryClient';
 import { createClerkSupabaseClient, type FileData } from '@/lib/supabase';
 import {
   createFileStorageService,
@@ -219,13 +224,10 @@ export const useFileStorage = (): UseFileStorageReturn => {
     },
     enabled:
       isInitialized && !!storageService && isSignedIn !== undefined && isAuthenticationComplete,
-    staleTime: 2 * 60 * 1000, // 2 minutes - faster refresh for file changes
-    gcTime: 10 * 60 * 1000, // 10 minutes
+    ...getCacheConfig('files', 'list'), // Use optimized cache config
     refetchOnMount: false, // Only refetch if stale
     refetchOnWindowFocus: false,
     retry: 2,
-    // Add background refetch for better UX
-    refetchInterval: 5 * 60 * 1000, // Background refresh every 5 minutes
   });
 
   const { data: storageInfo = null, isLoading: isLoadingStorageInfo } = useQuery({
@@ -281,8 +283,7 @@ export const useFileStorage = (): UseFileStorageReturn => {
       !error &&
       isSignedIn !== undefined &&
       isAuthenticationComplete,
-    staleTime: 1 * 60 * 1000, // 1 minute for more frequent updates during debugging
-    gcTime: 5 * 60 * 1000,
+    ...getCacheConfig('storage', 'info'), // Use optimized cache config
     refetchOnMount: true,
     refetchOnWindowFocus: false,
     retry: 1,

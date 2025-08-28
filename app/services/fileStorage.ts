@@ -28,6 +28,25 @@ const STORAGE_KEYS = {
   USER_PREFERENCES: 'markdownEditor_userPrefs',
 } as const;
 
+/**
+ * Pagination options for file listing
+ */
+export interface PaginationOptions {
+  limit?: number;
+  cursor?: string;
+  includeContent?: boolean;
+}
+
+/**
+ * Paginated response for file listing
+ */
+export interface PaginatedFileResponse {
+  files: FileData[];
+  nextCursor?: string;
+  hasMore: boolean;
+  totalCount?: number;
+}
+
 // Storage limits
 const STORAGE_LIMITS = {
   MAX_FILES_PER_USER: 100,
@@ -43,7 +62,16 @@ export interface FileStorageService {
   saveToCloud(file: FileData): Promise<FileData>;
   loadFromCloud(fileId: string): Promise<FileData | null>;
   listCloudFiles(): Promise<FileData[]>;
+  listCloudFilesPaginated(options?: PaginationOptions): Promise<PaginatedFileResponse>;
   deleteFromCloud(fileId: string): Promise<void>;
+
+  // Lazy loading operations for CPU efficiency
+  loadFileMetadataFromCloud(fileId: string): Promise<Omit<FileData, 'content'> | null>;
+  loadFileContentFromCloud(fileId: string): Promise<string | null>;
+
+  // Batch operations for CPU efficiency
+  batchSaveToCloud(files: FileData[]): Promise<FileData[]>;
+  batchDeleteFromCloud(fileIds: string[]): Promise<void>;
 
   // Local operations (non-authenticated users)
   saveToLocal(file: FileData): void;
@@ -55,6 +83,7 @@ export interface FileStorageService {
   save(file: FileData): Promise<FileData>;
   load(identifier: string): Promise<FileData | null>;
   list(): Promise<FileData[]>;
+  listPaginated(options?: PaginationOptions): Promise<PaginatedFileResponse>;
   delete(identifier: string): Promise<void>;
 
   // Utility operations
@@ -210,7 +239,7 @@ export class HybridFileStorage implements FileStorageService {
           })
           .eq('id', file.id)
           .eq('user_id', this.userId)
-          .select()
+          .select('id, title, file_type, updated_at, file_size, version')
           .single();
 
         if (error) {
@@ -259,7 +288,7 @@ export class HybridFileStorage implements FileStorageService {
           })
           .eq('id', existingFileRow.id)
           .eq('user_id', this.userId)
-          .select()
+          .select('id, title, file_type, updated_at, file_size, version')
           .single();
 
         if (error) {
@@ -276,7 +305,7 @@ export class HybridFileStorage implements FileStorageService {
       const { data, error } = await this.getTypedSupabaseClient()
         .from('user_files')
         .insert(dbInsert)
-        .select()
+        .select('id, title, file_type, created_at, updated_at, file_size, version')
         .single();
 
       if (error) {
@@ -289,6 +318,84 @@ export class HybridFileStorage implements FileStorageService {
       return dbRowToFileData(createdFileRow);
     } catch (error) {
       safeConsole.error('Error saving file to cloud:', error);
+      throw error;
+    }
+  }
+
+  /**
+   * Load file metadata only (without content) - CPU efficient
+   */
+  async loadFileMetadataFromCloud(fileId: string): Promise<Omit<FileData, 'content'> | null> {
+    if (!this.supabaseClient || !this.userId) {
+      throw new Error('Not authenticated for cloud storage');
+    }
+
+    try {
+      safeConsole.log('📋 Loading file metadata from cloud:', fileId);
+
+      const { data, error } = await this.getTypedSupabaseClient()
+        .from('user_files')
+        .select(
+          'id, user_id, title, file_type, tags, created_at, updated_at, is_template, file_size, version'
+        )
+        .eq('id', fileId)
+        .eq('user_id', this.userId)
+        .eq('is_deleted', false)
+        .single();
+
+      if (error) {
+        if (error.code === 'PGRST116') {
+          safeConsole.log('File not found in cloud:', fileId);
+          return null;
+        }
+        handleSupabaseError(error, 'load file metadata');
+        throw error;
+      }
+
+      const fileRow = data as Database['public']['Tables']['user_files']['Row'];
+      const fileData = dbRowToFileData(fileRow);
+      const { content: _, ...metadata } = fileData; // Remove content from metadata
+      safeConsole.log('✅ File metadata loaded from cloud:', metadata.title);
+      return metadata;
+    } catch (error) {
+      safeConsole.error('❌ Error loading file metadata from cloud:', error);
+      throw error;
+    }
+  }
+
+  /**
+   * Load file content only - Lazy loading approach
+   */
+  async loadFileContentFromCloud(fileId: string): Promise<string | null> {
+    if (!this.supabaseClient || !this.userId) {
+      throw new Error('Not authenticated for cloud storage');
+    }
+
+    try {
+      safeConsole.log('📄 Lazy loading file content from cloud:', fileId);
+
+      const { data, error } = await this.getTypedSupabaseClient()
+        .from('user_files')
+        .select('content')
+        .eq('id', fileId)
+        .eq('user_id', this.userId)
+        .eq('is_deleted', false)
+        .single();
+
+      if (error) {
+        if (error.code === 'PGRST116') {
+          safeConsole.log('File not found in cloud:', fileId);
+          return null;
+        }
+        handleSupabaseError(error, 'load file content');
+        throw error;
+      }
+
+      const content = data?.content || '';
+      safeConsole.log(`✅ File content loaded from cloud: ${content.length} chars`);
+      return content;
+    } catch (error) {
+      safeConsole.error('❌ Error loading file content from cloud:', error);
       throw error;
     }
   }
@@ -367,6 +474,76 @@ export class HybridFileStorage implements FileStorageService {
       return fileRows.map((row) => dbRowToFileData({ ...row, content: '' }));
     } catch (error) {
       safeConsole.error('Error listing files from cloud:', error);
+      throw error;
+    }
+  }
+
+  /**
+   * Paginated file listing for better performance
+   * Uses cursor-based pagination for efficient large dataset handling
+   */
+  async listCloudFilesPaginated(
+    options: { limit?: number; cursor?: string; includeContent?: boolean } = {}
+  ): Promise<{
+    files: FileData[];
+    nextCursor?: string;
+    hasMore: boolean;
+    totalCount?: number;
+  }> {
+    if (!this.supabaseClient || !this.userId) {
+      throw new Error('Not authenticated for cloud storage');
+    }
+
+    const { limit = 20, cursor, includeContent = false } = options;
+
+    try {
+      safeConsole.log('Listing files from cloud (paginated):', { limit, cursor, includeContent });
+
+      // Base columns untuk listing (exclude content untuk performa)
+      const baseColumns = 'id, title, file_type, tags, updated_at, file_size, is_template';
+      const selectColumns = includeContent ? `${baseColumns}, content` : baseColumns;
+
+      let query = this.getTypedSupabaseClient()
+        .from('user_files')
+        .select(selectColumns)
+        .eq('user_id', this.userId)
+        .eq('is_deleted', false)
+        .order('updated_at', { ascending: false })
+        .limit(limit + 1); // +1 untuk check hasMore
+
+      if (cursor) {
+        query = query.lt('updated_at', cursor);
+      }
+
+      const { data, error } = await query;
+
+      if (error) {
+        handleSupabaseError(error, 'list files paginated');
+        throw error;
+      }
+
+      const files = data || [];
+      const hasMore = files.length > limit;
+      const resultFiles = hasMore ? files.slice(0, -1) : files;
+      const nextCursor = hasMore ? resultFiles[resultFiles.length - 1].updated_at : undefined;
+
+      safeConsole.log(`Loaded ${resultFiles.length} files from cloud (paginated)`, {
+        hasMore,
+        nextCursor: nextCursor ? `${nextCursor.substring(0, 10)}...` : undefined,
+      });
+
+      return {
+        files: resultFiles.map((row: Database['public']['Tables']['user_files']['Row']) =>
+          dbRowToFileData({
+            ...row,
+            content: includeContent ? row.content || '' : '',
+          })
+        ),
+        nextCursor,
+        hasMore,
+      };
+    } catch (error) {
+      safeConsole.error('Error listing files from cloud (paginated):', error);
       throw error;
     }
   }
@@ -608,6 +785,48 @@ export class HybridFileStorage implements FileStorageService {
     return this.listLocalFiles();
   }
 
+  async listPaginated(options: PaginationOptions = {}): Promise<PaginatedFileResponse> {
+    if (this.isAuthenticated) {
+      try {
+        const result = await this.listCloudFilesPaginated(options);
+        safeConsole.log(`Loaded ${result.files.length} files from cloud (paginated)`, {
+          hasMore: result.hasMore,
+          nextCursor: result.nextCursor ? `${result.nextCursor.substring(0, 10)}...` : undefined,
+        });
+        return result;
+      } catch (error) {
+        safeConsole.error(
+          'Failed to list cloud files (paginated), not falling back to local for authenticated users:',
+          error
+        );
+        throw error; // Don't fallback to local for authenticated users
+      }
+    }
+
+    // For local storage, implement simple pagination
+    const localFiles = this.listLocalFiles();
+    const { limit = 20, cursor } = options;
+
+    // Simple offset-based pagination for local files
+    let startIndex = 0;
+    if (cursor) {
+      const cursorIndex = localFiles.findIndex((f) => f.updatedAt === cursor);
+      startIndex = cursorIndex > -1 ? cursorIndex + 1 : 0;
+    }
+
+    const endIndex = startIndex + limit;
+    const files = localFiles.slice(startIndex, endIndex);
+    const hasMore = endIndex < localFiles.length;
+    const nextCursor = hasMore ? files[files.length - 1].updatedAt : undefined;
+
+    return {
+      files,
+      nextCursor,
+      hasMore,
+      totalCount: localFiles.length,
+    };
+  }
+
   async delete(identifier: string): Promise<void> {
     if (this.isAuthenticated) {
       try {
@@ -622,6 +841,119 @@ export class HybridFileStorage implements FileStorageService {
       }
     } else {
       this.deleteFromLocal(identifier);
+    }
+  }
+
+  /**
+   * Optimize file for storage - compression and validation
+   */
+  private optimizeFileForStorage(file: FileData): FileData {
+    // Compress content for storage optimization
+    const compressionResult = compressContent(file.content);
+
+    // Validate file size (after compression)
+    if (compressionResult.compressedSize > STORAGE_LIMITS.MAX_FILE_SIZE) {
+      throw new Error(
+        `File size exceeds limit of ${STORAGE_LIMITS.MAX_FILE_SIZE / 1024}KB (${formatFileSize(
+          compressionResult.compressedSize
+        )} after compression)`
+      );
+    }
+
+    // Log compression stats
+    if (compressionResult.isCompressed) {
+      safeConsole.log(
+        `Content compressed: ${formatFileSize(
+          compressionResult.originalSize
+        )} → ${formatFileSize(compressionResult.compressedSize)} (${(
+          compressionResult.compressionRatio * 100
+        ).toFixed(1)}%)`
+      );
+    }
+
+    return {
+      ...file,
+      content: compressionResult.content,
+    };
+  }
+
+  /**
+   * Batch operations untuk multiple file saves - CPU efficient
+   */
+  async batchSaveToCloud(files: FileData[]): Promise<FileData[]> {
+    if (!this.supabaseClient || !this.userId) {
+      throw new Error('Not authenticated for cloud storage');
+    }
+
+    if (files.length === 0) return [];
+
+    try {
+      safeConsole.log(`🔄 Batch saving ${files.length} files to cloud`);
+
+      // Prepare batch insert data
+      const batchInserts = files.map((file) => {
+        const optimizedFile = this.optimizeFileForStorage(file);
+        return fileDataToDbInsert(optimizedFile, this.userId as string);
+      });
+
+      // Single batch insert - much more CPU efficient than individual inserts
+      const { data, error } = await this.getTypedSupabaseClient()
+        .from('user_files')
+        .upsert(batchInserts, {
+          onConflict: 'user_id,title',
+          ignoreDuplicates: false,
+        })
+        .select('id, title, file_type, created_at, updated_at, file_size, version');
+
+      if (error) {
+        handleSupabaseError(error, 'batch save files');
+        throw error;
+      }
+
+      const savedFiles = (data || []).map(
+        (row: Database['public']['Tables']['user_files']['Row']) => dbRowToFileData(row)
+      );
+      safeConsole.log(`✅ Batch saved ${savedFiles.length} files to cloud`);
+
+      return savedFiles;
+    } catch (error) {
+      safeConsole.error('❌ Error batch saving files to cloud:', error);
+      throw error;
+    }
+  }
+
+  /**
+   * Batch delete operations - CPU efficient
+   */
+  async batchDeleteFromCloud(fileIds: string[]): Promise<void> {
+    if (!this.supabaseClient || !this.userId) {
+      throw new Error('Not authenticated for cloud storage');
+    }
+
+    if (fileIds.length === 0) return;
+
+    try {
+      safeConsole.log(`🗑️ Batch deleting ${fileIds.length} files from cloud`);
+
+      // Soft delete with single query - much more efficient
+      const { error } = await this.getTypedSupabaseClient()
+        .from('user_files')
+        .update({
+          is_deleted: true,
+          deleted_at: new Date().toISOString(),
+        })
+        .in('id', fileIds)
+        .eq('user_id', this.userId);
+
+      if (error) {
+        handleSupabaseError(error, 'batch delete files');
+        throw error;
+      }
+
+      safeConsole.log(`✅ Batch deleted ${fileIds.length} files from cloud`);
+    } catch (error) {
+      safeConsole.error('❌ Error batch deleting files from cloud:', error);
+      throw error;
     }
   }
 

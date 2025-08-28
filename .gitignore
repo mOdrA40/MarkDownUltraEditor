@@ -14,6 +14,7 @@ hasil.txt
 .github
 # Mengabaikan semua file .md
 *.md
+docs
 
 bash.exe.stackdump
 !README.md

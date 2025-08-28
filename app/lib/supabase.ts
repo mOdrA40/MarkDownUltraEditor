@@ -107,7 +107,7 @@ export interface Database {
   };
 }
 
-// Create base Supabase client
+// Create base Supabase client with optimized connection pooling
 const supabaseClient = createClient<Database>(supabaseUrl, supabaseAnonKey, {
   auth: {
     autoRefreshToken: false,
@@ -117,6 +117,16 @@ const supabaseClient = createClient<Database>(supabaseUrl, supabaseAnonKey, {
   global: {
     headers: {
       'X-Client-Info': 'markdown-ultra-editor',
+    },
+  },
+  // Connection pooling optimization for free plan
+  db: {
+    schema: 'public',
+  },
+  // Optimize for free plan limits
+  realtime: {
+    params: {
+      eventsPerSecond: 2, // Conservative for free plan
     },
   },
 });
@@ -133,6 +143,17 @@ export const createClerkSupabaseClient = (
     global: {
       headers: {
         'X-Client-Info': 'markdown-ultra-editor',
+        'X-Connection-Pool': 'optimized', // Track optimized connections
+      },
+    },
+    // Connection pooling optimization
+    db: {
+      schema: 'public',
+    },
+    // Optimize for free plan limits
+    realtime: {
+      params: {
+        eventsPerSecond: 2, // Conservative for free plan
       },
     },
     // Native Third Party Auth integration with Clerk
